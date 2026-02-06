@@ -1017,6 +1017,12 @@ export const getCaseStudyData = (projectId) => {
     if (saved) {
       return JSON.parse(saved);
     }
+    // Check for minimal version (structure without images)
+    const minimal = localStorage.getItem(`caseStudy_${projectId}_minimal`);
+    if (minimal) {
+      // Return minimal version - images will be loaded from IndexedDB via async
+      return JSON.parse(minimal);
+    }
   } catch (e) {
     console.warn('Error reading from localStorage:', e);
   }
@@ -1029,13 +1035,30 @@ export const getCaseStudyDataAsync = async (projectId) => {
   try {
     const idbData = await getFromIndexedDB(projectId);
     if (idbData) {
+      // Also sync to localStorage if we got data from IndexedDB
+      // This ensures localStorage is up to date for future sync loads
+      try {
+        const jsonData = JSON.stringify(idbData);
+        const sizeInMB = new Blob([jsonData]).size / (1024 * 1024);
+        if (sizeInMB < 4) {
+          localStorage.setItem(`caseStudy_${projectId}`, jsonData);
+          localStorage.removeItem(`caseStudy_${projectId}_idb`); // Clear marker if full data fits
+          localStorage.removeItem(`caseStudy_${projectId}_minimal`); // Clear minimal version
+        } else {
+          // Keep the marker that full data is in IndexedDB
+          localStorage.setItem(`caseStudy_${projectId}_idb`, 'true');
+        }
+      } catch (e) {
+        // localStorage sync failed, but we have the data from IndexedDB
+        console.warn('Failed to sync IndexedDB data to localStorage:', e);
+      }
       return idbData;
     }
   } catch (e) {
     console.warn('IndexedDB read failed, trying localStorage:', e);
   }
   
-  // Fall back to localStorage
+  // Fall back to localStorage (or minimal version)
   return getCaseStudyData(projectId);
 };
 
@@ -1048,17 +1071,50 @@ export const saveCaseStudyData = async (projectId, data) => {
     const idbSuccess = await saveToIndexedDB(projectId, compressedData);
     
     if (idbSuccess) {
-      // Also save to localStorage as backup (but may fail for large data)
+      // Always try to save to localStorage as backup/fallback
       try {
         const jsonData = JSON.stringify(compressedData);
         const sizeInMB = new Blob([jsonData]).size / (1024 * 1024);
         
-        // Only save to localStorage if under 4MB
         if (sizeInMB < 4) {
+          // Full data fits, save it
           localStorage.setItem(`caseStudy_${projectId}`, jsonData);
+          localStorage.removeItem(`caseStudy_${projectId}_idb`); // Clear marker if full data fits
         } else {
-          // Remove from localStorage to save space, IndexedDB has the data
-          localStorage.removeItem(`caseStudy_${projectId}`);
+          // Data is too large for localStorage, mark that it's in IndexedDB
+          // Don't save to localStorage to avoid quota issues
+          localStorage.setItem(`caseStudy_${projectId}_idb`, 'true');
+          // Try to keep a minimal version in localStorage if possible (structure only)
+          // But don't fail if it doesn't fit
+          try {
+            // Create a minimal structure copy (without images) for quick loading
+            const minimalCopy = JSON.parse(JSON.stringify(compressedData));
+            const removeImages = (obj) => {
+              if (typeof obj === 'string' && obj.startsWith('data:image')) {
+                return '';
+              }
+              if (Array.isArray(obj)) {
+                return obj.map(item => removeImages(item));
+              }
+              if (obj && typeof obj === 'object') {
+                const result = {};
+                for (const key in obj) {
+                  result[key] = removeImages(obj[key]);
+                }
+                return result;
+              }
+              return obj;
+            };
+            const minimal = removeImages(minimalCopy);
+            const minimalJson = JSON.stringify(minimal);
+            const minimalSize = new Blob([minimalJson]).size / (1024 * 1024);
+            if (minimalSize < 2) {
+              // Save minimal structure for quick display
+              localStorage.setItem(`caseStudy_${projectId}_minimal`, minimalJson);
+            }
+          } catch (e) {
+            // Minimal copy failed, that's okay - IndexedDB has the full data
+          }
         }
       } catch (lsError) {
         // localStorage failed but IndexedDB succeeded, that's okay
@@ -1070,6 +1126,7 @@ export const saveCaseStudyData = async (projectId, data) => {
     // IndexedDB failed, try localStorage only
     const jsonData = JSON.stringify(compressedData);
     localStorage.setItem(`caseStudy_${projectId}`, jsonData);
+    localStorage.removeItem(`caseStudy_${projectId}_idb`); // Clear IDB marker
     return true;
     
   } catch (e) {

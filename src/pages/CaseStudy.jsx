@@ -3,7 +3,7 @@ import { useRef, useState, useEffect, useCallback, Component } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedButton from '../components/AnimatedButton';
 import { useEdit } from '../context/EditContext';
-import { getCaseStudyData, getCaseStudyDataAsync, saveCaseStudyData, resetCaseStudyData, slideTemplates, templateCategories, compressImage } from '../data/caseStudyData';
+import { getCaseStudyData, getCaseStudyDataAsync, saveCaseStudyData, resetCaseStudyData, slideTemplates, templateCategories, compressImage, defaultCaseStudies } from '../data/caseStudyData';
 import './CaseStudy.css';
 
 // Error Boundary to catch rendering errors
@@ -585,19 +585,49 @@ const CaseStudy = () => {
   useEffect(() => {
     hasLoadedRef.current = false; // Reset on projectId change
     
-    // Load sync first for immediate display
-    setProject(getCaseStudyData(projectId));
-    setCurrentSlide(0);
+    // Check if we have a marker that data is in IndexedDB
+    const hasIdbMarker = localStorage.getItem(`caseStudy_${projectId}_idb`) === 'true';
     
-    // Then try async load from IndexedDB (may have more data)
+    // Load sync first for immediate display (unless we know data is only in IndexedDB)
+    const syncData = getCaseStudyData(projectId);
+    const defaultData = defaultCaseStudies[projectId] || defaultCaseStudies['align-technology'];
+    
+    // Check if sync data is actually different from defaults (has real saved data)
+    const syncHasData = localStorage.getItem(`caseStudy_${projectId}`) !== null;
+    
+    // If localStorage has data or no IDB marker, use sync data immediately
+    // Otherwise, wait for async load to avoid showing defaults
+    if (!hasIdbMarker || syncHasData) {
+      setProject(syncData);
+      setCurrentSlide(0);
+    } else {
+      // Data is only in IndexedDB, show defaults temporarily while loading
+      setProject(defaultData);
+      setCurrentSlide(0);
+    }
+    
+    // Always try async load from IndexedDB (may have more complete data)
     const loadAsync = async () => {
       try {
         const asyncData = await getCaseStudyDataAsync(projectId);
         if (asyncData) {
+          // Update with the real data from IndexedDB
           setProject(asyncData);
+          // If we showed defaults initially, reset slide to 0
+          if (hasIdbMarker && !syncHasData) {
+            setCurrentSlide(0);
+          }
+        } else if (hasIdbMarker && !syncHasData) {
+          // Expected data from IndexedDB but got nothing - this shouldn't happen
+          console.warn('Expected IndexedDB data but got null. Marker exists but data not found.');
+          // Keep defaults for now, but log the issue
         }
       } catch (e) {
-        console.warn('Async load failed:', e);
+        console.error('Async load failed:', e);
+        // If we were expecting IndexedDB data but it failed, log it
+        if (hasIdbMarker && !syncHasData) {
+          console.error('Critical: Data was saved to IndexedDB but cannot be loaded. Error:', e);
+        }
       }
       // Mark as loaded after async attempt
       hasLoadedRef.current = true;
