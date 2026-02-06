@@ -1031,10 +1031,13 @@ export const getCaseStudyData = (projectId) => {
 
 // Async version that checks IndexedDB first (for larger data)
 export const getCaseStudyDataAsync = async (projectId) => {
+  console.log(`[getCaseStudyDataAsync] Loading data for projectId: ${projectId}`);
+  
   // Try IndexedDB first (larger storage)
   try {
     const idbData = await getFromIndexedDB(projectId);
     if (idbData) {
+      console.log('[getCaseStudyDataAsync] Found data in IndexedDB');
       // Also sync to localStorage if we got data from IndexedDB
       // This ensures localStorage is up to date for future sync loads
       try {
@@ -1044,46 +1047,61 @@ export const getCaseStudyDataAsync = async (projectId) => {
           localStorage.setItem(`caseStudy_${projectId}`, jsonData);
           localStorage.removeItem(`caseStudy_${projectId}_idb`); // Clear marker if full data fits
           localStorage.removeItem(`caseStudy_${projectId}_minimal`); // Clear minimal version
+          console.log('[getCaseStudyDataAsync] Synced full data to localStorage');
         } else {
           // Keep the marker that full data is in IndexedDB
           localStorage.setItem(`caseStudy_${projectId}_idb`, 'true');
+          console.log('[getCaseStudyDataAsync] Data too large, keeping IndexedDB marker');
         }
       } catch (e) {
         // localStorage sync failed, but we have the data from IndexedDB
-        console.warn('Failed to sync IndexedDB data to localStorage:', e);
+        console.warn('[getCaseStudyDataAsync] Failed to sync IndexedDB data to localStorage:', e);
       }
       return idbData;
+    } else {
+      console.log('[getCaseStudyDataAsync] No data found in IndexedDB');
     }
   } catch (e) {
-    console.warn('IndexedDB read failed, trying localStorage:', e);
+    console.warn('[getCaseStudyDataAsync] IndexedDB read failed, trying localStorage:', e);
   }
   
   // Fall back to localStorage (or minimal version)
-  return getCaseStudyData(projectId);
+  const fallbackData = getCaseStudyData(projectId);
+  console.log('[getCaseStudyDataAsync] Using fallback data from localStorage/defaults');
+  return fallbackData;
 };
 
 export const saveCaseStudyData = async (projectId, data) => {
   try {
+    console.log(`[saveCaseStudyData] Starting save for projectId: ${projectId}`);
+    
     // Compress images first
     const compressedData = await compressDataImages(data);
+    console.log('[saveCaseStudyData] Images compressed');
     
     // Try IndexedDB first (much larger limit - 50MB+)
     const idbSuccess = await saveToIndexedDB(projectId, compressedData);
+    console.log(`[saveCaseStudyData] IndexedDB save result: ${idbSuccess}`);
     
     if (idbSuccess) {
       // Always try to save to localStorage as backup/fallback
       try {
         const jsonData = JSON.stringify(compressedData);
         const sizeInMB = new Blob([jsonData]).size / (1024 * 1024);
+        console.log(`[saveCaseStudyData] Data size: ${sizeInMB.toFixed(2)}MB`);
         
         if (sizeInMB < 4) {
           // Full data fits, save it
           localStorage.setItem(`caseStudy_${projectId}`, jsonData);
           localStorage.removeItem(`caseStudy_${projectId}_idb`); // Clear marker if full data fits
+          localStorage.removeItem(`caseStudy_${projectId}_minimal`); // Clear minimal version
+          console.log('[saveCaseStudyData] Saved full data to localStorage');
         } else {
           // Data is too large for localStorage, mark that it's in IndexedDB
           // Don't save to localStorage to avoid quota issues
           localStorage.setItem(`caseStudy_${projectId}_idb`, 'true');
+          console.log('[saveCaseStudyData] Data too large, marked for IndexedDB only');
+          
           // Try to keep a minimal version in localStorage if possible (structure only)
           // But don't fail if it doesn't fit
           try {
@@ -1111,31 +1129,36 @@ export const saveCaseStudyData = async (projectId, data) => {
             if (minimalSize < 2) {
               // Save minimal structure for quick display
               localStorage.setItem(`caseStudy_${projectId}_minimal`, minimalJson);
+              console.log('[saveCaseStudyData] Saved minimal structure to localStorage');
             }
           } catch (e) {
             // Minimal copy failed, that's okay - IndexedDB has the full data
+            console.warn('[saveCaseStudyData] Failed to create minimal copy:', e);
           }
         }
       } catch (lsError) {
         // localStorage failed but IndexedDB succeeded, that's okay
-        console.warn('localStorage backup failed, but IndexedDB save succeeded');
+        console.warn('[saveCaseStudyData] localStorage backup failed, but IndexedDB save succeeded:', lsError);
       }
+      console.log('[saveCaseStudyData] Save completed successfully');
       return true;
     }
     
     // IndexedDB failed, try localStorage only
+    console.warn('[saveCaseStudyData] IndexedDB failed, falling back to localStorage only');
     const jsonData = JSON.stringify(compressedData);
     localStorage.setItem(`caseStudy_${projectId}`, jsonData);
     localStorage.removeItem(`caseStudy_${projectId}_idb`); // Clear IDB marker
+    console.log('[saveCaseStudyData] Saved to localStorage only');
     return true;
     
   } catch (e) {
     if (e.name === 'QuotaExceededError') {
-      console.error('Storage quota exceeded.');
+      console.error('[saveCaseStudyData] Storage quota exceeded.');
       alert('Storage limit reached! Try using smaller images or remove some existing images.');
       return false;
     }
-    console.error('Error saving case study data:', e);
+    console.error('[saveCaseStudyData] Error saving case study data:', e);
     return false;
   }
 };

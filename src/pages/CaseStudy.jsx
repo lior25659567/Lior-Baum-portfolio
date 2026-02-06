@@ -582,11 +582,13 @@ const CaseStudy = () => {
   }, [project]);
 
   // Load project data when projectId changes
-  useEffect(() => {
+  const loadProjectData = useCallback(async () => {
+    console.log(`[loadProjectData] Loading projectId: ${projectId}`);
     hasLoadedRef.current = false; // Reset on projectId change
     
     // Check if we have a marker that data is in IndexedDB
     const hasIdbMarker = localStorage.getItem(`caseStudy_${projectId}_idb`) === 'true';
+    console.log(`[loadProjectData] hasIdbMarker: ${hasIdbMarker}`);
     
     // Load sync first for immediate display (unless we know data is only in IndexedDB)
     const syncData = getCaseStudyData(projectId);
@@ -594,47 +596,66 @@ const CaseStudy = () => {
     
     // Check if sync data is actually different from defaults (has real saved data)
     const syncHasData = localStorage.getItem(`caseStudy_${projectId}`) !== null;
+    const hasMinimal = localStorage.getItem(`caseStudy_${projectId}_minimal`) !== null;
+    console.log(`[loadProjectData] syncHasData: ${syncHasData}, hasMinimal: ${hasMinimal}`);
     
     // If localStorage has data or no IDB marker, use sync data immediately
     // Otherwise, wait for async load to avoid showing defaults
-    if (!hasIdbMarker || syncHasData) {
+    if (!hasIdbMarker || syncHasData || hasMinimal) {
       setProject(syncData);
       setCurrentSlide(0);
+      console.log('[loadProjectData] Set project from sync data');
     } else {
       // Data is only in IndexedDB, show defaults temporarily while loading
       setProject(defaultData);
       setCurrentSlide(0);
+      console.log('[loadProjectData] Set project to defaults (waiting for IndexedDB)');
     }
     
     // Always try async load from IndexedDB (may have more complete data)
-    const loadAsync = async () => {
-      try {
-        const asyncData = await getCaseStudyDataAsync(projectId);
-        if (asyncData) {
-          // Update with the real data from IndexedDB
-          setProject(asyncData);
-          // If we showed defaults initially, reset slide to 0
-          if (hasIdbMarker && !syncHasData) {
-            setCurrentSlide(0);
-          }
-        } else if (hasIdbMarker && !syncHasData) {
-          // Expected data from IndexedDB but got nothing - this shouldn't happen
-          console.warn('Expected IndexedDB data but got null. Marker exists but data not found.');
-          // Keep defaults for now, but log the issue
+    try {
+      const asyncData = await getCaseStudyDataAsync(projectId);
+      if (asyncData) {
+        // Update with the real data from IndexedDB
+        setProject(asyncData);
+        console.log('[loadProjectData] Updated project from IndexedDB');
+        // If we showed defaults initially, reset slide to 0
+        if (hasIdbMarker && !syncHasData && !hasMinimal) {
+          setCurrentSlide(0);
         }
-      } catch (e) {
-        console.error('Async load failed:', e);
-        // If we were expecting IndexedDB data but it failed, log it
-        if (hasIdbMarker && !syncHasData) {
-          console.error('Critical: Data was saved to IndexedDB but cannot be loaded. Error:', e);
-        }
+      } else if (hasIdbMarker && !syncHasData && !hasMinimal) {
+        // Expected data from IndexedDB but got nothing - this shouldn't happen
+        console.warn('[loadProjectData] Expected IndexedDB data but got null. Marker exists but data not found.');
+        // Keep defaults for now, but log the issue
       }
-      // Mark as loaded after async attempt
-      hasLoadedRef.current = true;
+    } catch (e) {
+      console.error('[loadProjectData] Async load failed:', e);
+      // If we were expecting IndexedDB data but it failed, log it
+      if (hasIdbMarker && !syncHasData && !hasMinimal) {
+        console.error('[loadProjectData] Critical: Data was saved to IndexedDB but cannot be loaded. Error:', e);
+      }
+    }
+    // Mark as loaded after async attempt
+    hasLoadedRef.current = true;
+  }, [projectId]);
+  
+  useEffect(() => {
+    loadProjectData();
+  }, [loadProjectData]);
+  
+  // Reload data when component becomes visible again (in case user navigated away and back)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && hasLoadedRef.current) {
+        // Component became visible again, reload data to ensure we have latest
+        console.log('[visibilitychange] Component visible again, reloading data');
+        loadProjectData();
+      }
     };
     
-    loadAsync();
-  }, [projectId]);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [loadProjectData]);
 
   // Track previous edit mode to detect when exiting edit mode
   const prevEditModeRef = useRef(editMode);
@@ -642,71 +663,127 @@ const CaseStudy = () => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const initialProjectRef = useRef(null);
   
-  // Store initial project state when entering edit mode
+  // Store initial project state when entering edit mode AND save when exiting
   useEffect(() => {
-    if (editMode && !prevEditModeRef.current) {
-      // Just entered edit mode - store initial state
+    const wasEditing = prevEditModeRef.current;
+    const isEditing = editMode;
+    
+    // Just entered edit mode - store initial state
+    if (isEditing && !wasEditing) {
       initialProjectRef.current = JSON.stringify(project);
       setHasUnsavedChanges(false);
     }
+    
+    // Just exited edit mode - save if there are changes
+    if (!isEditing && wasEditing && hasLoadedRef.current) {
+      const currentState = JSON.stringify(project);
+      const hasChanges = initialProjectRef.current && currentState !== initialProjectRef.current;
+      
+      if (hasChanges) {
+        // Show saving status
+        setSaveStatus('saving');
+        
+        // Save immediately when done editing
+        const doSave = async () => {
+          try {
+            console.log('Saving case study data for projectId:', projectId);
+            const success = await saveCaseStudyData(projectId, project);
+            console.log('Save result:', success);
+            if (success) {
+              setSaveStatus('saved');
+              setHasUnsavedChanges(false);
+              // Hide status after 2 seconds
+              setTimeout(() => setSaveStatus(null), 2000);
+            } else {
+              console.error('Save returned false');
+              setSaveStatus('error');
+            }
+          } catch (err) {
+            console.error('Failed to save:', err);
+            setSaveStatus('error');
+          }
+        };
+        
+        doSave();
+      } else {
+        console.log('No changes detected, skipping save');
+      }
+    }
+    
+    // Update ref AFTER checking for transitions
     prevEditModeRef.current = editMode;
-  }, [editMode, project]);
+  }, [editMode, project, projectId]);
   
   // Track unsaved changes while editing
   useEffect(() => {
     if (editMode && hasLoadedRef.current && initialProjectRef.current) {
       const currentState = JSON.stringify(project);
       setHasUnsavedChanges(currentState !== initialProjectRef.current);
+    } else if (!editMode) {
+      // Clear unsaved changes flag when not editing
+      setHasUnsavedChanges(false);
     }
   }, [project, editMode]);
   
-  // Save only when exiting edit mode (clicking "Done Editing")
-  useEffect(() => {
-    // Don't save on initial load
-    if (!hasLoadedRef.current) return;
-    
-    // Only save when exiting edit mode and there are changes
-    if (prevEditModeRef.current && !editMode && hasUnsavedChanges) {
-      // Show saving status
-      setSaveStatus('saving');
-      
-      // Save immediately when done editing
-      const doSave = async () => {
-        try {
-          const success = await saveCaseStudyData(projectId, project);
-          if (success) {
-            setSaveStatus('saved');
-            setHasUnsavedChanges(false);
-            // Hide status after 2 seconds
-            setTimeout(() => setSaveStatus(null), 2000);
-          } else {
-            setSaveStatus('error');
-          }
-        } catch (err) {
-          console.error('Failed to save:', err);
-          setSaveStatus('error');
-        }
-      };
-      
-      doSave();
-    }
-  }, [editMode, hasUnsavedChanges, project, projectId]);
-  
   // Save before page unloads (backup save)
   useEffect(() => {
-    const handleBeforeUnload = () => {
-      // Synchronous save attempt before page closes
-      try {
-        const jsonData = JSON.stringify(projectRef.current);
-        localStorage.setItem(`caseStudy_${projectId}`, jsonData);
-      } catch (e) {
-        console.error('Failed to save on unload:', e);
+    const handleBeforeUnload = async (e) => {
+      // Try to save before leaving - use sendBeacon for async save
+      if (editMode || hasUnsavedChanges) {
+        try {
+          // Try synchronous localStorage save first (most reliable)
+          const jsonData = JSON.stringify(projectRef.current);
+          const sizeInMB = new Blob([jsonData]).size / (1024 * 1024);
+          if (sizeInMB < 4) {
+            localStorage.setItem(`caseStudy_${projectId}`, jsonData);
+            console.log('[beforeunload] Saved to localStorage');
+          } else {
+            // Data too large, mark for IndexedDB
+            localStorage.setItem(`caseStudy_${projectId}_idb`, 'true');
+            // Try to save minimal version
+            try {
+              const minimalCopy = JSON.parse(JSON.stringify(projectRef.current));
+              const removeImages = (obj) => {
+                if (typeof obj === 'string' && obj.startsWith('data:image')) return '';
+                if (Array.isArray(obj)) return obj.map(item => removeImages(item));
+                if (obj && typeof obj === 'object') {
+                  const result = {};
+                  for (const key in obj) result[key] = removeImages(obj[key]);
+                  return result;
+                }
+                return obj;
+              };
+              const minimal = removeImages(minimalCopy);
+              const minimalJson = JSON.stringify(minimal);
+              const minimalSize = new Blob([minimalJson]).size / (1024 * 1024);
+              if (minimalSize < 2) {
+                localStorage.setItem(`caseStudy_${projectId}_minimal`, minimalJson);
+              }
+            } catch (err) {
+              console.warn('[beforeunload] Failed to save minimal version:', err);
+            }
+          }
+        } catch (e) {
+          console.error('[beforeunload] Failed to save on unload:', e);
+        }
+      }
+    };
+    
+    // Also listen for visibility change (tab switch, minimize, etc.)
+    const handleVisibilityChange = () => {
+      if (document.hidden && (editMode || hasUnsavedChanges)) {
+        // Page is being hidden, try to save
+        handleBeforeUnload();
       }
     };
     
     window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [projectId]);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [projectId, editMode, hasUnsavedChanges]);
 
   // Hide main navigation when on case study
   useEffect(() => {
