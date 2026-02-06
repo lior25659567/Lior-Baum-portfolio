@@ -1,0 +1,487 @@
+.navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 1.25rem 3rem;
+  transition: all var(--transition-medium);
+}
+
+.navigation.scrolled {
+  background: var(--color-bg);
+  backdrop-filter: blur(20px);
+  padding: 1rem 3rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+[data-theme="dark"] .navigation.scrolled {
+  background: rgba(10, 10, 10, 0.95);
+}
+
+[data-theme="light"] .navigation.scrolled {
+  background: rgba(250, 250, 250, 0.95);
+}
+
+.navigation.menu-open {
+  background: transparent;
+  border-bottom: none;
+}
+
+.nav-container {
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Logo */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  z-index: 1001;
+}
+
+.nav-logo img {
+  height: 32px;
+  width: auto;
+}
+
+.logo-text {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+  transition: color var(--transition-fast);
+}
+
+.nav-logo:hover .logo-text {
+  color: var(--color-accent);
+}
+
+.nav-links {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+}
+
+.nav-link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--color-text);
+  position: relative;
+  padding: 0.5rem 0;
+  transition: color var(--transition-fast);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--color-accent);
+  transition: width var(--transition-medium);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--color-accent);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-mobile-right {
+  display: none;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-cta-btn {
+  padding: 0.625rem 1.25rem !important;
+  font-size: 0.85rem !important;
+  border-radius: 100px !important;
+}
+
+/* Hamburger Menu */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  z-index: 1001;
+  position: relative;
+  background: transparent;
+  border: none;
+}
+
+.hamburger-line {
+  position: absolute;
+  width: 24px;
+  height: 2px;
+  background-color: var(--color-text);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center center;
+}
+
+.line-1 {
+  transform: translateY(-8px);
+}
+
+.line-2 {
+  transform: translateY(0);
+}
+
+.line-3 {
+  transform: translateY(8px);
+}
+
+/* Hamburger active state - X shape */
+.hamburger.active .line-1 {
+  transform: translateY(0) rotate(45deg);
+}
+
+.hamburger.active .line-2 {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburger.active .line-3 {
+  transform: translateY(0) rotate(-45deg);
+}
+
+/* Mobile Menu Overlay */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-menu-content {
+  width: 100%;
+  max-width: 500px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border);
+  transition: all var(--transition-fast);
+}
+
+.mobile-nav-link:hover {
+  padding-left: 1rem;
+  border-color: var(--color-accent);
+}
+
+.mobile-link-number {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  color: var(--color-accent);
+}
+
+.mobile-link-text {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  font-weight: 600;
+  transition: color var(--transition-fast);
+}
+
+.mobile-nav-link:hover .mobile-link-text {
+  color: var(--color-accent);
+}
+
+.mobile-menu-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.mobile-cta-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.mobile-social-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.mobile-social-links a {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast);
+}
+
+.mobile-social-links a:hover {
+  color: var(--color-accent);
+}
+
+/* Desktop only */
+.desktop-only {
+  display: flex;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .navigation {
+    padding: 1rem 2rem;
+  }
+  
+  .navigation.scrolled {
+    padding: 0.875rem 2rem;
+  }
+  
+  .nav-links {
+    gap: 2rem;
+  }
+  
+  .nav-link {
+    font-size: 0.85rem;
+  }
+}
+
+/* Tablet - Show hamburger */
+@media (max-width: 1024px) {
+  .navigation {
+    padding: 1rem 1.5rem;
+  }
+  
+  .navigation.scrolled {
+    padding: 0.75rem 1.5rem;
+  }
+  
+  .nav-container {
+    grid-template-columns: auto 1fr;
+  }
+  
+  .desktop-only {
+    display: none;
+  }
+  
+  .nav-mobile-right {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .hamburger {
+    display: flex;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .navigation {
+    padding: 0.875rem 1.25rem;
+  }
+  
+  .navigation.scrolled {
+    padding: 0.75rem 1.25rem;
+  }
+  
+  .logo-text {
+    font-size: 1.35rem;
+  }
+  
+  .nav-logo img {
+    height: 28px;
+  }
+  
+  .hamburger {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .hamburger-line {
+    width: 22px;
+  }
+  
+  .line-1 {
+    transform: translateY(-7px);
+  }
+  
+  .line-3 {
+    transform: translateY(7px);
+  }
+  
+  .mobile-menu-content {
+    padding: 1.5rem;
+    gap: 2.5rem;
+  }
+  
+  .mobile-nav-link {
+    padding: 0.75rem 0;
+    gap: 0.75rem;
+  }
+  
+  .mobile-link-number {
+    font-size: 0.8rem;
+  }
+  
+  .mobile-social-links {
+    gap: 1.5rem;
+  }
+  
+  .mobile-social-links a {
+    font-size: 0.8rem;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .navigation {
+    padding: 0.75rem 1rem;
+  }
+  
+  .navigation.scrolled {
+    padding: 0.625rem 1rem;
+  }
+  
+  .logo-text {
+    font-size: 1.25rem;
+  }
+  
+  .nav-logo img {
+    height: 24px;
+  }
+  
+  .hamburger {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .hamburger-line {
+    width: 20px;
+  }
+  
+  .line-1 {
+    transform: translateY(-6px);
+  }
+  
+  .line-3 {
+    transform: translateY(6px);
+  }
+  
+  .mobile-menu-content {
+    padding: 1.25rem;
+    gap: 2rem;
+  }
+  
+  .mobile-nav-link {
+    gap: 0.5rem;
+  }
+  
+  .mobile-link-number {
+    font-size: 0.75rem;
+  }
+  
+  .mobile-social-links {
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .mobile-social-links a {
+    font-size: 0.75rem;
+  }
+}
+
+/* CV Link Editor */
+.cv-link-editor {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cv-link-input-wrapper {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  display: flex;
+  gap: 0.5rem;
+  background: var(--color-bg);
+  padding: 0.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border);
+  z-index: 10;
+  min-width: 300px;
+}
+
+[data-theme="dark"] .cv-link-input-wrapper {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.cv-link-input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+}
+
+.cv-link-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.cv-link-done {
+  padding: 0.5rem 0.75rem;
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+}
+
+.cv-link-done:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(255, 88, 74, 0.3);
+}

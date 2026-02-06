@@ -1,0 +1,165 @@
+.animated-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 1rem 2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 100px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+}
+
+.animated-btn.primary {
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+.animated-btn.primary:hover {
+  transform: translateY(-2px);
+}
+
+.animated-btn.outline,
+.animated-btn.secondary {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.animated-btn.outline:hover,
+.animated-btn.secondary:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.btn-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+.btn-text {
+  display: flex;
+  overflow: hidden;
+}
+
+.char-wrapper {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.char-inner {
+  display: inline-block;
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.char-clone {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: block;
+}
+
+/* Staggered animation on hover */
+.animated-btn:hover .char-inner {
+  transform: translateY(-100%);
+}
+
+/* Stagger effect using animation delay */
+.animated-btn .char-wrapper:nth-child(1) .char-inner { transition-delay: 0ms; }
+.animated-btn .char-wrapper:nth-child(2) .char-inner { transition-delay: 15ms; }
+.animated-btn .char-wrapper:nth-child(3) .char-inner { transition-delay: 30ms; }
+.animated-btn .char-wrapper:nth-child(4) .char-inner { transition-delay: 45ms; }
+.animated-btn .char-wrapper:nth-child(5) .char-inner { transition-delay: 60ms; }
+.animated-btn .char-wrapper:nth-child(6) .char-inner { transition-delay: 75ms; }
+.animated-btn .char-wrapper:nth-child(7) .char-inner { transition-delay: 90ms; }
+.animated-btn .char-wrapper:nth-child(8) .char-inner { transition-delay: 105ms; }
+.animated-btn .char-wrapper:nth-child(9) .char-inner { transition-delay: 120ms; }
+.animated-btn .char-wrapper:nth-child(10) .char-inner { transition-delay: 135ms; }
+.animated-btn .char-wrapper:nth-child(11) .char-inner { transition-delay: 150ms; }
+.animated-btn .char-wrapper:nth-child(12) .char-inner { transition-delay: 165ms; }
+.animated-btn .char-wrapper:nth-child(13) .char-inner { transition-delay: 180ms; }
+.animated-btn .char-wrapper:nth-child(14) .char-inner { transition-delay: 195ms; }
+.animated-btn .char-wrapper:nth-child(15) .char-inner { transition-delay: 210ms; }
+
+/* Icon animation */
+.btn-icon-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25em;
+  height: 1.25em;
+}
+
+.btn-icon {
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-icon-clone {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translateX(-130%);
+}
+
+.animated-btn:hover .btn-icon:not(.btn-icon-clone) {
+  transform: translateX(130%);
+}
+
+.animated-btn:hover .btn-icon-clone {
+  transform: translateX(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .animated-btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.85rem;
+  }
+  
+  /* Disable hover animation on touch devices */
+  .animated-btn:hover .char-inner {
+    transform: translateY(0);
+  }
+  
+  .animated-btn:hover .btn-icon:not(.btn-icon-clone) {
+    transform: translateX(0);
+  }
+  
+  .animated-btn:hover .btn-icon-clone {
+    transform: translateX(-130%);
+  }
+  
+  /* Use active state instead */
+  .animated-btn:active .char-inner {
+    transform: translateY(-100%);
+  }
+  
+  .animated-btn:active .btn-icon:not(.btn-icon-clone) {
+    transform: translateX(130%);
+  }
+  
+  .animated-btn:active .btn-icon-clone {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .animated-btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.8rem;
+  }
+  
+  .btn-inner {
+    gap: 0.5rem;
+  }
+}
+

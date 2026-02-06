@@ -1,0 +1,329 @@
+.container {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: flex-start;
+}
+
+.listSection {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.detailsSection {
+    flex: 1;
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    padding: var(--spacing-lg);
+    position: sticky;
+    top: 100px;
+}
+
+.header {
+    margin-bottom: var(--spacing-md);
+}
+
+.header h2 {
+    font-size: var(--font-size-h2);
+    margin-bottom: var(--spacing-xs);
+    font-weight: 600;
+}
+
+.summary {
+    color: var(--color-text-secondary);
+    font-size: 13px;
+}
+
+.filterBar {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.filterBtn {
+    padding: 6px 12px;
+    border: 1px solid var(--color-border);
+    background: white;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.filterBtn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.filterBtn.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+}
+
+.filterCount {
+    background: rgba(0, 0, 0, 0.08);
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+}
+
+.filterBtn.active .filterCount {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.findingCard {
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    padding: var(--spacing-md);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+    position: relative;
+}
+
+.findingCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--color-border);
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.findingCard:hover {
+    border-color: var(--color-primary);
+}
+
+.findingCard:hover::before {
+    background: var(--color-primary);
+}
+
+.findingCard.active {
+    border-color: var(--color-primary);
+    background: #FAFBFF;
+}
+
+.findingCard.active::before {
+    background: var(--color-primary);
+}
+
+.findingCard.highPriority::before {
+    background: var(--color-danger);
+}
+
+.findingCard.mediumPriority::before {
+    background: var(--color-warning);
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-sm);
+}
+
+.cardTitle {
+    font-weight: 500;
+    color: var(--color-text-main);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.statusIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+}
+
+.statusIcon.confirmed {
+    background: var(--color-success-light);
+    color: var(--color-success);
+}
+
+.statusIcon.dismissed {
+    background: #F0F0F0;
+    color: var(--color-text-disabled);
+}
+
+.badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.badgeHigh {
+    background: var(--color-danger-light);
+    color: var(--color-danger);
+}
+
+.badgeMedium {
+    background: var(--color-warning-light);
+    color: #B76E00;
+}
+
+.cardMeta {
+    display: flex;
+    gap: var(--spacing-md);
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    margin-bottom: var(--spacing-sm);
+}
+
+.metaItem {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.cardDescription {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    margin-bottom: var(--spacing-md);
+}
+
+.confidenceBar {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.confidenceLabel {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    min-width: 90px;
+}
+
+.confidenceTrack {
+    flex: 1;
+    height: 4px;
+    background: #F0F0F0;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.confidenceFill {
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: 2px;
+    transition: width 0.5s ease;
+}
+
+.confidenceValue {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-primary);
+    min-width: 36px;
+    text-align: right;
+}
+
+.actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-border);
+}
+
+/* Detail View Styles */
+.detailHeader {
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.detailHeader h3 {
+    font-size: 16px;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.detailImage {
+    width: 100%;
+    height: 160px;
+    background: #F5F5F5;
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-disabled);
+    border: 1px solid var(--color-border);
+}
+
+.detailSection {
+    margin-bottom: var(--spacing-md);
+}
+
+.detailSection h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.detailSection p {
+    font-size: 13px;
+    color: var(--color-text-main);
+    line-height: 1.6;
+    background: #FAFAFA;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+}
+
+.emptyState {
+    padding: 48px 16px;
+    text-align: center;
+    color: var(--color-text-secondary);
+}
+
+.emptyIcon {
+    width: 56px;
+    height: 56px;
+    background: #F5F5F5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-md);
+    color: var(--color-text-disabled);
+}
+
+.emptyWrapper {
+    flex: 1;
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+}
+
+.readOnlyNote {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: var(--spacing-sm);
+    color: var(--color-text-disabled);
+    font-size: 12px;
+}

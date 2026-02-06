@@ -1,0 +1,161 @@
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--color-background-app);
+}
+
+.header {
+    height: 64px;
+    background-color: white;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--spacing-lg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.headerLeft {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.brand {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.brandIcon {
+    width: 32px;
+    height: 32px;
+    background-color: var(--color-primary);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.patientInfo {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--color-border);
+    padding-left: var(--spacing-md);
+    margin-left: var(--spacing-md);
+}
+
+.patientName {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--color-text-main);
+}
+
+.patientMeta {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+}
+
+.headerRight {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.divider {
+    width: 1px;
+    height: 24px;
+    background-color: var(--color-border);
+}
+
+.saveStatus {
+    font-size: 12px;
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.warningsContainer {
+    padding: var(--spacing-md) var(--spacing-lg);
+    padding-bottom: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.lockedBanner {
+    background: #e6f6fb;
+    border-bottom: 1px solid #b3e4f7;
+    padding: 10px var(--spacing-lg);
+    text-align: center;
+    font-size: 13px;
+    color: #006B8F;
+    font-weight: 500;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    padding: var(--spacing-lg) var(--spacing-lg);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.pageContent {
+    flex: 1;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.footer {
+    height: 72px;
+    background-color: white;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--spacing-lg);
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+}
+
+.footerLeft {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.footerRight {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.stepInfo {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+}
+
+.stepInfo strong {
+    color: var(--color-text-main);
+}

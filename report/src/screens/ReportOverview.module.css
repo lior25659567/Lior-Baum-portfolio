@@ -1,0 +1,197 @@
+.overview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.card {
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    padding: var(--spacing-lg);
+}
+
+.pageHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-lg);
+}
+
+.titleSection h2 {
+    font-size: var(--font-size-h1);
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text-main);
+    font-weight: 600;
+}
+
+.subtitle {
+    color: var(--color-text-secondary);
+    font-size: 13px;
+}
+
+.statusChip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 500;
+    background-color: var(--color-primary-light);
+    color: var(--color-primary);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.metricCard {
+    background: #FAFAFA;
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    transition: border-color var(--transition-fast);
+}
+
+.metricCard:hover {
+    border-color: var(--color-primary);
+}
+
+.metricIcon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-xs);
+}
+
+.iconSuccess {
+    background-color: var(--color-success-light);
+    color: var(--color-success);
+}
+
+.iconPrimary {
+    background-color: var(--color-primary-light);
+    color: var(--color-primary);
+}
+
+.iconWarning {
+    background-color: var(--color-warning-light);
+    color: var(--color-warning);
+}
+
+.metricLabel {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-secondary);
+}
+
+.metricValue {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--color-text-main);
+}
+
+.metricSub {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.progressBar {
+    width: 100%;
+    height: 4px;
+    background-color: var(--color-border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: var(--spacing-xs);
+}
+
+.progressFill {
+    height: 100%;
+    background-color: var(--color-primary);
+    border-radius: 2px;
+    transition: width 1s ease;
+}
+
+.metadataSection {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-xl);
+}
+
+.metaGroup h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-text-main);
+}
+
+.metaList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.metaItem {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-xs) 0;
+}
+
+.label {
+    color: var(--color-text-secondary);
+    font-size: 13px;
+}
+
+.value {
+    font-weight: 500;
+    color: var(--color-text-main);
+    font-size: 13px;
+}
+
+.alertCard {
+    background: #FFFBEB;
+    border: 1px solid #FCD34D;
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+}
+
+.alertIcon {
+    color: var(--color-warning);
+    flex-shrink: 0;
+}
+
+.alertContent h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #92400E;
+    margin-bottom: 4px;
+}
+
+.alertContent p {
+    font-size: 13px;
+    color: #A16207;
+    line-height: 1.5;
+}

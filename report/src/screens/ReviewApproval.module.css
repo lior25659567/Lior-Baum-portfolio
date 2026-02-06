@@ -1,0 +1,283 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.card {
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    padding: var(--spacing-xl);
+}
+
+.successHeader {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.iconWrapper {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-md);
+}
+
+.iconPending {
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+}
+
+.iconSuccess {
+    background: var(--color-success-light);
+    color: var(--color-success);
+}
+
+.iconRing {
+    position: absolute;
+    inset: -6px;
+    border: 2px solid var(--color-primary-light);
+    border-radius: 50%;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-text-main);
+}
+
+.description {
+    color: var(--color-text-secondary);
+    max-width: 360px;
+    margin: 0 auto;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.summarySection {
+    background: #FAFAFA;
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    border: 1px solid var(--color-border);
+}
+
+.summaryTitle {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-sm);
+    font-weight: 500;
+}
+
+.summaryRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.summaryRow:last-child {
+    border-bottom: none;
+}
+
+.rowLabel {
+    color: var(--color-text-secondary);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.rowValue {
+    color: var(--color-text-main);
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.approvalButton {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all var(--transition-fast);
+    margin-bottom: var(--spacing-lg);
+}
+
+.approvalButton:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.signatureBox {
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.signatureBox:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-light);
+}
+
+.signatureBox.signed {
+    border-style: solid;
+    border-color: var(--color-success);
+    background: var(--color-success-light);
+    cursor: default;
+}
+
+.signatureLabel {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.signatureName {
+    font-size: 22px;
+    font-family: 'Georgia', serif;
+    font-style: italic;
+    color: var(--color-text-main);
+}
+
+.signatureTime {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    margin-top: var(--spacing-sm);
+}
+
+.actionGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.actionCard {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.actionCard:hover {
+    border-color: var(--color-primary);
+}
+
+.actionIcon {
+    width: 40px;
+    height: 40px;
+    background: #F5F5F5;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    flex-shrink: 0;
+}
+
+.actionText h4 {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-main);
+    margin-bottom: 2px;
+}
+
+.actionText p {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+.auditTrail {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--spacing-lg);
+}
+
+.auditTitle {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: var(--spacing-md);
+    color: var(--color-text-main);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.auditLog {
+    background: #1A1A1A;
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-md);
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 11px;
+    line-height: 1.7;
+    overflow-x: auto;
+}
+
+.logEntry {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: 2px;
+}
+
+.logTime {
+    color: #64748B;
+    flex-shrink: 0;
+}
+
+.logMessage {
+    color: #E2E8F0;
+}
+
+.logMessage.success {
+    color: #4ADE80;
+}
+
+.logMessage.warning {
+    color: #FBBF24;
+}
+
+.pendingBanner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: #FEF3C7;
+    border: 1px solid #FCD34D;
+    border-radius: var(--radius-sm);
+    color: #92400E;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.buttonRow {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
