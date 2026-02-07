@@ -545,6 +545,9 @@ const CaseStudy = () => {
   const [showTemplates, setShowTemplates] = useState(false);
   const [previewTemplate, setPreviewTemplate] = useState(null);
   const [showBuilder, setShowBuilder] = useState(false);
+  const [builderMode, setBuilderMode] = useState('choose'); // 'choose' | 'form' | 'paste'
+  const [pasteText, setPasteText] = useState('');
+  const [parsedPreview, setParsedPreview] = useState(null); // { slides, preview }
   const [lightboxImage, setLightboxImage] = useState(null);
   const [activeTwiImageControl, setActiveTwiImageControl] = useState(null);
   const [saveStatus, setSaveStatus] = useState(null); // 'saving', 'saved', 'error'
@@ -1089,9 +1092,636 @@ const CaseStudy = () => {
       slides,
     }));
     
-    setShowBuilder(false);
+    closeBuilder();
     setCurrentSlide(0);
+  };
+
+  // Close builder and reset all state
+  const closeBuilder = () => {
+    setShowBuilder(false);
+    setBuilderMode('choose');
     setBuilderStep(0);
+    setPasteText('');
+    setParsedPreview(null);
+  };
+
+  // Text-to-slides parser — intelligently maps pasted content to the best slide templates
+  const parseTextToSlides = (rawText) => {
+    const text = rawText.trim();
+    if (!text) return { slides: [], preview: [] };
+
+    const lines = text.split('\n');
+
+    // Group lines into blocks separated by empty lines
+    const blocks = [];
+    let currentBlock = [];
+    for (const line of lines) {
+      if (line.trim() === '') {
+        if (currentBlock.length > 0) {
+          blocks.push(currentBlock.map(l => l.trim()).filter(l => l));
+          currentBlock = [];
+        }
+      } else {
+        currentBlock.push(line);
+      }
+    }
+    if (currentBlock.length > 0) {
+      blocks.push(currentBlock.map(l => l.trim()).filter(l => l));
+    }
+
+    if (blocks.length === 0) return { slides: [], preview: [] };
+
+    // Known info labels for key-value pair detection
+    const infoLabels = ['client', 'platform', 'industry', 'role', 'duration', 'timeline', 'year', 'team', 'deliverables', 'type', 'company', 'agency', 'scope', 'period', 'sector'];
+
+    // Section heading keywords → template mapping
+    const sectionKeywords = {
+      context: ['background', 'context', 'about', 'overview', 'what is'],
+      users: ['users', 'who the users', 'audience', 'user profile', 'persona'],
+      problem: ['problem', 'challenge', 'broke', 'breakdown', 'pain point', 'friction'],
+      research: ['research', 'discovery', 'methods', 'study', 'investigation'],
+      findings: ['findings', 'insights', 'revealed', 'key findings', 'discovered'],
+      goals: ['goals', 'success', 'defining', 'objectives', 'metrics', 'kpi', 'achieve'],
+      strategy: ['strategy', 'approach', 'redesign strategy', 'framework', 'methodology'],
+      flow: ['flow'],
+      solution: ['solution', 'how we solved', 'resolution'],
+      outcomes: ['outcomes', 'results', 'impact', 'what improved', 'what changed', 'improvements'],
+      learnings: ['learnings', 'takeaways', 'reinforced', 'reflection', 'lessons', 'what this project'],
+      end: ['thank you', 'thanks', 'get in touch', 'contact', 'work together'],
+      testing: ['testing', 'validation', 'usability test', 'experiment'],
+      process: ['process', 'timeline', 'journey', 'phases', 'how we got'],
+      comparison: ['before & after', 'comparison', 'transformation'],
+    };
+
+    // Helpers
+    const isHeadingLike = (line) => line.length < 80 && !line.endsWith('.') && !line.endsWith(',');
+    const matchesKeywords = (text, keywords) => {
+      const lower = text.toLowerCase();
+      return keywords.some(kw => lower.includes(kw));
+    };
+
+    const slides = [];
+    const preview = [];
+    let blockIndex = 0;
+
+    // --- Phase 1: Detect intro (first blocks are typically title + subtitle) ---
+    let projectTitle = '';
+    let projectDescription = '';
+
+    if (blocks.length > 0) {
+      const firstBlock = blocks[0];
+      if (firstBlock.length === 1 && isHeadingLike(firstBlock[0])) {
+        projectTitle = firstBlock[0];
+        blockIndex = 1;
+        if (blockIndex < blocks.length) {
+          const nextBlock = blocks[blockIndex];
+          if (nextBlock.length === 1 && nextBlock[0].length < 150) {
+            projectDescription = nextBlock[0];
+            blockIndex++;
+          }
+        }
+      } else if (firstBlock.length >= 2) {
+        projectTitle = firstBlock[0];
+        projectDescription = firstBlock.slice(1).join(' ');
+        blockIndex = 1;
+      }
+    }
+
+    // --- Phase 2: Detect info key-value pairs (Client → Value, Role → Value, etc.) ---
+    const infoItems = [];
+    while (blockIndex < blocks.length) {
+      const block = blocks[blockIndex];
+      if (block.length >= 1 && block.length <= 3) {
+        const label = block[0].replace(/:$/, '').trim();
+        if (infoLabels.includes(label.toLowerCase())) {
+          const value = block.slice(1).join(' ').trim();
+          if (value) {
+            infoItems.push({ label, value });
+            blockIndex++;
+            continue;
+          }
+        }
+      }
+      break;
+    }
+
+    // Generate intro slide
+    if (projectTitle) {
+      const introSlide = {
+        type: 'intro',
+        title: projectTitle,
+        description: projectDescription,
+        image: '',
+      };
+      if (infoItems.length > 0) {
+        introSlide.clientLabel = infoItems[0]?.label || 'Client';
+        introSlide.client = infoItems[0]?.value || '';
+        if (infoItems.length > 1) {
+          introSlide.focusLabel = infoItems[1]?.label || 'Focus';
+          introSlide.focus = infoItems[1]?.value || '';
+        }
+      }
+      slides.push(introSlide);
+      preview.push({ type: 'intro', label: `Intro — ${projectTitle}` });
+    }
+
+    // Generate info slide if enough key-value pairs found
+    if (infoItems.length >= 2) {
+      slides.push({
+        type: 'info',
+        title: 'Project Overview',
+        items: infoItems,
+      });
+      preview.push({ type: 'info', label: `Project Info — ${infoItems.length} items` });
+    }
+
+    // --- Phase 3: Parse remaining content into sections ---
+    const sections = [];
+    let currentSection = null;
+
+    while (blockIndex < blocks.length) {
+      const block = blocks[blockIndex];
+      const firstLine = block[0];
+
+      // Detect section headings: short lines that look like titles
+      if (block.length <= 2 && isHeadingLike(firstLine) && firstLine.length < 60) {
+        if (currentSection) sections.push(currentSection);
+        currentSection = {
+          heading: firstLine,
+          subtitle: block.length > 1 ? block[1] : '',
+          content: [],
+        };
+      } else if (currentSection) {
+        currentSection.content.push(block);
+      } else {
+        // Content without a prior heading — create an unnamed section
+        if (isHeadingLike(firstLine) && block.length > 1) {
+          currentSection = {
+            heading: firstLine,
+            subtitle: '',
+            content: [block.slice(1)],
+          };
+        } else {
+          currentSection = { heading: '', subtitle: '', content: [block] };
+        }
+      }
+      blockIndex++;
+    }
+    if (currentSection) sections.push(currentSection);
+
+    // --- Phase 4: Map each section to the best slide template ---
+    for (const section of sections) {
+      const heading = section.heading;
+      const subtitle = section.subtitle;
+      const headingLower = (heading + ' ' + subtitle).toLowerCase();
+      const allContent = section.content.flat();
+      const contentText = allContent.join('\n');
+
+      if (!heading && allContent.length === 0) continue;
+
+      // Detect sub-sections (The Problem / The Process / The Solution pattern)
+      const hasSubSections = allContent.some(line =>
+        /^(The Problem|The Process|The Solution|Problem|Process|Solution)$/i.test(line.trim())
+      );
+
+      // Extract numbered items, bullets, paragraphs
+      const numberedItems = [];
+      const bulletItems = [];
+      const paragraphs = [];
+
+      for (const block of section.content) {
+        for (const line of block) {
+          if (/^\d+[\.\)]\s/.test(line)) {
+            numberedItems.push(line.replace(/^\d+[\.\)]\s*/, '').trim());
+          } else if (/^[-•·]\s/.test(line)) {
+            bulletItems.push(line.replace(/^[-•·]\s*/, '').trim());
+          }
+        }
+        const blockText = block.join(' ');
+        if (blockText.length > 60 && !/^\d+[\.\)]\s/.test(block[0]) && !/^[-•·]\s/.test(block[0])) {
+          paragraphs.push(blockText);
+        }
+      }
+
+      // Short standalone items (not headings, not bullets)
+      const shortItems = allContent.filter(l =>
+        l.length < 120 && l.length > 8 &&
+        !/^\d+[\.\)]\s/.test(l) &&
+        !/^[-•·]\s/.test(l) &&
+        !l.endsWith(':')
+      );
+
+      // ===================== Template Mapping =====================
+
+      // End slide
+      if (matchesKeywords(headingLower, sectionKeywords.end)) {
+        slides.push({
+          type: 'end',
+          title: heading || 'Thank You',
+          subtitle: subtitle || allContent.find(l => l.length > 5) || "Let's work together",
+          buttons: [
+            { text: 'Get in touch', link: 'mailto:hello@example.com' },
+            { text: 'View more projects', link: '/' },
+          ],
+        });
+        preview.push({ type: 'end', label: `End — ${heading || 'Thank You'}` });
+        continue;
+      }
+
+      // Problem / Issues
+      if (matchesKeywords(headingLower, sectionKeywords.problem)) {
+        // Check for numbered issues with descriptions
+        const issues = [];
+        let issueIdx = -1;
+
+        for (const block of section.content) {
+          for (const line of block) {
+            const numberedMatch = line.match(/^(\d+)[\.\)]\s*(.*)/);
+            if (numberedMatch) {
+              issues.push({ title: numberedMatch[2], description: '' });
+              issueIdx = issues.length - 1;
+            } else if (issueIdx >= 0 && !issues[issueIdx].description && line.length > 15) {
+              issues[issueIdx].description = line;
+            }
+          }
+        }
+
+        if (issues.length >= 2) {
+          slides.push({
+            type: 'issuesBreakdown',
+            label: heading || 'The Problem',
+            title: subtitle || 'What started to break',
+            issues: issues.map((issue, i) => ({
+              number: String(i + 1),
+              title: issue.title,
+              description: issue.description,
+            })),
+            conclusion: paragraphs.length > 0 ? paragraphs[paragraphs.length - 1] : '',
+          });
+          preview.push({ type: 'issuesBreakdown', label: `Issues — ${issues.length} issues identified` });
+        } else {
+          const issueTexts = [...numberedItems, ...bulletItems, ...shortItems].slice(0, 5);
+          slides.push({
+            type: 'problem',
+            label: heading || 'The Problem',
+            title: subtitle || 'What needed to be solved',
+            content: paragraphs[0] || contentText.slice(0, 400),
+            issues: issueTexts.length > 0 ? issueTexts : [],
+            conclusion: paragraphs.length > 1 ? paragraphs[paragraphs.length - 1] : '',
+            image: '',
+            splitRatio: 50,
+          });
+          preview.push({ type: 'problem', label: `Problem — ${subtitle || heading}` });
+        }
+        continue;
+      }
+
+      // Context / Background / Users
+      if (matchesKeywords(headingLower, sectionKeywords.context) || matchesKeywords(headingLower, sectionKeywords.users)) {
+        const items = [...bulletItems, ...shortItems];
+        slides.push({
+          type: 'context',
+          label: heading || 'Context',
+          title: subtitle || 'Understanding the environment',
+          content: paragraphs.join('\n\n') || allContent.join('\n'),
+          highlight: items.length > 0 ? items.slice(0, 3).join('. ') : '',
+          image: '',
+          splitRatio: 50,
+        });
+        preview.push({ type: 'context', label: `Context — ${heading}${subtitle ? ': ' + subtitle : ''}` });
+        continue;
+      }
+
+      // Research
+      if (matchesKeywords(headingLower, sectionKeywords.research)) {
+        const methods = [...bulletItems, ...shortItems].filter(i => i.length > 10);
+        slides.push({
+          type: 'text',
+          label: heading || 'Research',
+          title: subtitle || 'Understanding the problem space',
+          content: paragraphs.join('\n\n') + (methods.length > 0 ? '\n\n' + methods.map(m => '• ' + m).join('\n') : ''),
+        });
+        preview.push({ type: 'text', label: `Research — ${heading}` });
+        continue;
+      }
+
+      // Findings / Insights
+      if (matchesKeywords(headingLower, sectionKeywords.findings)) {
+        const items = [...bulletItems, ...shortItems, ...numberedItems].filter(i => i.length > 10);
+        if (items.length >= 2) {
+          slides.push({
+            type: 'outcomes',
+            label: heading || 'Key Findings',
+            title: subtitle || 'What the research revealed',
+            outcomes: items.slice(0, 6).map(item => ({
+              title: item,
+              description: '',
+            })),
+          });
+          preview.push({ type: 'outcomes', label: `Findings — ${items.length} insights` });
+        } else {
+          slides.push({
+            type: 'insight',
+            label: heading || 'Key Insight',
+            insight: items[0] || paragraphs[0] || contentText.slice(0, 200),
+            supporting: paragraphs.length > 1 ? paragraphs[1] : '',
+          });
+          preview.push({ type: 'insight', label: `Insight — ${heading}` });
+        }
+        continue;
+      }
+
+      // Goals (detect dual Goals + Metrics sub-sections for achieveGoals)
+      if (matchesKeywords(headingLower, sectionKeywords.goals)) {
+        const goalItems = [];
+        const metricItems = [];
+        let collecting = '';
+
+        for (const line of allContent) {
+          const lineLower = line.toLowerCase().trim();
+          if (lineLower === 'goals' || lineLower === 'objectives') { collecting = 'goals'; continue; }
+          if (lineLower === 'metrics' || lineLower === 'kpis' || lineLower === 'key metrics') { collecting = 'metrics'; continue; }
+          if (collecting === 'goals' && line.length > 5 && line.length < 150) goalItems.push(line);
+          else if (collecting === 'metrics' && line.length > 5 && line.length < 150) metricItems.push(line);
+        }
+
+        if (goalItems.length > 0 && metricItems.length > 0) {
+          slides.push({
+            type: 'achieveGoals',
+            label: heading || 'Defining Goals',
+            title: subtitle || 'What did we want to achieve?',
+            leftColumn: {
+              title: 'Goals',
+              goals: goalItems.map((g, i) => ({ number: String(i + 1), text: g })),
+            },
+            rightColumn: {
+              title: 'Metrics',
+              goals: metricItems.map((m, i) => ({ number: String(i + 1), text: m })),
+            },
+          });
+          preview.push({ type: 'achieveGoals', label: `Goals & Metrics — ${goalItems.length + metricItems.length} items` });
+        } else {
+          const allGoals = [...goalItems, ...metricItems, ...bulletItems, ...numberedItems, ...shortItems].filter(g => g.length > 5);
+          slides.push({
+            type: 'goals',
+            label: heading || 'Goals',
+            title: subtitle || 'What we wanted to achieve',
+            goals: allGoals.slice(0, 6).map((g, i) => ({
+              number: String(i + 1),
+              title: g,
+              description: '',
+            })),
+            kpis: metricItems.length > 0 ? metricItems.slice(0, 4) : [],
+          });
+          preview.push({ type: 'goals', label: `Goals — ${allGoals.length} items` });
+        }
+        continue;
+      }
+
+      // Flow / Feature sections (Flow 01, Flow 02, etc.) or sections with Problem/Solution sub-structure
+      if (matchesKeywords(headingLower, sectionKeywords.flow) || hasSubSections) {
+        let problemText = '';
+        let solutionText = '';
+        let processText = '';
+        let currentSub = '';
+
+        for (const line of allContent) {
+          const lineLower = line.toLowerCase().trim();
+          if (lineLower === 'the problem' || lineLower === 'problem') { currentSub = 'problem'; continue; }
+          if (lineLower === 'the process' || lineLower === 'process') { currentSub = 'process'; continue; }
+          if (lineLower === 'the solution' || lineLower === 'solution') { currentSub = 'solution'; continue; }
+
+          if (currentSub === 'problem') problemText += (problemText ? '\n' : '') + line;
+          else if (currentSub === 'process') processText += (processText ? '\n' : '') + line;
+          else if (currentSub === 'solution') solutionText += (solutionText ? '\n' : '') + line;
+        }
+
+        if (problemText && solutionText) {
+          slides.push({
+            type: 'challengeSolution',
+            label: heading || 'Design Solution',
+            title: subtitle || 'Challenge & Solution',
+            challenge: problemText,
+            solution: solutionText,
+            image: '',
+          });
+          preview.push({ type: 'challengeSolution', label: `Flow — ${heading}` });
+        } else {
+          const description = paragraphs.join('\n\n') || allContent.join('\n');
+          const bullets = [...bulletItems, ...shortItems].slice(0, 5);
+          slides.push({
+            type: 'feature',
+            label: heading || 'Feature',
+            title: subtitle || heading || 'Feature Highlight',
+            description: description.slice(0, 500),
+            image: '',
+            bullets: bullets.length > 0 ? bullets : [],
+            splitRatio: 50,
+          });
+          preview.push({ type: 'feature', label: `Feature — ${heading}` });
+        }
+        continue;
+      }
+
+      // Testing
+      if (matchesKeywords(headingLower, sectionKeywords.testing)) {
+        const options = [...bulletItems, ...numberedItems, ...shortItems];
+        slides.push({
+          type: 'testing',
+          label: heading || 'Testing',
+          title: subtitle || 'Validating the solution',
+          content: paragraphs[0] || contentText.slice(0, 300),
+          layouts: options.slice(0, 5),
+          conclusion: paragraphs.length > 1 ? paragraphs[paragraphs.length - 1] : '',
+          image: '',
+          splitRatio: 50,
+        });
+        preview.push({ type: 'testing', label: `Testing — ${heading}` });
+        continue;
+      }
+
+      // Outcomes / Results
+      if (matchesKeywords(headingLower, sectionKeywords.outcomes)) {
+        const items = [...bulletItems, ...numberedItems, ...shortItems].filter(i => i.length > 5);
+        if (items.length >= 2) {
+          slides.push({
+            type: 'outcomes',
+            label: heading || 'Outcomes',
+            title: subtitle || 'Results & Impact',
+            outcomes: items.slice(0, 6).map(item => ({
+              title: item,
+              description: '',
+            })),
+          });
+          preview.push({ type: 'outcomes', label: `Outcomes — ${items.length} results` });
+        } else {
+          slides.push({
+            type: 'text',
+            label: heading || 'Outcomes',
+            title: subtitle || 'Results',
+            content: paragraphs.join('\n\n') || contentText,
+          });
+          preview.push({ type: 'text', label: `Outcomes — ${heading}` });
+        }
+        continue;
+      }
+
+      // Learnings / Takeaways
+      if (matchesKeywords(headingLower, sectionKeywords.learnings)) {
+        const items = [...bulletItems, ...numberedItems, ...shortItems].filter(i => i.length > 10);
+        if (items.length >= 2) {
+          slides.push({
+            type: 'outcomes',
+            label: heading || 'Key Learnings',
+            title: subtitle || 'What we learned',
+            outcomes: items.slice(0, 6).map(item => ({
+              title: item,
+              description: '',
+            })),
+          });
+          preview.push({ type: 'outcomes', label: `Learnings — ${items.length} items` });
+        } else {
+          slides.push({
+            type: 'insight',
+            label: heading || 'Key Learning',
+            insight: items[0] || paragraphs[0] || allContent[0] || '',
+            supporting: items.length > 1 ? items.slice(1).join('. ') : (paragraphs.length > 1 ? paragraphs[1] : ''),
+          });
+          preview.push({ type: 'insight', label: `Learning — ${heading}` });
+        }
+        continue;
+      }
+
+      // Strategy / Approach
+      if (matchesKeywords(headingLower, sectionKeywords.strategy) || matchesKeywords(headingLower, sectionKeywords.solution)) {
+        const items = [...bulletItems, ...shortItems].filter(i => i.length > 10);
+        if (items.length >= 3) {
+          slides.push({
+            type: 'process',
+            label: heading || 'Strategy',
+            title: subtitle || 'Our Approach',
+            steps: items.slice(0, 6).map((step, i) => ({
+              number: String(i + 1).padStart(2, '0'),
+              title: step,
+              description: '',
+            })),
+          });
+          preview.push({ type: 'process', label: `Strategy — ${items.length} steps` });
+        } else {
+          slides.push({
+            type: 'text',
+            label: heading || 'Strategy',
+            title: subtitle || 'Our Approach',
+            content: paragraphs.join('\n\n') || allContent.join('\n'),
+          });
+          preview.push({ type: 'text', label: `Strategy — ${heading}` });
+        }
+        continue;
+      }
+
+      // Process
+      if (matchesKeywords(headingLower, sectionKeywords.process)) {
+        const steps = [...numberedItems, ...bulletItems, ...shortItems].filter(i => i.length > 5);
+        if (steps.length >= 2) {
+          slides.push({
+            type: 'process',
+            label: heading || 'Process',
+            title: subtitle || 'How We Got There',
+            steps: steps.slice(0, 6).map((step, i) => ({
+              number: String(i + 1).padStart(2, '0'),
+              title: step.split(/[-—:]/)[0].trim(),
+              description: step.includes('—') || step.includes(':') ? step.split(/[-—:]/)[1]?.trim() || '' : '',
+            })),
+          });
+          preview.push({ type: 'process', label: `Process — ${steps.length} steps` });
+        } else {
+          slides.push({
+            type: 'text',
+            label: heading || 'Process',
+            title: subtitle || heading,
+            content: paragraphs.join('\n\n') || allContent.join('\n'),
+          });
+          preview.push({ type: 'text', label: `Process — ${heading}` });
+        }
+        continue;
+      }
+
+      // Comparison
+      if (matchesKeywords(headingLower, sectionKeywords.comparison)) {
+        slides.push({
+          type: 'comparison',
+          label: heading || 'Comparison',
+          title: subtitle || 'The Transformation',
+          beforeImage: '',
+          afterImage: '',
+          beforeLabel: 'Before',
+          afterLabel: 'After',
+        });
+        preview.push({ type: 'comparison', label: `Comparison — ${heading}` });
+        continue;
+      }
+
+      // Default fallback: pick the best fit based on content shape
+      if (heading || paragraphs.length > 0 || allContent.length > 0) {
+        const items = [...bulletItems, ...numberedItems, ...shortItems].filter(i => i.length > 10);
+
+        if (items.length >= 3 && paragraphs.length <= 1) {
+          // Many list items → outcomes grid
+          slides.push({
+            type: 'outcomes',
+            label: heading || 'Overview',
+            title: subtitle || heading || 'Key Points',
+            outcomes: items.slice(0, 6).map(item => ({
+              title: item,
+              description: '',
+            })),
+          });
+          preview.push({ type: 'outcomes', label: `${heading || 'Key Points'} — ${items.length} items` });
+        } else {
+          // Default to text slide
+          slides.push({
+            type: 'text',
+            label: heading || 'Content',
+            title: subtitle || heading || 'Details',
+            content: (paragraphs.join('\n\n') || allContent.join('\n')).slice(0, 1000),
+          });
+          preview.push({ type: 'text', label: heading ? `${heading}` : 'Content' });
+        }
+      }
+    }
+
+    // Always ensure an end slide exists
+    if (!slides.some(s => s.type === 'end')) {
+      slides.push({
+        type: 'end',
+        title: 'Thank You',
+        subtitle: "Let's work together",
+        buttons: [
+          { text: 'Get in touch', link: 'mailto:hello@example.com' },
+          { text: 'View more projects', link: '/' },
+        ],
+      });
+      preview.push({ type: 'end', label: 'End — Thank You' });
+    }
+
+    return { slides, preview };
+  };
+
+  // Generate slides from pasted text
+  const generateFromPaste = () => {
+    if (!parsedPreview || parsedPreview.slides.length === 0) return;
+
+    const generatedSlides = parsedPreview.slides;
+    const title = generatedSlides[0]?.title || 'Case Study';
+
+    setProject(prev => ({
+      ...prev,
+      title,
+      slides: generatedSlides,
+    }));
+
+    closeBuilder();
+    setCurrentSlide(0);
   };
 
   // Builder steps configuration
@@ -4959,36 +5589,99 @@ const CaseStudy = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setShowBuilder(false)}
+            onClick={closeBuilder}
           >
             <motion.div 
-              className="builder-modal"
+              className={`builder-modal ${builderMode === 'paste' ? 'builder-modal--wide' : ''}`}
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="builder-header">
-                <h2>🚀 Create Case Study</h2>
-                <p>Fill in the information and we'll generate your presentation automatically</p>
-                <button className="builder-close" onClick={() => setShowBuilder(false)}>×</button>
+                <h2>{builderMode === 'paste' ? '📝 Create from Text' : '🚀 Create Case Study'}</h2>
+                <p>
+                  {builderMode === 'choose' && 'Choose how you want to build your presentation'}
+                  {builderMode === 'paste' && 'Paste your case study content and we\'ll pick the best slides automatically'}
+                  {builderMode === 'form' && 'Fill in the information and we\'ll generate your presentation automatically'}
+                </p>
+                <button className="builder-close" onClick={closeBuilder}>×</button>
               </div>
 
-              <div className="builder-progress">
-                {builderSteps.map((step, i) => (
-                  <div 
-                    key={i} 
-                    className={`progress-step ${i === builderStep ? 'active' : ''} ${i < builderStep ? 'completed' : ''}`}
-                    onClick={() => setBuilderStep(i)}
-                  >
-                    <span className="step-number">{i + 1}</span>
-                    <span className="step-title">{step.title}</span>
-                  </div>
-                ))}
-              </div>
+              {/* Progress stepper - only in form mode */}
+              {builderMode === 'form' && (
+                <div className="builder-progress">
+                  {builderSteps.map((step, i) => (
+                    <div 
+                      key={i} 
+                      className={`progress-step ${i === builderStep ? 'active' : ''} ${i < builderStep ? 'completed' : ''}`}
+                      onClick={() => setBuilderStep(i)}
+                    >
+                      <span className="step-number">{i + 1}</span>
+                      <span className="step-title">{step.title}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               <div className="builder-content">
-                {builderStep === 0 && (
+
+                {/* === MODE: Choose === */}
+                {builderMode === 'choose' && (
+                  <div className="builder-mode-select">
+                    <div className="builder-mode-card" onClick={() => setBuilderMode('paste')}>
+                      <div className="mode-icon">📝</div>
+                      <h3>Paste Content</h3>
+                      <p>Paste your full case study text and we'll automatically detect sections and create the best slides for your content</p>
+                      <span className="mode-tag">Recommended</span>
+                    </div>
+                    <div className="builder-mode-card" onClick={() => setBuilderMode('form')}>
+                      <div className="mode-icon">📋</div>
+                      <h3>Step by Step</h3>
+                      <p>Fill in a structured form field by field to build your case study slides one step at a time</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* === MODE: Paste Content === */}
+                {builderMode === 'paste' && (
+                  <div className="builder-paste-container">
+                    <div className="builder-field">
+                      <label>Paste your case study content</label>
+                      <textarea
+                        className="builder-paste-textarea"
+                        value={pasteText}
+                        onChange={(e) => { setPasteText(e.target.value); setParsedPreview(null); }}
+                        placeholder={`Paste your full case study text here...\n\nExample format:\n\nProject Name\nShort description of the project\n\nClient\nCompany Name\n\nRole\nYour Role\n\nBackground\nWhat is this project about?\n\nThe Problem\nWhat needed to be solved\n\n1. First issue\n2. Second issue\n\nGoals\nWhat you wanted to achieve\n\nThe Solution\nHow you solved it\n\nOutcomes\nWhat improved\n\nThank You`}
+                        rows={14}
+                      />
+                      <div className="builder-text-stats">
+                        {pasteText.trim() ? `${pasteText.split(/\s+/).filter(w => w).length} words` : 'Paste your content to get started'}
+                      </div>
+                    </div>
+
+                    {parsedPreview && parsedPreview.preview.length > 0 && (
+                      <div className="builder-preview">
+                        <div className="builder-preview-header">
+                          <h4>{parsedPreview.preview.length} slides detected</h4>
+                          <span className="builder-preview-hint">You can edit any slide after generating</span>
+                        </div>
+                        <div className="builder-preview-list">
+                          {parsedPreview.preview.map((item, i) => (
+                            <div key={i} className="builder-preview-item">
+                              <span className="preview-number">{String(i + 1).padStart(2, '0')}</span>
+                              <span className="preview-type-badge">{item.type}</span>
+                              <span className="preview-label">{item.label}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* === MODE: Step-by-step Form === */}
+                {builderMode === 'form' && builderStep === 0 && (
                   <div className="builder-step">
                     <div className="builder-field">
                       <label>Project Name *</label>
@@ -5031,7 +5724,7 @@ const CaseStudy = () => {
                   </div>
                 )}
 
-                {builderStep === 1 && (
+                {builderMode === 'form' && builderStep === 1 && (
                   <div className="builder-step">
                     <div className="builder-row">
                       <div className="builder-field">
@@ -5076,7 +5769,7 @@ const CaseStudy = () => {
                   </div>
                 )}
 
-                {builderStep === 2 && (
+                {builderMode === 'form' && builderStep === 2 && (
                   <div className="builder-step">
                     <div className="builder-field">
                       <label>Context / Background</label>
@@ -5122,7 +5815,7 @@ const CaseStudy = () => {
                   </div>
                 )}
 
-                {builderStep === 3 && (
+                {builderMode === 'form' && builderStep === 3 && (
                   <div className="builder-step">
                     <div className="builder-field">
                       <label>Goals</label>
@@ -5159,7 +5852,7 @@ const CaseStudy = () => {
                   </div>
                 )}
 
-                {builderStep === 4 && (
+                {builderMode === 'form' && builderStep === 4 && (
                   <div className="builder-step">
                     <div className="builder-field">
                       <label>Results / Metrics</label>
@@ -5217,30 +5910,74 @@ const CaseStudy = () => {
                 )}
               </div>
 
-              <div className="builder-actions">
-                <button 
-                  className="builder-btn secondary"
-                  onClick={() => setBuilderStep(s => Math.max(0, s - 1))}
-                  disabled={builderStep === 0}
-                >
-                  ← Back
-                </button>
-                {builderStep < builderSteps.length - 1 ? (
+              {/* Actions bar */}
+              {builderMode !== 'choose' && (
+                <div className="builder-actions">
                   <button 
-                    className="builder-btn primary"
-                    onClick={() => setBuilderStep(s => s + 1)}
+                    className="builder-btn secondary"
+                    onClick={() => {
+                      if (builderMode === 'paste') {
+                        setParsedPreview(null);
+                        setBuilderMode('choose');
+                      } else if (builderStep === 0) {
+                        setBuilderMode('choose');
+                      } else {
+                        setBuilderStep(s => Math.max(0, s - 1));
+                      }
+                    }}
                   >
-                    Next →
+                    ← Back
                   </button>
-                ) : (
-                  <button 
-                    className="builder-btn primary generate"
-                    onClick={generateFromBuilder}
-                  >
-                    ✨ Generate Case Study
-                  </button>
-                )}
-              </div>
+
+                  {/* Paste mode actions */}
+                  {builderMode === 'paste' && !parsedPreview && (
+                    <button 
+                      className="builder-btn primary"
+                      onClick={() => {
+                        const result = parseTextToSlides(pasteText);
+                        setParsedPreview(result);
+                      }}
+                      disabled={!pasteText.trim()}
+                    >
+                      Analyze Content
+                    </button>
+                  )}
+                  {builderMode === 'paste' && parsedPreview && (
+                    <div className="builder-actions-group">
+                      <button 
+                        className="builder-btn secondary"
+                        onClick={() => setParsedPreview(null)}
+                      >
+                        Re-edit
+                      </button>
+                      <button 
+                        className="builder-btn primary generate"
+                        onClick={generateFromPaste}
+                      >
+                        ✨ Generate {parsedPreview.preview.length} Slides
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Form mode actions */}
+                  {builderMode === 'form' && builderStep < builderSteps.length - 1 && (
+                    <button 
+                      className="builder-btn primary"
+                      onClick={() => setBuilderStep(s => s + 1)}
+                    >
+                      Next →
+                    </button>
+                  )}
+                  {builderMode === 'form' && builderStep === builderSteps.length - 1 && (
+                    <button 
+                      className="builder-btn primary generate"
+                      onClick={generateFromBuilder}
+                    >
+                      ✨ Generate Case Study
+                    </button>
+                  )}
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}
