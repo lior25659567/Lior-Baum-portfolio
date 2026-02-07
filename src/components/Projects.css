@@ -122,6 +122,124 @@
   opacity: 0.7;
 }
 
+/* Image change overlay (edit mode) */
+.project-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.project-image-wrapper:hover .project-image-overlay {
+  opacity: 1;
+}
+
+.image-overlay-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.image-overlay-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Remove project button (edit mode) */
+.project-remove-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(220, 38, 38, 0.9);
+  color: white;
+  border: none;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.project-remove-btn:hover {
+  transform: scale(1.1);
+  background: rgba(220, 38, 38, 1);
+}
+
+/* Add New Project card (edit mode) */
+.project-card--add {
+  border: 2px dashed var(--color-border);
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.3s, background 0.3s;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-card--add:hover {
+  border-color: var(--color-accent);
+  background: var(--color-bg-secondary);
+}
+
+.add-project-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.add-project-icon {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--color-text-muted);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px dashed var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.project-card--add:hover .add-project-icon {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.add-project-label {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.add-project-hint {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  max-width: 200px;
+  line-height: 1.4;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .projects-grid {

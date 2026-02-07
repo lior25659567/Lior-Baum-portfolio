@@ -1134,30 +1134,69 @@ const CaseStudy = () => {
     // Known info labels for key-value pair detection
     const infoLabels = ['client', 'platform', 'industry', 'role', 'duration', 'timeline', 'year', 'team', 'deliverables', 'type', 'company', 'agency', 'scope', 'period', 'sector'];
 
-    // Section heading keywords → template mapping
+    // Regex patterns that match the START of real section headings
+    // This prevents content lines like "Scan context is always visible" from matching "context"
+    const headingPatterns = [
+      // Background / Context
+      /^background\b/i, /^context\b/i, /^overview\b/i, /^about\b/i,
+      // Problem / Challenge
+      /^(the\s+)?problem\b/i, /^(the\s+)?challenge\b/i, /^pain\s+point/i,
+      // Research
+      /^research/i, /^user\s+research/i,
+      // Findings / Insights
+      /^(key\s+)?finding/i, /^(key\s+)?insight/i, /^what\s+(the\s+)?research/i,
+      // Goals / Success
+      /^defining\s+(success|goals)/i, /^(success\s+)?goals?\b/i, /^objectives?\b/i,
+      // Strategy / Approach
+      /^(redesign\s+)?strategy/i, /^redesign\b/i, /^approach\b/i, /^methodology\b/i, /^framework\b/i,
+      // Solution
+      /^(the\s+)?solution\b/i, /^how\s+we\s+solved/i,
+      // Flow / Feature sections
+      /^flow\s+\d/i, /^core\s+tool/i, /^multi.scan/i,
+      // Process / Timeline
+      /^(the\s+)?process\b/i, /^timeline\b/i, /^how\s+we\s+got/i,
+      // Testing
+      /^testing\b/i, /^validation\b/i, /^usability/i,
+      // Outcomes / Results
+      /^outcome/i, /^result/i, /^impact\b/i, /^what\s+(improved|changed)\b/i,
+      // Learnings
+      /^(key\s+)?learning/i, /^(key\s+)?takeaway/i, /^lesson/i, /^what\s+this\s+project/i,
+      // End
+      /^thank\s+you/i, /^want\s+to\s+work/i,
+      // Comparison / Review
+      /^review\s+[&+]/i, /^before\s+[&+]\s+after/i, /^comparison\b/i,
+    ];
+
+    // Section heading keywords → template mapping (used in Phase 4 for confirmed sections)
     const sectionKeywords = {
       context: ['background', 'context', 'about', 'overview', 'what is'],
       users: ['users', 'who the users', 'audience', 'user profile', 'persona'],
       problem: ['problem', 'challenge', 'broke', 'breakdown', 'pain point', 'friction'],
-      research: ['research', 'discovery', 'methods', 'study', 'investigation'],
+      research: ['research', 'discovery'],
       findings: ['findings', 'insights', 'revealed', 'key findings', 'discovered'],
-      goals: ['goals', 'success', 'defining', 'objectives', 'metrics', 'kpi', 'achieve'],
+      goals: ['goals', 'defining success', 'objectives', 'metrics', 'kpi', 'achieve'],
       strategy: ['strategy', 'approach', 'redesign strategy', 'framework', 'methodology'],
-      flow: ['flow'],
+      flow: ['flow 0', 'flow 1', 'flow 2', 'flow 3', 'flow 4', 'flow 5'],
       solution: ['solution', 'how we solved', 'resolution'],
       outcomes: ['outcomes', 'results', 'impact', 'what improved', 'what changed', 'improvements'],
       learnings: ['learnings', 'takeaways', 'reinforced', 'reflection', 'lessons', 'what this project'],
-      end: ['thank you', 'thanks', 'get in touch', 'contact', 'work together'],
+      end: ['thank you', 'thanks', 'get in touch', 'work together'],
       testing: ['testing', 'validation', 'usability test', 'experiment'],
       process: ['process', 'timeline', 'journey', 'phases', 'how we got'],
       comparison: ['before & after', 'comparison', 'transformation'],
+      review: ['review &', 'review and', 'core tools', 'multi-scan', 'key feature'],
     };
 
     // Helpers
-    const isHeadingLike = (line) => line.length < 80 && !line.endsWith('.') && !line.endsWith(',');
     const matchesKeywords = (text, keywords) => {
       const lower = text.toLowerCase();
       return keywords.some(kw => lower.includes(kw));
+    };
+
+    // Strict heading check using regex START-of-text patterns
+    const isSectionHeading = (blockText) => {
+      const lower = blockText.toLowerCase().trim();
+      return headingPatterns.some(p => p.test(lower));
     };
 
     const slides = [];
@@ -1170,13 +1209,17 @@ const CaseStudy = () => {
 
     if (blocks.length > 0) {
       const firstBlock = blocks[0];
-      if (firstBlock.length === 1 && isHeadingLike(firstBlock[0])) {
+      if (firstBlock.length === 1 && firstBlock[0].length < 80) {
         projectTitle = firstBlock[0];
         blockIndex = 1;
         if (blockIndex < blocks.length) {
           const nextBlock = blocks[blockIndex];
-          if (nextBlock.length === 1 && nextBlock[0].length < 150) {
+          // Check if next block is description (not an info label)
+          if (nextBlock.length === 1 && nextBlock[0].length < 150 && !infoLabels.includes(nextBlock[0].replace(/:$/, '').trim().toLowerCase())) {
             projectDescription = nextBlock[0];
+            blockIndex++;
+          } else if (nextBlock.length >= 2 && !infoLabels.includes(nextBlock[0].replace(/:$/, '').trim().toLowerCase())) {
+            projectDescription = nextBlock.join(' ');
             blockIndex++;
           }
         }
@@ -1191,15 +1234,26 @@ const CaseStudy = () => {
     const infoItems = [];
     while (blockIndex < blocks.length) {
       const block = blocks[blockIndex];
-      if (block.length >= 1 && block.length <= 3) {
-        const label = block[0].replace(/:$/, '').trim();
-        if (infoLabels.includes(label.toLowerCase())) {
-          const value = block.slice(1).join(' ').trim();
-          if (value) {
-            infoItems.push({ label, value });
-            blockIndex++;
-            continue;
+      const label = block[0].replace(/:$/, '').trim();
+      
+      if (infoLabels.includes(label.toLowerCase())) {
+        // Value is in the same block (lines after label)
+        let value = block.slice(1).join(' ').trim();
+        
+        // If no value in same block, peek at next block
+        if (!value && blockIndex + 1 < blocks.length) {
+          const nextBlock = blocks[blockIndex + 1];
+          // Next block should be a short value, not another label or section heading
+          if (nextBlock.length <= 2 && !infoLabels.includes(nextBlock[0].replace(/:$/, '').trim().toLowerCase()) && !isSectionHeading(nextBlock.join(' '))) {
+            value = nextBlock.join(' ').trim();
+            blockIndex++; // consume the value block too
           }
+        }
+        
+        if (value) {
+          infoItems.push({ label, value });
+          blockIndex++;
+          continue;
         }
       }
       break;
@@ -1236,34 +1290,44 @@ const CaseStudy = () => {
     }
 
     // --- Phase 3: Parse remaining content into sections ---
+    // ONLY create a new section when a block matches START-of-text heading patterns
+    // plus passes strict guards. Everything else is content under the current section.
     const sections = [];
     let currentSection = null;
 
     while (blockIndex < blocks.length) {
       const block = blocks[blockIndex];
+      const blockText = block.join(' ');
       const firstLine = block[0];
+      const subtitle = block.length > 1 ? block[1] : '';
+      const combinedWords = blockText.split(/\s+/).length;
 
-      // Detect section headings: short lines that look like titles
-      if (block.length <= 2 && isHeadingLike(firstLine) && firstLine.length < 60) {
+      // Strict heading detection with multiple guards
+      const isRecognizedHeading =
+        block.length <= 2 &&              // Max 2 lines (heading + optional subtitle)
+        firstLine.length < 60 &&          // First line is short
+        combinedWords >= 2 &&             // At least 2 words total (avoids single-word sub-headings like "Goals", "Metrics")
+        !firstLine.endsWith('.') &&       // Not a sentence
+        !firstLine.endsWith(':') &&       // Not a list introducer
+        !firstLine.endsWith(',') &&       // Not a partial sentence
+        !firstLine.endsWith(';') &&
+        !subtitle.endsWith(':') &&        // Subtitle not a list introducer (catches "The Problem\nTools were...:")
+        !/^\d+[\.\)]\s/.test(firstLine) && // Not a numbered item
+        isSectionHeading(blockText);       // Matches a known heading pattern at START of text
+
+      if (isRecognizedHeading) {
         if (currentSection) sections.push(currentSection);
         currentSection = {
           heading: firstLine,
-          subtitle: block.length > 1 ? block[1] : '',
+          subtitle: subtitle,
           content: [],
         };
       } else if (currentSection) {
+        // Append as content to current section
         currentSection.content.push(block);
       } else {
-        // Content without a prior heading — create an unnamed section
-        if (isHeadingLike(firstLine) && block.length > 1) {
-          currentSection = {
-            heading: firstLine,
-            subtitle: '',
-            content: [block.slice(1)],
-          };
-        } else {
-          currentSection = { heading: '', subtitle: '', content: [block] };
-        }
+        // No section started yet and block is not a heading - create a generic section
+        currentSection = { heading: '', subtitle: '', content: [block] };
       }
       blockIndex++;
     }
@@ -1281,7 +1345,7 @@ const CaseStudy = () => {
 
       // Detect sub-sections (The Problem / The Process / The Solution pattern)
       const hasSubSections = allContent.some(line =>
-        /^(The Problem|The Process|The Solution|Problem|Process|Solution)$/i.test(line.trim())
+        /^(The Problem|The Process|The Solution)$/i.test(line.trim())
       );
 
       // Extract numbered items, bullets, paragraphs
@@ -1303,28 +1367,31 @@ const CaseStudy = () => {
         }
       }
 
-      // Short standalone items (not headings, not bullets)
+      // Short standalone items (not sentences, not numbered, not bullets)
       const shortItems = allContent.filter(l =>
         l.length < 120 && l.length > 8 &&
         !/^\d+[\.\)]\s/.test(l) &&
         !/^[-•·]\s/.test(l) &&
-        !l.endsWith(':')
+        !l.endsWith(':') &&
+        !l.endsWith('.')
       );
 
       // ===================== Template Mapping =====================
 
-      // End slide
+      // End slide (only create one)
       if (matchesKeywords(headingLower, sectionKeywords.end)) {
-        slides.push({
-          type: 'end',
-          title: heading || 'Thank You',
-          subtitle: subtitle || allContent.find(l => l.length > 5) || "Let's work together",
-          buttons: [
-            { text: 'Get in touch', link: 'mailto:hello@example.com' },
-            { text: 'View more projects', link: '/' },
-          ],
-        });
-        preview.push({ type: 'end', label: `End — ${heading || 'Thank You'}` });
+        if (!slides.some(s => s.type === 'end')) {
+          slides.push({
+            type: 'end',
+            title: heading || 'Thank You',
+            subtitle: subtitle || allContent.find(l => l.length > 5) || "Let's work together",
+            buttons: [
+              { text: 'Get in touch', link: 'mailto:hello@example.com' },
+              { text: 'View more projects', link: '/' },
+            ],
+          });
+          preview.push({ type: 'end', label: `End — ${heading || 'Thank You'}` });
+        }
         continue;
       }
 
@@ -1360,7 +1427,7 @@ const CaseStudy = () => {
           });
           preview.push({ type: 'issuesBreakdown', label: `Issues — ${issues.length} issues identified` });
         } else {
-          const issueTexts = [...numberedItems, ...bulletItems, ...shortItems].slice(0, 5);
+          const issueTexts = [...numberedItems, ...bulletItems].slice(0, 5);
           slides.push({
             type: 'problem',
             label: heading || 'The Problem',
@@ -1378,13 +1445,12 @@ const CaseStudy = () => {
 
       // Context / Background / Users
       if (matchesKeywords(headingLower, sectionKeywords.context) || matchesKeywords(headingLower, sectionKeywords.users)) {
-        const items = [...bulletItems, ...shortItems];
         slides.push({
           type: 'context',
           label: heading || 'Context',
           title: subtitle || 'Understanding the environment',
           content: paragraphs.join('\n\n') || allContent.join('\n'),
-          highlight: items.length > 0 ? items.slice(0, 3).join('. ') : '',
+          highlight: shortItems.length > 0 ? shortItems.slice(0, 3).join('. ') : '',
           image: '',
           splitRatio: 50,
         });
@@ -1479,7 +1545,7 @@ const CaseStudy = () => {
       }
 
       // Flow / Feature sections (Flow 01, Flow 02, etc.) or sections with Problem/Solution sub-structure
-      if (matchesKeywords(headingLower, sectionKeywords.flow) || hasSubSections) {
+      if (matchesKeywords(headingLower, sectionKeywords.flow) || matchesKeywords(headingLower, sectionKeywords.review) || hasSubSections) {
         let problemText = '';
         let solutionText = '';
         let processText = '';
@@ -1666,7 +1732,6 @@ const CaseStudy = () => {
         const items = [...bulletItems, ...numberedItems, ...shortItems].filter(i => i.length > 10);
 
         if (items.length >= 3 && paragraphs.length <= 1) {
-          // Many list items → outcomes grid
           slides.push({
             type: 'outcomes',
             label: heading || 'Overview',
@@ -1678,7 +1743,6 @@ const CaseStudy = () => {
           });
           preview.push({ type: 'outcomes', label: `${heading || 'Key Points'} — ${items.length} items` });
         } else {
-          // Default to text slide
           slides.push({
             type: 'text',
             label: heading || 'Content',
