@@ -29,6 +29,7 @@ const defaultContent = {
     sectionTitle: 'Selected Projects',
     items: [
       { id: 'align-technology', title: 'iTero Toolbar', category: 'UI Unification & Efficiency', year: '2024', image: '/case-studies/align/slide-1.png' },
+      { id: 'itero-scan-view', title: 'iTero Scan & View', category: 'MedTech / Clinical UX', year: '2024', image: 'https://images.unsplash.com/photo-1609840114035-3c981b782dfe?w=800&h=600&fit=crop' },
       { id: 'wizecare', title: 'WizeCare', category: 'B2B Complex System', year: '2023', image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop' },
       { id: 'webflow', title: 'Webflow', category: 'Web Design', year: '2023', image: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&h=600&fit=crop' },
       { id: 'shenkar', title: 'Shenkar', category: 'Brand Identity', year: '2022', image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&h=600&fit=crop' },

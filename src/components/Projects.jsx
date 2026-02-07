@@ -14,6 +14,13 @@ const defaultProjects = [
     year: '2024',
   },
   {
+    id: 'itero-scan-view',
+    title: 'iTero Scan & View',
+    category: 'MedTech / Clinical UX',
+    image: 'https://images.unsplash.com/photo-1609840114035-3c981b782dfe?w=800&h=600&fit=crop',
+    year: '2024',
+  },
+  {
     id: 'wizecare',
     title: 'WizeCare',
     category: 'B2B Complex System',
