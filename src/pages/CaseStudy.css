@@ -7385,8 +7385,8 @@ textarea.editable-field {
   align-items: center;
   justify-content: center;
   background: rgba(255, 88, 74, 0.08);
-  border-radius: 12px;
-  border-left: 3px solid var(--color-accent);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 88, 74, 0.15);
   padding: 1rem;
   overflow: hidden;
 }
