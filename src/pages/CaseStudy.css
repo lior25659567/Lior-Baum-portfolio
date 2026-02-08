@@ -7905,7 +7905,7 @@ textarea.editable-field {
 /* Logo in title position (when "Logo only" is selected) */
 .project-showcase-logo-in-title-position {
   margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .project-showcase-logo-in-title-position .project-logo-wrapper {
