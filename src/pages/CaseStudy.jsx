@@ -461,13 +461,14 @@ const TemplatePreview = ({ type }) => {
 
 // Editable field component - defined outside CaseStudy for stable React identity across renders.
 // This prevents unmount/remount cycles that destroy input state, cursor position, and focus.
-const EditableField = memo(function EditableField({ value, onChange, multiline = false, className = '', placeholder = '' }) {
+const EditableField = memo(function EditableField({ value, onChange, multiline = false, allowLineBreaks = false, className = '', placeholder = '' }) {
   const { editMode } = useEdit();
   const stringValue = typeof value === 'string' ? value : (value != null ? String(value) : '');
   const [localValue, setLocalValue] = useState(stringValue);
   const timeoutRef = useRef(null);
   const isEditingRef = useRef(false);
-  
+  const isTextarea = multiline || allowLineBreaks;
+
   // Sync local value when prop changes from outside (but not while user is actively typing)
   useEffect(() => {
     if (!isEditingRef.current) {
@@ -504,10 +505,15 @@ const EditableField = memo(function EditableField({ value, onChange, multiline =
       onChange(localValue);
     }
   };
-  
+
+  // In single-line input: Shift+Enter inserts newline (stored; view uses pre-line). In textarea with allowLineBreaks: only Shift+Enter adds newline, Enter does nothing.
   const handleKeyDown = (e) => {
-    // Allow Shift+Enter for line breaks in single-line inputs
-    if (e.key === 'Enter' && e.shiftKey && !multiline) {
+    if (e.key !== 'Enter') return;
+    if (allowLineBreaks && !e.shiftKey) {
+      e.preventDefault();
+      return;
+    }
+    if (e.shiftKey && !multiline && !allowLineBreaks) {
       e.preventDefault();
       const newValue = localValue + '\n';
       setLocalValue(newValue);
@@ -517,18 +523,19 @@ const EditableField = memo(function EditableField({ value, onChange, multiline =
   
   if (!editMode) {
     // Render with line breaks preserved
-    if (multiline || (stringValue && stringValue.includes('\n'))) {
+    if (isTextarea || (stringValue && stringValue.includes('\n'))) {
       return <span className={className} style={{ whiteSpace: 'pre-line' }}>{stringValue}</span>;
     }
     return stringValue;
   }
   
-  return multiline ? (
+  return isTextarea ? (
     <textarea
       className={`editable-field ${className}`}
       value={localValue}
       onChange={handleChange}
       onBlur={handleBlur}
+      onKeyDown={handleKeyDown}
       onClick={(e) => e.stopPropagation()}
       placeholder={placeholder}
     />
@@ -2829,7 +2836,7 @@ const CaseStudy = () => {
                   <EditableField
                     value={slide.title}
                     onChange={(v) => updateSlide(index, { title: v })}
-                    multiline
+                    allowLineBreaks
                   />
                 </h1>
                 {(slide.subtitle || editMode) && (
@@ -2915,6 +2922,7 @@ const CaseStudy = () => {
                 <EditableField
                   value={slide.title}
                   onChange={(v) => updateSlide(index, { title: v })}
+                  allowLineBreaks
                 />
               </h2>
               {slide.items?.length > 0 && (
@@ -2967,6 +2975,7 @@ const CaseStudy = () => {
                 <EditableField
                   value={slide.title}
                   onChange={(v) => updateSlide(index, { title: v })}
+                  allowLineBreaks
                 />
               </h2>
               <DynamicContent slide={slide} slideIndex={index} field="content" className="text-content-wrapper" />
@@ -2993,7 +3002,7 @@ const CaseStudy = () => {
               </OptionalField>
               <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="Image Title">
                 <h2 className="image-title">
-                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
                 </h2>
               </OptionalField>
               <DynamicContent slide={slide} slideIndex={index} field="description" className="image-description-wrapper" maxParagraphs={3} optional />
@@ -3105,6 +3114,7 @@ const CaseStudy = () => {
                       <EditableField
                         value={slide.title}
                         onChange={(v) => updateSlide(index, { title: v })}
+                        allowLineBreaks
                       />
                       {editMode && slide.title && (
                         <button
@@ -3261,6 +3271,7 @@ const CaseStudy = () => {
                       <EditableField
                         value={slide.title}
                         onChange={(v) => updateSlide(index, { title: v })}
+                        allowLineBreaks
                       />
                     </h2>
                   </OptionalField>
@@ -3358,6 +3369,7 @@ const CaseStudy = () => {
                 <EditableField
                   value={slide.title}
                   onChange={(v) => updateSlide(index, { title: v })}
+                  allowLineBreaks
                 />
               </h2>
               <DynamicContent slide={slide} slideIndex={index} field="description" className="stats-description-wrapper" maxParagraphs={3} optional />
@@ -3417,6 +3429,7 @@ const CaseStudy = () => {
                   <EditableField
                     value={slide.title}
                     onChange={(v) => updateSlide(index, { title: v })}
+                    allowLineBreaks
                   />
                 </h2>
                 <DynamicContent slide={slide} slideIndex={index} field="content" className="context-text-wrapper" />
@@ -3453,6 +3466,7 @@ const CaseStudy = () => {
                   <EditableField
                     value={slide.title}
                     onChange={(v) => updateSlide(index, { title: v })}
+                    allowLineBreaks
                   />
                 </h2>
                 <DynamicContent slide={slide} slideIndex={index} field="content" className="problem-text-wrapper" />
@@ -3491,6 +3505,7 @@ const CaseStudy = () => {
                 <EditableField
                   value={slide.title}
                   onChange={(v) => updateSlide(index, { title: v })}
+                  allowLineBreaks
                 />
               </h2>
               <OptionalField slide={slide} index={index} field="content" label="Description" defaultValue="Add description..." multiline>
@@ -3568,6 +3583,7 @@ const CaseStudy = () => {
                 <EditableField
                   value={slide.title}
                   onChange={(v) => updateSlide(index, { title: v })}
+                  allowLineBreaks
                 />
               </h2>
               <DynamicContent slide={slide} slideIndex={index} field="description" className="goals-description-wrapper" maxParagraphs={3} optional />
@@ -3720,6 +3736,7 @@ const CaseStudy = () => {
                   <EditableField
                     value={slide.title}
                     onChange={(v) => updateSlide(index, { title: v })}
+                    allowLineBreaks
                   />
                 </h2>
                 <OptionalField slide={slide} index={index} field="content" label="Description" defaultValue="Add description..." multiline>
@@ -3766,6 +3783,7 @@ const CaseStudy = () => {
                 <EditableField
                   value={slide.title}
                   onChange={(v) => updateSlide(index, { title: v })}
+                  allowLineBreaks
                 />
               </h2>
               {slide.outcomes?.length > 0 && (
@@ -3860,7 +3878,7 @@ const CaseStudy = () => {
               </OptionalField>
               <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="The Transformation">
                 <h2 className="comparison-title">
-                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
                 </h2>
               </OptionalField>
               <div className="comparison-grid">
@@ -3900,7 +3918,7 @@ const CaseStudy = () => {
                 <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
               </span>
               <h2 className="process-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
               </h2>
               <div className="process-steps">
                 {slide.steps?.map((step, i) => (
@@ -3941,7 +3959,7 @@ const CaseStudy = () => {
                   <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
                 </span>
                 <h2 className="feature-title">
-                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
                 </h2>
                 <DynamicContent slide={slide} slideIndex={index} field="description" className="feature-description-wrapper" />
                 <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="feature-bullets-wrapper" label="Bullet" />
@@ -3965,7 +3983,7 @@ const CaseStudy = () => {
                 <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
               </span>
               <h2 className="two-column-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
               </h2>
               <DynamicContent slide={slide} slideIndex={index} field="description" className="two-column-description-wrapper" maxParagraphs={2} optional />
               <div className="two-column-grid">
@@ -3997,7 +4015,7 @@ const CaseStudy = () => {
                 <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
               </span>
               <h2 className="timeline-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
               </h2>
               <div className="timeline-events">
                 {slide.events?.map((event, i) => (
@@ -4093,7 +4111,7 @@ const CaseStudy = () => {
                   <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
                 </span>
                 <h2 className="cs-title">
-                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
                 </h2>
                 <div className="cs-block challenge">
                   <h3>Challenge</h3>
@@ -4129,7 +4147,7 @@ const CaseStudy = () => {
               </OptionalField>
               <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="Redesigning the experience">
                 <h2 className="showcase-title">
-                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
                 </h2>
               </OptionalField>
               
@@ -4184,7 +4202,7 @@ const CaseStudy = () => {
                 <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
               </span>
               <h2 className="tools-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
               </h2>
               <div className="tools-grid">
                 {slide.tools?.map((tool, i) => (
@@ -4220,7 +4238,7 @@ const CaseStudy = () => {
               </OptionalField>
               <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="See It In Action">
                 <h2 className="video-title">
-                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
                 </h2>
               </OptionalField>
               <DynamicContent slide={slide} slideIndex={index} field="description" className="video-description-wrapper" maxParagraphs={2} optional />
@@ -4275,7 +4293,7 @@ const CaseStudy = () => {
                 <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
               </span>
               <h2 className="issues-breakdown-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
               </h2>
               <DynamicContent slide={slide} slideIndex={index} field="description" className="issues-breakdown-description-wrapper" maxParagraphs={2} optional />
               
@@ -4364,7 +4382,7 @@ const CaseStudy = () => {
                 <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
               </span>
               <h2 className="old-experience-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
               </h2>
               <DynamicContent slide={slide} slideIndex={index} field="description" className="old-experience-description-wrapper" maxParagraphs={2} optional />
               
@@ -4399,7 +4417,7 @@ const CaseStudy = () => {
                 <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
               </span>
               <h2 className="achieve-goals-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
               </h2>
               <DynamicContent slide={slide} slideIndex={index} field="description" className="achieve-goals-description-wrapper" maxParagraphs={2} optional />
               
@@ -4660,7 +4678,7 @@ const CaseStudy = () => {
                 <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
               </span>
               <h2 className="twi-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
               </h2>
               
               {/* Dynamic Paragraphs */}
@@ -4968,6 +4986,7 @@ const CaseStudy = () => {
                     <EditableField
                       value={slide.title}
                       onChange={(v) => updateSlide(index, { title: v })}
+                      allowLineBreaks
                     />
                   </div>
                 </div>

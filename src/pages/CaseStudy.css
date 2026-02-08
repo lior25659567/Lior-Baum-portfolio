@@ -3623,6 +3623,13 @@ textarea.editable-field {
   min-height: 4em;
 }
 
+/* Title fields (Shift+Enter for line break): keep compact when single line */
+.slide-inner h1 textarea.editable-field,
+.slide-inner h2 textarea.editable-field {
+  min-height: 1.25em;
+  resize: vertical;
+}
+
 /* Slide Edit Controls */
 .slide-edit-controls {
   position: absolute;
