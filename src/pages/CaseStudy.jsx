@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { useRef, useState, useEffect, useCallback, Component } from 'react';
+import { useRef, useState, useEffect, useCallback, Component, memo, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedButton from '../components/AnimatedButton';
 import { useEdit } from '../context/EditContext';
@@ -536,6 +536,93 @@ const TemplatePreview = ({ type }) => {
   );
 };
 
+// Editable field component - defined outside CaseStudy for stable React identity across renders.
+// This prevents unmount/remount cycles that destroy input state, cursor position, and focus.
+const EditableField = memo(function EditableField({ value, onChange, multiline = false, className = '', placeholder = '' }) {
+  const { editMode } = useEdit();
+  const stringValue = typeof value === 'string' ? value : (value != null ? String(value) : '');
+  const [localValue, setLocalValue] = useState(stringValue);
+  const timeoutRef = useRef(null);
+  const isEditingRef = useRef(false);
+  
+  // Sync local value when prop changes from outside (but not while user is actively typing)
+  useEffect(() => {
+    if (!isEditingRef.current) {
+      const newStringValue = typeof value === 'string' ? value : (value != null ? String(value) : '');
+      setLocalValue(newStringValue);
+    }
+  }, [value]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+  
+  const handleChange = (e) => {
+    const newValue = e.target.value;
+    isEditingRef.current = true;
+    setLocalValue(newValue);
+    
+    // Debounce the update to parent
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      onChange(newValue);
+      isEditingRef.current = false;
+    }, 300);
+  };
+  
+  const handleBlur = () => {
+    // Clear editing flag and save immediately on blur
+    isEditingRef.current = false;
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (localValue !== value) {
+      onChange(localValue);
+    }
+  };
+  
+  const handleKeyDown = (e) => {
+    // Allow Shift+Enter for line breaks in single-line inputs
+    if (e.key === 'Enter' && e.shiftKey && !multiline) {
+      e.preventDefault();
+      const newValue = localValue + '\n';
+      setLocalValue(newValue);
+      onChange(newValue);
+    }
+  };
+  
+  if (!editMode) {
+    // Render with line breaks preserved
+    if (multiline || (stringValue && stringValue.includes('\n'))) {
+      return <span className={className} style={{ whiteSpace: 'pre-line' }}>{stringValue}</span>;
+    }
+    return stringValue;
+  }
+  
+  return multiline ? (
+    <textarea
+      className={`editable-field ${className}`}
+      value={localValue}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      onClick={(e) => e.stopPropagation()}
+      placeholder={placeholder}
+    />
+  ) : (
+    <input
+      type="text"
+      className={`editable-field ${className}`}
+      value={localValue}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      onKeyDown={handleKeyDown}
+      onClick={(e) => e.stopPropagation()}
+      placeholder={placeholder}
+    />
+  );
+});
+
 const CaseStudy = () => {
   const { projectId } = useParams();
   const { editMode, setEditMode, setShowPanel } = useEdit(); // Use global edit mode from context
@@ -651,8 +738,9 @@ const CaseStudy = () => {
   // Preserve current slide so switching tabs doesn't jump back to slide 1.
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (!document.hidden && hasLoadedRef.current) {
+      if (!document.hidden && hasLoadedRef.current && !editMode) {
         // Component became visible again, reload data to ensure we have latest
+        // Skip reload when in edit mode to preserve user's editing state
         console.log('[visibilitychange] Component visible again, reloading data');
         loadProjectData(true); // preserveSlide = true
       }
@@ -660,7 +748,7 @@ const CaseStudy = () => {
     
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [loadProjectData]);
+  }, [loadProjectData, editMode]);
 
   // Track previous edit mode to detect when exiting edit mode
   const prevEditModeRef = useRef(editMode);
@@ -1799,82 +1887,7 @@ const CaseStudy = () => {
     { title: 'Results', fields: ['results', 'testimonial', 'testimonialAuthor'] },
   ];
 
-  // Editable field component
-  const EditableField = ({ value, onChange, multiline = false, className = '', placeholder = '' }) => {
-    // Ensure value is always a string
-    const stringValue = typeof value === 'string' ? value : (value != null ? String(value) : '');
-    const [localValue, setLocalValue] = useState(stringValue);
-    const timeoutRef = useRef(null);
-    
-    // Sync local value when prop changes from outside
-    useEffect(() => {
-      const newStringValue = typeof value === 'string' ? value : (value != null ? String(value) : '');
-      setLocalValue(newStringValue);
-    }, [value]);
-    
-    const handleChange = (e) => {
-      const newValue = e.target.value;
-      setLocalValue(newValue);
-      
-      // Debounce the update to parent
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      timeoutRef.current = setTimeout(() => {
-        onChange(newValue);
-      }, 300);
-    };
-    
-    const handleBlur = () => {
-      // Immediately save on blur
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      if (localValue !== value) {
-        onChange(localValue);
-      }
-    };
-    
-    const handleKeyDown = (e) => {
-      // Allow Shift+Enter for line breaks in single-line inputs
-      if (e.key === 'Enter' && e.shiftKey && !multiline) {
-        e.preventDefault();
-        const newValue = localValue + '\n';
-        setLocalValue(newValue);
-        onChange(newValue);
-      }
-    };
-    
-    if (!editMode) {
-      // Render with line breaks preserved
-      if (multiline || (stringValue && stringValue.includes('\n'))) {
-        return <span className={className} style={{ whiteSpace: 'pre-line' }}>{stringValue}</span>;
-      }
-      return stringValue;
-    }
-    
-    return multiline ? (
-      <textarea
-        className={`editable-field ${className}`}
-        value={localValue}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        onClick={(e) => e.stopPropagation()}
-        placeholder={placeholder}
-      />
-    ) : (
-      <input
-        type="text"
-        className={`editable-field ${className}`}
-        value={localValue}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        onKeyDown={handleKeyDown}
-        onClick={(e) => e.stopPropagation()}
-        placeholder={placeholder}
-      />
-    );
-  };
+  // EditableField is now defined at module scope (above CaseStudy) for stable React identity
 
   // Add item to array field
   const addArrayItem = (slideIndex, field, defaultItem) => {
@@ -1903,8 +1916,8 @@ const CaseStudy = () => {
     });
   };
 
-  // Toggle optional field visibility
-  const toggleField = (slideIndex, field, defaultValue = '') => {
+  // Toggle optional field visibility (useCallback for stable reference)
+  const toggleField = useCallback((slideIndex, field, defaultValue = '') => {
     setProject(prev => {
       const newSlides = [...prev.slides];
       const currentValue = newSlides[slideIndex][field];
@@ -1914,10 +1927,11 @@ const CaseStudy = () => {
       };
       return { ...prev, slides: newSlides };
     });
-  };
+  }, []);
 
-  // Optional field component with toggle
-  const OptionalField = ({ slide, index, field, label, defaultValue = '', multiline = false, children }) => {
+  // Optional field component with toggle (memoized for stable identity)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const OptionalField = useMemo(() => ({ slide, index, field, label, defaultValue = '', multiline = false, children }) => {
     const hasValue = slide[field] !== undefined && slide[field] !== null;
     
     if (!editMode && !hasValue) return null;
@@ -1967,39 +1981,43 @@ const CaseStudy = () => {
         )}
       </div>
     );
-  };
+  }, [editMode, toggleField, updateSlide]);
 
-  // Array item controls component
-  const ArrayItemControls = ({ onRemove }) => {
+  // Array item controls component (memoized for stable identity)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const ArrayItemControls = useMemo(() => ({ onRemove }) => {
     if (!editMode) return null;
     return (
       <button className="remove-item-btn" onClick={onRemove} title="Remove item">×</button>
     );
-  };
+  }, [editMode]);
 
-  // Add item button component
-  const AddItemButton = ({ onClick, label }) => {
+  // Add item button component (memoized for stable identity)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const AddItemButton = useMemo(() => ({ onClick, label }) => {
     if (!editMode) return null;
     return (
       <button className="add-item-btn" onClick={onClick}>
         + Add {label}
       </button>
     );
-  };
+  }, [editMode]);
 
-  // Toggle field button - shows remove button when field has value
-  const ToggleFieldButton = ({ hasValue, onToggle, label }) => {
+  // Toggle field button - shows remove button when field has value (memoized for stable identity)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const ToggleFieldButton = useMemo(() => ({ hasValue, onToggle, label }) => {
     if (!editMode) return null;
     return hasValue ? (
       <button className="remove-field-btn" onClick={onToggle} title={`Remove ${label}`}>
         × Remove {label}
       </button>
     ) : null;
-  };
+  }, [editMode]);
 
   // ========== DYNAMIC CONTENT COMPONENT ==========
-  // Handles single content OR array of paragraphs with add/remove
-  const DynamicContent = ({ slide, slideIndex, field = 'content', className = '', maxParagraphs = 0, optional = false }) => {
+  // Handles single content OR array of paragraphs with add/remove (memoized for stable identity)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const DynamicContent = useMemo(() => ({ slide, slideIndex, field = 'content', className = '', maxParagraphs = 0, optional = false }) => {
     // Check if it's an array (paragraphs) or single string (content)
     const isArray = Array.isArray(slide[field]);
     const paragraphs = isArray ? slide[field] : (slide[field] ? [slide[field]] : []);
@@ -2078,11 +2096,12 @@ const CaseStudy = () => {
         )}
       </div>
     );
-  };
+  }, [editMode, updateSlide]);
 
   // ========== DYNAMIC BULLETS COMPONENT ==========
-  // Reusable bullet points with optional section title - can be added to any slide
-  const DynamicBullets = ({ slide, slideIndex, field = 'bullets', titleField, className = '', maxBullets = 0, label = 'Bullet' }) => {
+  // Reusable bullet points with optional section title - can be added to any slide (memoized for stable identity)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const DynamicBullets = useMemo(() => ({ slide, slideIndex, field = 'bullets', titleField, className = '', maxBullets = 0, label = 'Bullet' }) => {
     // Normalize bullets to strings (handle old object format)
     const rawBullets = Array.isArray(slide[field]) ? slide[field] : [];
     const bullets = rawBullets.map(b => {
@@ -2188,11 +2207,12 @@ const CaseStudy = () => {
         )}
       </div>
     );
-  };
+  }, [editMode, updateSlide]);
 
   // ========== DYNAMIC IMAGES COMPONENT ==========
-  // Handles single image OR array of images with add/remove and position control
-  const DynamicImages = ({ slide, slideIndex, field = 'image', captionField = 'caption', className = '', maxImages = 3 }) => {
+  // Handles single image OR array of images with add/remove and position control (memoized for stable identity)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const DynamicImages = useMemo(() => ({ slide, slideIndex, field = 'image', captionField = 'caption', className = '', maxImages = 3 }) => {
     const [activePositionControl, setActivePositionControl] = useState(null);
     
     // Check if it's an array or single string
@@ -2597,11 +2617,12 @@ const CaseStudy = () => {
         )}
       </div>
     );
-  };
+  }, [editMode, updateSlide]);
 
   // ========== SPLIT RATIO CONTROL ==========
-  // Allows adjusting the width ratio between text and images in split layouts
-  const SplitRatioControl = ({ slide, slideIndex }) => {
+  // Allows adjusting the width ratio between text and images in split layouts (memoized for stable identity)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const SplitRatioControl = useMemo(() => ({ slide, slideIndex }) => {
     if (!editMode) return null;
     
     const ratio = slide.splitRatio || 50; // Default 50/50
@@ -2643,7 +2664,7 @@ const CaseStudy = () => {
         <span className="ratio-value">{ratio}% / {100 - ratio}%</span>
       </div>
     );
-  };
+  }, [editMode, updateSlide]);
 
   // Helper to get split grid style based on ratio
   const getSplitStyle = (slide) => {
@@ -2653,8 +2674,9 @@ const CaseStudy = () => {
     };
   };
 
-  // CTA Editor Component
-  const SlideCta = ({ slide, index }) => {
+  // CTA Editor Component (memoized for stable identity)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const SlideCta = useMemo(() => ({ slide, index }) => {
     const hasCta = slide.cta && (slide.cta.text || slide.cta.link);
     
     if (!editMode && !hasCta) return null;
@@ -2709,7 +2731,7 @@ const CaseStudy = () => {
         )}
       </div>
     );
-  };
+  }, [editMode, updateSlide]);
 
   // Image/video upload handler
   const handleImageUpload = (slideIndex, field = 'image') => {

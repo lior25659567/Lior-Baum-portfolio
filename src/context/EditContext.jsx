@@ -79,7 +79,9 @@ const defaultStyles = {
 };
 
 export const EditProvider = ({ children }) => {
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState(() => {
+    return sessionStorage.getItem('editMode') === 'true';
+  });
   const [showPanel, setShowPanel] = useState(false);
   const [activeSection, setActiveSection] = useState('content');
   
@@ -148,6 +150,11 @@ export const EditProvider = ({ children }) => {
       document.removeEventListener('keydown', handleKeyDown, true);
     };
   }, []);
+
+  // Persist editMode to sessionStorage so it survives tab switches / HMR
+  useEffect(() => {
+    sessionStorage.setItem('editMode', editMode);
+  }, [editMode]);
 
   // Keep showPanel in sync with editMode (if editMode is off, panel must be hidden)
   useEffect(() => {
