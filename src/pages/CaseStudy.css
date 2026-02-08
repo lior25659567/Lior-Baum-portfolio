@@ -8351,7 +8351,8 @@ textarea.editable-field {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr auto auto;
-  gap: 3rem;
+  column-gap: 3rem;
+  row-gap: 0.5rem;
   width: 100%;
   margin-top: 1.5rem;
   align-items: stretch;
@@ -8396,7 +8397,7 @@ textarea.editable-field {
 }
 
 .ps-bullets {
-  margin-top: 0.25rem;
+  margin-top: 0;
 }
 
 .ps-highlight {
