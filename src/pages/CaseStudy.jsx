@@ -3060,7 +3060,8 @@ const CaseStudy = () => {
             <SplitRatioControl slide={slide} slideIndex={index} />
             <div className="slide-inner">
               <div className="project-showcase-layout" style={getSplitStyle(slide)}>
-                {/* Left Panel - Info (centered vertically when no number) */}
+                {/* Left Panel - Info (centered vertically when no number), wrapped in highlight-style card */}
+                <div className="project-showcase-info-wrapper">
                 <div className={`project-showcase-info${!slide.slideNumber ? ' project-showcase-info--no-number' : ''}`}>
                   {(slide.slideNumber || editMode) && (
                     <div className="project-showcase-number-wrapper">
@@ -3259,6 +3260,7 @@ const CaseStudy = () => {
                       <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
                     </div>
                   </OptionalField>
+                </div>
                 </div>
                 {/* Right Panel - Image */}
                 <div className="project-showcase-visual">

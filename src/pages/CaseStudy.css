@@ -7045,14 +7045,30 @@ textarea.editable-field {
   width: 100%;
 }
 
+/* Wrapper around left panel - highlight-style card */
+.project-showcase-info-wrapper {
+  background: rgba(255, 88, 74, 0.06);
+  border-radius: 12px;
+  border-left: 3px solid var(--color-accent);
+  padding: 0;
+  margin: 0.75rem;
+  margin-right: 0.5rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
 /* Left Panel - Info */
 .project-showcase-info {
-  background: var(--color-bg);
+  background: transparent;
   padding: 3rem 4rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 1.5rem;
+  flex: 1;
+  min-height: 0;
 }
 
 /* When there's no number, center content vertically in the slide */
@@ -7510,6 +7526,10 @@ textarea.editable-field {
     grid-template-rows: auto 1fr;
   }
 
+  .project-showcase-info-wrapper {
+    margin: 0.5rem;
+  }
+
   .project-showcase-info {
     padding: 2rem;
     min-height: auto;
@@ -7525,6 +7545,11 @@ textarea.editable-field {
 }
 
 @media (max-width: 768px) {
+  .project-showcase-info-wrapper {
+    margin: 0.5rem;
+    border-radius: 10px;
+  }
+
   .project-showcase-info {
     padding: 1.5rem;
     gap: 1rem;
