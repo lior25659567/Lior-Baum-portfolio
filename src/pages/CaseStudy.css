@@ -1862,9 +1862,10 @@ body.case-study-active .footer {
   gap: 0.5rem;
   margin-bottom: 0.75rem;
   font-family: var(--font-body);
-  font-size: var(--text-body);
-  font-weight: 600;
-  color: var(--color-text);
+  font-size: var(--text-body-sm);
+  line-height: 1.6;
+  font-weight: 500;
+  color: var(--color-accent);
 }
 
 .dynamic-bullets .bullets-section-title .remove-section-title-btn {
