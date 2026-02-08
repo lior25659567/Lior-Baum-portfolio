@@ -1673,6 +1673,42 @@ body.case-study-active .footer {
   width: 100%;
 }
 
+.twi-image-bullets-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+  position: relative;
+}
+
+.twi-image-bullets-title {
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  color: var(--color-accent);
+  line-height: 1.6;
+}
+
+.twi-image-bullets-title-wrapper .remove-field-inline-btn {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 68, 68, 0.8);
+  color: white;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.twi-image-bullets-title-wrapper:hover .remove-field-inline-btn {
+  opacity: 1;
+}
+
 .twi-image-bullets {
   list-style: none;
   padding: 0;

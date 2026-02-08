@@ -4981,6 +4981,22 @@ const CaseStudy = () => {
                         {/* Per-image bullets */}
                         {img.bullets && img.bullets.length > 0 ? (
                           <div className="twi-image-bullets-wrapper">
+                            {/* Bullets title */}
+                            {img.bulletsTitle ? (
+                              <div className="twi-image-bullets-title-wrapper">
+                                <span className="twi-image-bullets-title">
+                                  <EditableField
+                                    value={img.bulletsTitle}
+                                    onChange={(v) => updateImage(imgIndex, 'bulletsTitle', v)}
+                                  />
+                                </span>
+                                {editMode && (
+                                  <button className="remove-field-inline-btn" onClick={() => updateImage(imgIndex, 'bulletsTitle', '')} title="Remove title">×</button>
+                                )}
+                              </div>
+                            ) : editMode ? (
+                              <button className="add-field-btn twi-add-field" onClick={() => updateImage(imgIndex, 'bulletsTitle', 'Key points')}>+ Bullets Title</button>
+                            ) : null}
                             <ul className="twi-image-bullets">
                               {img.bullets.map((bullet, bIdx) => (
                                 <li key={bIdx} className="twi-image-bullet">
