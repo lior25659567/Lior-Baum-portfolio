@@ -2986,18 +2986,16 @@ const CaseStudy = () => {
           <div className="slide slide-image" key={index}>
             {slideControls}
             <div className="slide-inner">
-              <span className="slide-label">
-                <EditableField
-                  value={slide.label}
-                  onChange={(v) => updateSlide(index, { label: v })}
-                />
-              </span>
-              <h2 className="image-title">
-                <EditableField
-                  value={slide.title}
-                  onChange={(v) => updateSlide(index, { title: v })}
-                />
-              </h2>
+              <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="Section Label">
+                <span className="slide-label">
+                  <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
+                </span>
+              </OptionalField>
+              <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="Image Title">
+                <h2 className="image-title">
+                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                </h2>
+              </OptionalField>
               <DynamicContent slide={slide} slideIndex={index} field="description" className="image-description-wrapper" maxParagraphs={3} optional />
               <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="image-bullets-wrapper" label="Bullet" />
               <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
@@ -3137,13 +3135,15 @@ const CaseStudy = () => {
                       )}
                     </p>
                   )}
-                  <p className="project-showcase-description">
-                    <EditableField
-                      value={slide.description}
-                      onChange={(v) => updateSlide(index, { description: v })}
-                      multiline
-                    />
-                  </p>
+                  <OptionalField slide={slide} index={index} field="description" label="Description" defaultValue="Brief description of the project." multiline>
+                    <p className="project-showcase-description">
+                      <EditableField
+                        value={slide.description}
+                        onChange={(v) => updateSlide(index, { description: v })}
+                        multiline
+                      />
+                    </p>
+                  </OptionalField>
                   <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="project-showcase-bullets" label="Bullet" />
                   {(slide.tags?.length > 0 || editMode) && (
                     <div className="project-showcase-tags">
@@ -3256,33 +3256,23 @@ const CaseStudy = () => {
                       )}
                     </div>
                   )}
-                  <h2 className="goals-showcase-title">
-                    <EditableField
-                      value={slide.title}
-                      onChange={(v) => updateSlide(index, { title: v })}
-                    />
-                  </h2>
-                  {(slide.description || editMode) && (
-                    <div className="goals-showcase-description-wrapper">
-                      {slide.description ? (
-                        <p className="goals-showcase-description">
-                          <EditableField
-                            value={slide.description}
-                            onChange={(v) => updateSlide(index, { description: v })}
-                            multiline
-                          />
-                        </p>
-                      ) : null}
-                      {editMode && (
-                        <button
-                          className="toggle-description-btn"
-                          onClick={() => updateSlide(index, { description: slide.description ? '' : 'Add a description here.' })}
-                        >
-                          {slide.description ? '× Remove Description' : '+ Add Description'}
-                        </button>
-                      )}
-                    </div>
-                  )}
+                  <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="Project Goals">
+                    <h2 className="goals-showcase-title">
+                      <EditableField
+                        value={slide.title}
+                        onChange={(v) => updateSlide(index, { title: v })}
+                      />
+                    </h2>
+                  </OptionalField>
+                  <OptionalField slide={slide} index={index} field="description" label="Description" defaultValue="What we aimed to achieve with this project." multiline>
+                    <p className="goals-showcase-description">
+                      <EditableField
+                        value={slide.description}
+                        onChange={(v) => updateSlide(index, { description: v })}
+                        multiline
+                      />
+                    </p>
+                  </OptionalField>
                   {/* Goals List */}
                   <div className="goals-showcase-goals">
                     {(slide.goals || []).map((goal, i) => (
@@ -3863,23 +3853,31 @@ const CaseStudy = () => {
           <div className="slide slide-comparison" key={index}>
             {slideControls}
             <div className="slide-inner">
-              <span className="slide-label">
-                <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-              </span>
-              <h2 className="comparison-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
-              </h2>
+              <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="Before & After">
+                <span className="slide-label">
+                  <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
+                </span>
+              </OptionalField>
+              <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="The Transformation">
+                <h2 className="comparison-title">
+                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                </h2>
+              </OptionalField>
               <div className="comparison-grid">
                 <div className="comparison-item">
-                  <span className="comparison-label">
-                    <EditableField value={slide.beforeLabel} onChange={(v) => updateSlide(index, { beforeLabel: v })} />
-                  </span>
+                  <OptionalField slide={slide} index={index} field="beforeLabel" label="Before Label" defaultValue="Before">
+                    <span className="comparison-label">
+                      <EditableField value={slide.beforeLabel} onChange={(v) => updateSlide(index, { beforeLabel: v })} />
+                    </span>
+                  </OptionalField>
                   <DynamicImages slide={slide} slideIndex={index} field="beforeImage" maxImages={1} className="comparison-dynamic" />
                 </div>
                 <div className="comparison-item">
-                  <span className="comparison-label">
-                    <EditableField value={slide.afterLabel} onChange={(v) => updateSlide(index, { afterLabel: v })} />
-                  </span>
+                  <OptionalField slide={slide} index={index} field="afterLabel" label="After Label" defaultValue="After">
+                    <span className="comparison-label">
+                      <EditableField value={slide.afterLabel} onChange={(v) => updateSlide(index, { afterLabel: v })} />
+                    </span>
+                  </OptionalField>
                   <DynamicImages slide={slide} slideIndex={index} field="afterImage" maxImages={1} className="comparison-dynamic" />
                 </div>
               </div>
@@ -4124,14 +4122,16 @@ const CaseStudy = () => {
             {slideControls}
             <div className="slide-inner">
               {/* Header */}
-              <div className="showcase-header">
+              <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="The Solution">
                 <span className="slide-label">
                   <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
                 </span>
+              </OptionalField>
+              <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="Redesigning the experience">
                 <h2 className="showcase-title">
                   <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
                 </h2>
-              </div>
+              </OptionalField>
               
               {/* Two Column Images */}
               <div className="showcase-columns">
@@ -4140,14 +4140,16 @@ const CaseStudy = () => {
                   <DynamicImages slide={slide} slideIndex={index} field="problemImages" className="showcase-dynamic" />
                   
                   {/* Problem Description */}
-                  <div className="showcase-description">
+                  <OptionalField slide={slide} index={index} field="problemLabel" label="Problem Label" defaultValue="Problem:">
                     <span className="showcase-desc-label problem-label">
-                      <EditableField value={slide.problemLabel || 'Problem:'} onChange={(v) => updateSlide(index, { problemLabel: v })} />
+                      <EditableField value={slide.problemLabel} onChange={(v) => updateSlide(index, { problemLabel: v })} />
                     </span>
+                  </OptionalField>
+                  <OptionalField slide={slide} index={index} field="problemText" label="Problem Text" defaultValue="Describe the main problem." multiline>
                     <p className="showcase-desc-text">
                       <EditableField value={slide.problemText} onChange={(v) => updateSlide(index, { problemText: v })} multiline />
                     </p>
-                  </div>
+                  </OptionalField>
                 </div>
                 
                 {/* Solution/After Images */}
@@ -4155,12 +4157,12 @@ const CaseStudy = () => {
                   <DynamicImages slide={slide} slideIndex={index} field="solutionImages" className="showcase-dynamic" />
                   
                   {/* Solution Description */}
-                  <div className="showcase-description">
+                  <OptionalField slide={slide} index={index} field="solutionLabel" label="Solution Label" defaultValue="Solution:">
                     <span className="showcase-desc-label solution-label">
-                      <EditableField value={slide.solutionLabel || 'Solution:'} onChange={(v) => updateSlide(index, { solutionLabel: v })} />
+                      <EditableField value={slide.solutionLabel} onChange={(v) => updateSlide(index, { solutionLabel: v })} />
                     </span>
-                    <DynamicBullets slide={slide} slideIndex={index} field="solutionPoints" titleField="solutionPointsTitle" className="showcase-solution-bullets" label="Point" />
-                  </div>
+                  </OptionalField>
+                  <DynamicBullets slide={slide} slideIndex={index} field="solutionPoints" titleField="solutionPointsTitle" className="showcase-solution-bullets" label="Point" />
                 </div>
               </div>
               <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
@@ -4211,12 +4213,16 @@ const CaseStudy = () => {
           <div className="slide slide-video" key={index}>
             {slideControls}
             <div className="slide-inner">
-              <span className="slide-label">
-                <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-              </span>
-              <h2 className="video-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
-              </h2>
+              <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="Demo">
+                <span className="slide-label">
+                  <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
+                </span>
+              </OptionalField>
+              <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="See It In Action">
+                <h2 className="video-title">
+                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
+                </h2>
+              </OptionalField>
               <DynamicContent slide={slide} slideIndex={index} field="description" className="video-description-wrapper" maxParagraphs={2} optional />
               <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="video-bullets" label="Bullet" />
               <div className="video-wrapper">
@@ -4245,9 +4251,11 @@ const CaseStudy = () => {
                   </div>
                 )}
               </div>
-              <p className="video-caption">
-                <EditableField value={slide.caption} onChange={(v) => updateSlide(index, { caption: v })} />
-              </p>
+              <OptionalField slide={slide} index={index} field="caption" label="Caption" defaultValue="Video walkthrough of the final product.">
+                <p className="video-caption">
+                  <EditableField value={slide.caption} onChange={(v) => updateSlide(index, { caption: v })} />
+                </p>
+              </OptionalField>
               <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
                 <div className="video-highlight">
                   <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
@@ -4954,14 +4962,16 @@ const CaseStudy = () => {
             <div className="slide-inner">
               <DynamicImages slide={slide} slideIndex={index} field="images" className="mosaic-dynamic" />
               {/* Centered title overlay */}
-              <div className="mosaic-overlay">
-                <div className="mosaic-title-badge">
-                  <EditableField
-                    value={slide.title}
-                    onChange={(v) => updateSlide(index, { title: v })}
-                  />
+              <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="Old version">
+                <div className="mosaic-overlay">
+                  <div className="mosaic-title-badge">
+                    <EditableField
+                      value={slide.title}
+                      onChange={(v) => updateSlide(index, { title: v })}
+                    />
+                  </div>
                 </div>
-              </div>
+              </OptionalField>
             </div>
           </div>
         );

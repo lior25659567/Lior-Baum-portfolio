@@ -242,6 +242,7 @@ body.case-study-active .footer {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: center;
 }
 
 /* Consistent label styling */
@@ -582,9 +583,7 @@ body.case-study-active .footer {
   background: var(--color-bg-secondary);
 }
 
-.slide-info .slide-inner {
-  justify-content: center;
-}
+/* slide-info uses base centering */
 
 .info-title {
   font-family: var(--font-display);
@@ -624,9 +623,7 @@ body.case-study-active .footer {
 }
 
 /* Text Slide */
-.slide-text .slide-inner {
-  justify-content: center;
-}
+/* slide-text uses base centering */
 
 .slide-text .text-title {
   font-family: var(--font-display);
@@ -645,7 +642,6 @@ body.case-study-active .footer {
 
 /* Image Slide - Uses unified split layout */
 .slide-image .slide-inner {
-  justify-content: center;
   gap: 1rem;
 }
 
@@ -793,9 +789,7 @@ body.case-study-active .footer {
   background: var(--color-bg-secondary);
 }
 
-.slide-stats .slide-inner {
-  justify-content: center;
-}
+/* slide-stats uses base centering */
 
 .slide-stats.results {
   background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg) 100%);
@@ -888,9 +882,7 @@ body.case-study-active .footer {
   background: var(--color-bg);
 }
 
-.slide-context .slide-inner {
-  justify-content: center;
-}
+/* slide-context uses base centering */
 
 .context-title {
   font-family: var(--font-display);
@@ -994,9 +986,7 @@ body.case-study-active .footer {
   background: var(--color-bg);
 }
 
-.slide-problem .slide-inner {
-  justify-content: center;
-}
+/* slide-problem uses base centering */
 
 .problem-title {
   font-family: var(--font-display);
@@ -1341,9 +1331,7 @@ body.case-study-active .footer {
   background: var(--color-bg);
 }
 
-.slide-testing .slide-inner {
-  justify-content: center;
-}
+/* slide-testing uses base centering */
 
 .testing-title {
   font-family: var(--font-display);
@@ -1374,9 +1362,7 @@ body.case-study-active .footer {
   background: var(--color-bg);
 }
 
-.slide-outcomes .slide-inner {
-  justify-content: center;
-}
+/* slide-outcomes uses base centering */
 
 .outcomes-title {
   font-family: var(--font-display);
@@ -1492,9 +1478,6 @@ body.case-study-active .footer {
 }
 
 .slide-text-with-images .slide-inner {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   gap: 1.5rem;
 }
 
@@ -5885,9 +5868,7 @@ textarea.editable-field {
 /* ========== NEW SLIDE TYPES ========== */
 
 /* Comparison */
-.slide-comparison .slide-inner {
-  justify-content: center;
-}
+/* slide-comparison uses base centering */
 
 .slide-comparison .comparison-grid {
   display: grid;
@@ -6214,7 +6195,6 @@ textarea.editable-field {
 
 /* === ISSUES BREAKDOWN SLIDE === */
 .slide-issues-breakdown .slide-inner {
-  justify-content: center;
   gap: 1.5rem;
 }
 
@@ -6294,7 +6274,6 @@ textarea.editable-field {
 
 /* === OLD EXPERIENCE SLIDE === */
 .slide-old-experience .slide-inner {
-  justify-content: center;
   gap: 1.5rem;
 }
 
@@ -6344,7 +6323,6 @@ textarea.editable-field {
 
 /* === ACHIEVE GOALS SLIDE === */
 .slide-achieve-goals .slide-inner {
-  justify-content: center;
   gap: 2rem;
 }
 
@@ -6421,6 +6399,7 @@ textarea.editable-field {
 .slide-solution-showcase .slide-inner {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 1.5rem;
   height: 100%;
 }
