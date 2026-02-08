@@ -116,67 +116,68 @@ const Hero = () => {
           </p>
         </div>
         
-        {/* Animated Visual - Right Side */}
-        <div className="hero-visual">
-          <motion.div 
-            className="visual-shape shape-main"
-            initial={{ opacity: 0, scale: 0, rotate: -45 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ delay: 0.5, duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-          />
-          <motion.div 
-            className="visual-shape shape-outline"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.7, duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-          />
-          <motion.div 
-            className="visual-shape shape-secondary"
-            initial={{ opacity: 0, x: 50, rotate: 0 }}
-            animate={{ opacity: 1, x: 0, rotate: 360 }}
-            transition={{ delay: 0.8, duration: 1, ease: [0.4, 0, 0.2, 1] }}
-          />
-          <motion.div 
-            className="visual-grid"
+        {/* Animated Visual - Right Side + scroll indicator under it */}
+        <div className="hero-visual-wrapper">
+          <div className="hero-visual">
+            <motion.div 
+              className="visual-shape shape-main"
+              initial={{ opacity: 0, scale: 0, rotate: -45 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{ delay: 0.5, duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+            />
+            <motion.div 
+              className="visual-shape shape-outline"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.7, duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+            />
+            <motion.div 
+              className="visual-shape shape-secondary"
+              initial={{ opacity: 0, x: 50, rotate: 0 }}
+              animate={{ opacity: 1, x: 0, rotate: 360 }}
+              transition={{ delay: 0.8, duration: 1, ease: [0.4, 0, 0.2, 1] }}
+            />
+            <motion.div 
+              className="visual-grid"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1, duration: 0.8 }}
+            />
+            <motion.div 
+              className="visual-dot dot-1"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.9, duration: 0.5 }}
+            />
+            <motion.div 
+              className="visual-dot dot-2"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 1.0, duration: 0.5 }}
+            />
+            <motion.div 
+              className="visual-dot dot-3"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 1.1, duration: 0.5 }}
+            />
+            <motion.div 
+              className="visual-dot dot-4"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 1.15, duration: 0.5 }}
+            />
+          </div>
+          <motion.div
+            className="scroll-indicator"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.8 }}
-          />
-          <motion.div 
-            className="visual-dot dot-1"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.9, duration: 0.5 }}
-          />
-          <motion.div 
-            className="visual-dot dot-2"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1.0, duration: 0.5 }}
-          />
-          <motion.div 
-            className="visual-dot dot-3"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1.1, duration: 0.5 }}
-          />
-          <motion.div 
-            className="visual-dot dot-4"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1.15, duration: 0.5 }}
-          />
+            transition={{ delay: 1.4, duration: 0.6 }}
+          >
+            <div className="scroll-line" />
+            <span>Scroll</span>
+          </motion.div>
         </div>
-        
-        <motion.div
-          className="scroll-indicator"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.4, duration: 0.6 }}
-        >
-          <div className="scroll-line" />
-          <span>Scroll</span>
-        </motion.div>
       </div>
     </section>
   );

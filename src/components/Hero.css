@@ -71,6 +71,14 @@
   max-width: 650px;
 }
 
+/* Wrapper: hero visual + scroll indicator under it */
+.hero-visual-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1.5rem;
+}
+
 /* Intro */
 .hero-intro {
   display: flex;
@@ -302,14 +310,11 @@
   50% { transform: translate(10px, 25px) scale(1.5); opacity: 0.4; }
 }
 
-/* Scroll Indicator */
+/* Scroll Indicator - in flow under hero visual, right-aligned */
 .scroll-indicator {
-  position: absolute;
-  bottom: 3rem;
-  right: 3rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
   gap: 0.5rem;
 }
 
@@ -461,9 +466,8 @@
     height: 10px;
   }
   
-  .scroll-indicator {
-    right: 1.5rem;
-    bottom: 2rem;
+  .hero-visual-wrapper {
+    gap: 1rem;
   }
   
   .orb-1 {
@@ -552,11 +556,6 @@
     height: 220px;
     bottom: -80px;
     left: -80px;
-  }
-  
-  .scroll-indicator {
-    right: 1rem;
-    bottom: 1.5rem;
   }
   
   .scroll-line {
