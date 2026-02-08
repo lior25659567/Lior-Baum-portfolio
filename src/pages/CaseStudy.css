@@ -7697,8 +7697,10 @@ textarea.editable-field {
 }
 
 .project-showcase-subtitle {
-  font-size: var(--text-caption);
-  line-height: 1.5;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 700;
+  line-height: 1.7;
   color: var(--color-text-muted);
   margin: 0 0 0.75rem;
 }
