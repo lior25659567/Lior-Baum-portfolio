@@ -7902,6 +7902,17 @@ textarea.editable-field {
   gap: 0.5rem;
 }
 
+/* Logo in title position (when "Logo only" is selected) */
+.project-showcase-logo-in-title-position {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.project-showcase-logo-in-title-position .project-logo-wrapper {
+  width: 160px;
+  height: 160px;
+}
+
 .project-showcase-remove-logo,
 .project-showcase-logo .remove-logo-btn {
   padding: 0.25rem 0.5rem;

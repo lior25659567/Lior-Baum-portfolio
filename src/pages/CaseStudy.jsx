@@ -3037,7 +3037,7 @@ const CaseStudy = () => {
                       )}
                     </div>
                   )}
-                  {/* Header mode: Title only | Logo only | Title + Logo */}
+                  {/* Header mode: Title only | Logo only (logo in title position) | Title + Logo */}
                   {editMode && (
                     <div className="project-showcase-header-mode">
                       <span className="project-showcase-header-mode-label">Header:</span>
@@ -3054,7 +3054,7 @@ const CaseStudy = () => {
                           type="button"
                           className={`header-mode-btn ${(slide.projectShowcaseHeader || 'both') === 'logo' ? 'active' : ''}`}
                           onClick={() => updateSlide(index, { projectShowcaseHeader: 'logo' })}
-                          title="Show logo only"
+                          title="Show logo in title position (instead of title)"
                         >
                           Logo only
                         </button>
@@ -3062,11 +3062,38 @@ const CaseStudy = () => {
                           type="button"
                           className={`header-mode-btn ${(slide.projectShowcaseHeader || 'both') === 'both' ? 'active' : ''}`}
                           onClick={() => updateSlide(index, { projectShowcaseHeader: 'both' })}
-                          title="Show title and logo"
+                          title="Show title and logo (title on top, logo below)"
                         >
                           Title + Logo
                         </button>
                       </div>
+                    </div>
+                  )}
+                  {/* Logo in title position (when "Logo only" is selected) */}
+                  {(slide.projectShowcaseHeader || 'both') === 'logo' && (slide.logo || editMode) && (
+                    <div className="project-showcase-logo project-showcase-logo-in-title-position">
+                      <div
+                        className="project-logo-wrapper"
+                        onClick={() => editMode && handleImageUpload(index, 'logo')}
+                      >
+                        {slide.logo ? (
+                          <>
+                            <img src={slide.logo} alt="Logo" />
+                            {editMode && <div className="image-edit-overlay">Click to change</div>}
+                          </>
+                        ) : (
+                          <div className="image-placeholder">{editMode ? 'Click to add logo' : ''}</div>
+                        )}
+                      </div>
+                      {editMode && slide.logo && (
+                        <button
+                          type="button"
+                          className="remove-logo-btn project-showcase-remove-logo"
+                          onClick={(e) => { e.stopPropagation(); updateSlide(index, { logo: '' }); }}
+                        >
+                          × Remove logo
+                        </button>
+                      )}
                     </div>
                   )}
                   {((slide.projectShowcaseHeader || 'both') === 'both' || (slide.projectShowcaseHeader || 'both') === 'title') && (slide.title || editMode) && (
@@ -3152,7 +3179,8 @@ const CaseStudy = () => {
                       )}
                     </div>
                   )}
-                  {((slide.projectShowcaseHeader || 'both') === 'both' || (slide.projectShowcaseHeader || 'both') === 'logo') && (slide.logo || editMode) && (
+                  {/* Logo at bottom (when "Title + Logo" is selected) */}
+                  {(slide.projectShowcaseHeader || 'both') === 'both' && (slide.logo || editMode) && (
                     <div className="project-showcase-logo">
                       <div
                         className="project-logo-wrapper"
