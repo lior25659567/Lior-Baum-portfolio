@@ -2346,17 +2346,23 @@ const CaseStudy = () => {
       { label: '↘', value: 'right bottom', title: 'Bottom Right' },
     ];
     
-    if (images.length === 0 && !editMode) return null;
-    
-    const imageCount = images.length;
-    // Mosaic: grid fits actual image count only (no duplication); otherwise use slide.gridCols or count-based
-    const gridCols = mosaicMode
-      ? (imageCount <= 1 ? 1 : imageCount <= 4 ? 2 : imageCount <= 9 ? 3 : 4)
-      : (slide.gridCols || (imageCount >= 3 ? 3 : imageCount >= 2 ? 2 : 1));
+    const MOSAIC_TILE_COUNT = 24;
+    // Mosaic: always 24 tiles; repeat uploaded images to fill (tile i shows images[i % length])
+    const displayList = mosaicMode
+      ? Array.from({ length: MOSAIC_TILE_COUNT }, (_, i) =>
+          images.length ? { ...images[i % images.length], _logicalIndex: i % images.length, _tileIndex: i } : null
+        )
+      : images;
+
+    if (displayList.length === 0 && !editMode) return null;
+    if (mosaicMode && images.length === 0 && !editMode) return null;
+
+    const imageCount = mosaicMode ? MOSAIC_TILE_COUNT : images.length;
+    const gridCols = mosaicMode ? 6 : (slide.gridCols || (images.length >= 3 ? 3 : images.length >= 2 ? 2 : 1));
     
     return (
-      <div className={`dynamic-images images-count-${imageCount} ${className} ${mosaicMode ? 'mosaic-mode' : ''}`}>
-        {editMode && imageCount >= 2 && !mosaicMode && (
+      <div className={`dynamic-images images-count-${mosaicMode ? 'mosaic' : imageCount} ${className} ${mosaicMode ? 'mosaic-mode' : ''}`}>
+        {editMode && images.length >= 2 && !mosaicMode && (
           <div className="dynamic-grid-control">
             <span className="dynamic-grid-label">Grid</span>
             <div className="dynamic-grid-buttons">
@@ -2373,11 +2379,47 @@ const CaseStudy = () => {
             </div>
           </div>
         )}
-        <div className="dynamic-images-grid" style={imageCount >= 2 ? { gridTemplateColumns: `repeat(${gridCols}, 1fr)` } : undefined}>
-          {images.map((img, imgIndex) => {
-            const position = img.position || 'center center';
-            const imgSize = img.size || 'large';
-            const imgFit = img.fit || 'cover';
+        <div className="dynamic-images-grid" style={{ gridTemplateColumns: `repeat(${gridCols}, 1fr)` }}>
+          {displayList.map((item, tileIndex) => {
+            const img = mosaicMode ? item : item;
+            const imgIndex = mosaicMode ? (item ? item._logicalIndex : 0) : tileIndex;
+            if (mosaicMode && !item) {
+              return (
+                <div key={tileIndex} className="dynamic-image-item img-size-large img-fit-cover">
+                  <div
+                    className="dynamic-image-wrapper"
+                    onClick={() => {
+                      if (!editMode) return;
+                      if (images.length === 0) {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = 'image/*';
+                        input.onchange = (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (ev) => {
+                              const dataUrl = ev.target?.result;
+                              if (dataUrl) updateSlide(slideIndex, { [field]: [{ src: dataUrl, caption: '', position: 'center center', size: 'large', fit: 'cover' }] });
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        };
+                        input.click();
+                      } else {
+                        handleDynamicImageUpload(0);
+                      }
+                    }}
+                  >
+                    <div className="image-placeholder">{editMode ? 'Click to add image' : ''}</div>
+                  </div>
+                </div>
+              );
+            }
+            const imgData = mosaicMode ? item : img;
+            const position = imgData.position || 'center center';
+            const imgSize = imgData.size || 'large';
+            const imgFit = imgData.fit || 'cover';
             
             // Size presets
             const sizePresets = [
@@ -2393,6 +2435,7 @@ const CaseStudy = () => {
             ];
             
             const isContain = imgFit === 'contain';
+            const showRemove = mosaicMode ? (tileIndex < images.length && images.length > 1) : (images.length > 1);
             // Inline styles for contain mode to guarantee no dark background/radius
             const wrapperContainStyle = isContain ? {
               background: 'transparent',
@@ -2417,25 +2460,25 @@ const CaseStudy = () => {
             
             return (
               <div 
-                key={imgIndex} 
+                key={mosaicMode ? tileIndex : imgIndex} 
                 className={`dynamic-image-item img-size-${imgSize} img-fit-${imgFit}`}
               >
                 <div 
-                  className={`dynamic-image-wrapper ${!editMode && img.src ? 'clickable' : ''}`}
+                  className={`dynamic-image-wrapper ${!editMode && imgData.src ? 'clickable' : ''}`}
                   style={wrapperContainStyle}
                   onClick={() => {
                     if (editMode && !activePositionControl) {
                       handleDynamicImageUpload(imgIndex);
-                    } else if (!editMode && img.src) {
-                      setLightboxImage(img.src);
+                    } else if (!editMode && imgData.src) {
+                      setLightboxImage(imgData.src);
                     }
                   }}
                 >
-                  {img.src ? (
+                  {imgData.src ? (
                     <>
-                      {img.isVideo ? (
+                      {imgData.isVideo ? (
                         <video 
-                          src={img.src}
+                          src={imgData.src}
                           autoPlay
                           loop
                           muted
@@ -2444,16 +2487,16 @@ const CaseStudy = () => {
                         />
                       ) : (
                         <img 
-                          src={img.src} 
-                          alt={img.caption || `Image ${imgIndex + 1}`} 
+                          src={imgData.src} 
+                          alt={imgData.caption || `Image ${imgIndex + 1}`} 
                           style={mediaContainStyle}
                         />
                       )}
                       {editMode && <div className="image-edit-overlay">Click to change</div>}
-                      {!editMode && !img.isVideo && !img.isGif && <div className="image-zoom-hint">🔍</div>}
+                      {!editMode && !imgData.isVideo && !imgData.isGif && <div className="image-zoom-hint">🔍</div>}
                       
                       {/* Fill / Fit control - visible for video and GIF */}
-                      {editMode && (img.isVideo || img.isGif) && (
+                      {editMode && (imgData.isVideo || imgData.isGif) && (
                         <div className="media-fit-inline" onClick={(e) => e.stopPropagation()}>
                           <button
                             type="button"
@@ -2566,16 +2609,16 @@ const CaseStudy = () => {
                   )}
                 </div>
                 
-                {(img.caption || editMode) && (
+                {!mosaicMode && (imgData.caption || editMode) && (
                   <div className="dynamic-image-caption-wrapper">
                     <span className="dynamic-image-caption">
                       <EditableField 
-                        value={img.caption || ''} 
+                        value={imgData.caption || ''} 
                         onChange={(v) => updateImage(imgIndex, 'caption', v)} 
                         placeholder="Add caption..."
                       />
                     </span>
-                    {editMode && img.caption && (
+                    {editMode && imgData.caption && (
                       <button 
                         className="remove-caption-btn" 
                         onClick={(e) => { e.stopPropagation(); updateImage(imgIndex, 'caption', ''); }}
@@ -2586,7 +2629,7 @@ const CaseStudy = () => {
                     )}
                   </div>
                 )}
-                {editMode && images.length > 1 && (
+                {editMode && showRemove && (
                   <button 
                     className="remove-dynamic-image-btn" 
                     onClick={(e) => { e.stopPropagation(); removeImage(imgIndex); }}
