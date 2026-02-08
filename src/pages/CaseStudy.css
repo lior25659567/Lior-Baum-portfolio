@@ -8353,13 +8353,28 @@ textarea.editable-field {
   gap: 3rem;
   width: 100%;
   margin-top: 1.5rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 .ps-column {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 1fr auto auto;
   gap: 0.75rem;
+  min-height: 0;
+}
+
+.ps-column .ps-image {
+  grid-row: 1;
+  min-height: 0;
+  align-self: end;
+}
+
+.ps-column .ps-col-label {
+  grid-row: 2;
+}
+
+.ps-column .ps-bullets {
+  grid-row: 3;
 }
 
 .ps-col-label {
@@ -8367,15 +8382,11 @@ textarea.editable-field {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-top: 0.5rem;
 }
 
-.ps-problem-label {
-  color: #e53935;
-}
-
+.ps-problem-label,
 .ps-solution-label {
-  color: #4caf50;
+  color: var(--color-accent);
 }
 
 .ps-image .dynamic-image-wrapper {
@@ -8438,12 +8449,9 @@ textarea.editable-field {
   text-transform: uppercase;
 }
 
-.mockup-ps-problem .mockup-ps-label {
-  color: #e53935;
-}
-
+.mockup-ps-problem .mockup-ps-label,
 .mockup-ps-solution .mockup-ps-label {
-  color: #4caf50;
+  color: var(--color-accent);
 }
 
 .mockup-ps-problem .mockup-image.small {
