@@ -2619,15 +2619,18 @@ body.case-study-active .footer {
   display: flex;
   flex-direction: column;
   margin-top: 2rem;
+  min-height: 0;
 }
 
 .image-gallery-wrapper .dynamic-images {
   flex: 1;
+  min-height: 0;
 }
 
 .image-gallery-wrapper .dynamic-images-grid {
   gap: 2rem;
   height: 100%;
+  min-height: 0;
 }
 
 .image-gallery-wrapper .dynamic-image-wrapper {
@@ -2877,6 +2880,31 @@ body.case-study-active .footer {
   .image-title {
     font-size: clamp(1.25rem, 5vw, 1.75rem) !important;
   }
+
+  /* Image slide mobile: tighter stack, image caps so content flows */
+  .slide-image .slide-inner {
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .slide-image .image-description-wrapper,
+  .slide-image .image-bullets-wrapper,
+  .slide-image .image-highlight {
+    max-width: 100%;
+  }
+
+  .slide-image .image-gallery-wrapper {
+    margin-top: 1rem;
+  }
+
+  .slide-image .image-gallery-wrapper .dynamic-images-grid {
+    gap: 1rem;
+  }
+
+  .slide-image .image-gallery-wrapper .dynamic-image-wrapper {
+    max-height: 40vh;
+    min-height: 180px;
+  }
 }
 
 /* Dynamic grid columns for images - single image */
@@ -3061,6 +3089,33 @@ body.case-study-active .footer {
     min-height: calc(100vh - 6rem);
     min-height: calc(100dvh - 6rem);
     padding-bottom: 2rem;
+  }
+
+  /* Image slide: stack content from top, image doesn't steal space */
+  .slide-image .slide-inner {
+    justify-content: flex-start;
+    gap: 1.25rem;
+  }
+
+  .slide-image .image-gallery-wrapper {
+    flex: none;
+    margin-top: 1.25rem;
+  }
+
+  .slide-image .image-gallery-wrapper .dynamic-images {
+    flex: none;
+  }
+
+  .slide-image .image-gallery-wrapper .dynamic-images-grid {
+    height: auto;
+    gap: 1.25rem;
+  }
+
+  .slide-image .image-gallery-wrapper .dynamic-image-wrapper {
+    height: auto;
+    max-height: 50vh;
+    min-height: 200px;
+    aspect-ratio: 16/10;
   }
 
   .info-grid {
@@ -3329,6 +3384,11 @@ body.case-study-active .footer {
     min-height: calc(100vh - 4.5rem);
     min-height: calc(100dvh - 4.5rem);
     padding-bottom: 1.5rem;
+  }
+
+  .slide-image .image-gallery-wrapper .dynamic-image-wrapper {
+    max-height: 35vh;
+    min-height: 160px;
   }
 
   .slide-label {
