@@ -709,16 +709,6 @@ body.case-study-active .footer {
   font-weight: 700;
 }
 
-.image-highlight {
-  font-size: var(--text-caption);
-  color: var(--color-text-muted);
-  padding: 0.75rem 1rem;
-  background: rgba(255, 88, 74, 0.08);
-  border-radius: 6px;
-  border-left: 2px solid var(--color-accent);
-  max-width: 800px;
-}
-
 /* Image Slide Layout - Uses unified split */
 .slide-image-layout {
   display: grid;
@@ -899,15 +889,8 @@ body.case-study-active .footer {
   margin-bottom: 1rem;
 }
 
-.context-highlight {
-  font-size: var(--text-body);
-  line-height: 1.7;
-  color: var(--color-text-muted);
-  padding-left: 1.25rem;
-  border-left: 3px solid var(--color-accent);
-}
-
-/* Generic highlight styling for all slides */
+/* Highlight/conclusion style (same as problem-conclusion) */
+.context-highlight,
 .stats-highlight,
 .goals-highlight,
 .outcomes-highlight,
@@ -918,6 +901,7 @@ body.case-study-active .footer {
 .insight-highlight,
 .info-highlight,
 .text-highlight,
+.image-highlight,
 .problem-highlight,
 .quotes-highlight,
 .testing-highlight,
@@ -930,12 +914,12 @@ body.case-study-active .footer {
 .showcase-highlight,
 .project-showcase-highlight,
 .goals-showcase-highlight {
-  font-size: var(--text-caption);
+  font-size: var(--text-body-sm);
   color: var(--color-text-muted);
-  padding: 0.75rem 1rem;
+  padding: 1rem 1.25rem;
   background: rgba(255, 88, 74, 0.08);
-  border-radius: 6px;
-  border-left: 2px solid var(--color-accent);
+  border-radius: 8px;
+  border-left: 3px solid var(--color-accent);
   margin-top: 1.5rem;
 }
 
@@ -1349,12 +1333,12 @@ body.case-study-active .footer {
 }
 
 .testing-conclusion {
-  font-size: var(--text-caption);
+  font-size: var(--text-body-sm);
   color: var(--color-text-muted);
-  padding: 0.75rem 1rem;
+  padding: 1rem 1.25rem;
   background: rgba(255, 88, 74, 0.08);
-  border-radius: 6px;
-  border-left: 2px solid var(--color-accent);
+  border-radius: 8px;
+  border-left: 3px solid var(--color-accent);
 }
 
 /* Outcomes Slide */
@@ -1511,20 +1495,16 @@ body.case-study-active .footer {
   max-width: 800px;
 }
 
-/* TWI Highlight */
+/* TWI Highlight - same as problem-conclusion */
 .twi-highlight {
-  margin-top: 1rem;
+  font-size: var(--text-body-sm);
+  color: var(--color-text-muted);
   padding: 1rem 1.25rem;
   background: rgba(255, 88, 74, 0.08);
+  border-radius: 8px;
   border-left: 3px solid var(--color-accent);
-  border-radius: 0 8px 8px 0;
+  margin-top: 1.5rem;
   max-width: 800px;
-}
-
-.twi-highlight .editable-field {
-  font-size: var(--text-body-sm);
-  line-height: 1.6;
-  color: var(--color-text-muted);
 }
 
 /* TWI Grid Control */
@@ -3279,8 +3259,8 @@ body.case-study-active .footer {
   }
 
   .context-highlight {
-    padding-left: 0.75rem;
-    font-size: 0.85rem;
+    padding: 0.875rem 1rem;
+    font-size: var(--text-body-sm);
   }
 
   .problem-issues {
@@ -6369,14 +6349,13 @@ textarea.editable-field {
 }
 
 .old-experience-highlight {
+  font-size: var(--text-body-sm);
+  color: var(--color-text-muted);
+  padding: 1rem 1.25rem;
   background: rgba(255, 88, 74, 0.08);
-  border-left: 4px solid var(--color-accent);
-  padding: 1.5rem 1.75rem;
-  border-radius: 0 14px 14px 0;
-  font-size: var(--text-body);
-  line-height: 1.65;
-  color: var(--color-text);
-  font-style: normal;
+  border-radius: 8px;
+  border-left: 3px solid var(--color-accent);
+  margin-top: 1.5rem;
   position: relative;
 }
 
