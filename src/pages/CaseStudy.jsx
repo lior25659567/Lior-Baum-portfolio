@@ -49,8 +49,6 @@ const TemplatePreview = ({ type }) => {
     info: 'Grid layout showing project details like client, role, duration, and deliverables.',
     text: 'Simple text slide with a label, title, and paragraph content.',
     image: 'Full image slide with label, title, image area, and caption.',
-    research: 'Research slide for wireframes, mockups, or analysis. Shows existing state with caption.',
-    researchSplit: 'Split research layout: text content with highlighted insight on left, colored background with centered image on right.',
     context: 'Split layout with text content on the left and an image on the right. Includes highlight box.',
     problem: 'Problem definition slide with issues list and conclusion. Split layout with image.',
     quotes: 'User research quotes displayed in a card grid layout.',
@@ -59,13 +57,11 @@ const TemplatePreview = ({ type }) => {
     stats: 'Large statistics display with values and labels in a grid.',
     outcomes: 'Results grid showing outcomes with titles and descriptions.',
     end: 'Thank you slide with CTA buttons.',
-    heroImage: 'Full-width hero image slide for showcasing visuals.',
     comparison: 'Before/After comparison with two images side by side.',
     process: 'Process steps displayed horizontally with numbers and descriptions.',
     feature: 'Feature highlight with description, bullet points, and image.',
     twoColumn: 'Two-column text layout for comparing or contrasting content.',
     timeline: 'Vertical timeline showing project phases or events.',
-    gallery: '2x2 grid of images with captions.',
     video: 'Video embed slide with caption.',
     tools: 'Tools and technologies grid with names and descriptions.',
     challengeSolution: 'Challenge and Solution blocks with supporting image.',
@@ -77,7 +73,6 @@ const TemplatePreview = ({ type }) => {
     textWithImages: 'Title with description text at top, images at the bottom (up to 6). Grid adapts to image count. Perfect for comparisons or showcasing variations.',
     projectShowcase: 'Two-column layout with large number, title, description, tags, and optional logo on left. Full image on right.',
     goalsShowcase: 'Two-column layout with large number, title, optional description, and numbered goals list. Full image on right.',
-    beforeAfterShowcase: 'Split layout with smaller old images and problem text on left (white), larger new images and solution bullets on right (colored). Arrow connecting old to new.',
     solutionShowcase: 'Two-column comparison: problem images and text on left, solution images and bullet points on right.',
     imageMosaic: 'Tiled image grid background with a centered title overlay. Perfect for showing old versions, screen collections, or visual overviews.',
   };
@@ -135,30 +130,6 @@ const TemplatePreview = ({ type }) => {
               <div className="mockup-title-sm">Visual Showcase</div>
               <div className="mockup-image large"><span className="mockup-img-icon">🖼</span></div>
               <div className="mockup-caption" />
-            </div>
-          )}
-          {type === 'research' && (
-            <div className="mockup-image-slide">
-              <div className="mockup-label" />
-              <div className="mockup-title-sm">Understanding what exists</div>
-              <div className="mockup-image large"><span className="mockup-img-icon">📊</span></div>
-              <div className="mockup-caption" />
-            </div>
-          )}
-          {type === 'researchSplit' && (
-            <div className="mockup-split">
-              <div className="mockup-split-content">
-                <div className="mockup-label" />
-                <div className="mockup-title-sm">Understanding</div>
-                <div className="mockup-part-title">Part Title</div>
-                <div className="mockup-text-lines">
-                  <div className="line" /><div className="line" /><div className="line short" />
-                </div>
-                <div className="mockup-highlight-box">Key insight</div>
-              </div>
-              <div className="mockup-research-visual">
-                <span className="mockup-img-icon">📊</span>
-              </div>
             </div>
           )}
           {type === 'context' && (
@@ -291,12 +262,6 @@ const TemplatePreview = ({ type }) => {
               </div>
             </div>
           )}
-          {type === 'heroImage' && (
-            <div className="mockup-hero-image">
-              <div className="mockup-title-sm">Hero Visual</div>
-              <div className="mockup-image full"><span className="mockup-img-icon large">🖼</span></div>
-            </div>
-          )}
           {type === 'comparison' && (
             <div className="mockup-comparison">
               <div className="mockup-compare-item">
@@ -360,16 +325,6 @@ const TemplatePreview = ({ type }) => {
               <div className="mockup-tool"><span>🎨</span><div>Figma</div></div>
               <div className="mockup-tool"><span>⚛️</span><div>React</div></div>
               <div className="mockup-tool"><span>📊</span><div>Analytics</div></div>
-            </div>
-          )}
-          {type === 'gallery' && (
-            <div className="mockup-gallery">
-              <div className="mockup-gallery-grid">
-                <div className="mockup-gallery-item"><span>🖼</span></div>
-                <div className="mockup-gallery-item"><span>🖼</span></div>
-                <div className="mockup-gallery-item"><span>🖼</span></div>
-                <div className="mockup-gallery-item"><span>🖼</span></div>
-              </div>
             </div>
           )}
           {type === 'video' && (
@@ -483,38 +438,6 @@ const TemplatePreview = ({ type }) => {
               </div>
               <div className="mockup-gs-visual">
                 <div className="mockup-image"><span className="mockup-img-icon large">🖼</span></div>
-              </div>
-            </div>
-          )}
-          {type === 'beforeAfterShowcase' && (
-            <div className="mockup-before-after">
-              <div className="mockup-ba-left">
-                <div className="mockup-label" />
-                <div className="mockup-title-sm">Before → After</div>
-                <div className="mockup-ba-old-images">
-                  <div className="mockup-ba-old-img"><span>🖼</span></div>
-                  <div className="mockup-ba-old-img"><span>🖼</span></div>
-                </div>
-                <div className="mockup-ba-arrow">→</div>
-                <div className="mockup-ba-problem">
-                  <span className="problem-label">Problem:</span>
-                  <div className="line short" />
-                </div>
-              </div>
-              <div className="mockup-ba-right">
-                <div className="mockup-ba-new-images">
-                  <div className="mockup-ba-new-img"><span>🖼</span></div>
-                  <div className="mockup-ba-new-img"><span>🖼</span></div>
-                  <div className="mockup-ba-new-img"><span>🖼</span></div>
-                  <div className="mockup-ba-new-img"><span>🖼</span></div>
-                </div>
-                <div className="mockup-ba-solution">
-                  <span className="solution-label">Solution:</span>
-                  <div className="mockup-ba-bullets">
-                    <div className="line short" />
-                    <div className="line short" />
-                  </div>
-                </div>
               </div>
             </div>
           )}
@@ -3452,52 +3375,6 @@ const CaseStudy = () => {
           </div>
         );
 
-      case 'researchSplit':
-        return (
-          <div className="slide slide-research-split" key={index}>
-            {slideControls}
-            <SplitRatioControl slide={slide} slideIndex={index} />
-            <div className="slide-inner slide-split" style={getSplitStyle(slide)}>
-              <div className="split-content">
-                <span className="slide-label">
-                  <EditableField
-                    value={slide.label}
-                    onChange={(v) => updateSlide(index, { label: v })}
-                  />
-                </span>
-                <h2 className="research-split-title">
-                  <EditableField
-                    value={slide.title}
-                    onChange={(v) => updateSlide(index, { title: v })}
-                  />
-                </h2>
-                <OptionalField slide={slide} index={index} field="partTitle" label="Part Title" defaultValue="Add part title...">
-                  <h3 className="research-part-title">
-                    <EditableField
-                      value={slide.partTitle}
-                      onChange={(v) => updateSlide(index, { partTitle: v })}
-                    />
-                  </h3>
-                </OptionalField>
-                <DynamicContent slide={slide} slideIndex={index} field="description" className="research-description-wrapper" />
-                <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="research-split-bullets" label="Bullet" />
-                <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                  <div className="research-highlight">
-                    <EditableField
-                      value={slide.highlight}
-                      onChange={(v) => updateSlide(index, { highlight: v })}
-                      multiline
-                    />
-                  </div>
-                </OptionalField>
-              </div>
-              <div className="research-visual-wrapper">
-                <DynamicImages slide={slide} slideIndex={index} field="image" className="research-images-wrapper" />
-              </div>
-            </div>
-          </div>
-        );
-
       case 'problem':
         return (
           <div className="slide slide-problem" key={index}>
@@ -3897,24 +3774,6 @@ const CaseStudy = () => {
 
       // === NEW SLIDE TYPES ===
       
-      case 'heroImage':
-        return (
-          <div className="slide slide-hero-image" key={index}>
-            {slideControls}
-            <div className="slide-inner full-width">
-              <span className="slide-label">
-                <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-              </span>
-              <h2 className="hero-image-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
-              </h2>
-              <DynamicContent slide={slide} slideIndex={index} field="description" className="hero-image-description-wrapper" maxParagraphs={2} optional />
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" className="hero-image-bullets" label="Bullet" />
-              <DynamicImages slide={slide} slideIndex={index} field="image" captionField="caption" className="hero-image-images-wrapper" />
-            </div>
-          </div>
-        );
-
       case 'comparison':
         return (
           <div className="slide slide-comparison" key={index}>
@@ -4295,143 +4154,6 @@ const CaseStudy = () => {
         );
       }
 
-      case 'beforeAfterShowcase': {
-        return (
-          <div className="slide slide-before-after-showcase" key={index}>
-            {slideControls}
-            <div className="slide-inner">
-              {/* Left Column - White Background */}
-              <div className="ba-left-column">
-                {/* Header */}
-                <div className="ba-header">
-                  <span className="slide-label">
-                    <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-                  </span>
-                  <h2 className="ba-title">
-                    <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} multiline />
-                  </h2>
-                </div>
-                
-                {/* Before Images */}
-                <div className="ba-before-section">
-                  <DynamicImages slide={slide} slideIndex={index} field="beforeImages" className="ba-dynamic" />
-                </div>
-                
-                {/* Arrow */}
-                <div className="ba-arrow">
-                  <svg viewBox="0 0 80 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 20C5 20 25 5 40 20C55 35 75 20 75 20" stroke="currentColor" strokeWidth="2" fill="none"/>
-                    <path d="M65 15L75 20L65 25" stroke="currentColor" strokeWidth="2" fill="none"/>
-                  </svg>
-                </div>
-                
-                {/* Problem Description */}
-                <div className="ba-problem-section">
-                  <span className="ba-desc-label problem-label">
-                    <EditableField value={slide.problemLabel || 'Problem:'} onChange={(v) => updateSlide(index, { problemLabel: v })} />
-                  </span>
-                  <p className="ba-desc-text">
-                    <EditableField value={slide.problemText} onChange={(v) => updateSlide(index, { problemText: v })} multiline />
-                  </p>
-                </div>
-              </div>
-              
-              {/* Right Column - Colored Background */}
-              <div className="ba-right-column">
-                {/* After Images */}
-                <div className="ba-after-section">
-                  <DynamicImages slide={slide} slideIndex={index} field="afterImages" className="ba-dynamic" />
-                </div>
-                
-                {/* Solution Description */}
-                <div className="ba-solution-section">
-                  <span className="ba-desc-label solution-label">
-                    <EditableField value={slide.solutionLabel || 'Solution:'} onChange={(v) => updateSlide(index, { solutionLabel: v })} />
-                  </span>
-                  <ul className="ba-solution-points">
-                    {(slide.solutionPoints || []).map((point, i) => {
-                      // Support both string and object format { title, text }
-                      const isObject = typeof point === 'object' && point !== null;
-                      const hasTitle = isObject && point.title;
-                      const pointText = isObject ? (point.text || '') : point;
-                      const pointTitle = isObject ? (point.title || '') : '';
-                      
-                      return (
-                        <li key={i}>
-                          {hasTitle && (
-                            <span className="bullet-title">
-                              <EditableField 
-                                value={pointTitle} 
-                                onChange={(v) => {
-                                  const points = [...(slide.solutionPoints || [])];
-                                  points[i] = { title: v, text: pointText };
-                                  updateSlide(index, { solutionPoints: points });
-                                }} 
-                              />
-                            </span>
-                          )}
-                          <span className={hasTitle ? 'bullet-text' : ''}>
-                            <EditableField 
-                              value={pointText} 
-                              onChange={(v) => {
-                                const points = [...(slide.solutionPoints || [])];
-                                if (hasTitle) {
-                                  points[i] = { title: pointTitle, text: v };
-                                } else {
-                                  points[i] = v;
-                                }
-                                updateSlide(index, { solutionPoints: points });
-                              }} 
-                            />
-                          </span>
-                          {editMode && (
-                            <>
-                              <button 
-                                className="toggle-title-btn"
-                                title={hasTitle ? 'Remove title' : 'Add title'}
-                                onClick={() => {
-                                  const points = [...(slide.solutionPoints || [])];
-                                  if (hasTitle) {
-                                    // Remove title, keep just text
-                                    points[i] = pointText;
-                                  } else {
-                                    // Add title
-                                    points[i] = { title: 'Title', text: pointText };
-                                  }
-                                  updateSlide(index, { solutionPoints: points });
-                                }}
-                              >{hasTitle ? '−' : 'T'}</button>
-                              <button 
-                                className="remove-point-btn"
-                                onClick={() => {
-                                  const points = (slide.solutionPoints || []).filter((_, idx) => idx !== i);
-                                  updateSlide(index, { solutionPoints: points });
-                                }}
-                              >×</button>
-                            </>
-                          )}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                  {editMode && (
-                    <button 
-                      className="add-point-btn"
-                      onClick={() => {
-                        const points = [...(slide.solutionPoints || []), 'New point'];
-                        updateSlide(index, { solutionPoints: points });
-                      }}
-                    >
-                      + Add Point
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      }
-
       case 'tools':
         return (
           <div className="slide slide-tools" key={index}>
@@ -4451,24 +4173,6 @@ const CaseStudy = () => {
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-        );
-
-      case 'gallery':
-        return (
-          <div className="slide slide-gallery" key={index}>
-            {slideControls}
-            <div className="slide-inner">
-              <span className="slide-label">
-                <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-              </span>
-              <h2 className="gallery-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
-              </h2>
-              <DynamicContent slide={slide} slideIndex={index} field="description" className="gallery-description-wrapper" maxParagraphs={2} optional />
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" className="gallery-bullets" label="Bullet" />
-              <DynamicImages slide={slide} slideIndex={index} field="images" className="gallery-dynamic" />
             </div>
           </div>
         );

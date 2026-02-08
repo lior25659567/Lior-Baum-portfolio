@@ -38,26 +38,6 @@ export const slideTemplates = {
     image: '',
     caption: 'Image caption describing what this shows.',
   },
-  research: {
-    type: 'image',
-    label: 'Research',
-    title: 'Understanding what exists',
-    description: [],
-    bullets: [],
-    highlight: '',
-    image: '',
-    caption: 'Before starting the design phase it was important to fully understand the existing toolset and how it was distributed across the product. This step created the foundation for a structured approach.',
-  },
-  researchSplit: {
-    type: 'researchSplit',
-    label: 'Research',
-    title: 'Understanding what exists',
-    partTitle: 'Part Title',
-    description: 'Before starting the design phase it was important to fully understand the existing toolset and how it was distributed across the product.',
-    highlight: 'This step created the foundation for a structured toolbar, instead of continuing to place tools wherever space was available.',
-    image: '',
-    splitRatio: 50,
-  },
   context: {
     type: 'context',
     label: 'Context',
@@ -135,14 +115,6 @@ export const slideTemplates = {
 
   // === NEW TEMPLATES ===
   
-  // Full-width hero image
-  heroImage: {
-    type: 'heroImage',
-    label: 'Visual',
-    title: 'Full Width Image',
-    image: '',
-  },
-  
   // Before/After comparison
   comparison: {
     type: 'comparison',
@@ -200,15 +172,6 @@ export const slideTemplates = {
       { date: 'Week 4', title: 'Testing', description: 'User testing and iterations' },
       { date: 'Week 5', title: 'Launch', description: 'Final delivery' },
     ],
-  },
-  
-  // Gallery / Multiple images
-  gallery: {
-    type: 'gallery',
-    label: 'Gallery',
-    title: 'Design Exploration',
-    images: ['', '', '', ''],
-    captions: ['Image 1', 'Image 2', 'Image 3', 'Image 4'],
   },
   
   // Video embed placeholder
@@ -310,30 +273,6 @@ export const slideTemplates = {
     ],
   },
   
-  // Before/After Showcase - Split layout with smaller old images on left, bigger new images on right
-  beforeAfterShowcase: {
-    type: 'beforeAfterShowcase',
-    label: 'The Solution',
-    title: 'Redesigning friction points',
-    beforeImages: [
-      { src: '', caption: 'Old design 1' },
-      { src: '', caption: 'Old design 2' },
-    ],
-    afterImages: [
-      { src: '', caption: 'New design 1' },
-      { src: '', caption: 'New design 2' },
-      { src: '', caption: 'New design 3' },
-      { src: '', caption: 'New design 4' },
-    ],
-    problemLabel: 'Problem:',
-    problemText: 'Describe the main problem or pain point with the old design.',
-    solutionLabel: 'Solution:',
-    solutionPoints: [
-      'First improvement or change',
-      'Second improvement or change',
-    ],
-  },
-  
   // Big quote/testimonial
   testimonial: {
     type: 'testimonial',
@@ -406,10 +345,10 @@ export const slideTemplates = {
 export const templateCategories = {
   'Introduction': ['intro', 'info'],
   'Content': ['text', 'twoColumn', 'insight', 'textWithImages'],
-  'Visual': ['image', 'heroImage', 'gallery', 'video', 'projectShowcase', 'goalsShowcase', 'imageMosaic'],
-  'Research': ['research', 'researchSplit', 'context', 'problem', 'issuesBreakdown', 'oldExperience', 'quotes', 'testimonial'],
+  'Visual': ['image', 'video', 'projectShowcase', 'goalsShowcase', 'imageMosaic'],
+  'Research': ['context', 'problem', 'issuesBreakdown', 'oldExperience', 'quotes', 'testimonial'],
   'Process': ['goals', 'achieveGoals', 'process', 'timeline', 'testing'],
-  'Features': ['feature', 'comparison', 'challengeSolution', 'solutionShowcase', 'beforeAfterShowcase', 'tools'],
+  'Features': ['feature', 'comparison', 'challengeSolution', 'solutionShowcase', 'tools'],
   'Results': ['stats', 'outcomes', 'end'],
 };
 
