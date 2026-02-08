@@ -3060,8 +3060,7 @@ const CaseStudy = () => {
             <SplitRatioControl slide={slide} slideIndex={index} />
             <div className="slide-inner">
               <div className="project-showcase-layout" style={getSplitStyle(slide)}>
-                {/* Left Panel - Info (centered vertically when no number), wrapped in highlight-style card */}
-                <div className="project-showcase-info-wrapper">
+                {/* Left Panel - Info (centered vertically when no number) */}
                 <div className={`project-showcase-info${!slide.slideNumber ? ' project-showcase-info--no-number' : ''}`}>
                   {(slide.slideNumber || editMode) && (
                     <div className="project-showcase-number-wrapper">
@@ -3261,10 +3260,11 @@ const CaseStudy = () => {
                     </div>
                   </OptionalField>
                 </div>
-                </div>
-                {/* Right Panel - Image */}
+                {/* Right Panel - Image with highlight-style wrapper */}
                 <div className="project-showcase-visual">
-                  <DynamicImages slide={slide} slideIndex={index} field="image" className="project-showcase-dynamic" />
+                  <div className="project-showcase-image-highlight-wrapper">
+                    <DynamicImages slide={slide} slideIndex={index} field="image" className="project-showcase-dynamic" />
+                  </div>
                 </div>
               </div>
             </div>

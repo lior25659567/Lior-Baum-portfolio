@@ -2279,6 +2279,9 @@ body.case-study-active .footer {
   position: relative;
   background: var(--color-bg-secondary);
   cursor: pointer;
+  /* object-fit/object-position apply only to the image, not the wrapper */
+  object-fit: unset;
+  object-position: unset;
 }
 
 /* For 1 image: fill container completely */
@@ -2304,8 +2307,9 @@ body.case-study-active .footer {
   max-height: 100%;
 }
 
-.dynamic-image-wrapper img,
-.dynamic-image-wrapper video {
+/* object-fit and object-position only on the image/video, not the wrapper or project showcase div */
+.dynamic-image-wrapper > img,
+.dynamic-image-wrapper > video {
   display: block;
   position: absolute;
   top: 0;
@@ -7046,19 +7050,6 @@ textarea.editable-field {
 }
 
 /* Wrapper around left panel - highlight-style card */
-.project-showcase-info-wrapper {
-  background: rgba(255, 88, 74, 0.06);
-  border-radius: 12px;
-  border-left: 3px solid var(--color-accent);
-  padding: 0;
-  margin: 0.75rem;
-  margin-right: 0.5rem;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
 /* Left Panel - Info */
 .project-showcase-info {
   background: transparent;
@@ -7384,6 +7375,21 @@ textarea.editable-field {
   overflow: visible;
 }
 
+/* Highlight-style wrapper around the image (right panel) */
+.project-showcase-image-highlight-wrapper {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 88, 74, 0.08);
+  border-radius: 12px;
+  border-left: 3px solid var(--color-accent);
+  padding: 1rem;
+  overflow: hidden;
+}
+
 /* DynamicImages within slide containers */
 .project-showcase-dynamic,
 .goals-showcase-dynamic,
@@ -7526,10 +7532,6 @@ textarea.editable-field {
     grid-template-rows: auto 1fr;
   }
 
-  .project-showcase-info-wrapper {
-    margin: 0.5rem;
-  }
-
   .project-showcase-info {
     padding: 2rem;
     min-height: auto;
@@ -7545,8 +7547,8 @@ textarea.editable-field {
 }
 
 @media (max-width: 768px) {
-  .project-showcase-info-wrapper {
-    margin: 0.5rem;
+  .project-showcase-image-highlight-wrapper {
+    padding: 0.75rem;
     border-radius: 10px;
   }
 
