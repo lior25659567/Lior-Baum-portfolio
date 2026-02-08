@@ -2207,10 +2207,12 @@ const CaseStudy = () => {
       );
     } else if (slide[field]) {
       const isVideoVal = slide[`${field}IsVideo`] || false;
+      const isGifVal = slide[`${field}IsGif`] || false;
       images = [{ 
         src: slide[field], 
         caption: slide[captionField] || '', 
         isVideo: isVideoVal,
+        isGif: isGifVal,
         position: slide.imagePosition || 'center center',
         size: slide.imageSize || 'large',
         fit: slide.imageFit || 'cover'
@@ -2240,6 +2242,8 @@ const CaseStudy = () => {
             slideUpdates.imageFit = val;
           } else if (key === 'isVideo') {
             slideUpdates[`${field}IsVideo`] = val;
+          } else if (key === 'isGif') {
+            slideUpdates[`${field}IsGif`] = val;
           }
         });
         updateSlide(slideIndex, slideUpdates);
@@ -2284,9 +2288,9 @@ const CaseStudy = () => {
             try {
               const dataUrl = event.target.result;
               
-              // Don't compress videos or GIFs - update both src and isVideo in single call
+              // Don't compress videos or GIFs - update src, isVideo, isGif in single call
               if (isVideo || isGif) {
-                updateImage(imgIndex, { src: dataUrl, isVideo: isVideo });
+                updateImage(imgIndex, { src: dataUrl, isVideo: isVideo, isGif: isGif });
               } else {
                 try {
                   const compressed = await compressImage(dataUrl);
@@ -2437,7 +2441,29 @@ const CaseStudy = () => {
                         />
                       )}
                       {editMode && <div className="image-edit-overlay">Click to change</div>}
-                      {!editMode && !img.isVideo && <div className="image-zoom-hint">🔍</div>}
+                      {!editMode && !img.isVideo && !img.isGif && <div className="image-zoom-hint">🔍</div>}
+                      
+                      {/* Fill / Fit control - visible for video and GIF */}
+                      {editMode && (img.isVideo || img.isGif) && (
+                        <div className="media-fit-inline" onClick={(e) => e.stopPropagation()}>
+                          <button
+                            type="button"
+                            className={`fit-inline-btn ${imgFit === 'cover' ? 'active' : ''}`}
+                            onClick={() => updateImage(imgIndex, 'fit', 'cover')}
+                            title="Fill - covers entire area (may crop)"
+                          >
+                            Fill
+                          </button>
+                          <button
+                            type="button"
+                            className={`fit-inline-btn ${imgFit === 'contain' ? 'active' : ''}`}
+                            onClick={() => updateImage(imgIndex, 'fit', 'contain')}
+                            title="Fit - shows entire media (may have gaps)"
+                          >
+                            Fit
+                          </button>
+                        </div>
+                      )}
                       
                       {/* Image Controls Button - inside wrapper */}
                       {editMode && (
@@ -2725,14 +2751,14 @@ const CaseStudy = () => {
             
             // Don't compress videos or GIFs
             if (isVideo || isGif) {
-              updateSlide(slideIndex, { [field]: dataUrl, [`${field}IsVideo`]: isVideo });
+              updateSlide(slideIndex, { [field]: dataUrl, [`${field}IsVideo`]: isVideo, [`${field}IsGif`]: isGif });
             } else {
               try {
                 const compressed = await compressImage(dataUrl);
-                updateSlide(slideIndex, { [field]: compressed, [`${field}IsVideo`]: false });
+                updateSlide(slideIndex, { [field]: compressed, [`${field}IsVideo`]: false, [`${field}IsGif`]: false });
               } catch (err) {
                 console.error('Error compressing image:', err);
-                updateSlide(slideIndex, { [field]: dataUrl });
+                updateSlide(slideIndex, { [field]: dataUrl, [`${field}IsGif`]: false });
               }
             }
           } catch (err) {
@@ -4720,9 +4746,9 @@ const CaseStudy = () => {
                 try {
                   const dataUrl = event.target.result;
                   
-                  // Don't compress videos or GIFs - update both src and isVideo in single call
+                  // Don't compress videos or GIFs - update src, isVideo, isGif in single call
                   if (isVideo || isGif) {
-                    updateImage(imgIndex, { src: dataUrl, isVideo: isVideo });
+                    updateImage(imgIndex, { src: dataUrl, isVideo: isVideo, isGif: isGif });
                   } else {
                     try {
                       const compressed = await compressImage(dataUrl);
@@ -4941,7 +4967,29 @@ const CaseStudy = () => {
                                 />
                               )}
                               {editMode && <div className="image-edit-overlay">Click to change</div>}
-                              {!editMode && !img.isVideo && <div className="image-zoom-hint">🔍</div>}
+                              {!editMode && !img.isVideo && !img.isGif && <div className="image-zoom-hint">🔍</div>}
+                              
+                              {/* Fill / Fit control - visible for video and GIF */}
+                              {editMode && (img.isVideo || img.isGif) && (
+                                <div className="media-fit-inline" onClick={(e) => e.stopPropagation()}>
+                                  <button
+                                    type="button"
+                                    className={`fit-inline-btn ${imgFit === 'cover' ? 'active' : ''}`}
+                                    onClick={() => updateImage(imgIndex, 'fit', 'cover')}
+                                    title="Fill - covers entire area (may crop)"
+                                  >
+                                    Fill
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className={`fit-inline-btn ${imgFit === 'contain' ? 'active' : ''}`}
+                                    onClick={() => updateImage(imgIndex, 'fit', 'contain')}
+                                    title="Fit - shows entire media (may have gaps)"
+                                  >
+                                    Fit
+                                  </button>
+                                </div>
+                              )}
                               
                               {/* Image Controls Button */}
                               {editMode && (
