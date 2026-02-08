@@ -338,11 +338,19 @@ export const slideTemplates = {
     title: 'Old version',
     images: [],
   },
+
+  // Chapter - Section divider slide
+  chapter: {
+    type: 'chapter',
+    number: '01',
+    title: 'Research',
+    subtitle: 'Understanding the problem space',
+  },
 };
 
 // Template categories for easier navigation
 export const templateCategories = {
-  'Introduction': ['intro', 'info'],
+  'Introduction': ['intro', 'info', 'chapter'],
   'Content': ['text', 'twoColumn', 'insight', 'textWithImages'],
   'Visual': ['image', 'video', 'projectShowcase', 'goalsShowcase', 'imageMosaic'],
   'Research': ['context', 'problem', 'issuesBreakdown', 'oldExperience', 'quotes', 'testimonial'],

@@ -75,6 +75,7 @@ const TemplatePreview = ({ type }) => {
     goalsShowcase: 'Two-column layout with large number, title, optional description, and numbered goals list. Full image on right.',
     solutionShowcase: 'Two-column comparison: problem images and text on left, solution images and bullet points on right.',
     imageMosaic: 'Tiled image grid background with a centered title overlay. Perfect for showing old versions, screen collections, or visual overviews.',
+    chapter: 'Section divider slide with large number, title, and optional subtitle. Use to separate case study chapters.',
   };
 
   return (
@@ -454,6 +455,13 @@ const TemplatePreview = ({ type }) => {
               <div className="mockup-mosaic-overlay">
                 <div className="mockup-mosaic-title">Title</div>
               </div>
+            </div>
+          )}
+          {type === 'chapter' && (
+            <div className="mockup-chapter">
+              <div className="mockup-chapter-number">01</div>
+              <div className="mockup-chapter-title">Research</div>
+              <div className="mockup-chapter-subtitle">Understanding the problem</div>
             </div>
           )}
         </div>
@@ -5143,6 +5151,33 @@ const CaseStudy = () => {
         );
       }
       
+      case 'chapter':
+        return (
+          <div className="slide slide-chapter" key={index}>
+            {slideControls}
+            <div className="slide-inner">
+              <OptionalField slide={slide} index={index} field="number" label="Number" defaultValue="01">
+                <span className="chapter-number">
+                  <EditableField value={slide.number} onChange={(v) => updateSlide(index, { number: v })} />
+                </span>
+              </OptionalField>
+              <h1 className="chapter-title">
+                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
+              </h1>
+              <OptionalField slide={slide} index={index} field="subtitle" label="Subtitle" defaultValue="Section description">
+                <p className="chapter-subtitle">
+                  <EditableField value={slide.subtitle} onChange={(v) => updateSlide(index, { subtitle: v })} />
+                </p>
+              </OptionalField>
+              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                <div className="chapter-highlight">
+                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                </div>
+              </OptionalField>
+            </div>
+          </div>
+        );
+
       default:
         return (
           <div className="slide slide-unknown" key={index}>
