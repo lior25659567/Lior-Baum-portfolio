@@ -3512,8 +3512,25 @@ const CaseStudy = () => {
                   />
                 </p>
               </OptionalField>
+              {/* Grid Layout Control */}
+              {editMode && (
+                <div className="grid-layout-control">
+                  <span className="grid-control-label">Grid Columns:</span>
+                  <div className="grid-control-buttons">
+                    {[1, 2, 3, 4].map(cols => (
+                      <button
+                        key={cols}
+                        className={`grid-col-btn ${(slide.gridColumns || 3) === cols ? 'active' : ''}`}
+                        onClick={() => updateSlide(index, { gridColumns: cols })}
+                      >
+                        {cols}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               {slide.quotes?.length > 0 && (
-              <div className="quotes-grid">
+              <div className="quotes-grid" style={{ gridTemplateColumns: `repeat(${slide.gridColumns || 3}, 1fr)` }}>
                 {slide.quotes.map((quote, i) => (
                   <div key={i} className="quote-card">
                       <p className="quote-text">
@@ -3724,26 +3741,7 @@ const CaseStudy = () => {
                     />
                   </p>
                 </OptionalField>
-                {slide.layouts?.length > 0 && (
-                <div className="testing-layouts">
-                    <span className="layouts-label">Tested options:</span>
-                  <ul className="layouts-list">
-                    {slide.layouts.map((layout, i) => (
-                        <li key={i} className="layout-item">
-                          <EditableField
-                            value={layout}
-                            onChange={(v) => updateSlideItem(index, 'layouts', i, v)}
-                          />
-                          <ArrayItemControls onRemove={() => removeArrayItem(index, 'layouts', i)} />
-                        </li>
-                    ))}
-                  </ul>
-                </div>
-                )}
-                <AddItemButton 
-                  onClick={() => addArrayItem(index, 'layouts', 'New option...')}
-                  label="Option"
-                />
+                <DynamicBullets slide={slide} slideIndex={index} field="layouts" titleField="layoutsTitle" className="testing-options" label="Option" />
                 <OptionalField slide={slide} index={index} field="conclusion" label="Conclusion" defaultValue="Add conclusion...">
                   <p className="testing-conclusion">
                     <EditableField
@@ -4161,83 +4159,7 @@ const CaseStudy = () => {
                     <span className="showcase-desc-label solution-label">
                       <EditableField value={slide.solutionLabel || 'Solution:'} onChange={(v) => updateSlide(index, { solutionLabel: v })} />
                     </span>
-                    <ul className="showcase-solution-points">
-                      {(slide.solutionPoints || []).map((point, i) => {
-                        // Support both string and object format { title, text }
-                        const isObject = typeof point === 'object' && point !== null;
-                        const hasTitle = isObject && point.title;
-                        const pointText = isObject ? (point.text || '') : point;
-                        const pointTitle = isObject ? (point.title || '') : '';
-                        
-                        return (
-                          <li key={i}>
-                            {hasTitle && (
-                              <span className="bullet-title">
-                                <EditableField 
-                                  value={pointTitle} 
-                                  onChange={(v) => {
-                                    const points = [...(slide.solutionPoints || [])];
-                                    points[i] = { title: v, text: pointText };
-                                    updateSlide(index, { solutionPoints: points });
-                                  }} 
-                                />
-                              </span>
-                            )}
-                            <span className={hasTitle ? 'bullet-text' : ''}>
-                              <EditableField 
-                                value={pointText} 
-                                onChange={(v) => {
-                                  const points = [...(slide.solutionPoints || [])];
-                                  if (hasTitle) {
-                                    points[i] = { title: pointTitle, text: v };
-                                  } else {
-                                    points[i] = v;
-                                  }
-                                  updateSlide(index, { solutionPoints: points });
-                                }} 
-                              />
-                            </span>
-                            {editMode && (
-                              <>
-                                <button 
-                                  className="toggle-title-btn"
-                                  title={hasTitle ? 'Remove title' : 'Add title'}
-                                  onClick={() => {
-                                    const points = [...(slide.solutionPoints || [])];
-                                    if (hasTitle) {
-                                      // Remove title, keep just text
-                                      points[i] = pointText;
-                                    } else {
-                                      // Add title
-                                      points[i] = { title: 'Title', text: pointText };
-                                    }
-                                    updateSlide(index, { solutionPoints: points });
-                                  }}
-                                >{hasTitle ? '−' : 'T'}</button>
-                                <button 
-                                  className="remove-point-btn"
-                                  onClick={() => {
-                                    const points = (slide.solutionPoints || []).filter((_, idx) => idx !== i);
-                                    updateSlide(index, { solutionPoints: points });
-                                  }}
-                                >×</button>
-                              </>
-                            )}
-                          </li>
-                        );
-                      })}
-                    </ul>
-                    {editMode && (
-                      <button 
-                        className="add-point-btn"
-                        onClick={() => {
-                          const points = [...(slide.solutionPoints || []), 'New point'];
-                          updateSlide(index, { solutionPoints: points });
-                        }}
-                      >
-                        + Add Point
-                      </button>
-                    )}
+                    <DynamicBullets slide={slide} slideIndex={index} field="solutionPoints" titleField="solutionPointsTitle" className="showcase-solution-bullets" label="Point" />
                   </div>
                 </div>
               </div>
@@ -4446,43 +4368,13 @@ const CaseStudy = () => {
                   <EditableField value={slide.content} onChange={(v) => updateSlide(index, { content: v })} multiline />
                 </p>
                 
-                {slide.issues?.length > 0 && (
-                  <ul className="old-experience-issues">
-                    {slide.issues.map((issue, i) => (
-                      <li key={i} className="old-experience-issue">
-                        <span className="issue-bullet">•</span>
-                        <EditableField 
-                          value={issue} 
-                          onChange={(v) => {
-                            const newIssues = [...slide.issues];
-                            newIssues[i] = v;
-                            updateSlide(index, { issues: newIssues });
-                          }} 
-                        />
-                        <ArrayItemControls onRemove={() => removeArrayItem(index, 'issues', i)} />
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                <AddItemButton 
-                  onClick={() => addArrayItem(index, 'issues', 'New issue point')}
-                  label="Issue"
-                />
+                <DynamicBullets slide={slide} slideIndex={index} field="issues" titleField="issuesTitle" className="old-experience-issues-wrapper" label="Issue" />
                 
-                {(slide.highlight || editMode) && (
+                <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add key insight here" multiline>
                   <div className="old-experience-highlight">
-                    <EditableField 
-                      value={slide.highlight || 'Add key insight here'} 
-                      onChange={(v) => updateSlide(index, { highlight: v })} 
-                      multiline
-                    />
-                    <ToggleFieldButton 
-                      hasValue={!!slide.highlight}
-                      onToggle={() => updateSlide(index, { highlight: slide.highlight ? null : 'Add key insight here' })}
-                      label="Highlight"
-                    />
+                    <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
                   </div>
-                )}
+                </OptionalField>
               </div>
               <SlideCta slide={slide} index={index} updateSlide={updateSlide} />
             </div>
