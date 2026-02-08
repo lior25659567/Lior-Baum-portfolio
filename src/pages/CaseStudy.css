@@ -7692,7 +7692,7 @@ textarea.editable-field {
   font-size: var(--text-h1);
   font-weight: 600;
   line-height: 1.1;
-  color: var(--color-text);
+  color: var(--color-accent);
   margin: 0;
 }
 
