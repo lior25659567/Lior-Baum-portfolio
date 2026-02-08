@@ -7185,6 +7185,27 @@ textarea.editable-field {
 
 .mosaic-dynamic .dynamic-images-grid {
   height: 100%;
+  width: 100%;
+  gap: 6px;
+  grid-auto-rows: minmax(0, 1fr);
+}
+
+/* Mosaic: one tile per image, no duplication; equal-sized tiles */
+.mosaic-dynamic.mosaic-mode .dynamic-images-grid {
+  gap: 6px;
+  grid-auto-rows: minmax(0, 1fr);
+  padding: 6px;
+}
+
+.mosaic-dynamic.mosaic-mode .dynamic-image-item {
+  min-height: 0;
+  min-width: 0;
+}
+
+.mosaic-dynamic.mosaic-mode .dynamic-image-wrapper {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
 }
 
 .mosaic-dynamic .dynamic-image-wrapper {

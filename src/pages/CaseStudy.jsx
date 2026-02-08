@@ -2198,7 +2198,7 @@ const CaseStudy = () => {
   // ========== DYNAMIC IMAGES COMPONENT ==========
   // Handles single image OR array of images with add/remove and position control (memoized for stable identity)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const DynamicImages = useMemo(() => ({ slide, slideIndex, field = 'image', captionField = 'caption', className = '', maxImages = 3 }) => {
+  const DynamicImages = useMemo(() => ({ slide, slideIndex, field = 'image', captionField = 'caption', className = '', maxImages = 3, mosaicMode = false }) => {
     const [activePositionControl, setActivePositionControl] = useState(null);
     
     // Check if it's an array or single string
@@ -2349,11 +2349,14 @@ const CaseStudy = () => {
     if (images.length === 0 && !editMode) return null;
     
     const imageCount = images.length;
-    const gridCols = slide.gridCols || (imageCount >= 3 ? 3 : imageCount >= 2 ? 2 : 1);
+    // Mosaic: grid fits actual image count only (no duplication); otherwise use slide.gridCols or count-based
+    const gridCols = mosaicMode
+      ? (imageCount <= 1 ? 1 : imageCount <= 4 ? 2 : imageCount <= 9 ? 3 : 4)
+      : (slide.gridCols || (imageCount >= 3 ? 3 : imageCount >= 2 ? 2 : 1));
     
     return (
-      <div className={`dynamic-images images-count-${imageCount} ${className}`}>
-        {editMode && imageCount >= 2 && (
+      <div className={`dynamic-images images-count-${imageCount} ${className} ${mosaicMode ? 'mosaic-mode' : ''}`}>
+        {editMode && imageCount >= 2 && !mosaicMode && (
           <div className="dynamic-grid-control">
             <span className="dynamic-grid-label">Grid</span>
             <div className="dynamic-grid-buttons">
@@ -4978,7 +4981,7 @@ const CaseStudy = () => {
           <div className="slide slide-image-mosaic" key={index}>
             {slideControls}
             <div className="slide-inner">
-              <DynamicImages slide={slide} slideIndex={index} field="images" className="mosaic-dynamic" />
+              <DynamicImages slide={slide} slideIndex={index} field="images" className="mosaic-dynamic" mosaicMode maxImages={24} />
               {/* Centered title overlay */}
               <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="Old version">
                 <div className="mosaic-overlay">

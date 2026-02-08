@@ -336,8 +336,6 @@ export const slideTemplates = {
     type: 'imageMosaic',
     title: 'Old version',
     images: [],
-    gridCols: 5,
-    gridRows: 4,
   },
 };
 
