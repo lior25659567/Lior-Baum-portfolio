@@ -192,17 +192,20 @@ const TemplatePreview = ({ type }) => {
           )}
           {type === 'challengeSolution' && (
             <div className="mockup-challenge-solution">
-              <div className="mockup-cs-blocks">
+              <div className="mockup-cs-row">
                 <div className="mockup-cs-block challenge">
                   <span className="mockup-cs-label">Challenge</span>
                   <div className="mockup-text-lines"><div className="line" /><div className="line short" /></div>
                 </div>
+                <div className="mockup-image tiny"><span className="mockup-img-icon">🔴</span></div>
+              </div>
+              <div className="mockup-cs-row">
                 <div className="mockup-cs-block solution">
                   <span className="mockup-cs-label">Solution</span>
                   <div className="mockup-text-lines"><div className="line" /><div className="line short" /></div>
                 </div>
+                <div className="mockup-image tiny"><span className="mockup-img-icon">🟢</span></div>
               </div>
-              <div className="mockup-image small"><span className="mockup-img-icon">💡</span></div>
             </div>
           )}
           {type === 'quotes' && (
@@ -4104,32 +4107,42 @@ const CaseStudy = () => {
         return (
           <div className="slide slide-challenge-solution" key={index}>
             {slideControls}
-            <SplitRatioControl slide={slide} slideIndex={index} />
-            <div className="slide-inner slide-split" style={getSplitStyle(slide)}>
-              <div className="split-content">
-                <span className="slide-label">
-                  <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-                </span>
-                <h2 className="cs-title">
-                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
-                </h2>
-                <div className="cs-block challenge">
-                  <h3>Challenge</h3>
-                  <p><EditableField value={slide.challenge} onChange={(v) => updateSlide(index, { challenge: v })} multiline /></p>
-                </div>
-                <div className="cs-block solution">
-                  <h3>Solution</h3>
-                  <p><EditableField value={slide.solution} onChange={(v) => updateSlide(index, { solution: v })} multiline /></p>
-                </div>
-                <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                  <div className="cs-highlight">
-                    <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+            <div className="slide-inner">
+              <span className="slide-label">
+                <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
+              </span>
+              <h2 className="cs-title">
+                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
+              </h2>
+              <div className="cs-rows">
+                {/* Challenge row */}
+                <div className="cs-row challenge-row">
+                  <div className="cs-block challenge">
+                    <h3>Challenge</h3>
+                    <p><EditableField value={slide.challenge} onChange={(v) => updateSlide(index, { challenge: v })} multiline /></p>
+                    <DynamicBullets slide={slide} slideIndex={index} field="challengeBullets" titleField="challengeBulletsTitle" className="cs-bullets" label="Point" />
                   </div>
-                </OptionalField>
+                  <div className="cs-image-area">
+                    <DynamicImages slide={slide} slideIndex={index} field="challengeImage" className="cs-dynamic-image" />
+                  </div>
+                </div>
+                {/* Solution row */}
+                <div className="cs-row solution-row">
+                  <div className="cs-block solution">
+                    <h3>Solution</h3>
+                    <p><EditableField value={slide.solution} onChange={(v) => updateSlide(index, { solution: v })} multiline /></p>
+                    <DynamicBullets slide={slide} slideIndex={index} field="solutionBullets" titleField="solutionBulletsTitle" className="cs-bullets" label="Point" />
+                  </div>
+                  <div className="cs-image-area">
+                    <DynamicImages slide={slide} slideIndex={index} field="solutionImage" className="cs-dynamic-image" />
+                  </div>
+                </div>
               </div>
-              <div className="split-image challenge-solution-image">
-                <DynamicImages slide={slide} slideIndex={index} field="image" className="challenge-solution-dynamic" />
-              </div>
+              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                <div className="cs-highlight">
+                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                </div>
+              </OptionalField>
             </div>
           </div>
         );
@@ -4929,6 +4942,7 @@ const CaseStudy = () => {
                             <div className="image-placeholder">{editMode ? 'Click to add image' : 'No image'}</div>
                           )}
                         </div>
+                        {/* Caption */}
                         <div className="twi-caption-wrapper">
                           <span className="twi-caption">
                             <EditableField 
@@ -4947,6 +4961,56 @@ const CaseStudy = () => {
                             </button>
                           )}
                         </div>
+                        {/* Per-image description */}
+                        {img.description ? (
+                          <div className="twi-image-description-wrapper">
+                            <p className="twi-image-description">
+                              <EditableField
+                                value={img.description}
+                                onChange={(v) => updateImage(imgIndex, 'description', v)}
+                                multiline
+                              />
+                            </p>
+                            {editMode && (
+                              <button className="remove-field-inline-btn" onClick={() => updateImage(imgIndex, 'description', '')} title="Remove description">×</button>
+                            )}
+                          </div>
+                        ) : editMode ? (
+                          <button className="add-field-btn twi-add-field" onClick={() => updateImage(imgIndex, 'description', 'Describe this image...')}>+ Description</button>
+                        ) : null}
+                        {/* Per-image bullets */}
+                        {img.bullets && img.bullets.length > 0 ? (
+                          <div className="twi-image-bullets-wrapper">
+                            <ul className="twi-image-bullets">
+                              {img.bullets.map((bullet, bIdx) => (
+                                <li key={bIdx} className="twi-image-bullet">
+                                  <EditableField
+                                    value={typeof bullet === 'object' ? bullet.text : bullet}
+                                    onChange={(v) => {
+                                      const newBullets = [...img.bullets];
+                                      newBullets[bIdx] = v;
+                                      updateImage(imgIndex, 'bullets', newBullets);
+                                    }}
+                                  />
+                                  {editMode && img.bullets.length > 1 && (
+                                    <button className="remove-twi-bullet-btn" onClick={() => {
+                                      const newBullets = img.bullets.filter((_, i) => i !== bIdx);
+                                      updateImage(imgIndex, 'bullets', newBullets);
+                                    }}>×</button>
+                                  )}
+                                </li>
+                              ))}
+                            </ul>
+                            {editMode && (
+                              <div className="twi-bullet-actions">
+                                <button className="add-twi-bullet-btn" onClick={() => updateImage(imgIndex, 'bullets', [...img.bullets, 'New point'])}>+ Point</button>
+                                <button className="remove-field-inline-btn" onClick={() => updateImage(imgIndex, 'bullets', [])} title="Remove all bullets">Remove Bullets</button>
+                              </div>
+                            )}
+                          </div>
+                        ) : editMode ? (
+                          <button className="add-field-btn twi-add-field" onClick={() => updateImage(imgIndex, 'bullets', ['First point'])}>+ Bullets</button>
+                        ) : null}
                         {editMode && images.length > 1 && (
                           <button 
                             className="remove-image-btn" 

@@ -1633,6 +1633,143 @@ body.case-study-active .footer {
   font-weight: 500;
 }
 
+/* Per-image description and bullets */
+.twi-image-description-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.twi-image-description {
+  font-size: var(--text-body-sm);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.twi-image-description-wrapper .remove-field-inline-btn {
+  position: absolute;
+  top: 0;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 68, 68, 0.8);
+  color: white;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.twi-image-description-wrapper:hover .remove-field-inline-btn {
+  opacity: 1;
+}
+
+.twi-image-bullets-wrapper {
+  width: 100%;
+}
+
+.twi-image-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.twi-image-bullet {
+  position: relative;
+  padding-left: 1rem;
+  font-size: calc(var(--text-body-sm) * 0.95);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.twi-image-bullet::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.remove-twi-bullet-btn {
+  position: absolute;
+  top: 50%;
+  right: -6px;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 68, 68, 0.8);
+  color: white;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.twi-image-bullet:hover .remove-twi-bullet-btn {
+  opacity: 1;
+}
+
+.twi-bullet-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.35rem;
+}
+
+.add-twi-bullet-btn {
+  background: none;
+  border: 1px dashed var(--color-border);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.add-twi-bullet-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.twi-bullet-actions .remove-field-inline-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+.twi-bullet-actions .remove-field-inline-btn:hover {
+  opacity: 1;
+  color: #e53935;
+}
+
+.twi-add-field {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  align-self: flex-start;
+}
+
 /* TWI Image Size Variants */
 .twi-image-item.img-size-small .twi-image-wrapper {
   max-width: 50%;
@@ -5406,19 +5543,26 @@ textarea.editable-field {
 /* Challenge Solution Mockup */
 .mockup-challenge-solution {
   display: flex;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.4rem;
   width: 100%;
+}
+
+.mockup-cs-row {
+  display: flex;
+  gap: 0.4rem;
   align-items: center;
 }
 
-.mockup-cs-blocks {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+.mockup-cs-row .mockup-image.tiny {
+  width: 2.5rem;
+  height: 1.8rem;
+  flex-shrink: 0;
+  font-size: 0.5rem;
 }
 
 .mockup-cs-block {
+  flex: 1;
   padding: 0.4rem;
   border-radius: 4px;
 }
@@ -6142,8 +6286,23 @@ textarea.editable-field {
 }
 
 /* Challenge Solution */
-.cs-block {
+/* Challenge & Solution rows layout */
+.cs-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  width: 100%;
   margin-top: 1.5rem;
+}
+
+.cs-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.cs-block {
   padding: 1.25rem;
   border-radius: 12px;
   background: var(--color-bg-secondary);
@@ -6169,6 +6328,37 @@ textarea.editable-field {
   font-size: var(--text-body-sm);
   color: var(--color-text-muted);
   line-height: 1.6;
+}
+
+.cs-block .cs-bullets {
+  margin-top: 0.75rem;
+}
+
+.cs-image-area {
+  display: flex;
+  align-items: center;
+  min-height: 0;
+}
+
+.cs-image-area .cs-dynamic-image {
+  width: 100%;
+}
+
+.cs-image-area .dynamic-image-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+}
+
+@media (max-width: 768px) {
+  .cs-row {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .cs-image-area {
+    order: -1;
+  }
 }
 
 /* Tools */

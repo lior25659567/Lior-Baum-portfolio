@@ -253,8 +253,9 @@ export const slideTemplates = {
     label: 'Problem Solving',
     title: 'Challenge & Solution',
     challenge: 'Describe the challenge faced.',
+    challengeImage: [{ src: '', caption: '' }],
     solution: 'Describe how it was solved.',
-    image: '',
+    solutionImage: [{ src: '', caption: '' }],
   },
   
   // Solution Showcase - Problem/Solution with images comparison
