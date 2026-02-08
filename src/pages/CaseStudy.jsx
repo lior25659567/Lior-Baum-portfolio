@@ -2025,53 +2025,92 @@ const CaseStudy = () => {
   // Reusable bullet points with optional section title - can be added to any slide (memoized for stable identity)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const DynamicBullets = useMemo(() => ({ slide, slideIndex, field = 'bullets', titleField, className = '', maxBullets = 0, label = 'Bullet' }) => {
-    // Normalize bullets to strings (handle old object format)
+    // Support both string bullets and { title, text } objects for per-bullet titles
     const rawBullets = Array.isArray(slide[field]) ? slide[field] : [];
-    const bullets = rawBullets.map(b => {
-      if (typeof b === 'object' && b !== null) {
-        // Old format: { title, text } - just use text
-        return b.text || b.title || '';
-      }
-      return typeof b === 'string' ? b : String(b || '');
-    });
     const sectionTitle = titleField ? slide[titleField] : null;
     const hasSectionTitle = sectionTitle !== undefined && sectionTitle !== null && sectionTitle !== '';
     
+    const getBulletText = (bullet) => {
+      if (typeof bullet === 'object' && bullet !== null) return bullet.text || '';
+      return typeof bullet === 'string' ? bullet : String(bullet || '');
+    };
+    
+    const getBulletTitle = (bullet) => {
+      if (typeof bullet === 'object' && bullet !== null) return bullet.title || '';
+      return '';
+    };
+    
+    const hasBulletTitle = (bullet) => {
+      return typeof bullet === 'object' && bullet !== null && bullet.title !== undefined;
+    };
+    
     const updateBullet = (bIndex, value) => {
-      const newBullets = [...bullets];
-      newBullets[bIndex] = value;
+      const newBullets = [...rawBullets];
+      const current = newBullets[bIndex];
+      if (typeof current === 'object' && current !== null) {
+        newBullets[bIndex] = { ...current, text: value };
+      } else {
+        newBullets[bIndex] = value;
+      }
+      updateSlide(slideIndex, { [field]: newBullets });
+    };
+    
+    const updateBulletTitle = (bIndex, value) => {
+      const newBullets = [...rawBullets];
+      const current = newBullets[bIndex];
+      if (typeof current === 'object' && current !== null) {
+        newBullets[bIndex] = { ...current, title: value };
+      } else {
+        newBullets[bIndex] = { title: value, text: current || '' };
+      }
+      updateSlide(slideIndex, { [field]: newBullets });
+    };
+    
+    const toggleBulletTitle = (bIndex) => {
+      const newBullets = [...rawBullets];
+      const current = newBullets[bIndex];
+      if (hasBulletTitle(current)) {
+        // Remove title, convert back to string
+        newBullets[bIndex] = getBulletText(current);
+      } else {
+        // Add title, convert to object
+        newBullets[bIndex] = { title: 'Title', text: getBulletText(current) };
+      }
       updateSlide(slideIndex, { [field]: newBullets });
     };
     
     const addBullet = () => {
-      if (maxBullets > 0 && bullets.length >= maxBullets) return;
-      const newBullets = [...bullets, 'New bullet point'];
+      if (maxBullets > 0 && rawBullets.length >= maxBullets) return;
+      const newBullets = [...rawBullets, 'New bullet point'];
       updateSlide(slideIndex, { [field]: newBullets });
     };
     
     const removeBullet = (bIndex) => {
-      const newBullets = bullets.filter((_, i) => i !== bIndex);
+      const newBullets = rawBullets.filter((_, i) => i !== bIndex);
       updateSlide(slideIndex, { [field]: newBullets });
     };
     
     const toggleSectionTitle = () => {
       if (!titleField) return;
       if (hasSectionTitle) {
-        // Remove title
         updateSlide(slideIndex, { [titleField]: undefined });
       } else {
-        // Add title
         updateSlide(slideIndex, { [titleField]: 'Section Title' });
       }
     };
     
     // If no bullets and not in edit mode, show nothing
-    if (bullets.length === 0 && !editMode) return null;
+    if (rawBullets.length === 0 && !editMode) return null;
     
     // If no bullets and in edit mode, show add button
-    if (bullets.length === 0 && editMode) {
+    if (rawBullets.length === 0 && editMode) {
       return (
         <div className={`dynamic-bullets ${className}`}>
+          {titleField && (
+            <button className="add-section-title-btn" onClick={toggleSectionTitle}>
+              + Add Bullets Title
+            </button>
+          )}
           <button className="add-bullet-btn" onClick={addBullet}>
             + Add {label}
           </button>
@@ -2079,7 +2118,7 @@ const CaseStudy = () => {
       );
     }
     
-    const canAddMore = maxBullets === 0 || bullets.length < maxBullets;
+    const canAddMore = maxBullets === 0 || rawBullets.length < maxBullets;
     
     return (
       <div className={`dynamic-bullets ${className}`}>
@@ -2104,28 +2143,45 @@ const CaseStudy = () => {
             className="add-section-title-btn"
             onClick={toggleSectionTitle}
           >
-            + Add Title
+            + Add Bullets Title
           </button>
         )}
         <ul className="bullet-list">
-          {bullets.map((bullet, bIndex) => (
-            <li key={bIndex}>
-              <EditableField 
-                value={bullet} 
-                onChange={(v) => updateBullet(bIndex, v)} 
-              />
+          {rawBullets.map((bullet, bIndex) => (
+            <li key={bIndex} className={hasBulletTitle(bullet) ? 'has-title' : ''}>
+              {hasBulletTitle(bullet) && (
+                <span className="bullet-title">
+                  <EditableField 
+                    value={getBulletTitle(bullet)} 
+                    onChange={(v) => updateBulletTitle(bIndex, v)} 
+                  />
+                </span>
+              )}
+              <span className={hasBulletTitle(bullet) ? 'bullet-text' : ''}>
+                <EditableField 
+                  value={getBulletText(bullet)} 
+                  onChange={(v) => updateBullet(bIndex, v)} 
+                />
+              </span>
               {editMode && (
-                <button 
-                  className="remove-bullet-btn"
-                  onClick={() => removeBullet(bIndex)}
-                >×</button>
+                <>
+                  <button 
+                    className="toggle-bullet-title-btn"
+                    title={hasBulletTitle(bullet) ? 'Remove bullet title' : 'Add bullet title'}
+                    onClick={() => toggleBulletTitle(bIndex)}
+                  >{hasBulletTitle(bullet) ? '−' : 'T'}</button>
+                  <button 
+                    className="remove-bullet-btn"
+                    onClick={() => removeBullet(bIndex)}
+                  >×</button>
+                </>
               )}
             </li>
           ))}
         </ul>
         {editMode && canAddMore && (
           <button className="add-bullet-btn" onClick={addBullet}>
-            + Add {label} {maxBullets > 0 ? `(${bullets.length}/${maxBullets})` : ''}
+            + Add {label} {maxBullets > 0 ? `(${rawBullets.length}/${maxBullets})` : ''}
           </button>
         )}
       </div>
@@ -2832,7 +2888,7 @@ const CaseStudy = () => {
                     </span>
                   </div>
                 </div>
-                <DynamicBullets slide={slide} slideIndex={index} field="bullets" className="intro-bullets" label="Bullet" />
+                <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="intro-bullets" label="Bullet" />
                 <SlideCta slide={slide} index={index} updateSlide={updateSlide} />
               </div>
               
@@ -2886,7 +2942,7 @@ const CaseStudy = () => {
                 onClick={() => addArrayItem(index, 'items', { label: 'Label', value: 'Value' })}
                 label="Info Item"
               />
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" className="info-bullets" label="Bullet" />
+              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="info-bullets" label="Bullet" />
               <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
                 <div className="info-highlight">
                   <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
@@ -2914,7 +2970,12 @@ const CaseStudy = () => {
                 />
               </h2>
               <DynamicContent slide={slide} slideIndex={index} field="content" className="text-content-wrapper" />
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" className="text-bullets" label="Bullet" />
+              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="text-bullets" label="Bullet" />
+              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                <div className="text-highlight">
+                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                </div>
+              </OptionalField>
               <SlideCta slide={slide} index={index} />
             </div>
           </div>
@@ -2938,7 +2999,7 @@ const CaseStudy = () => {
                 />
               </h2>
               <DynamicContent slide={slide} slideIndex={index} field="description" className="image-description-wrapper" maxParagraphs={3} optional />
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" className="image-bullets-wrapper" label="Bullet" />
+              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="image-bullets-wrapper" label="Bullet" />
               <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
                 <div className="image-highlight">
                   <EditableField
@@ -3083,7 +3144,7 @@ const CaseStudy = () => {
                       multiline
                     />
                   </p>
-                  <DynamicBullets slide={slide} slideIndex={index} field="bullets" className="project-showcase-bullets" label="Bullet" />
+                  <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="project-showcase-bullets" label="Bullet" />
                   {(slide.tags?.length > 0 || editMode) && (
                     <div className="project-showcase-tags">
                       {(slide.tags || []).map((tag, i) => (
@@ -3151,6 +3212,11 @@ const CaseStudy = () => {
                       )}
                     </div>
                   )}
+                  <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                    <div className="project-showcase-highlight">
+                      <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                    </div>
+                  </OptionalField>
                 </div>
                 {/* Right Panel - Image */}
                 <div className="project-showcase-visual">
@@ -3271,6 +3337,11 @@ const CaseStudy = () => {
                       </button>
                     )}
                   </div>
+                  <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                    <div className="goals-showcase-highlight">
+                      <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                    </div>
+                  </OptionalField>
                 </div>
                 {/* Right Panel - Image */}
                 <div className="goals-showcase-visual">
@@ -3404,6 +3475,11 @@ const CaseStudy = () => {
                     />
                   </p>
                 </OptionalField>
+                <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                  <div className="problem-highlight">
+                    <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                  </div>
+                </OptionalField>
               </div>
               <DynamicImages slide={slide} slideIndex={index} field="image" className="split-images-wrapper" />
             </div>
@@ -3461,6 +3537,11 @@ const CaseStudy = () => {
                 onClick={() => addArrayItem(index, 'quotes', { text: 'New quote...', author: 'User Name' })}
                 label="Quote"
               />
+              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                <div className="quotes-highlight">
+                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                </div>
+              </OptionalField>
             </div>
           </div>
         );
@@ -3671,6 +3752,11 @@ const CaseStudy = () => {
                     />
                   </p>
                 </OptionalField>
+                <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                  <div className="testing-highlight">
+                    <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                  </div>
+                </OptionalField>
               </div>
               <DynamicImages slide={slide} slideIndex={index} field="image" className="split-images-wrapper" />
             </div>
@@ -3799,7 +3885,7 @@ const CaseStudy = () => {
                   <DynamicImages slide={slide} slideIndex={index} field="afterImage" maxImages={1} className="comparison-dynamic" />
                 </div>
               </div>
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" className="comparison-bullets" label="Bullet" />
+              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="comparison-bullets" label="Bullet" />
               <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
                 <div className="comparison-highlight">
                   <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
@@ -3862,17 +3948,12 @@ const CaseStudy = () => {
                   <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
                 </h2>
                 <DynamicContent slide={slide} slideIndex={index} field="description" className="feature-description-wrapper" />
-                {slide.bullets?.length > 0 && (
-                  <ul className="feature-bullets">
-                    {slide.bullets.map((bullet, i) => (
-                      <li key={i}>
-                        <EditableField value={bullet} onChange={(v) => updateSlideItem(index, 'bullets', i, v)} />
-                        <ArrayItemControls onRemove={() => removeArrayItem(index, 'bullets', i)} />
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                <AddItemButton onClick={() => addArrayItem(index, 'bullets', 'New bullet point')} label="Bullet" />
+                <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="feature-bullets-wrapper" label="Bullet" />
+                <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                  <div className="feature-highlight">
+                    <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                  </div>
+                </OptionalField>
               </div>
               <DynamicImages slide={slide} slideIndex={index} field="image" className="split-images-wrapper" />
             </div>
@@ -3901,7 +3982,7 @@ const CaseStudy = () => {
                   <p><EditableField value={slide.rightContent} onChange={(v) => updateSlide(index, { rightContent: v })} multiline /></p>
                 </div>
               </div>
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" className="two-column-bullets" label="Bullet" />
+              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="two-column-bullets" label="Bullet" />
               <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
                 <div className="two-column-highlight">
                   <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
@@ -3932,6 +4013,7 @@ const CaseStudy = () => {
                       <h3><EditableField value={event.title} onChange={(v) => updateSlideItem(index, 'events', i, { ...event, title: v })} /></h3>
                       <p><EditableField value={event.description} onChange={(v) => updateSlideItem(index, 'events', i, { ...event, description: v })} /></p>
                     </div>
+                    <ArrayItemControls onRemove={() => removeArrayItem(index, 'events', i)} />
                   </div>
                 ))}
               </div>
@@ -3939,6 +4021,11 @@ const CaseStudy = () => {
                 onClick={() => addArrayItem(index, 'events', { date: 'Date', title: 'Event Title', description: '' })}
                 label="Event"
               />
+              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                <div className="timeline-highlight">
+                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                </div>
+              </OptionalField>
             </div>
           </div>
         );
@@ -3989,7 +4076,7 @@ const CaseStudy = () => {
                   <EditableField value={slide.supporting} onChange={(v) => updateSlide(index, { supporting: v })} multiline />
                 </p>
               </OptionalField>
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" className="insight-bullets" label="Bullet" />
+              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="insight-bullets" label="Bullet" />
               <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
                 <div className="insight-highlight">
                   <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
@@ -4020,6 +4107,11 @@ const CaseStudy = () => {
                   <h3>Solution</h3>
                   <p><EditableField value={slide.solution} onChange={(v) => updateSlide(index, { solution: v })} multiline /></p>
                 </div>
+                <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                  <div className="cs-highlight">
+                    <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                  </div>
+                </OptionalField>
               </div>
               <div className="split-image challenge-solution-image">
                 <DynamicImages slide={slide} slideIndex={index} field="image" className="challenge-solution-dynamic" />
@@ -4149,6 +4241,11 @@ const CaseStudy = () => {
                   </div>
                 </div>
               </div>
+              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                <div className="showcase-highlight">
+                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                </div>
+              </OptionalField>
             </div>
           </div>
         );
@@ -4170,9 +4267,19 @@ const CaseStudy = () => {
                   <div key={i} className="tool-item">
                     <h3><EditableField value={tool.name} onChange={(v) => updateSlideItem(index, 'tools', i, { ...tool, name: v })} /></h3>
                     <p><EditableField value={tool.description} onChange={(v) => updateSlideItem(index, 'tools', i, { ...tool, description: v })} /></p>
+                    <ArrayItemControls onRemove={() => removeArrayItem(index, 'tools', i)} />
                   </div>
                 ))}
               </div>
+              <AddItemButton 
+                onClick={() => addArrayItem(index, 'tools', { name: 'New Tool', description: 'Description' })}
+                label="Tool"
+              />
+              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                <div className="tools-highlight">
+                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                </div>
+              </OptionalField>
             </div>
           </div>
         );
@@ -4189,7 +4296,7 @@ const CaseStudy = () => {
                 <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} />
               </h2>
               <DynamicContent slide={slide} slideIndex={index} field="description" className="video-description-wrapper" maxParagraphs={2} optional />
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" className="video-bullets" label="Bullet" />
+              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="video-bullets" label="Bullet" />
               <div className="video-wrapper">
                 {slide.videoUrl ? (
                   <iframe 
@@ -4219,6 +4326,11 @@ const CaseStudy = () => {
               <p className="video-caption">
                 <EditableField value={slide.caption} onChange={(v) => updateSlide(index, { caption: v })} />
               </p>
+              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                <div className="video-highlight">
+                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                </div>
+              </OptionalField>
             </div>
           </div>
         );
@@ -4302,6 +4414,11 @@ const CaseStudy = () => {
                   />
                 </div>
               )}
+              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                <div className="issues-breakdown-highlight">
+                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                </div>
+              </OptionalField>
               <SlideCta slide={slide} index={index} updateSlide={updateSlide} />
             </div>
           </div>
@@ -4487,6 +4604,11 @@ const CaseStudy = () => {
                   )}
                 </div>
               </div>
+              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                <div className="achieve-goals-highlight">
+                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                </div>
+              </OptionalField>
               <SlideCta slide={slide} index={index} updateSlide={updateSlide} />
             </div>
           </div>

@@ -924,7 +924,20 @@ body.case-study-active .footer {
 .feature-highlight,
 .two-column-highlight,
 .insight-highlight,
-.info-highlight {
+.info-highlight,
+.text-highlight,
+.problem-highlight,
+.quotes-highlight,
+.testing-highlight,
+.timeline-highlight,
+.video-highlight,
+.issues-breakdown-highlight,
+.achieve-goals-highlight,
+.tools-highlight,
+.cs-highlight,
+.showcase-highlight,
+.project-showcase-highlight,
+.goals-showcase-highlight {
   font-size: var(--text-caption);
   color: var(--color-text-muted);
   padding: 0.75rem 1rem;
@@ -1992,6 +2005,52 @@ body.case-study-active .footer {
 
 .dynamic-bullets .bullet-list li:hover .remove-bullet-btn {
   opacity: 1;
+}
+
+/* Per-bullet title toggle button */
+.dynamic-bullets .bullet-list li .toggle-bullet-title-btn {
+  position: absolute;
+  right: -48px;
+  top: 0.25rem;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.dynamic-bullets .bullet-list li:hover .toggle-bullet-title-btn {
+  opacity: 1;
+}
+
+.dynamic-bullets .bullet-list li .toggle-bullet-title-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* Per-bullet title styling */
+.dynamic-bullets .bullet-list li .bullet-title {
+  display: block;
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-bottom: 0.15rem;
+}
+
+.dynamic-bullets .bullet-list li .bullet-text {
+  display: block;
+  color: var(--color-text-muted);
+}
+
+.dynamic-bullets .bullet-list li.has-title {
+  margin-bottom: 1rem;
 }
 
 .add-bullet-btn {
