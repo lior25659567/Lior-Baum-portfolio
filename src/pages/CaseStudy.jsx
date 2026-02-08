@@ -2279,7 +2279,7 @@ const CaseStudy = () => {
           const isGif = file.type === 'image/gif';
           
           // File size limits (in MB)
-          const maxVideoSize = 10; // 10MB for videos
+          const maxVideoSize = 100; // 100MB for videos
           const maxGifSize = 40; // 40MB for GIFs
           const maxImageSize = 10; // 10MB for images (will be compressed)
           const fileSizeMB = file.size / (1024 * 1024);
@@ -2742,7 +2742,7 @@ const CaseStudy = () => {
         const isGif = file.type === 'image/gif';
         
         // File size limits (in MB)
-        const maxVideoSize = 10;
+        const maxVideoSize = 100;
         const maxGifSize = 40;
         const maxImageSize = 10;
         const fileSizeMB = file.size / (1024 * 1024);
@@ -4590,7 +4590,7 @@ const CaseStudy = () => {
               const isGif = file.type === 'image/gif';
               
               // File size limits (in MB)
-              const maxVideoSize = 10;
+              const maxVideoSize = 100;
               const maxGifSize = 40;
               const maxImageSize = 10;
               const fileSizeMB = file.size / (1024 * 1024);
