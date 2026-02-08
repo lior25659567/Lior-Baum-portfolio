@@ -374,8 +374,8 @@ body.case-study-active .footer {
   height: 80px;
   border-radius: 12px;
   overflow: hidden;
-  background: var(--color-bg-secondary);
-  border: 1px dashed var(--color-border);
+  background: transparent;
+  border: none;
   cursor: pointer;
   position: relative;
   display: flex;
@@ -400,6 +400,8 @@ body.case-study-active .footer {
   color: var(--color-text-muted);
   text-align: center;
   padding: 0.5rem;
+  background: transparent;
+  border: none;
 }
 
 .intro-title {
@@ -414,8 +416,10 @@ body.case-study-active .footer {
 }
 
 .intro-subtitle {
-  font-size: var(--text-caption);
-  line-height: 1.5;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 700;
+  line-height: 1.7;
   color: var(--color-text-muted);
   margin: 0 0 0.5rem;
 }
