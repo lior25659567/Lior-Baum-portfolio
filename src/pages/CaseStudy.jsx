@@ -2787,6 +2787,15 @@ const CaseStudy = () => {
                         <div className="image-placeholder">{editMode ? 'Click to add logo' : ''}</div>
                       )}
                     </div>
+                    {editMode && slide.logo && (
+                      <button
+                        type="button"
+                        className="remove-logo-btn"
+                        onClick={(e) => { e.stopPropagation(); updateSlide(index, { logo: '' }); }}
+                      >
+                        × Remove logo
+                      </button>
+                    )}
                   </div>
                 )}
                 <h1 className="intro-title">
