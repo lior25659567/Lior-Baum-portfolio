@@ -367,17 +367,17 @@ body.case-study-active .footer {
 
 .intro-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3.5rem);
-  font-weight: 500;
-  font-style: italic;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  font-size: var(--text-h1);
+  font-weight: var(--fw-heading);
+  font-style: normal;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-heading);
   white-space: pre-line;
   color: var(--color-text);
 }
 
 .intro-description {
-  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-muted);
 }
@@ -406,7 +406,7 @@ body.case-study-active .footer {
 
 .intro-meta-value {
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: var(--text-caption);
   font-weight: 500;
   color: var(--color-text);
 }
@@ -503,9 +503,9 @@ body.case-study-active .footer {
 
 .info-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-size: var(--text-h1);
   font-weight: 600;
-  font-style: italic;
+  font-style: normal;
   margin-bottom: 2rem;
   color: var(--color-accent);
   flex-shrink: 0;
@@ -534,7 +534,7 @@ body.case-study-active .footer {
 }
 
 .info-value {
-  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  font-size: var(--text-body);
   font-weight: 500;
 }
 
@@ -545,14 +545,14 @@ body.case-study-active .footer {
 
 .slide-text .text-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 600;
+  font-size: var(--text-h1);
+  font-weight: var(--fw-heading);
   margin-bottom: 1.25rem;
-  line-height: 1.1;
+  line-height: var(--lh-heading);
 }
 
 .slide-text .text-content {
-  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  font-size: var(--text-body);
   line-height: 1.8;
   color: var(--color-text-muted);
   max-width: 750px;
@@ -571,13 +571,13 @@ body.case-study-active .footer {
 
 .image-title {
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
-  font-weight: 600;
-  line-height: 1.1;
+  font-size: var(--text-h4);
+  font-weight: var(--fw-heading);
+  line-height: var(--lh-heading);
 }
 
 .image-description {
-  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-muted);
   max-width: 800px;
@@ -591,7 +591,7 @@ body.case-study-active .footer {
 }
 
 .image-description-wrapper .dynamic-text {
-  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-muted);
 }
@@ -612,7 +612,7 @@ body.case-study-active .footer {
 .image-bullets li {
   position: relative;
   padding-left: 1.25rem;
-  font-size: clamp(0.9rem, 1.2vw, 1rem);
+  font-size: var(--text-body-sm);
   line-height: 1.6;
   color: var(--color-text-muted);
   display: flex;
@@ -625,11 +625,11 @@ body.case-study-active .footer {
   position: absolute;
   left: 0;
   color: var(--color-accent);
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .image-highlight {
-  font-size: clamp(0.85rem, 1.1vw, 0.95rem);
+  font-size: var(--text-caption);
   color: var(--color-text-muted);
   padding: 0.75rem 1rem;
   background: rgba(255, 88, 74, 0.08);
@@ -697,7 +697,7 @@ body.case-study-active .footer {
 }
 
 .image-caption {
-  font-size: 0.95rem;
+  font-size: var(--text-caption);
   color: var(--color-text-muted);
   line-height: 1.6;
   margin-top: 0.5rem;
@@ -718,7 +718,7 @@ body.case-study-active .footer {
 
 .stats-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-size: var(--text-h1);
   font-weight: 600;
   margin-bottom: 2rem;
   line-height: 1.1;
@@ -739,7 +739,7 @@ body.case-study-active .footer {
 
 .stat-value {
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-size: var(--text-stat);
   font-weight: 600;
   color: var(--color);
   line-height: 1;
@@ -751,7 +751,7 @@ body.case-study-active .footer {
 }
 
 .stat-item .stat-label {
-  font-size: clamp(0.8rem, 1vw, 0.95rem);
+  font-size: var(--text-caption);
   color: var(--color-text-muted);
   max-width: 140px;
 }
@@ -809,21 +809,21 @@ body.case-study-active .footer {
 
 .context-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: var(--text-h2);
   font-weight: 600;
-  line-height: 1.15;
+  line-height: var(--lh-heading);
   margin-bottom: 1rem;
 }
 
 .context-text {
-  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-muted);
   margin-bottom: 1rem;
 }
 
 .context-highlight {
-  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-muted);
   padding-left: 1.25rem;
@@ -849,15 +849,15 @@ body.case-study-active .footer {
 
 .research-split-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: var(--text-h2);
   font-weight: 600;
-  line-height: 1.15;
+  line-height: var(--lh-heading);
   margin-bottom: 0.5rem;
 }
 
 .research-part-title {
   font-family: var(--font-display);
-  font-size: clamp(0.85rem, 1vw, 1rem);
+  font-size: var(--text-caption);
   font-weight: 600;
   color: var(--color-text-muted);
   text-transform: uppercase;
@@ -870,13 +870,13 @@ body.case-study-active .footer {
 }
 
 .research-description-wrapper .dynamic-text {
-  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-muted);
 }
 
 .research-highlight {
-  font-size: clamp(0.85rem, 1.1vw, 0.95rem);
+  font-size: var(--text-caption);
   color: var(--color-text-muted);
   padding: 0.75rem 1rem;
   background: rgba(255, 88, 74, 0.08);
@@ -894,7 +894,7 @@ body.case-study-active .footer {
 .two-column-highlight,
 .insight-highlight,
 .info-highlight {
-  font-size: clamp(0.85rem, 1.1vw, 0.95rem);
+  font-size: var(--text-caption);
   color: var(--color-text-muted);
   padding: 0.75rem 1rem;
   background: rgba(255, 88, 74, 0.08);
@@ -934,14 +934,14 @@ body.case-study-active .footer {
 .issues-breakdown-description-wrapper p,
 .old-experience-description-wrapper p,
 .achieve-goals-description-wrapper p {
-  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-muted);
 }
 
 /* Hero image caption */
 .hero-image-caption {
-  font-size: clamp(0.85rem, 1vw, 0.95rem);
+  font-size: var(--text-caption);
   color: var(--color-text-muted);
   text-align: center;
   margin-top: 1rem;
@@ -949,11 +949,11 @@ body.case-study-active .footer {
 
 /* Testimonial context */
 .testimonial-context {
-  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  font-size: var(--text-body-sm);
   color: var(--color-text-muted);
   text-align: center;
   margin-top: 1.5rem;
-  font-style: italic;
+  font-style: normal;
 }
 
 .research-visual-wrapper {
@@ -1026,15 +1026,15 @@ body.case-study-active .footer {
 
 .problem-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: var(--text-h2);
   font-weight: 600;
-  font-style: italic;
-  line-height: 1.15;
+  font-style: normal;
+  line-height: var(--lh-heading);
   margin-bottom: 1rem;
 }
 
 .problem-text {
-  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-muted);
   margin-bottom: 1rem;
@@ -1050,7 +1050,7 @@ body.case-study-active .footer {
 }
 
 .problem-issues li {
-  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+  font-size: var(--text-body-sm);
   color: var(--color-text-muted);
   padding-left: 1.5rem;
   position: relative;
@@ -1062,11 +1062,11 @@ body.case-study-active .footer {
   position: absolute;
   left: 0;
   color: var(--color-accent);
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .problem-conclusion {
-  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+  font-size: var(--text-body-sm);
   color: var(--color-text-muted);
   padding: 1rem 1.25rem;
   background: rgba(255, 88, 74, 0.08);
@@ -1090,15 +1090,15 @@ body.case-study-active .footer {
 
 .quotes-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: var(--text-h2);
   font-weight: 600;
-  line-height: 1.15;
+  line-height: var(--lh-heading);
   margin-bottom: 1rem;
   flex-shrink: 0;
 }
 
 .quotes-intro {
-  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-muted);
   margin-bottom: 2rem;
@@ -1125,8 +1125,8 @@ body.case-study-active .footer {
 }
 
 .quote-text {
-  font-size: clamp(0.9rem, 1.1vw, 1rem);
-  font-style: italic;
+  font-size: var(--text-body-sm);
+  font-style: normal;
   line-height: 1.6;
   color: var(--color-text-muted);
   flex: 1;
@@ -1161,9 +1161,9 @@ body.case-study-active .footer {
 
 .goals-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: var(--text-h2);
   font-weight: 600;
-  line-height: 1.15;
+  line-height: var(--lh-heading);
   margin-bottom: 2rem;
   color: var(--color-text);
   flex-shrink: 0;
@@ -1260,7 +1260,7 @@ body.case-study-active .footer {
 }
 
 .goal-title-text {
-  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  font-size: var(--text-body-sm);
   color: var(--color-text);
 }
 
@@ -1269,7 +1269,7 @@ body.case-study-active .footer {
 }
 
 .goal-description {
-  font-size: clamp(0.85rem, 1vw, 0.95rem);
+  font-size: var(--text-caption);
   color: var(--color-text-muted);
 }
 
@@ -1356,7 +1356,7 @@ body.case-study-active .footer {
   background: var(--color-accent);
   color: var(--color-bg);
   border-radius: 14px;
-  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  font-size: var(--text-body-sm);
   font-weight: 600;
   text-align: center;
   box-sizing: border-box;
@@ -1373,14 +1373,14 @@ body.case-study-active .footer {
 
 .testing-title {
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-size: var(--text-h3);
   font-weight: 600;
-  line-height: 1.15;
+  line-height: var(--lh-heading);
   margin-bottom: 1rem;
 }
 
 .testing-text {
-  font-size: clamp(0.9rem, 1.2vw, 1rem);
+  font-size: var(--text-body-sm);
   line-height: 1.7;
   color: var(--color-text-muted);
   margin-bottom: 1rem;
@@ -1411,7 +1411,7 @@ body.case-study-active .footer {
 }
 
 .layouts-list li {
-  font-size: clamp(0.85rem, 1vw, 0.95rem);
+  font-size: var(--text-caption);
   color: var(--color-text-muted);
   padding-left: 1.25rem;
   position: relative;
@@ -1422,11 +1422,11 @@ body.case-study-active .footer {
   position: absolute;
   left: 0;
   color: var(--color-accent);
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .testing-conclusion {
-  font-size: clamp(0.85rem, 1.1vw, 0.95rem);
+  font-size: var(--text-caption);
   color: var(--color-text-muted);
   padding: 0.75rem 1rem;
   background: rgba(255, 88, 74, 0.08);
@@ -1445,9 +1445,9 @@ body.case-study-active .footer {
 
 .outcomes-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-size: var(--text-h1);
   font-weight: 600;
-  font-style: italic;
+  font-style: normal;
   margin-bottom: 2rem;
   color: var(--color-accent);
   flex-shrink: 0;
@@ -1466,13 +1466,13 @@ body.case-study-active .footer {
 }
 
 .outcome-title {
-  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  font-size: var(--text-body);
   font-weight: 600;
   color: var(--color-text);
 }
 
 .outcome-description {
-  font-size: clamp(0.85rem, 1vw, 0.95rem);
+  font-size: var(--text-caption);
   line-height: 1.6;
   color: var(--color-text-muted);
 }
@@ -1490,15 +1490,15 @@ body.case-study-active .footer {
 
 .end-title {
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  font-size: var(--text-hero);
   font-weight: 600;
-  font-style: italic;
+  font-style: normal;
   color: var(--color-accent);
   margin-bottom: 0.5rem;
 }
 
 .end-subtitle {
-  font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+  font-size: var(--text-body);
   color: var(--color-text-muted);
   margin-bottom: 2rem;
 }
@@ -1565,9 +1565,9 @@ body.case-study-active .footer {
 
 .twi-title {
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-size: var(--text-h3);
   font-weight: 600;
-  line-height: 1.15;
+  line-height: var(--lh-heading);
   color: var(--color-text);
   margin: 0;
   max-width: 800px;
@@ -1581,7 +1581,7 @@ body.case-study-active .footer {
 }
 
 .twi-text {
-  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-muted);
   margin: 0;
@@ -1604,7 +1604,7 @@ body.case-study-active .footer {
 }
 
 .twi-highlight .editable-field {
-  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  font-size: var(--text-body-sm);
   line-height: 1.6;
   color: var(--color-text-muted);
 }
@@ -1656,6 +1656,44 @@ body.case-study-active .footer {
   gap: 2rem;
   width: 100%;
   margin-top: 1.5rem;
+}
+
+.twi-images-empty-placeholder {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 4rem 2rem;
+  border: 2px dashed var(--color-border);
+  border-radius: 16px;
+  background: var(--color-bg-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.twi-images-empty-placeholder:hover {
+  border-color: var(--color-accent);
+  background: rgba(255, 88, 74, 0.05);
+}
+
+.empty-placeholder-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--color-text-muted);
+}
+
+.empty-placeholder-icon {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.empty-placeholder-text {
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .twi-image-item {
@@ -1712,10 +1750,12 @@ body.case-study-active .footer {
   max-width: 100%;
 }
 
-/* TWI Image Fit Variants */
+/* TWI Image Fit Variants - natural sizing so img box = visible content */
 .twi-image-item.img-fit-contain .twi-image-wrapper {
-  background: var(--color-bg-secondary);
-  padding: 1.5rem;
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1728,6 +1768,7 @@ body.case-study-active .footer {
   height: auto;
   max-width: 100%;
   max-height: 100%;
+  border-radius: 16px;
 }
 
 /* TWI clickable images */
@@ -1861,7 +1902,7 @@ body.case-study-active .footer {
 
 .dynamic-paragraph-wrapper .dynamic-text {
   flex: 1;
-  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-muted);
   margin: 0;
@@ -1902,7 +1943,7 @@ body.case-study-active .footer {
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.75rem;
-  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  font-size: var(--text-body-sm);
   font-weight: 500;
   color: var(--color-text-muted);
 }
@@ -1954,7 +1995,7 @@ body.case-study-active .footer {
   position: relative;
   padding-left: 1.5rem;
   margin-bottom: 0.75rem;
-  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  font-size: var(--text-body-sm);
   line-height: 1.6;
   color: var(--color-text-muted);
 }
@@ -2015,6 +2056,53 @@ body.case-study-active .footer {
   height: 100%;
   display: flex;
   flex-direction: column;
+}
+
+.dynamic-grid-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+  margin-bottom: 0.5rem;
+}
+
+.dynamic-grid-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+  color: var(--color-text);
+}
+
+.dynamic-grid-buttons {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.dynamic-grid-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border, rgba(128,128,128,0.3));
+  background: transparent;
+  color: var(--color-text);
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.dynamic-grid-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.dynamic-grid-btn.active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
 }
 
 .dynamic-images-grid {
@@ -2348,13 +2436,15 @@ body.case-study-active .footer {
   color: white;
 }
 
-/* Image fit styles - consistent padding on all sides */
+/* Image fit styles - contain mode: natural sizing so img box = visible content */
 .dynamic-image-item.img-fit-contain .dynamic-image-wrapper {
-  background: var(--color-bg-secondary);
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 0;
 }
 
 .dynamic-image-item.img-fit-contain .dynamic-image-wrapper img,
@@ -2367,9 +2457,10 @@ body.case-study-active .footer {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  border-radius: 12px;
 }
 
-/* Global image fit styles for all slides */
+/* Global image fit styles for all slides - natural sizing, radius on image itself */
 .img-fit-contain .image-wrapper,
 .img-fit-contain .split-image,
 .img-fit-contain .context-image-wrapper,
@@ -2378,9 +2469,17 @@ body.case-study-active .footer {
 .img-fit-contain .testing-images-wrapper,
 .img-fit-contain .hero-image-wrapper,
 .img-fit-contain .comparison-image,
-.img-fit-contain .gallery-item {
-  background: var(--color-bg-secondary);
-  padding: 1.5rem;
+.img-fit-contain .gallery-item,
+.img-fit-contain .showcase-image-wrapper,
+.img-fit-contain .ba-image-wrapper,
+.img-fit-contain .mosaic-tile,
+.img-fit-contain .mosaic-source-item,
+.img-fit-contain .project-showcase-image-wrapper,
+.img-fit-contain .goals-showcase-image-wrapper {
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2394,13 +2493,20 @@ body.case-study-active .footer {
 .img-fit-contain .testing-images-wrapper img,
 .img-fit-contain .hero-image-wrapper img,
 .img-fit-contain .comparison-image img,
-.img-fit-contain .gallery-item img {
+.img-fit-contain .gallery-item img,
+.img-fit-contain .showcase-image-wrapper img,
+.img-fit-contain .ba-image-wrapper img,
+.img-fit-contain .mosaic-tile img,
+.img-fit-contain .mosaic-source-item img,
+.img-fit-contain .project-showcase-image-wrapper img,
+.img-fit-contain .goals-showcase-image-wrapper img {
   position: relative;
   width: auto;
   height: auto;
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  border-radius: 12px;
 }
 
 .settings-done-btn {
@@ -4396,7 +4502,7 @@ textarea.editable-field {
   color: var(--color-text-muted);
   max-width: 80%;
   line-height: 1.4;
-  font-style: italic;
+  font-style: normal;
 }
 
 .mockup-author {
@@ -5493,7 +5599,7 @@ textarea.editable-field {
 /* Enhanced Testimonial Mockup */
 .mockup-quote-text {
   font-size: 0.5rem;
-  font-style: italic;
+  font-style: normal;
   color: var(--color-text-muted);
   margin: 0.3rem 0;
 }
@@ -5761,7 +5867,7 @@ textarea.editable-field {
 .mockup-intro-content .mockup-title {
   font-size: 0.55rem;
   font-weight: 600;
-  font-style: italic;
+  font-style: normal;
 }
 
 .mockup-intro-image {
@@ -5833,7 +5939,7 @@ textarea.editable-field {
 
 .hero-image-title {
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-size: var(--text-h4);
   margin-bottom: 1rem;
   flex-shrink: 0;
 }
@@ -5889,7 +5995,7 @@ textarea.editable-field {
 }
 
 .comparison-label {
-  font-size: 0.8rem;
+  font-size: var(--text-caption);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -5941,12 +6047,12 @@ textarea.editable-field {
 
 .step-title {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: var(--text-body);
   margin-bottom: 0.5rem;
 }
 
 .step-description {
-  font-size: 0.9rem;
+  font-size: var(--text-body-sm);
   color: var(--color-text-muted);
   line-height: 1.6;
 }
@@ -5981,7 +6087,7 @@ textarea.editable-field {
 
 .two-column-grid .column h3 {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: var(--text-body);
   margin-bottom: 1rem;
 }
 
@@ -6025,7 +6131,7 @@ textarea.editable-field {
 }
 
 .event-date {
-  font-size: 0.8rem;
+  font-size: var(--text-caption);
   font-weight: 600;
   color: var(--color-accent);
   margin-bottom: 0.5rem;
@@ -6034,12 +6140,12 @@ textarea.editable-field {
 
 .event-content h3 {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: var(--text-body);
   margin-bottom: 0.25rem;
 }
 
 .event-content p {
-  font-size: 0.9rem;
+  font-size: var(--text-body-sm);
   color: var(--color-text-muted);
 }
 
@@ -6050,8 +6156,8 @@ textarea.editable-field {
 
 .testimonial-quote {
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 4vw, 3rem);
-  font-style: italic;
+  font-size: var(--text-h2);
+  font-style: normal;
   line-height: 1.4;
   text-align: center;
   margin-bottom: 2rem;
@@ -6065,25 +6171,25 @@ textarea.editable-field {
 }
 
 .author-name {
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: var(--fw-heading);
+  font-size: var(--text-body-sm);
 }
 
 .author-role {
-  font-size: 0.85rem;
+  font-size: var(--text-caption);
   color: var(--color-text-muted);
 }
 
 /* Insight */
 .insight-text {
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-size: var(--text-h4);
   line-height: 1.4;
   margin-bottom: 1.5rem;
 }
 
 .insight-supporting {
-  font-size: 1rem;
+  font-size: var(--text-body-sm);
   color: var(--color-text-muted);
   line-height: 1.7;
   max-width: 600px;
@@ -6098,7 +6204,7 @@ textarea.editable-field {
 }
 
 .cs-block h3 {
-  font-size: 0.8rem;
+  font-size: var(--text-caption);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -6114,7 +6220,7 @@ textarea.editable-field {
 }
 
 .cs-block p {
-  font-size: 0.95rem;
+  font-size: var(--text-body-sm);
   color: var(--color-text-muted);
   line-height: 1.6;
 }
@@ -6136,12 +6242,12 @@ textarea.editable-field {
 
 .tool-item h3 {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: var(--text-body);
   margin-bottom: 0.5rem;
 }
 
 .tool-item p {
-  font-size: 0.85rem;
+  font-size: var(--text-caption);
   color: var(--color-text-muted);
 }
 
@@ -6152,7 +6258,7 @@ textarea.editable-field {
 
 .gallery-title {
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-size: var(--text-h4);
   margin-bottom: 1rem;
   flex-shrink: 0;
 }
@@ -6210,7 +6316,7 @@ textarea.editable-field {
 /* Video Slide */
 .video-title {
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-size: var(--text-h4);
   margin-bottom: 1.5rem;
 }
 
@@ -6250,7 +6356,7 @@ textarea.editable-field {
 }
 
 .video-caption {
-  font-size: 0.9rem;
+  font-size: var(--text-body-sm);
   color: var(--color-text-muted);
   text-align: center;
 }
@@ -6263,9 +6369,9 @@ textarea.editable-field {
 
 .issues-breakdown-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: var(--text-h2);
   font-weight: 500;
-  font-style: italic;
+  font-style: normal;
   line-height: 1.2;
   color: var(--color-text);
   flex-shrink: 0;
@@ -6311,14 +6417,14 @@ textarea.editable-field {
 
 .issue-breakdown-heading {
   font-family: var(--font-body);
-  font-size: 1.1rem;
+  font-size: var(--text-body);
   font-weight: 600;
   color: var(--color-text);
   margin: 0;
 }
 
 .issue-breakdown-desc {
-  font-size: 1rem;
+  font-size: var(--text-body-sm);
   color: var(--color-text-muted);
   line-height: 1.6;
   margin: 0;
@@ -6330,7 +6436,7 @@ textarea.editable-field {
   border-radius: 14px;
   padding: 1.75rem;
   color: var(--color-text);
-  font-size: 1.1rem;
+  font-size: var(--text-body);
   line-height: 1.6;
   position: relative;
 }
@@ -6343,9 +6449,9 @@ textarea.editable-field {
 
 .old-experience-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: var(--text-h2);
   font-weight: 500;
-  font-style: italic;
+  font-style: normal;
   line-height: 1.2;
   color: var(--color-text);
   flex-shrink: 0;
@@ -6360,7 +6466,7 @@ textarea.editable-field {
 
 .old-experience-subtitle {
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: var(--text-body-sm);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -6368,7 +6474,7 @@ textarea.editable-field {
 }
 
 .old-experience-text {
-  font-size: 1.15rem;
+  font-size: var(--text-body);
   line-height: 1.75;
   color: var(--color-text-muted);
 }
@@ -6386,7 +6492,7 @@ textarea.editable-field {
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-  font-size: 1.1rem;
+  font-size: var(--text-body);
   line-height: 1.65;
   color: var(--color-text);
 }
@@ -6403,10 +6509,10 @@ textarea.editable-field {
   border-left: 4px solid var(--color-accent);
   padding: 1.5rem 1.75rem;
   border-radius: 0 14px 14px 0;
-  font-size: 1.1rem;
+  font-size: var(--text-body);
   line-height: 1.65;
   color: var(--color-text);
-  font-style: italic;
+  font-style: normal;
   position: relative;
 }
 
@@ -6418,7 +6524,7 @@ textarea.editable-field {
 
 .achieve-goals-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: var(--text-h2);
   font-weight: 500;
   line-height: 1.2;
   color: var(--color-text);
@@ -6439,7 +6545,7 @@ textarea.editable-field {
 
 .achieve-goals-column-title {
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: var(--text-body-sm);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -6479,7 +6585,7 @@ textarea.editable-field {
 
 .achieve-goal-text {
   flex: 1;
-  font-size: 1.1rem;
+  font-size: var(--text-body);
   line-height: 1.55;
   color: var(--color-text);
   padding-top: 0.35rem;
@@ -6499,9 +6605,9 @@ textarea.editable-field {
 
 .showcase-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-size: var(--text-h1);
   font-weight: 600;
-  font-style: italic;
+  font-style: normal;
   line-height: 1.1;
   color: var(--color-text);
 }
@@ -6916,7 +7022,7 @@ textarea.editable-field {
 }
 
 .ba-title {
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: var(--text-h2);
   font-weight: 700;
   line-height: 1.1;
   color: var(--color-text);
@@ -7454,7 +7560,7 @@ textarea.editable-field {
 
 .project-showcase-number {
   font-family: var(--font-display);
-  font-size: clamp(4rem, 8vw, 7rem);
+  font-size: var(--text-display);
   font-weight: 200;
   color: #ff584a;
   opacity: 1;
@@ -7498,7 +7604,7 @@ textarea.editable-field {
 
 .project-showcase-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-size: var(--text-h1);
   font-weight: 600;
   line-height: 1.1;
   color: var(--color-text);
@@ -7506,7 +7612,7 @@ textarea.editable-field {
 }
 
 .project-showcase-description {
-  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-muted);
   margin: 0;
@@ -7584,7 +7690,7 @@ textarea.editable-field {
   border-radius: 12px;
   overflow: hidden;
   background: transparent !important;
-  border: 1px solid var(--color-border);
+  border: none;
   cursor: pointer;
   position: relative;
   display: flex;
@@ -7608,28 +7714,98 @@ textarea.editable-field {
   justify-content: center;
   font-size: 0.7rem;
   color: var(--color-text-muted);
-  background: var(--color-bg-secondary);
-  border: 2px dashed var(--color-border);
+  background: transparent;
+  border: none;
   border-radius: 12px;
 }
 
 /* Right Panel - Visual */
 .project-showcase-visual {
-  background: rgba(255, 88, 74, 0.08);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
   position: relative;
+  border-radius: 0;
+  overflow: visible;
+}
+
+/* DynamicImages within slide containers */
+.project-showcase-dynamic,
+.goals-showcase-dynamic,
+.challenge-solution-dynamic,
+.comparison-dynamic,
+.showcase-dynamic,
+.ba-dynamic,
+.gallery-dynamic,
+.mosaic-dynamic {
+  width: 100%;
+  height: 100%;
+}
+
+.project-showcase-dynamic .dynamic-image-wrapper,
+.goals-showcase-dynamic .dynamic-image-wrapper,
+.challenge-solution-dynamic .dynamic-image-wrapper {
   border-radius: 12px;
   overflow: hidden;
+  min-height: 200px;
+}
+
+.comparison-dynamic .dynamic-images-grid {
+  height: 100%;
+}
+
+.comparison-dynamic .dynamic-image-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 200px;
+}
+
+.showcase-dynamic .dynamic-image-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 150px;
+}
+
+.ba-dynamic .dynamic-image-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 150px;
+}
+
+.mosaic-dynamic {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.mosaic-dynamic .dynamic-images-grid {
+  height: 100%;
+}
+
+.mosaic-dynamic .dynamic-image-wrapper {
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.mosaic-dynamic .dynamic-image-wrapper img {
+  border-radius: 0;
+}
+
+.mosaic-dynamic .dynamic-grid-control,
+.mosaic-dynamic .add-dynamic-image-btn {
+  z-index: 5;
+  position: relative;
 }
 
 .project-showcase-image-wrapper {
   width: 100%;
   height: 100%;
-  border-radius: 12px;
-  overflow: hidden;
+  min-height: 300px;
+  border-radius: 0;
+  overflow: visible;
+  background: transparent;
   cursor: pointer;
   position: relative;
   display: flex;
@@ -7638,8 +7814,10 @@ textarea.editable-field {
 }
 
 .project-showcase-image-wrapper img {
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
   object-position: center;
   border-radius: 12px;
@@ -7654,8 +7832,38 @@ textarea.editable-field {
   font-size: 0.9rem;
   color: var(--color-text-muted);
   background: var(--color-bg-secondary);
+  border: none;
+  border-radius: 12px;
+}
+
+/* Add image button for showcase and goals slides */
+.project-showcase-add-image {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: var(--color-bg-secondary);
   border: 2px dashed var(--color-border);
   border-radius: 12px;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.project-showcase-add-image:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(255, 88, 74, 0.05);
+}
+
+.project-showcase-add-image .add-image-icon {
+  font-size: 2.5rem;
+  opacity: 0.5;
 }
 
 /* Project Showcase Responsive */
@@ -7694,7 +7902,7 @@ textarea.editable-field {
   }
 
   .project-showcase-description {
-    font-size: clamp(0.9rem, 1.2vw, 1rem);
+    font-size: var(--text-body-sm);
   }
 
   .project-showcase-visual {
@@ -7737,7 +7945,7 @@ textarea.editable-field {
 
 .goals-showcase-number {
   font-family: var(--font-display);
-  font-size: clamp(4rem, 8vw, 7rem);
+  font-size: var(--text-display);
   font-weight: 200;
   color: #ff584a;
   opacity: 1;
@@ -7763,7 +7971,7 @@ textarea.editable-field {
 
 .goals-showcase-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-size: var(--text-h1);
   font-weight: 600;
   line-height: 1.1;
   color: var(--color-text);
@@ -7777,7 +7985,7 @@ textarea.editable-field {
 }
 
 .goals-showcase-description {
-  font-size: clamp(1rem, 1.2vw, 1.15rem);
+  font-size: var(--text-body);
   line-height: 1.6;
   color: var(--color-text-muted);
   margin: 0;
@@ -7838,7 +8046,7 @@ textarea.editable-field {
 
 .goal-title {
   font-family: var(--font-display);
-  font-size: clamp(1rem, 1.3vw, 1.25rem);
+  font-size: var(--text-body-sm);
   font-weight: 600;
   color: var(--color-text);
   margin: 0 0 0.35rem 0;
@@ -7846,7 +8054,7 @@ textarea.editable-field {
 }
 
 .goal-description {
-  font-size: clamp(0.85rem, 1vw, 0.95rem);
+  font-size: var(--text-caption);
   line-height: 1.5;
   color: var(--color-text-muted);
   margin: 0;
@@ -7901,7 +8109,7 @@ textarea.editable-field {
 
 /* Right Panel - Visual */
 .goals-showcase-visual {
-  background: rgba(255, 88, 74, 0.08);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7912,9 +8120,10 @@ textarea.editable-field {
 .goals-showcase-image-wrapper {
   width: 100%;
   height: 100%;
+  min-height: 300px;
   border-radius: 0;
-  overflow: hidden;
-  background: rgba(255, 88, 74, 0.05);
+  overflow: visible;
+  background: transparent;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -7923,9 +8132,12 @@ textarea.editable-field {
 }
 
 .goals-showcase-image-wrapper img {
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
+  border-radius: 12px;
 }
 
 .goals-showcase-image-wrapper .image-placeholder {
@@ -7969,7 +8181,7 @@ textarea.editable-field {
   }
 
   .goals-showcase-description {
-    font-size: clamp(0.9rem, 1.2vw, 1rem);
+    font-size: var(--text-body-sm);
   }
 
   .goals-showcase-visual {
@@ -8367,7 +8579,7 @@ textarea.editable-field {
   padding: 1.25rem 2.5rem;
   border-radius: 12px;
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-size: var(--text-h4);
   font-weight: 600;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   pointer-events: auto;

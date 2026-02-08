@@ -1,8 +1,9 @@
 import { useRef } from 'react';
 import './AnimatedButton.css';
+/* AnimatedButton - character-by-character animated text button */
 
 const AnimatedButton = ({ 
-  children, 
+  children = '', 
   href, 
   onClick, 
   variant = 'primary', 
@@ -13,8 +14,9 @@ const AnimatedButton = ({
 }) => {
   const buttonRef = useRef(null);
   
-  // Split text into characters
-  const chars = children.split('');
+  // Split text into characters (guard against undefined/non-string children)
+  const text = (children == null) ? '' : (typeof children === 'string' ? children : String(children));
+  const chars = text.split('');
   
   const ButtonTag = href ? 'a' : 'button';
   const props = href 

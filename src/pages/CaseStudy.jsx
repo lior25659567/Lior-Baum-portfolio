@@ -2190,7 +2190,7 @@ const CaseStudy = () => {
 
   // ========== DYNAMIC IMAGES COMPONENT ==========
   // Handles single image OR array of images with add/remove and position control
-  const DynamicImages = ({ slide, slideIndex, field = 'image', captionField = 'caption', className = '' }) => {
+  const DynamicImages = ({ slide, slideIndex, field = 'image', captionField = 'caption', className = '', maxImages = 3 }) => {
     const [activePositionControl, setActivePositionControl] = useState(null);
     
     // Check if it's an array or single string
@@ -2337,10 +2337,28 @@ const CaseStudy = () => {
     if (images.length === 0 && !editMode) return null;
     
     const imageCount = images.length;
+    const gridCols = slide.gridCols || (imageCount >= 3 ? 3 : imageCount >= 2 ? 2 : 1);
     
     return (
       <div className={`dynamic-images images-count-${imageCount} ${className}`}>
-        <div className="dynamic-images-grid">
+        {editMode && imageCount >= 2 && (
+          <div className="dynamic-grid-control">
+            <span className="dynamic-grid-label">Grid</span>
+            <div className="dynamic-grid-buttons">
+              {[1, 2, 3].map(cols => (
+                <button
+                  key={cols}
+                  className={`dynamic-grid-btn ${gridCols === cols ? 'active' : ''}`}
+                  onClick={() => updateSlide(slideIndex, { gridCols: cols })}
+                  title={`${cols} column${cols > 1 ? 's' : ''}`}
+                >
+                  {cols}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        <div className="dynamic-images-grid" style={imageCount >= 2 ? { gridTemplateColumns: `repeat(${gridCols}, 1fr)` } : undefined}>
           {images.map((img, imgIndex) => {
             const position = img.position || 'center center';
             const imgSize = img.size || 'large';
@@ -2359,6 +2377,29 @@ const CaseStudy = () => {
               { label: 'Fit', value: 'contain', title: 'Fit - shows entire image (may have gaps)' },
             ];
             
+            const isContain = imgFit === 'contain';
+            // Inline styles for contain mode to guarantee no dark background/radius
+            const wrapperContainStyle = isContain ? {
+              background: 'transparent',
+              borderRadius: 0,
+              overflow: 'visible',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            } : {};
+            const mediaContainStyle = isContain ? {
+              position: 'relative',
+              top: 'auto',
+              left: 'auto',
+              width: 'auto',
+              height: 'auto',
+              maxWidth: '100%',
+              maxHeight: '100%',
+              borderRadius: '12px',
+              objectPosition: position,
+              objectFit: imgFit,
+            } : { objectPosition: position, objectFit: imgFit };
+            
             return (
               <div 
                 key={imgIndex} 
@@ -2366,6 +2407,7 @@ const CaseStudy = () => {
               >
                 <div 
                   className={`dynamic-image-wrapper ${!editMode && img.src ? 'clickable' : ''}`}
+                  style={wrapperContainStyle}
                   onClick={() => {
                     if (editMode && !activePositionControl) {
                       handleDynamicImageUpload(imgIndex);
@@ -2383,13 +2425,13 @@ const CaseStudy = () => {
                           loop
                           muted
                           playsInline
-                          style={{ objectPosition: position, objectFit: imgFit }}
+                          style={mediaContainStyle}
                         />
                       ) : (
                         <img 
                           src={img.src} 
                           alt={img.caption || `Image ${imgIndex + 1}`} 
-                          style={{ objectPosition: position, objectFit: imgFit }}
+                          style={mediaContainStyle}
                         />
                       )}
                       {editMode && <div className="image-edit-overlay">Click to change</div>}
@@ -2520,9 +2562,9 @@ const CaseStudy = () => {
             );
           })}
         </div>
-        {editMode && (
+        {editMode && images.length < maxImages && (
           <button className="add-dynamic-image-btn" onClick={addImage}>
-            + Add Image
+            + Add Image ({images.length}/{maxImages})
           </button>
         )}
       </div>
@@ -2899,8 +2941,9 @@ const CaseStudy = () => {
         return (
           <div className="slide slide-project-showcase" key={index}>
             {slideControls}
+            <SplitRatioControl slide={slide} slideIndex={index} />
             <div className="slide-inner">
-              <div className="project-showcase-layout">
+              <div className="project-showcase-layout" style={getSplitStyle(slide)}>
                 {/* Left Panel - Info (centered vertically when no number) */}
                 <div className={`project-showcase-info${!slide.slideNumber ? ' project-showcase-info--no-number' : ''}`}>
                   {(slide.slideNumber || editMode) && (
@@ -2997,19 +3040,7 @@ const CaseStudy = () => {
                 </div>
                 {/* Right Panel - Image */}
                 <div className="project-showcase-visual">
-                  <div
-                    className="project-showcase-image-wrapper"
-                    onClick={() => editMode && handleImageUpload(index, 'image')}
-                  >
-                    {slide.image ? (
-                      <>
-                        <img src={slide.image} alt={slide.title} />
-                        {editMode && <div className="image-edit-overlay">Click to change</div>}
-                      </>
-                    ) : (
-                      <div className="image-placeholder">{editMode ? 'Click to add image' : 'No image'}</div>
-                    )}
-                  </div>
+                  <DynamicImages slide={slide} slideIndex={index} field="image" className="project-showcase-dynamic" />
                 </div>
               </div>
             </div>
@@ -3020,8 +3051,9 @@ const CaseStudy = () => {
         return (
           <div className="slide slide-goals-showcase" key={index}>
             {slideControls}
+            <SplitRatioControl slide={slide} slideIndex={index} />
             <div className="slide-inner">
-              <div className="goals-showcase-layout">
+              <div className="goals-showcase-layout" style={getSplitStyle(slide)}>
                 {/* Left Panel - Info */}
                 <div className="goals-showcase-info">
                   {(slide.slideNumber || editMode) && (
@@ -3128,19 +3160,7 @@ const CaseStudy = () => {
                 </div>
                 {/* Right Panel - Image */}
                 <div className="goals-showcase-visual">
-                  <div
-                    className="goals-showcase-image-wrapper"
-                    onClick={() => editMode && handleImageUpload(index, 'image')}
-                  >
-                    {slide.image ? (
-                      <>
-                        <img src={slide.image} alt={slide.title} />
-                        {editMode && <div className="image-edit-overlay">Click to change</div>}
-                      </>
-                    ) : (
-                      <div className="image-placeholder">{editMode ? 'Click to add image' : 'No image'}</div>
-                    )}
-                  </div>
+                  <DynamicImages slide={slide} slideIndex={index} field="image" className="goals-showcase-dynamic" />
                 </div>
               </div>
             </div>
@@ -3666,18 +3686,18 @@ const CaseStudy = () => {
               </p>
               <div className="end-cta-group">
                 <AnimatedButton 
-                  href="mailto:lior@example.com"
+                  href={slide.buttons?.[0]?.link || "mailto:lior@example.com"}
                   variant="primary"
                   icon="→"
                 >
-                  {slide.cta}
+                  {slide.cta || slide.buttons?.[0]?.text || 'Get in touch'}
                 </AnimatedButton>
                 <AnimatedButton 
-                  href="/"
+                  href={slide.buttons?.[1]?.link || "/"}
                   variant="outline"
                   icon="←"
                 >
-                  Back to projects
+                  {slide.buttons?.[1]?.text || 'Back to projects'}
                 </AnimatedButton>
               </div>
             </div>
@@ -3720,17 +3740,13 @@ const CaseStudy = () => {
                   <span className="comparison-label">
                     <EditableField value={slide.beforeLabel} onChange={(v) => updateSlide(index, { beforeLabel: v })} />
                   </span>
-                  <div className="comparison-image" onClick={() => editMode && handleImageUpload(index, 'beforeImage')}>
-                    {slide.beforeImage ? <img src={slide.beforeImage} alt="Before" /> : <div className="image-placeholder">Before</div>}
-                  </div>
+                  <DynamicImages slide={slide} slideIndex={index} field="beforeImage" maxImages={1} className="comparison-dynamic" />
                 </div>
                 <div className="comparison-item">
                   <span className="comparison-label">
                     <EditableField value={slide.afterLabel} onChange={(v) => updateSlide(index, { afterLabel: v })} />
                   </span>
-                  <div className="comparison-image" onClick={() => editMode && handleImageUpload(index, 'afterImage')}>
-                    {slide.afterImage ? <img src={slide.afterImage} alt="After" /> : <div className="image-placeholder">After</div>}
-                  </div>
+                  <DynamicImages slide={slide} slideIndex={index} field="afterImage" maxImages={1} className="comparison-dynamic" />
                 </div>
               </div>
               <DynamicBullets slide={slide} slideIndex={index} field="bullets" className="comparison-bullets" label="Bullet" />
@@ -3937,7 +3953,8 @@ const CaseStudy = () => {
         return (
           <div className="slide slide-challenge-solution" key={index}>
             {slideControls}
-            <div className="slide-inner slide-split">
+            <SplitRatioControl slide={slide} slideIndex={index} />
+            <div className="slide-inner slide-split" style={getSplitStyle(slide)}>
               <div className="split-content">
                 <span className="slide-label">
                   <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
@@ -3954,131 +3971,14 @@ const CaseStudy = () => {
                   <p><EditableField value={slide.solution} onChange={(v) => updateSlide(index, { solution: v })} multiline /></p>
                 </div>
               </div>
-              <div className="split-image" onClick={() => editMode && handleImageUpload(index)}>
-                {slide.image ? (
-                  <>
-                    <img src={slide.image} alt={slide.title} />
-                    {editMode && <div className="image-edit-overlay">Click to change</div>}
-                  </>
-                ) : (
-                  <div className="image-placeholder">{editMode ? 'Click to add image' : 'No image'}</div>
-                )}
+              <div className="split-image challenge-solution-image">
+                <DynamicImages slide={slide} slideIndex={index} field="image" className="challenge-solution-dynamic" />
               </div>
             </div>
           </div>
         );
 
       case 'solutionShowcase': {
-        // Ensure arrays exist and are valid
-        const rawProblemImages = slide.problemImages;
-        const rawSolutionImages = slide.solutionImages;
-        
-        const scProblemImages = Array.isArray(rawProblemImages) 
-          ? rawProblemImages.map(img => typeof img === 'object' ? img : { src: img || '', caption: '' })
-          : [{ src: '', caption: '' }];
-        const scSolutionImages = Array.isArray(rawSolutionImages) 
-          ? rawSolutionImages.map(img => typeof img === 'object' ? img : { src: img || '', caption: '' })
-          : [{ src: '', caption: '' }];
-        
-        const scUpdateImage = (field, imgIndex, value, isVideo = false) => {
-          try {
-            const currentImages = Array.isArray(slide[field]) ? slide[field] : [{ src: '', caption: '' }];
-            const images = currentImages.map((img, i) => {
-              if (i === imgIndex) {
-                return { ...(typeof img === 'object' ? img : { src: '', caption: '' }), src: value, isVideo };
-              }
-              return typeof img === 'object' ? img : { src: img || '', caption: '' };
-            });
-            updateSlide(index, { [field]: images });
-          } catch (err) {
-            console.error('Error updating image:', err);
-          }
-        };
-        
-        const scAddImage = (field) => {
-          try {
-            const currentImages = Array.isArray(slide[field]) 
-              ? slide[field].map(img => typeof img === 'object' ? img : { src: img || '', caption: '' })
-              : [{ src: '', caption: '' }];
-            const images = [...currentImages, { src: '', caption: '' }];
-            updateSlide(index, { [field]: images });
-          } catch (err) {
-            console.error('Error adding image:', err);
-          }
-        };
-        
-        const scRemoveImage = (field, imgIndex) => {
-          try {
-            const currentImages = Array.isArray(slide[field]) ? slide[field] : [];
-            if (currentImages.length <= 1) return;
-            const images = currentImages.filter((_, i) => i !== imgIndex);
-            updateSlide(index, { [field]: images });
-          } catch (err) {
-            console.error('Error removing image:', err);
-          }
-        };
-        
-        const scUploadImage = (field, imgIndex) => {
-          const input = document.createElement('input');
-          input.type = 'file';
-          input.accept = 'image/*,video/mp4,video/webm,.gif';
-          input.onchange = async (e) => {
-            const file = e.target.files?.[0];
-            if (file) {
-              const isVideo = file.type.startsWith('video/');
-              const isGif = file.type === 'image/gif';
-              
-              // File size limits (in MB)
-              const maxVideoSize = 10;
-              const maxGifSize = 5;
-              const maxImageSize = 10;
-              const fileSizeMB = file.size / (1024 * 1024);
-              
-              if (isVideo && fileSizeMB > maxVideoSize) {
-                alert(`Video file is too large (${fileSizeMB.toFixed(1)}MB). Maximum size is ${maxVideoSize}MB.`);
-                return;
-              }
-              if (isGif && fileSizeMB > maxGifSize) {
-                alert(`GIF file is too large (${fileSizeMB.toFixed(1)}MB). Maximum size is ${maxGifSize}MB.`);
-                return;
-              }
-              if (!isVideo && !isGif && fileSizeMB > maxImageSize) {
-                alert(`Image file is too large (${fileSizeMB.toFixed(1)}MB). Maximum size is ${maxImageSize}MB.`);
-                return;
-              }
-              
-              const reader = new FileReader();
-              reader.onerror = () => alert('Error reading file. Please try again.');
-              reader.onload = async (event) => {
-                try {
-                  const dataUrl = event.target.result;
-                  
-                  // Don't compress videos or GIFs
-                  if (isVideo || isGif) {
-                    scUpdateImage(field, imgIndex, dataUrl, isVideo);
-                  } else {
-                    try {
-                      const compressed = await compressImage(dataUrl);
-                      scUpdateImage(field, imgIndex, compressed, false);
-                    } catch (err) {
-                      console.error('Error compressing image:', err);
-                      scUpdateImage(field, imgIndex, dataUrl);
-                    }
-                  }
-                } catch (err) {
-                  console.error('Error processing file:', err);
-                  alert('Error processing file. Please try a smaller file.');
-                }
-              };
-              reader.readAsDataURL(file);
-            }
-          };
-          input.click();
-        };
-        
-        const scProblemCount = scProblemImages.length;
-        const scSolutionCount = scSolutionImages.length;
-        
         return (
           <div className="slide slide-solution-showcase" key={index}>
             {slideControls}
@@ -4097,47 +3997,7 @@ const CaseStudy = () => {
               <div className="showcase-columns">
                 {/* Problem/Before Images */}
                 <div className="showcase-column problem-column">
-                  <div className="showcase-images">
-                    <div className="showcase-images-container">
-                      {scProblemImages.map((img, imgIndex) => (
-                        <div key={imgIndex} className="showcase-image-item">
-                          <div 
-                            className="showcase-image-wrapper"
-                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); editMode && scUploadImage('problemImages', imgIndex); }}
-                          >
-                            {img.src ? (
-                              <>
-                                {img.isVideo ? (
-                                  <video src={img.src} autoPlay loop muted playsInline />
-                                ) : (
-                                  <img src={img.src} alt={img.caption || `Problem ${imgIndex + 1}`} />
-                                )}
-                                {editMode && <div className="image-edit-overlay">Click to change</div>}
-                              </>
-                            ) : (
-                              <div className="image-placeholder">{editMode ? '+ Click to add' : 'No media'}</div>
-                            )}
-                          </div>
-                          {editMode && scProblemCount > 1 && (
-                            <button 
-                              type="button"
-                              className="remove-showcase-img" 
-                              onClick={(e) => { e.preventDefault(); e.stopPropagation(); scRemoveImage('problemImages', imgIndex); }}
-                            >×</button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                    {editMode && (
-                      <button 
-                        type="button"
-                        className="add-showcase-img" 
-                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); scAddImage('problemImages'); }}
-                      >
-                        + Add Image
-                      </button>
-                    )}
-                  </div>
+                  <DynamicImages slide={slide} slideIndex={index} field="problemImages" className="showcase-dynamic" />
                   
                   {/* Problem Description */}
                   <div className="showcase-description">
@@ -4152,47 +4012,7 @@ const CaseStudy = () => {
                 
                 {/* Solution/After Images */}
                 <div className="showcase-column solution-column">
-                  <div className="showcase-images">
-                    <div className="showcase-images-container">
-                      {scSolutionImages.map((img, imgIndex) => (
-                        <div key={imgIndex} className="showcase-image-item">
-                          <div 
-                            className="showcase-image-wrapper"
-                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); editMode && scUploadImage('solutionImages', imgIndex); }}
-                          >
-                            {img.src ? (
-                              <>
-                                {img.isVideo ? (
-                                  <video src={img.src} autoPlay loop muted playsInline />
-                                ) : (
-                                  <img src={img.src} alt={img.caption || `Solution ${imgIndex + 1}`} />
-                                )}
-                                {editMode && <div className="image-edit-overlay">Click to change</div>}
-                              </>
-                            ) : (
-                              <div className="image-placeholder">{editMode ? '+ Click to add' : 'No media'}</div>
-                            )}
-                          </div>
-                          {editMode && scSolutionCount > 1 && (
-                            <button 
-                              type="button"
-                              className="remove-showcase-img" 
-                              onClick={(e) => { e.preventDefault(); e.stopPropagation(); scRemoveImage('solutionImages', imgIndex); }}
-                            >×</button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                    {editMode && (
-                      <button 
-                        type="button"
-                        className="add-showcase-img" 
-                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); scAddImage('solutionImages'); }}
-                      >
-                        + Add Image
-                      </button>
-                    )}
-                  </div>
+                  <DynamicImages slide={slide} slideIndex={index} field="solutionImages" className="showcase-dynamic" />
                   
                   {/* Solution Description */}
                   <div className="showcase-description">
@@ -4285,110 +4105,6 @@ const CaseStudy = () => {
       }
 
       case 'beforeAfterShowcase': {
-        // Normalize arrays
-        const baBeforeImages = Array.isArray(slide.beforeImages) 
-          ? slide.beforeImages.map(img => typeof img === 'object' ? img : { src: img || '', caption: '' })
-          : [{ src: '', caption: '' }];
-        const baAfterImages = Array.isArray(slide.afterImages) 
-          ? slide.afterImages.map(img => typeof img === 'object' ? img : { src: img || '', caption: '' })
-          : [{ src: '', caption: '' }];
-        
-        const baUpdateImage = (field, imgIndex, value, isVideo = false) => {
-          try {
-            const currentImages = Array.isArray(slide[field]) ? slide[field] : [{ src: '', caption: '' }];
-            const images = currentImages.map((img, i) => {
-              if (i === imgIndex) {
-                return { ...(typeof img === 'object' ? img : { src: '', caption: '' }), src: value, isVideo };
-              }
-              return typeof img === 'object' ? img : { src: img || '', caption: '' };
-            });
-            updateSlide(index, { [field]: images });
-          } catch (err) {
-            console.error('Error updating image:', err);
-          }
-        };
-        
-        const baAddImage = (field) => {
-          try {
-            const currentImages = Array.isArray(slide[field]) 
-              ? slide[field].map(img => typeof img === 'object' ? img : { src: img || '', caption: '' })
-              : [{ src: '', caption: '' }];
-            const images = [...currentImages, { src: '', caption: '' }];
-            updateSlide(index, { [field]: images });
-          } catch (err) {
-            console.error('Error adding image:', err);
-          }
-        };
-        
-        const baRemoveImage = (field, imgIndex) => {
-          try {
-            const currentImages = Array.isArray(slide[field]) ? slide[field] : [];
-            if (currentImages.length <= 1) return;
-            const images = currentImages.filter((_, i) => i !== imgIndex);
-            updateSlide(index, { [field]: images });
-          } catch (err) {
-            console.error('Error removing image:', err);
-          }
-        };
-        
-        const baUploadImage = (field, imgIndex) => {
-          const input = document.createElement('input');
-          input.type = 'file';
-          input.accept = 'image/*,video/mp4,video/webm,.gif';
-          input.onchange = async (e) => {
-            const file = e.target.files?.[0];
-            if (file) {
-              const isVideo = file.type.startsWith('video/');
-              const isGif = file.type === 'image/gif';
-              
-              const maxVideoSize = 10;
-              const maxGifSize = 5;
-              const maxImageSize = 10;
-              const fileSizeMB = file.size / (1024 * 1024);
-              
-              if (isVideo && fileSizeMB > maxVideoSize) {
-                alert(`Video file is too large (${fileSizeMB.toFixed(1)}MB). Maximum size is ${maxVideoSize}MB.`);
-                return;
-              }
-              if (isGif && fileSizeMB > maxGifSize) {
-                alert(`GIF file is too large (${fileSizeMB.toFixed(1)}MB). Maximum size is ${maxGifSize}MB.`);
-                return;
-              }
-              if (!isVideo && !isGif && fileSizeMB > maxImageSize) {
-                alert(`Image file is too large (${fileSizeMB.toFixed(1)}MB). Maximum size is ${maxImageSize}MB.`);
-                return;
-              }
-              
-              const reader = new FileReader();
-              reader.onerror = () => alert('Error reading file. Please try again.');
-              reader.onload = async (event) => {
-                try {
-                  const dataUrl = event.target.result;
-                  if (isVideo || isGif) {
-                    baUpdateImage(field, imgIndex, dataUrl, isVideo);
-                  } else {
-                    try {
-                      const compressed = await compressImage(dataUrl);
-                      baUpdateImage(field, imgIndex, compressed, false);
-                    } catch (err) {
-                      console.error('Error compressing image:', err);
-                      baUpdateImage(field, imgIndex, dataUrl);
-                    }
-                  }
-                } catch (err) {
-                  console.error('Error processing file:', err);
-                  alert('Error processing file. Please try a smaller file.');
-                }
-              };
-              reader.readAsDataURL(file);
-            }
-          };
-          input.click();
-        };
-        
-        const baBeforeCount = baBeforeImages.length;
-        const baAfterCount = baAfterImages.length;
-        
         return (
           <div className="slide slide-before-after-showcase" key={index}>
             {slideControls}
@@ -4405,47 +4121,9 @@ const CaseStudy = () => {
                   </h2>
                 </div>
                 
-                {/* Before Images - Smaller */}
+                {/* Before Images */}
                 <div className="ba-before-section">
-                  <div className="ba-before-images">
-                    {baBeforeImages.map((img, imgIndex) => (
-                      <div key={imgIndex} className="ba-before-image-item">
-                        <div 
-                          className="ba-image-wrapper small"
-                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); editMode && baUploadImage('beforeImages', imgIndex); }}
-                        >
-                          {img.src ? (
-                            <>
-                              {img.isVideo ? (
-                                <video src={img.src} autoPlay loop muted playsInline />
-                              ) : (
-                                <img src={img.src} alt={img.caption || `Before ${imgIndex + 1}`} />
-                              )}
-                              {editMode && <div className="image-edit-overlay">Click to change</div>}
-                            </>
-                          ) : (
-                            <div className="image-placeholder">{editMode ? '+ Click to add' : 'No media'}</div>
-                          )}
-                        </div>
-                        {editMode && baBeforeCount > 1 && (
-                          <button 
-                            type="button"
-                            className="remove-ba-img" 
-                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); baRemoveImage('beforeImages', imgIndex); }}
-                          >×</button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  {editMode && (
-                    <button 
-                      type="button"
-                      className="add-ba-img" 
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); baAddImage('beforeImages'); }}
-                    >
-                      + Add Before Image
-                    </button>
-                  )}
+                  <DynamicImages slide={slide} slideIndex={index} field="beforeImages" className="ba-dynamic" />
                 </div>
                 
                 {/* Arrow */}
@@ -4469,47 +4147,9 @@ const CaseStudy = () => {
               
               {/* Right Column - Colored Background */}
               <div className="ba-right-column">
-                {/* After Images - Larger */}
+                {/* After Images */}
                 <div className="ba-after-section">
-                  <div className="ba-after-images">
-                    {baAfterImages.map((img, imgIndex) => (
-                      <div key={imgIndex} className="ba-after-image-item">
-                        <div 
-                          className="ba-image-wrapper large"
-                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); editMode && baUploadImage('afterImages', imgIndex); }}
-                        >
-                          {img.src ? (
-                            <>
-                              {img.isVideo ? (
-                                <video src={img.src} autoPlay loop muted playsInline />
-                              ) : (
-                                <img src={img.src} alt={img.caption || `After ${imgIndex + 1}`} />
-                              )}
-                              {editMode && <div className="image-edit-overlay">Click to change</div>}
-                            </>
-                          ) : (
-                            <div className="image-placeholder">{editMode ? '+ Click to add' : 'No media'}</div>
-                          )}
-                        </div>
-                        {editMode && baAfterCount > 1 && (
-                          <button 
-                            type="button"
-                            className="remove-ba-img" 
-                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); baRemoveImage('afterImages', imgIndex); }}
-                          >×</button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  {editMode && (
-                    <button 
-                      type="button"
-                      className="add-ba-img" 
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); baAddImage('afterImages'); }}
-                    >
-                      + Add After Image
-                    </button>
-                  )}
+                  <DynamicImages slide={slide} slideIndex={index} field="afterImages" className="ba-dynamic" />
                 </div>
                 
                 {/* Solution Description */}
@@ -4637,47 +4277,7 @@ const CaseStudy = () => {
               </h2>
               <DynamicContent slide={slide} slideIndex={index} field="description" className="gallery-description-wrapper" maxParagraphs={2} optional />
               <DynamicBullets slide={slide} slideIndex={index} field="bullets" className="gallery-bullets" label="Bullet" />
-              <div className="gallery-grid">
-                {slide.images?.map((img, i) => (
-                  <div key={i} className="gallery-item" onClick={() => editMode && handleImageUpload(index, `images[${i}]`)}>
-                    {img ? (
-                      <>
-                        <img src={img} alt={slide.captions?.[i] || `Image ${i + 1}`} />
-                        {editMode && <div className="image-edit-overlay">Click to change</div>}
-                      </>
-                    ) : (
-                      <div className="image-placeholder">{editMode ? 'Click to add' : `Image ${i + 1}`}</div>
-                    )}
-                    <div className="gallery-caption-wrapper">
-                      <span className="gallery-caption">
-                        <EditableField 
-                          value={slide.captions?.[i] || ''} 
-                          onChange={(v) => {
-                            const newCaptions = [...(slide.captions || [])];
-                            newCaptions[i] = v;
-                            updateSlide(index, { captions: newCaptions });
-                          }}
-                          placeholder="Add caption..."
-                        />
-                      </span>
-                      {editMode && slide.captions?.[i] && (
-                        <button 
-                          className="remove-caption-btn" 
-                          onClick={(e) => { 
-                            e.stopPropagation(); 
-                            const newCaptions = [...(slide.captions || [])];
-                            newCaptions[i] = '';
-                            updateSlide(index, { captions: newCaptions });
-                          }}
-                          title="Remove caption"
-                        >
-                          ×
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <DynamicImages slide={slide} slideIndex={index} field="images" className="gallery-dynamic" />
             </div>
           </div>
         );
@@ -5219,7 +4819,25 @@ const CaseStudy = () => {
               )}
               
               {/* Dynamic Images Grid */}
-              {images.length > 0 && (
+              {images.length === 0 && editMode ? (
+                <div 
+                  className="twi-images-empty-placeholder"
+                  onClick={() => {
+                    // Add an empty image first, then trigger upload
+                    const currentLength = images.length;
+                    addImage();
+                    // Use setTimeout to ensure state has updated, then trigger upload for the new image
+                    setTimeout(() => {
+                      handleTwiImageUpload(currentLength);
+                    }, 50);
+                  }}
+                >
+                  <div className="empty-placeholder-content">
+                    <span className="empty-placeholder-icon">📷</span>
+                    <span className="empty-placeholder-text">Click to add image</span>
+                  </div>
+                </div>
+              ) : images.length > 0 ? (
                 <div 
                   className={`twi-images-grid twi-images-count-${imageCount}`}
                   style={{ gridTemplateColumns: slide.gridColumns ? `repeat(${slide.gridColumns}, 1fr)` : getGridColumns(imageCount) }}
@@ -5385,7 +5003,7 @@ const CaseStudy = () => {
                     );
                   })}
                 </div>
-              )}
+              ) : null}
               {editMode && imageCount < maxImages && (
                 <button className="add-image-btn" onClick={addImage}>
                   + Add Image {imageCount > 0 ? `(${imageCount}/${maxImages})` : ''}
@@ -5397,108 +5015,13 @@ const CaseStudy = () => {
           </div>
         );
 
-      // === IMAGE MOSAIC - Tiled background with centered title ===
+      // === IMAGE MOSAIC - Grid of images with centered title ===
       case 'imageMosaic': {
-        const mosaicImages = slide.images || [];
-        const actualImages = mosaicImages.filter(img => img); // Only images with content
-        
-        // Fixed grid size for tiled effect (5 columns x 4 rows = 20 tiles)
-        const gridCols = slide.gridCols || 5;
-        const gridRows = slide.gridRows || 4;
-        const totalTiles = gridCols * gridRows;
-        
-        // Custom image upload for mosaic
-        const uploadMosaicImage = (imgIndex) => {
-          const input = document.createElement('input');
-          input.type = 'file';
-          input.accept = 'image/*';
-          input.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onload = async (event) => {
-                try {
-                  const dataUrl = event.target.result;
-                  let finalUrl = dataUrl;
-                  try {
-                    finalUrl = await compressImage(dataUrl);
-                  } catch (err) {
-                    console.error('Error compressing:', err);
-                  }
-                  const newImages = [...mosaicImages];
-                  newImages[imgIndex] = finalUrl;
-                  updateSlide(index, { images: newImages });
-                } catch (err) {
-                  console.error('Error processing file:', err);
-                }
-              };
-              reader.readAsDataURL(file);
-            }
-          };
-          input.click();
-        };
-        
-        const addMosaicImage = () => {
-          const newIndex = mosaicImages.length;
-          const newImages = [...mosaicImages, ''];
-          updateSlide(index, { images: newImages });
-          setTimeout(() => uploadMosaicImage(newIndex), 100);
-        };
-        
-        const removeMosaicImage = (imgIndex) => {
-          const newImages = mosaicImages.filter((_, i) => i !== imgIndex);
-          updateSlide(index, { images: newImages });
-        };
-        
-        // Create tiled array - repeat images to fill all tiles
-        const tiledImages = [];
-        if (actualImages.length > 0) {
-          for (let i = 0; i < totalTiles; i++) {
-            tiledImages.push(actualImages[i % actualImages.length]);
-          }
-        }
-        
         return (
           <div className="slide slide-image-mosaic" key={index}>
             {slideControls}
             <div className="slide-inner">
-              {/* Grid size control in edit mode */}
-              {editMode && (
-                <div className="mosaic-grid-control">
-                  <span className="grid-control-label">Grid:</span>
-                  <select 
-                    value={`${gridCols}x${gridRows}`}
-                    onChange={(e) => {
-                      const [cols, rows] = e.target.value.split('x').map(Number);
-                      updateSlide(index, { gridCols: cols, gridRows: rows });
-                    }}
-                  >
-                    <option value="3x2">3×2 (6)</option>
-                    <option value="4x3">4×3 (12)</option>
-                    <option value="5x4">5×4 (20)</option>
-                    <option value="6x4">6×4 (24)</option>
-                    <option value="8x5">8×5 (40)</option>
-                  </select>
-                </div>
-              )}
-              
-              {/* Background tile grid */}
-              <div className="mosaic-background">
-                {tiledImages.length > 0 ? (
-                  <div className="mosaic-grid" style={{ gridTemplateColumns: `repeat(${gridCols}, 1fr)` }}>
-                    {tiledImages.map((img, tileIdx) => (
-                      <div key={tileIdx} className="mosaic-tile has-image">
-                        <img src={img} alt={`Tile ${tileIdx + 1}`} />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="mosaic-empty-state">
-                    {editMode ? 'Add images below to create a tiled mosaic background' : ''}
-                  </div>
-                )}
-              </div>
-              
+              <DynamicImages slide={slide} slideIndex={index} field="images" className="mosaic-dynamic" />
               {/* Centered title overlay */}
               <div className="mosaic-overlay">
                 <div className="mosaic-title-badge">
@@ -5508,39 +5031,6 @@ const CaseStudy = () => {
                   />
                 </div>
               </div>
-              
-              {/* Image management panel (edit mode only) */}
-              {editMode && (
-                <div className="mosaic-image-manager">
-                  <div className="mosaic-manager-label">Source Images ({actualImages.length}):</div>
-                  <div className="mosaic-source-images">
-                    {mosaicImages.map((img, i) => (
-                      <div 
-                        key={i} 
-                        className={`mosaic-source-item ${img ? 'has-image' : ''}`}
-                        onClick={() => uploadMosaicImage(i)}
-                      >
-                        {img ? (
-                          <>
-                            <img src={img} alt={`Source ${i + 1}`} />
-                            <button 
-                              className="remove-source-btn"
-                              onClick={(e) => { e.stopPropagation(); removeMosaicImage(i); }}
-                            >
-                              ×
-                            </button>
-                          </>
-                        ) : (
-                          <span>+</span>
-                        )}
-                      </div>
-                    ))}
-                    <button className="add-source-btn" onClick={addMosaicImage}>
-                      + Add
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         );

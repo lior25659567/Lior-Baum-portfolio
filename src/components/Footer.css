@@ -65,7 +65,7 @@
 /* Serif (Playfair Display) */
 .cta-text.serif {
   font-family: var(--font-display);
-  font-style: italic;
+  font-style: normal;
   font-weight: 400;
 }
 
