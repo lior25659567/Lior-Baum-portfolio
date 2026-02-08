@@ -7177,50 +7177,37 @@ textarea.editable-field {
   min-height: 150px;
 }
 
-.mosaic-dynamic {
+/* Mosaic tile grid: fixed 24 tiles, fills the slide */
+.mosaic-tile-grid {
+  display: grid;
   position: absolute;
   inset: 0;
   z-index: 0;
-}
-
-.mosaic-dynamic .dynamic-images-grid {
-  height: 100%;
-  width: 100%;
-  gap: 6px;
+  gap: 4px;
+  padding: 4px;
   grid-auto-rows: minmax(0, 1fr);
 }
 
-/* Mosaic: one tile per image, no duplication; equal-sized tiles */
-.mosaic-dynamic.mosaic-mode .dynamic-images-grid {
-  gap: 6px;
-  grid-auto-rows: minmax(0, 1fr);
-  padding: 6px;
-}
-
-.mosaic-dynamic.mosaic-mode .dynamic-image-item {
+.mosaic-tile-grid .mosaic-tile {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-bg-secondary);
   min-height: 0;
   min-width: 0;
 }
 
-.mosaic-dynamic.mosaic-mode .dynamic-image-wrapper {
+.mosaic-tile-grid .mosaic-tile img {
   width: 100%;
   height: 100%;
-  min-height: 0;
+  object-fit: cover;
+  display: block;
+  opacity: 0.55;
 }
 
-.mosaic-dynamic .dynamic-image-wrapper {
-  border-radius: 0;
-  overflow: hidden;
-}
-
-.mosaic-dynamic .dynamic-image-wrapper img {
-  border-radius: 0;
-}
-
-.mosaic-dynamic .dynamic-grid-control,
-.mosaic-dynamic .add-dynamic-image-btn {
-  z-index: 5;
-  position: relative;
+.mosaic-tile-grid .mosaic-tile-empty {
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg-secondary);
 }
 
 .project-showcase-image-wrapper {
@@ -8025,20 +8012,95 @@ textarea.editable-field {
   border-color: rgba(255, 255, 255, 0.5);
 }
 
+/* Mosaic image manager (edit mode only) */
+.mosaic-image-manager {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 320px;
+}
+
+.mosaic-manager-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.mosaic-source-images {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.mosaic-source-item {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.mosaic-source-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mosaic-source-item .remove-source-btn {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-accent);
+  color: white;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.mosaic-source-item:hover .remove-source-btn {
+  opacity: 1;
+}
+
+.add-source-btn {
+  height: 48px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 2px dashed rgba(255, 255, 255, 0.25);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.add-source-btn:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: white;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
-  .mosaic-background {
-    padding: 1rem;
-  }
-
-  .mosaic-grid {
-    gap: 0.5rem;
-  }
-
-  .mosaic-tile {
-    border-radius: 6px;
-  }
-
   .mosaic-title-badge {
     padding: 1rem 1.5rem;
     border-radius: 8px;

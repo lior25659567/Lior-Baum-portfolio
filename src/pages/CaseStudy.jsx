@@ -2198,7 +2198,7 @@ const CaseStudy = () => {
   // ========== DYNAMIC IMAGES COMPONENT ==========
   // Handles single image OR array of images with add/remove and position control (memoized for stable identity)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const DynamicImages = useMemo(() => ({ slide, slideIndex, field = 'image', captionField = 'caption', className = '', maxImages = 3, mosaicMode = false }) => {
+  const DynamicImages = useMemo(() => ({ slide, slideIndex, field = 'image', captionField = 'caption', className = '', maxImages = 3 }) => {
     const [activePositionControl, setActivePositionControl] = useState(null);
     
     // Check if it's an array or single string
@@ -2346,23 +2346,14 @@ const CaseStudy = () => {
       { label: '↘', value: 'right bottom', title: 'Bottom Right' },
     ];
     
-    const MOSAIC_TILE_COUNT = 24;
-    // Mosaic: always 24 tiles; repeat uploaded images to fill (tile i shows images[i % length])
-    const displayList = mosaicMode
-      ? Array.from({ length: MOSAIC_TILE_COUNT }, (_, i) =>
-          images.length ? { ...images[i % images.length], _logicalIndex: i % images.length, _tileIndex: i } : null
-        )
-      : images;
-
-    if (displayList.length === 0 && !editMode) return null;
-    if (mosaicMode && images.length === 0 && !editMode) return null;
-
-    const imageCount = mosaicMode ? MOSAIC_TILE_COUNT : images.length;
-    const gridCols = mosaicMode ? 6 : (slide.gridCols || (images.length >= 3 ? 3 : images.length >= 2 ? 2 : 1));
+    if (images.length === 0 && !editMode) return null;
+    
+    const imageCount = images.length;
+    const gridCols = slide.gridCols || (imageCount >= 3 ? 3 : imageCount >= 2 ? 2 : 1);
     
     return (
-      <div className={`dynamic-images images-count-${mosaicMode ? 'mosaic' : imageCount} ${className} ${mosaicMode ? 'mosaic-mode' : ''}`}>
-        {editMode && images.length >= 2 && !mosaicMode && (
+      <div className={`dynamic-images images-count-${imageCount} ${className}`}>
+        {editMode && imageCount >= 2 && (
           <div className="dynamic-grid-control">
             <span className="dynamic-grid-label">Grid</span>
             <div className="dynamic-grid-buttons">
@@ -2379,44 +2370,8 @@ const CaseStudy = () => {
             </div>
           </div>
         )}
-        <div className="dynamic-images-grid" style={{ gridTemplateColumns: `repeat(${gridCols}, 1fr)` }}>
-          {displayList.map((item, tileIndex) => {
-            const img = mosaicMode ? item : item;
-            const imgIndex = mosaicMode ? (item ? item._logicalIndex : 0) : tileIndex;
-            if (mosaicMode && !item) {
-              return (
-                <div key={tileIndex} className="dynamic-image-item img-size-large img-fit-cover">
-                  <div
-                    className="dynamic-image-wrapper"
-                    onClick={() => {
-                      if (!editMode) return;
-                      if (images.length === 0) {
-                        const input = document.createElement('input');
-                        input.type = 'file';
-                        input.accept = 'image/*';
-                        input.onchange = (e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (ev) => {
-                              const dataUrl = ev.target?.result;
-                              if (dataUrl) updateSlide(slideIndex, { [field]: [{ src: dataUrl, caption: '', position: 'center center', size: 'large', fit: 'cover' }] });
-                            };
-                            reader.readAsDataURL(file);
-                          }
-                        };
-                        input.click();
-                      } else {
-                        handleDynamicImageUpload(0);
-                      }
-                    }}
-                  >
-                    <div className="image-placeholder">{editMode ? 'Click to add image' : ''}</div>
-                  </div>
-                </div>
-              );
-            }
-            const imgData = mosaicMode ? item : img;
+        <div className="dynamic-images-grid" style={imageCount >= 2 ? { gridTemplateColumns: `repeat(${gridCols}, 1fr)` } : undefined}>
+          {images.map((imgData, imgIndex) => {
             const position = imgData.position || 'center center';
             const imgSize = imgData.size || 'large';
             const imgFit = imgData.fit || 'cover';
@@ -2435,7 +2390,6 @@ const CaseStudy = () => {
             ];
             
             const isContain = imgFit === 'contain';
-            const showRemove = mosaicMode ? (tileIndex < images.length && images.length > 1) : (images.length > 1);
             // Inline styles for contain mode to guarantee no dark background/radius
             const wrapperContainStyle = isContain ? {
               background: 'transparent',
@@ -2460,7 +2414,7 @@ const CaseStudy = () => {
             
             return (
               <div 
-                key={mosaicMode ? tileIndex : imgIndex} 
+                key={imgIndex} 
                 className={`dynamic-image-item img-size-${imgSize} img-fit-${imgFit}`}
               >
                 <div 
@@ -2609,7 +2563,7 @@ const CaseStudy = () => {
                   )}
                 </div>
                 
-                {!mosaicMode && (imgData.caption || editMode) && (
+                {(imgData.caption || editMode) && (
                   <div className="dynamic-image-caption-wrapper">
                     <span className="dynamic-image-caption">
                       <EditableField 
@@ -2629,7 +2583,7 @@ const CaseStudy = () => {
                     )}
                   </div>
                 )}
-                {editMode && showRemove && (
+                {editMode && images.length > 1 && (
                   <button 
                     className="remove-dynamic-image-btn" 
                     onClick={(e) => { e.stopPropagation(); removeImage(imgIndex); }}
@@ -5020,11 +4974,63 @@ const CaseStudy = () => {
 
       // === IMAGE MOSAIC - Grid of images with centered title ===
       case 'imageMosaic': {
+        const MOSAIC_TILES = 24;
+        const MOSAIC_COLS = 6;
+        const sourceImages = (slide.images || []).filter(img => typeof img === 'object' ? img.src : img);
+        const tiles = Array.from({ length: MOSAIC_TILES }, (_, i) => {
+          if (sourceImages.length === 0) return null;
+          const img = sourceImages[i % sourceImages.length];
+          return typeof img === 'object' ? img.src : img;
+        });
+
+        const handleMosaicAdd = () => {
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.accept = 'image/*';
+          input.multiple = true;
+          input.onchange = async (e) => {
+            const files = Array.from(e.target.files || []);
+            const current = slide.images || [];
+            const newImages = [...current];
+            for (const file of files) {
+              const dataUrl = await new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = (ev) => resolve(ev.target.result);
+                reader.readAsDataURL(file);
+              });
+              try {
+                const compressed = await compressImage(dataUrl);
+                newImages.push({ src: compressed });
+              } catch {
+                newImages.push({ src: dataUrl });
+              }
+            }
+            updateSlide(index, { images: newImages });
+          };
+          input.click();
+        };
+
+        const handleMosaicRemove = (imgIdx) => {
+          const newImages = (slide.images || []).filter((_, i) => i !== imgIdx);
+          updateSlide(index, { images: newImages });
+        };
+
         return (
           <div className="slide slide-image-mosaic" key={index}>
             {slideControls}
             <div className="slide-inner">
-              <DynamicImages slide={slide} slideIndex={index} field="images" className="mosaic-dynamic" mosaicMode maxImages={24} />
+              {/* 24-tile mosaic background */}
+              <div className="mosaic-tile-grid" style={{ gridTemplateColumns: `repeat(${MOSAIC_COLS}, 1fr)` }}>
+                {tiles.map((src, i) => (
+                  <div key={i} className="mosaic-tile">
+                    {src ? (
+                      <img src={src} alt="" />
+                    ) : (
+                      <div className="mosaic-tile-empty" />
+                    )}
+                  </div>
+                ))}
+              </div>
               {/* Centered title overlay */}
               <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="Old version">
                 <div className="mosaic-overlay">
@@ -5037,6 +5043,21 @@ const CaseStudy = () => {
                   </div>
                 </div>
               </OptionalField>
+              {/* Edit mode: image manager */}
+              {editMode && (
+                <div className="mosaic-image-manager">
+                  <span className="mosaic-manager-label">Source Images ({sourceImages.length})</span>
+                  <div className="mosaic-source-images">
+                    {sourceImages.map((img, i) => (
+                      <div key={i} className="mosaic-source-item has-image">
+                        <img src={typeof img === 'object' ? img.src : img} alt="" />
+                        <button className="remove-source-btn" onClick={() => handleMosaicRemove(i)}>×</button>
+                      </div>
+                    ))}
+                    <button className="add-source-btn" onClick={handleMosaicAdd}>+ Add</button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         );
