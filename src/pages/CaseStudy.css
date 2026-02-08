@@ -3607,6 +3607,12 @@ body.case-study-active .footer {
   white-space: pre-line;
 }
 
+/* Avoid single word on last line in slide titles – balance line breaks */
+.slide-inner h1,
+.slide-inner h2 {
+  text-wrap: balance;
+}
+
 .editable-field:focus {
   outline: none;
   border-style: solid;
