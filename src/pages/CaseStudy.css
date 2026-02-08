@@ -6390,12 +6390,16 @@ textarea.editable-field {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 3rem;
+  width: 100%;
+  min-width: 0;
+  align-self: stretch;
 }
 
 .achieve-goals-column {
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
+  min-width: 0;
 }
 
 .achieve-goals-column-title {
