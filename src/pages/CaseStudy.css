@@ -8333,6 +8333,130 @@ textarea.editable-field {
   }
 }
 
+/* ========== PROBLEM & SOLUTION SLIDE ========== */
+.slide-problem-solution {
+  background: var(--color-bg);
+}
+
+.ps-title {
+  font-family: var(--font-display);
+  font-size: var(--text-h2);
+  font-weight: 600;
+  color: var(--color-text);
+  text-wrap: balance;
+  margin-bottom: 0.5rem;
+}
+
+.ps-columns {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 3rem;
+  width: 100%;
+  margin-top: 1.5rem;
+  align-items: start;
+}
+
+.ps-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ps-col-label {
+  font-size: var(--text-caption);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0.5rem;
+}
+
+.ps-problem-label {
+  color: #e53935;
+}
+
+.ps-solution-label {
+  color: #4caf50;
+}
+
+.ps-image .dynamic-image-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ps-problem-col .ps-image .dynamic-image-wrapper {
+  aspect-ratio: 4 / 3;
+}
+
+.ps-solution-col .ps-image .dynamic-image-wrapper {
+  aspect-ratio: 16 / 10;
+}
+
+.ps-bullets {
+  margin-top: 0.25rem;
+}
+
+.ps-highlight {
+  margin-top: 1.5rem;
+  font-size: var(--text-body-sm);
+  color: var(--color-text-muted);
+  padding: 1rem 1.25rem;
+  background: rgba(255, 88, 74, 0.08);
+  border-radius: 8px;
+  border-left: 3px solid var(--color-accent);
+}
+
+/* Problem & Solution mockup */
+.mockup-problem-solution {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  width: 100%;
+}
+
+.mockup-ps-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.mockup-ps-columns {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 0.4rem;
+  margin-top: 0.15rem;
+}
+
+.mockup-ps-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.mockup-ps-label {
+  font-size: 0.35rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.mockup-ps-problem .mockup-ps-label {
+  color: #e53935;
+}
+
+.mockup-ps-solution .mockup-ps-label {
+  color: #4caf50;
+}
+
+.mockup-ps-problem .mockup-image.small {
+  height: 2.2rem;
+}
+
+@media (max-width: 768px) {
+  .ps-columns {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
 /* ========== CHAPTER / SECTION DIVIDER SLIDE ========== */
 .slide-chapter {
   background: var(--color-bg);

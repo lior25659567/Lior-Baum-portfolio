@@ -339,6 +339,22 @@ export const slideTemplates = {
     images: [],
   },
 
+  // Problem & Solution - Two-column with problem image (left) and solution image (right) + bullets
+  problemSolution: {
+    type: 'problemSolution',
+    label: 'The Solution',
+    title: 'From form to conversation',
+    problemLabel: 'Problem:',
+    problemImage: [{ src: '', caption: '' }],
+    problemBullets: [],
+    solutionLabel: 'Solution:',
+    solutionImage: [{ src: '', caption: '' }],
+    solutionBullets: [
+      'First improvement or change',
+      'Second improvement or change',
+    ],
+  },
+
   // Chapter - Section divider slide
   chapter: {
     type: 'chapter',
@@ -355,7 +371,7 @@ export const templateCategories = {
   'Visual': ['image', 'video', 'projectShowcase', 'goalsShowcase', 'imageMosaic'],
   'Research': ['context', 'problem', 'issuesBreakdown', 'oldExperience', 'quotes', 'testimonial'],
   'Process': ['goals', 'achieveGoals', 'process', 'timeline', 'testing'],
-  'Features': ['feature', 'comparison', 'challengeSolution', 'solutionShowcase', 'tools'],
+  'Features': ['feature', 'comparison', 'challengeSolution', 'solutionShowcase', 'problemSolution', 'tools'],
   'Results': ['stats', 'outcomes', 'end'],
 };
 

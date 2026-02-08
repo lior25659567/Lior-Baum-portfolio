@@ -76,6 +76,7 @@ const TemplatePreview = ({ type }) => {
     solutionShowcase: 'Two-column comparison: problem images and text on left, solution images and bullet points on right.',
     imageMosaic: 'Tiled image grid background with a centered title overlay. Perfect for showing old versions, screen collections, or visual overviews.',
     chapter: 'Section divider slide with large number, title, and optional subtitle. Use to separate case study chapters.',
+    problemSolution: 'Two-column layout: smaller problem image with bullets on the left, larger solution image with bullets on the right. Title spans full width.',
   };
 
   return (
@@ -462,6 +463,26 @@ const TemplatePreview = ({ type }) => {
               <div className="mockup-chapter-number">01</div>
               <div className="mockup-chapter-title">Research</div>
               <div className="mockup-chapter-subtitle">Understanding the problem</div>
+            </div>
+          )}
+          {type === 'problemSolution' && (
+            <div className="mockup-problem-solution">
+              <div className="mockup-ps-header">
+                <div className="mockup-label" />
+                <div className="mockup-title-sm">Title</div>
+              </div>
+              <div className="mockup-ps-columns">
+                <div className="mockup-ps-col mockup-ps-problem">
+                  <div className="mockup-image small"><span className="mockup-img-icon">🔴</span></div>
+                  <div className="mockup-ps-label">Problem:</div>
+                  <div className="line short" />
+                </div>
+                <div className="mockup-ps-col mockup-ps-solution">
+                  <div className="mockup-image"><span className="mockup-img-icon">🟢</span></div>
+                  <div className="mockup-ps-label">Solution:</div>
+                  <div className="line" /><div className="line short" />
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -5151,6 +5172,54 @@ const CaseStudy = () => {
         );
       }
       
+      case 'problemSolution':
+        return (
+          <div className="slide slide-problem-solution" key={index}>
+            {slideControls}
+            <div className="slide-inner">
+              {/* Header: label + title */}
+              <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="The Solution">
+                <span className="slide-label">
+                  <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
+                </span>
+              </OptionalField>
+              <h2 className="ps-title">
+                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
+              </h2>
+
+              {/* Two columns: problem (smaller) | solution (larger) */}
+              <div className="ps-columns">
+                {/* Problem column */}
+                <div className="ps-column ps-problem-col">
+                  <DynamicImages slide={slide} slideIndex={index} field="problemImage" className="ps-image" />
+                  <OptionalField slide={slide} index={index} field="problemLabel" label="Problem Label" defaultValue="Problem:">
+                    <span className="ps-col-label ps-problem-label">
+                      <EditableField value={slide.problemLabel} onChange={(v) => updateSlide(index, { problemLabel: v })} />
+                    </span>
+                  </OptionalField>
+                  <DynamicBullets slide={slide} slideIndex={index} field="problemBullets" titleField="problemBulletsTitle" className="ps-bullets" label="Point" />
+                </div>
+                {/* Solution column */}
+                <div className="ps-column ps-solution-col">
+                  <DynamicImages slide={slide} slideIndex={index} field="solutionImage" className="ps-image" />
+                  <OptionalField slide={slide} index={index} field="solutionLabel" label="Solution Label" defaultValue="Solution:">
+                    <span className="ps-col-label ps-solution-label">
+                      <EditableField value={slide.solutionLabel} onChange={(v) => updateSlide(index, { solutionLabel: v })} />
+                    </span>
+                  </OptionalField>
+                  <DynamicBullets slide={slide} slideIndex={index} field="solutionBullets" titleField="solutionBulletsTitle" className="ps-bullets" label="Point" />
+                </div>
+              </div>
+
+              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                <div className="ps-highlight">
+                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                </div>
+              </OptionalField>
+            </div>
+          </div>
+        );
+
       case 'chapter':
         return (
           <div className="slide slide-chapter" key={index}>
