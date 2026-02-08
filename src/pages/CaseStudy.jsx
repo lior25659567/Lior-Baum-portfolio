@@ -2772,6 +2772,23 @@ const CaseStudy = () => {
                     />
                   </span>
                 </OptionalField>
+                {(slide.logo || editMode) && (
+                  <div className="intro-logo">
+                    <div
+                      className="intro-logo-wrapper"
+                      onClick={() => editMode && handleImageUpload(index, 'logo')}
+                    >
+                      {slide.logo ? (
+                        <>
+                          <img src={slide.logo} alt="Logo" />
+                          {editMode && <div className="image-edit-overlay">Click to change</div>}
+                        </>
+                      ) : (
+                        <div className="image-placeholder">{editMode ? 'Click to add logo' : ''}</div>
+                      )}
+                    </div>
+                  </div>
+                )}
                 <h1 className="intro-title">
                   <EditableField
                     value={slide.title}
@@ -2779,6 +2796,23 @@ const CaseStudy = () => {
                     multiline
                   />
                 </h1>
+                {(slide.subtitle || editMode) && (
+                  <p className="intro-subtitle">
+                    <EditableField
+                      value={slide.subtitle || ''}
+                      onChange={(v) => updateSlide(index, { subtitle: v })}
+                    />
+                    {editMode && (
+                      <button
+                        type="button"
+                        className="toggle-subtitle-btn"
+                        onClick={() => updateSlide(index, { subtitle: slide.subtitle ? '' : 'Add a subtitle' })}
+                      >
+                        {slide.subtitle ? '× Remove subtitle' : '+ Add subtitle'}
+                      </button>
+                    )}
+                  </p>
+                )}
                 <p className="intro-description">
                   <EditableField
                     value={slide.description}
@@ -2974,6 +3008,23 @@ const CaseStudy = () => {
                       onChange={(v) => updateSlide(index, { title: v })}
                     />
                   </h2>
+                  {(slide.subtitle || editMode) && (
+                    <p className="project-showcase-subtitle">
+                      <EditableField
+                        value={slide.subtitle || ''}
+                        onChange={(v) => updateSlide(index, { subtitle: v })}
+                      />
+                      {editMode && (
+                        <button
+                          type="button"
+                          className="toggle-subtitle-btn"
+                          onClick={() => updateSlide(index, { subtitle: slide.subtitle ? '' : 'Add a subtitle' })}
+                        >
+                          {slide.subtitle ? '× Remove subtitle' : '+ Add subtitle'}
+                        </button>
+                      )}
+                    </p>
+                  )}
                   <p className="project-showcase-description">
                     <EditableField
                       value={slide.description}

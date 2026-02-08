@@ -6,11 +6,13 @@ export const slideTemplates = {
   intro: {
     type: 'intro',
     title: 'Project\nName',
+    subtitle: '',
     description: 'Brief project description goes here.',
     clientLabel: 'Client',
     client: 'Client Name',
     focusLabel: 'Focus',
     focus: 'Project Focus Area',
+    logo: '',
     splitRatio: 50,
   },
   info: {
@@ -368,6 +370,7 @@ export const slideTemplates = {
     type: 'projectShowcase',
     slideNumber: '03',
     title: 'Project Name',
+    subtitle: '',
     description: 'Brief description of the project and what it does.',
     tags: ['UX', 'Design', 'Development'],
     logo: '',
