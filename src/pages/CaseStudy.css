@@ -236,7 +236,7 @@ body.case-study-active .footer {
 /* Unified inner container - SAME for all slides */
 .slide-inner {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1440px;
   height: calc(100vh - 8rem);
   height: calc(100dvh - 8rem);
   display: flex;
@@ -2973,7 +2973,7 @@ body.case-study-active .footer {
   }
 
   .slide-inner {
-    max-width: 1100px;
+    max-width: 1340px;
   }
 
   .deco-circle {
@@ -3005,7 +3005,7 @@ body.case-study-active .footer {
   }
 
   .slide-inner {
-    max-width: 1000px;
+    max-width: 1120px;
   }
 
   .slide-split,
