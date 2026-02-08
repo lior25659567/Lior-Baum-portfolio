@@ -584,8 +584,9 @@ const CaseStudy = () => {
     projectRef.current = project;
   }, [project]);
 
-  // Load project data when projectId changes
-  const loadProjectData = useCallback(async () => {
+  // Load project data when projectId changes.
+  // When preserveSlide is true (e.g. on tab visibility change), we do not reset currentSlide.
+  const loadProjectData = useCallback(async (preserveSlide = false) => {
     console.log(`[loadProjectData] Loading projectId: ${projectId}`);
     hasLoadedRef.current = false; // Reset on projectId change
     
@@ -606,12 +607,12 @@ const CaseStudy = () => {
     // Otherwise, wait for async load to avoid showing defaults
     if (!hasIdbMarker || syncHasData || hasMinimal) {
       setProject(syncData);
-      setCurrentSlide(0);
+      if (!preserveSlide) setCurrentSlide(0);
       console.log('[loadProjectData] Set project from sync data');
     } else {
       // Data is only in IndexedDB, show defaults temporarily while loading
       setProject(defaultData);
-      setCurrentSlide(0);
+      if (!preserveSlide) setCurrentSlide(0);
       console.log('[loadProjectData] Set project to defaults (waiting for IndexedDB)');
     }
     
@@ -622,8 +623,8 @@ const CaseStudy = () => {
         // Update with the real data from IndexedDB
         setProject(asyncData);
         console.log('[loadProjectData] Updated project from IndexedDB');
-        // If we showed defaults initially, reset slide to 0
-        if (hasIdbMarker && !syncHasData && !hasMinimal) {
+        // If we showed defaults initially, reset slide to 0 (unless preserving for tab return)
+        if (!preserveSlide && hasIdbMarker && !syncHasData && !hasMinimal) {
           setCurrentSlide(0);
         }
       } else if (hasIdbMarker && !syncHasData && !hasMinimal) {
@@ -646,13 +647,14 @@ const CaseStudy = () => {
     loadProjectData();
   }, [loadProjectData]);
   
-  // Reload data when component becomes visible again (in case user navigated away and back)
+  // Reload data when component becomes visible again (in case user navigated away and back).
+  // Preserve current slide so switching tabs doesn't jump back to slide 1.
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden && hasLoadedRef.current) {
         // Component became visible again, reload data to ensure we have latest
         console.log('[visibilitychange] Component visible again, reloading data');
-        loadProjectData();
+        loadProjectData(true); // preserveSlide = true
       }
     };
     
