@@ -7828,9 +7828,96 @@ textarea.editable-field {
   color: var(--color-accent);
 }
 
+/* Project showcase header mode: Title only | Logo only | Title + Logo */
+.project-showcase-header-mode {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.project-showcase-header-mode-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.project-showcase-header-mode-btns {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.project-showcase-header-mode .header-mode-btn {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.7rem;
+  border: 1px dashed var(--color-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.project-showcase-header-mode .header-mode-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.project-showcase-header-mode .header-mode-btn.active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: white;
+}
+
+.project-showcase-title .project-showcase-remove-title,
+.project-showcase-title .remove-title-btn {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.7rem;
+  border: 1px dashed var(--color-border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.project-showcase-title .project-showcase-remove-title:hover,
+.project-showcase-title .remove-title-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
 .project-showcase-logo {
   margin-top: auto;
   background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.project-showcase-remove-logo,
+.project-showcase-logo .remove-logo-btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  border: 1px dashed var(--color-border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.project-showcase-remove-logo:hover,
+.project-showcase-logo .remove-logo-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .project-logo-wrapper {

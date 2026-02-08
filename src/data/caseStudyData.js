@@ -374,6 +374,7 @@ export const slideTemplates = {
     description: 'Brief description of the project and what it does.',
     tags: ['UX', 'Design', 'Development'],
     logo: '',
+    projectShowcaseHeader: 'both', // 'both' | 'title' | 'logo'
     image: '',
   },
 

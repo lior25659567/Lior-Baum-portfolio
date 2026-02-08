@@ -3037,12 +3037,56 @@ const CaseStudy = () => {
                       )}
                     </div>
                   )}
-                  <h2 className="project-showcase-title">
-                    <EditableField
-                      value={slide.title}
-                      onChange={(v) => updateSlide(index, { title: v })}
-                    />
-                  </h2>
+                  {/* Header mode: Title only | Logo only | Title + Logo */}
+                  {editMode && (
+                    <div className="project-showcase-header-mode">
+                      <span className="project-showcase-header-mode-label">Header:</span>
+                      <div className="project-showcase-header-mode-btns">
+                        <button
+                          type="button"
+                          className={`header-mode-btn ${(slide.projectShowcaseHeader || 'both') === 'title' ? 'active' : ''}`}
+                          onClick={() => updateSlide(index, { projectShowcaseHeader: 'title' })}
+                          title="Show title only"
+                        >
+                          Title only
+                        </button>
+                        <button
+                          type="button"
+                          className={`header-mode-btn ${(slide.projectShowcaseHeader || 'both') === 'logo' ? 'active' : ''}`}
+                          onClick={() => updateSlide(index, { projectShowcaseHeader: 'logo' })}
+                          title="Show logo only"
+                        >
+                          Logo only
+                        </button>
+                        <button
+                          type="button"
+                          className={`header-mode-btn ${(slide.projectShowcaseHeader || 'both') === 'both' ? 'active' : ''}`}
+                          onClick={() => updateSlide(index, { projectShowcaseHeader: 'both' })}
+                          title="Show title and logo"
+                        >
+                          Title + Logo
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {((slide.projectShowcaseHeader || 'both') === 'both' || (slide.projectShowcaseHeader || 'both') === 'title') && (slide.title || editMode) && (
+                    <h2 className="project-showcase-title">
+                      <EditableField
+                        value={slide.title}
+                        onChange={(v) => updateSlide(index, { title: v })}
+                      />
+                      {editMode && slide.title && (
+                        <button
+                          type="button"
+                          className="remove-title-btn project-showcase-remove-title"
+                          onClick={() => updateSlide(index, { title: '' })}
+                          title="Remove title"
+                        >
+                          × Remove title
+                        </button>
+                      )}
+                    </h2>
+                  )}
                   {(slide.subtitle || editMode) && (
                     <p className="project-showcase-subtitle">
                       <EditableField
@@ -3108,7 +3152,7 @@ const CaseStudy = () => {
                       )}
                     </div>
                   )}
-                  {(slide.logo || editMode) && (
+                  {((slide.projectShowcaseHeader || 'both') === 'both' || (slide.projectShowcaseHeader || 'both') === 'logo') && (slide.logo || editMode) && (
                     <div className="project-showcase-logo">
                       <div
                         className="project-logo-wrapper"
@@ -3123,6 +3167,15 @@ const CaseStudy = () => {
                           <div className="image-placeholder">{editMode ? 'Click to add logo' : ''}</div>
                         )}
                       </div>
+                      {editMode && slide.logo && (
+                        <button
+                          type="button"
+                          className="remove-logo-btn project-showcase-remove-logo"
+                          onClick={(e) => { e.stopPropagation(); updateSlide(index, { logo: '' }); }}
+                        >
+                          × Remove logo
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
