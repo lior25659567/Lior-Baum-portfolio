@@ -71,11 +71,13 @@ export const slideTemplates = {
     type: 'goals',
     label: 'Goals',
     title: 'What we wanted to achieve',
+    goalsCardsTitle: 'Goals',
     goals: [
       { number: '1', title: 'goal title', description: 'Goal description' },
       { number: '2', title: 'another goal', description: 'Goal description' },
     ],
     kpis: ['KPI 1', 'KPI 2', 'KPI 3'],
+    kpisGridColumns: 3,
   },
   testing: {
     type: 'testing',
@@ -194,7 +196,6 @@ export const slideTemplates = {
       { number: '3', title: 'Third issue', description: 'Brief description of this issue' },
       { number: '4', title: 'Fourth issue', description: 'Brief description of this issue' },
     ],
-    conclusion: 'Key takeaway or summary of the core problems identified.',
   },
 
   // Old Experience - showing the previous state
@@ -345,10 +346,12 @@ export const slideTemplates = {
     label: 'The Solution',
     title: 'From form to conversation',
     problemLabel: 'Problem:',
-    problemImage: [{ src: '', caption: '' }],
+    problemImage: '',
+    problemImageFit: 'cover',
     problemBullets: [],
     solutionLabel: 'Solution:',
-    solutionImage: [{ src: '', caption: '' }],
+    solutionImage: '',
+    solutionImageFit: 'cover',
     solutionBullets: [
       'First improvement or change',
       'Second improvement or change',
@@ -362,10 +365,20 @@ export const slideTemplates = {
     title: 'Research',
     subtitle: 'Understanding the problem space',
   },
+
+  // Dynamic - Composable slide with ordered content blocks
+  dynamic: {
+    type: 'dynamic',
+    blocks: [
+      { type: 'title', value: 'Section Title' },
+      { type: 'paragraph', value: 'Add your content here. Use the toolbar below to add more blocks.' },
+    ],
+  },
 };
 
 // Template categories for easier navigation
 export const templateCategories = {
+  'Custom': ['dynamic'],
   'Introduction': ['intro', 'info', 'chapter'],
   'Content': ['text', 'twoColumn', 'insight', 'textWithImages'],
   'Visual': ['image', 'video', 'projectShowcase', 'goalsShowcase', 'imageMosaic'],
@@ -377,129 +390,358 @@ export const templateCategories = {
 
 export const defaultCaseStudies = {
   'align-technology': {
-    title: 'iTero\nToolbar',
-    subtitle: 'A scalable clinical toolbar for real-time scanning',
-    category: 'UI Unification & Efficiency',
+    title: 'iTero\nScan & View',
+    subtitle: 'Redesigning a live clinical scanning experience',
+    category: 'Clinical UX & System Design',
     year: '2024',
     color: '#E8847C',
     slides: [
+      // Intro
       {
         type: 'intro',
-        title: 'iTero Scan Process\nToolbar Redesign',
-        description: 'A scalable clinical toolbar for real-time scanning',
+        title: 'iTero\nScan & View',
+        description: 'Redesigning a live clinical scanning experience',
         clientLabel: 'Client',
         client: 'Align Technology',
         focusLabel: 'Focus',
-        focus: 'UI Unification & Efficiency',
+        focus: 'Clinical UX & System Design',
       },
+      // Slide 1 — Background
       {
-        type: 'info',
-        title: 'Project Overview',
-        items: [
-          { label: 'Client', value: 'Align Technology' },
-          { label: 'Focus', value: 'UI Unification & Efficiency' },
-          { label: 'Role', value: 'Product Designer' },
-          { label: 'Deliverables', value: 'Toolbar System, Icon Set, Prototypes' },
-        ],
+        type: 'context',
+        label: 'Background',
+        title: 'What is Align Technology',
+        content: 'Align Technology develops digital systems used by clinicians during live dental procedures.\niTero is a real-time intraoral scanner designed for use while the patient is in the chair.',
+        highlight: 'The platform supports scanning, validation, and review within a single clinical session. Accuracy and speed are equally critical.',
+        image: '',
       },
+      // Slide 2 — Context
       {
         type: 'context',
         label: 'Context',
-        title: 'Understanding the clinical environment',
-        content: 'The iTero Scan Page is the primary workspace clinicians use during real-time digital dental scans. It sits at the center of the scanning process and remains on screen throughout the procedure.',
-        highlight: 'This is a time-critical environment. The patient is in the chair, the scanner is in hand, and clinicians shift attention between the patient, the scan, and the interface. Interactions need to be fast, precise, and require minimal cognitive effort.',
-        image: '/case-studies/align/slide-cover.png',
+        title: 'Scanning is a high-pressure environment',
+        content: 'iTero is used in moments where clinicians must act quickly and confidently.',
+        bullets: [
+          'The scanner is held in one hand',
+          'Attention shifts between patient and screen',
+          'Adjustments happen in real time',
+          'Delays increase chair time',
+        ],
+        highlight: 'The interface must support flow without demanding attention.',
+        image: '',
       },
+      // Slide 3 — The Breakdown
+      {
+        type: 'problem',
+        label: 'The Breakdown',
+        title: 'When incremental improvements stopped working',
+        content: 'Over time, new tools and capabilities were added.',
+        issues: [
+          'Additional scan types',
+          'Expanded post-scan tools',
+          'More review options',
+        ],
+        conclusion: 'Each feature solved a specific need. Together, they created a fragmented experience. Scanning, editing, and reviewing no longer felt like one connected process.',
+        image: '',
+      },
+      // Slide 4 — Research & Insight
+      {
+        type: 'text',
+        label: 'Research & Insight',
+        title: 'What clinicians struggled with',
+        content: 'From interviews and live walkthroughs, one theme repeated:',
+        highlight: '"I\'m never fully sure where I am — scanning, editing, or reviewing."',
+        bulletsTitle: 'Key issues:',
+        bullets: [
+          'Unclear system state',
+          'Tools scattered across the interface',
+          'Fear of making irreversible changes',
+        ],
+        paragraphs: [
+          'This was not a usability issue in isolation. It was a structural breakdown in the overall flow.',
+        ],
+      },
+      // Slide 5 — Goals & KPIs
+      {
+        type: 'goals',
+        label: 'Goals & KPIs',
+        title: 'Defining success before redesign',
+        description: ['Before redesigning, success criteria were clearly defined.'],
+        goals: [
+          { number: '1', title: 'Unified Experience', description: 'Create a unified Scan and View experience' },
+          { number: '2', title: 'Reduce Cognitive Load', description: 'Reduce cognitive load during live procedures' },
+          { number: '3', title: 'Enable Complexity', description: 'Enable complex workflows without confusion' },
+          { number: '4', title: 'Scalable Structure', description: 'Build a scalable structure for future tools' },
+        ],
+        kpis: [
+          'Tool selection time',
+          'Overall scan duration',
+          'Misclick rate',
+          'Adoption of advanced features',
+        ],
+      },
+      // Chapter: FOUNDATION — ICON SYSTEM
+      {
+        type: 'chapter',
+        number: '01',
+        title: 'Foundation',
+        subtitle: 'Icon System',
+      },
+      // Slide 6 — Icon System Problem
       {
         type: 'problem',
         label: 'The Problem',
-        title: 'When the interface outgrew its original logic',
-        content: 'Early versions of the interface had only a few tools, placed naturally where space allowed. As the product evolved, new tools were added wherever there was available space, without a shared structure guiding placement.',
+        title: 'Icons that worked individually failed as a system',
+        content: 'As the toolset grew, icon inconsistencies became more visible.',
         issues: [
-          'Tools were visible but spread across different areas',
-          'Placement followed space, not workflow',
-          'Spatial consistency was hard to maintain',
+          'Mixed stroke weights',
+          'Uneven visual balance',
+          'Conflicting metaphors',
         ],
-        conclusion: 'Scattered tools broke scan flow and added chair time.',
-        image: '/case-studies/align/slide-2.png',
+        conclusion: 'When grouped together, they created visual noise and hesitation.',
+        image: '',
       },
-      {
-        type: 'quotes',
-        label: 'User Research',
-        title: 'Validating the problem with clinicians',
-        content: 'To understand the users pain points I spoke with both newly onboarded and experienced clinicians and reviewed support tickets related to scanning and tool usage.',
-        quotes: [
-          { text: 'Even one second of hesitation feels too long.', author: 'Dr. Moti' },
-          { text: 'When there were fewer tools, it was fine. Now I sometimes pause just to remember where something is.', author: 'Dr. Efrat L.' },
-          { text: 'Why every tool in different place?', author: 'Dr. Hodaya M' },
-        ],
-      },
-      {
-        type: 'goals',
-        label: 'Defining the KPIs',
-        title: 'What did we want to achieve?',
-        goals: [
-          { number: '1', title: 'consistency across', description: 'Scan and View Screens' },
-          { number: '2', title: 'scalable toolbar system', description: 'Support future tools without adding complexity.' },
-          { number: '3', title: 'cognitive load', description: 'in critical moments. Help clinicians focus on the patient and scan quality.' },
-        ],
-        kpis: [
-          'Average time to select a tool',
-          'Overall scan duration / chair time',
-          'Misclick rate during live scanning',
-        ],
-      },
-      {
-        type: 'image',
-        label: 'Research',
-        title: 'Understanding what exists',
-        image: '/case-studies/align/slide-5.png',
-        caption: 'Before starting the design phase it was important to fully understand the existing toolset and how it was distributed across the product. This step created the foundation for a structured toolbar.',
-      },
-      {
-        type: 'testing',
-        label: 'Prototyping & Layout Testing',
-        title: 'Validating behavior in real conditions',
-        content: 'Static mockups weren\'t enough to evaluate scanning flow. I built a live interactive prototype using Cursor that simulated real toolbar behavior, states, and transitions during scanning. This allowed clinicians to test the toolbar under realistic conditions.',
-        layouts: [
-          'Vertical Toolbar',
-          'Horizontal Top Toolbar',
-          'Horizontal Bottom Toolbar',
-        ],
-        conclusion: 'Based on feedback, the horizontal top toolbar was selected.',
-        image: '/case-studies/align/slide-6.png',
-      },
+      // Slide 7 — Icon System Solution
       {
         type: 'text',
-        label: 'Solution',
-        title: 'Supporting different experience levels',
-        content: 'As the number of tools grew, testing and feedback revealed that icons alone were not always enough, especially during high-speed scanning. Clinicians requested the option to display tool names to ensure accuracy and confidence.',
+        label: 'The Solution',
+        title: 'Creating a scalable icon language',
+        content: 'The icon system was redesigned before adjusting layout.',
+        paragraphs: [
+          'Changes included unified grid and stroke rules, balanced visual weight, and simplified metaphors.',
+          'This created a visual foundation capable of scaling.',
+        ],
+        image: '',
       },
+      // Chapter: LIVE SCANNING STRUCTURE
       {
-        type: 'image',
-        label: 'Design Process',
-        title: 'Creating clarity before testing behavior',
-        image: '/case-studies/align/slide-8.png',
-        caption: 'Clinicians recognized the icons, but grouping them made inconsistencies in style and visual weight more noticeable, creating visual noise. Before testing layout and interaction, the icon system was refined to create a more straightforward and balanced experience.',
+        type: 'chapter',
+        number: '02',
+        title: 'Live Scanning',
+        subtitle: 'Structure',
       },
+      // Slide 8 — Scanning Structure Problem
       {
-        type: 'image',
-        label: 'Final Design',
-        title: 'A unified, scalable toolbar',
-        image: '/case-studies/align/slide-9.png',
-        caption: 'The final solution centers on a Unified Horizontal Toolbar that remains persistent across all modes, reducing the cognitive load on the clinician.',
+        type: 'problem',
+        label: 'The Problem',
+        title: 'Tools without a predictable structure',
+        content: 'Even with aligned icons, tools were problematic.',
+        issues: [
+          'Spread across the interface',
+          'Difficult to reach with one hand',
+          'Competing with the scan canvas',
+        ],
+        conclusion: 'Clinicians searched mid-scan.',
+        image: '',
       },
+      // Slide 9 — Exploration
       {
-        type: 'outcomes',
-        label: 'Outcomes & Learnings',
-        title: 'Outcomes & Learnings',
-        outcomes: [
-          { title: '28% Faster Selection', description: 'Tool selection speed improved significantly due to the predictable horizontal layout.' },
-          { title: 'Error Reduction', description: 'Standardized 60px click targets led to a measurable decrease in misclicks during procedures.' },
-          { title: 'Enhanced Visibility', description: 'The optimized layout exposed more of the 3D scan area, improving the overall clinical utility of the software.' },
-          { title: 'Systemic Scalability', description: 'The new toolbar and icon system provide a robust framework for adding future features without creating further visual clutter.' },
+        type: 'testing',
+        label: 'Exploration',
+        title: 'Testing toolbar positions',
+        content: 'Multiple toolbar layouts were tested. Each was evaluated for reachability, obstruction, and speed.',
+        layouts: [
+          'Vertical',
+          'Bottom',
+          'Top',
+        ],
+        image: '',
+      },
+      // Slide 10 — Scanning Solution
+      {
+        type: 'text',
+        label: 'The Solution',
+        title: 'Defining a single home for scanning actions',
+        content: 'The horizontal top toolbar proved most stable.',
+        paragraphs: [
+          'Predictable reach, minimal obstruction, and strong muscle memory.',
+          'This became the structural anchor of the Scan page.',
+        ],
+        image: '',
+      },
+      // Slide 11 — Adaptive Problem
+      {
+        type: 'text',
+        label: 'The Problem',
+        title: 'One static toolbar couldn\'t support all moments',
+        content: 'Different clinicians had different needs.',
+        paragraphs: [
+          'Experts wanted speed. Others wanted reassurance. Icons alone were not always sufficient.',
         ],
       },
+      // Slide 12 — Adaptive Solution
+      {
+        type: 'text',
+        label: 'The Solution',
+        title: 'An adaptive toolbar for speed and clarity',
+        content: 'The toolbar supports two states: collapsed (icons only) and expanded (icons with labels).',
+        paragraphs: [
+          'Clinicians can switch states without interrupting scanning.',
+        ],
+        image: '',
+      },
+      // Chapter: CLINICAL TOOLS
+      {
+        type: 'chapter',
+        number: '03',
+        title: 'Clinical Tools',
+        subtitle: 'Redesigning core interactions',
+      },
+      // Slide 13 — Prep Review Problem
+      {
+        type: 'problem',
+        label: 'Prep Review — Problem',
+        title: 'Validation felt like technical editing',
+        content: 'The legacy Prep Review required manual adjustments.',
+        issues: [
+          'Clinicians focused on correcting instead of validating',
+        ],
+        image: '',
+      },
+      // Slide 14 — Prep Review Solution
+      {
+        type: 'text',
+        label: 'Prep Review — Solution',
+        title: 'Turning validation into a decision checkpoint',
+        content: 'Prep Review was reframed as a binary decision: Select, or Erase and Rescan.',
+        paragraphs: [
+          'AI validates. The clinician confirms.',
+        ],
+        image: '',
+      },
+      // Slide 15 — Margin Line Problem
+      {
+        type: 'problem',
+        label: 'Margin Line — Problem',
+        title: 'AI existed but was not central',
+        content: 'AI detection was hidden behind secondary actions.',
+        issues: [
+          'Clinicians manually drew margins, increasing fatigue and error',
+        ],
+        image: '',
+      },
+      // Slide 16 — Margin Line Solution
+      {
+        type: 'text',
+        label: 'Margin Line — Solution',
+        title: 'Making AI the primary path',
+        content: 'The tool was redesigned around AI-first detection.',
+        paragraphs: [
+          'Detect as the main action. Visible tooth context. Review instead of draw.',
+        ],
+        image: '',
+      },
+      // Slide 17 — Trim Tool Problem
+      {
+        type: 'problem',
+        label: 'Trim Tool — Problem',
+        title: 'Precision interaction under pressure',
+        content: 'The old Trim tool required small, precise taps.',
+        issues: [
+          'This increased open-mouth time and fatigue',
+        ],
+        image: '',
+      },
+      // Slide 18 — Trim Tool Solution
+      {
+        type: 'text',
+        label: 'Trim Tool — Solution',
+        title: 'A touch-native confirm loop',
+        content: 'Trim was redesigned for one-handed interaction.',
+        paragraphs: [
+          'Large gesture trimming. Clear Confirm and Undo. Stage-based flow.',
+        ],
+        image: '',
+      },
+      // Chapter: MULTI-SCAN WORKFLOWS
+      {
+        type: 'chapter',
+        number: '04',
+        title: 'Multi-Scan',
+        subtitle: 'Workflows',
+      },
+      // Slide 19 — Multi-Scan Problem
+      {
+        type: 'problem',
+        label: 'The Problem',
+        title: 'A system built for one scan',
+        content: 'Real clinical cases require multiple interactions.',
+        issues: [
+          'Additional scans',
+          'Revisions',
+          'Bite scans',
+          'Pre and post comparison',
+        ],
+        conclusion: 'The previous structure did not support this clearly.',
+      },
+      // Slide 20 — Multi-Scan Solution
+      {
+        type: 'text',
+        label: 'The Solution',
+        title: 'Structuring multiple scans as one session',
+        content: 'Multi-scan support was introduced with a clear structure.',
+        paragraphs: [
+          'Tab-based structure. Clear scan labeling. Safe switching.',
+        ],
+        image: '',
+      },
+      // Chapter: REVIEW PANEL
+      {
+        type: 'chapter',
+        number: '05',
+        title: 'Review Panel',
+        subtitle: 'Control and confidence',
+      },
+      // Slide 21 — Review Problem
+      {
+        type: 'problem',
+        label: 'The Problem',
+        title: 'Reviewing felt fragile',
+        content: 'Clinicians feared making mistakes during review.',
+        issues: [
+          'Accidental changes',
+          'Losing context',
+          'Incorrect comparisons',
+        ],
+      },
+      // Slide 22 — Review Solution
+      {
+        type: 'text',
+        label: 'The Solution',
+        title: 'A dedicated review panel for control',
+        content: 'A structured View panel allows clinicians to review with confidence.',
+        paragraphs: [
+          'Show and hide layers. Adjust opacity. Compare safely.',
+        ],
+        image: '',
+      },
+      // Chapter: OUTCOME
+      {
+        type: 'chapter',
+        number: '06',
+        title: 'Outcome',
+        subtitle: 'Impact and reflection',
+      },
+      // Slide 23 — Results
+      {
+        type: 'outcomes',
+        label: 'Results',
+        title: 'From hesitation to confidence',
+        outcomes: [
+          { title: 'Faster Tool Selection', description: 'Predictable placement reduced time to select tools during live scanning.' },
+          { title: 'Reduced Hesitation', description: 'Clear system state eliminated guesswork during procedures.' },
+          { title: 'Increased Adoption', description: 'Advanced features saw higher usage with a discoverable structure.' },
+          { title: 'Safer Multi-Scan Workflows', description: 'Tab-based structure enabled confident switching between scans.' },
+        ],
+      },
+      // Slide 24 — Key Takeaway
+      {
+        type: 'insight',
+        label: 'Key Takeaway',
+        insight: 'Designing for clarity under pressure',
+        supporting: 'In live clinical environments, structure reduces cognitive load, visible state builds confidence, and predictability drives adoption. Redesigning the system — not just the interface — made the difference.',
+      },
+      // End
       {
         type: 'end',
         title: 'Thank You',
@@ -830,7 +1072,7 @@ export const defaultCaseStudies = {
 
   'itero-scan-view': {
     title: 'iTero\nScan & View',
-    subtitle: 'Redesigning core clinical workflows for real-time dental scanning',
+    subtitle: 'Redesigning a live clinical scanning experience',
     category: 'MedTech / Clinical UX',
     year: '2024',
     color: '#5B8DEF',
@@ -838,27 +1080,17 @@ export const defaultCaseStudies = {
       {
         type: 'intro',
         title: 'iTero Scan & View',
-        description: 'Redesigning core clinical workflows for real-time dental scanning',
+        description: 'Redesigning a live clinical scanning experience',
         clientLabel: 'Client',
         client: 'Align Technology',
         focusLabel: 'Platform',
         focus: 'Touch-based Clinical Interface',
       },
       {
-        type: 'info',
-        title: 'Project Overview',
-        items: [
-          { label: 'Client', value: 'Align Technology' },
-          { label: 'Platform', value: 'Touch-based Clinical Interface (Medical Device Software)' },
-          { label: 'Industry', value: 'MedTech / Dental Technology' },
-          { label: 'Role', value: 'Product Designer — Research, Workflow Design, Interaction Design, Prototyping' },
-        ],
-      },
-      {
         type: 'context',
         label: 'Background',
-        title: 'What is iTero?',
-        content: 'iTero is a clinical scanning platform used by dentists and orthodontists to capture high-precision 3D dental scans during live patient appointments.\n\nThe system supports real-time scanning, post-scan validation, and clinical decision-making — all while the patient is in the chair and the clinician operates the scanner with one hand.\n\nFor iTero to succeed, the software must feel fast, predictable, and safe, even as clinical capabilities continue to grow.',
+        title: 'What is Align Technology',
+        content: 'Align Technology develops digital systems used by clinicians during live dental procedures.\n\niTero is a real-time intraoral scanner used while the patient is in the chair.\n\nThis is not exploratory software.\nEvery interaction must be precise, predictable, and fast.',
         highlight: '',
         image: '',
         splitRatio: 50,
@@ -866,125 +1098,156 @@ export const defaultCaseStudies = {
       {
         type: 'context',
         label: 'Context',
-        title: 'Who the users are',
-        content: 'iTero is used by clinicians who work under constant time pressure and have very low tolerance for interface hesitation or errors.\n\nThey operate the system during live procedures, wear gloves and hold the scanner, and shift attention between patient, scan, and screen.\n\nAny friction directly impacts chair time and treatment confidence.',
-        highlight: 'operate the system during live procedures. wear gloves and hold the scanner. shift attention between patient, scan, and screen',
+        title: 'Scanning is a high-pressure environment',
+        content: 'During a scan:\n\nThe scanner is held in one hand.\nAttention shifts between patient and screen.\nDelays increase chair time.\n\nThe interface must support flow without demanding attention.',
+        highlight: 'One hand · Patient and screen · Chair time',
         image: '',
         splitRatio: 50,
       },
       {
         type: 'issuesBreakdown',
-        label: 'The Problem',
-        title: 'Why the experience broke down',
+        label: 'The Breakdown',
+        title: 'When incremental improvements stopped working',
         issues: [
-          { number: '1', title: 'Fragmented Interaction', description: 'Tools were added incrementally and placed wherever space allowed, without a shared structure guiding their location or behavior.' },
-          { number: '2', title: 'High Cognitive Load', description: 'Clinicians had to remember where tools lived and what state the system was in, instead of seeing it clearly.' },
-          { number: '3', title: 'Workflow Gaps', description: 'The system assumed a single scan per session and did not support advanced clinical workflows like additional scans or safe comparison.' },
+          { number: '1', title: 'New scan types', description: 'More tools and features were added over time.' },
+          { number: '2', title: 'More post-scan tools', description: 'Each solved a local need.' },
+          { number: '3', title: 'Additional review capabilities', description: 'Together they created a fragmented experience.' },
         ],
-        conclusion: 'Despite strong underlying technology, everyday actions began to feel slower and more error-prone than necessary.',
+        conclusion: 'Scanning, editing, and reviewing no longer felt like one coherent flow.',
       },
       {
         type: 'text',
-        label: 'Research & Discovery',
-        title: 'Understanding real clinical friction',
-        content: 'To validate these issues, I focused on how clinicians actually work — not how the system was intended to be used.\n\nMethods included:\n\n• Interviews with newly onboarded and experienced clinicians\n• Review of scan-related support tickets\n• Workflow walkthroughs with internal clinical experts\n\nThe goal was to identify where confidence breaks during real procedures.',
-      },
-      {
-        type: 'outcomes',
-        label: 'Key Findings',
-        title: 'What the research revealed',
-        outcomes: [
-          { title: 'Clinicians avoid workflows that feel unclear or risky', description: '' },
-          { title: 'Advanced features are often ignored if their behavior isn\'t obvious', description: '' },
-          { title: 'Tools often asked clinicians to manipulate data instead of make decisions', description: '' },
-          { title: 'Lack of visible system state increased hesitation during live scanning', description: '' },
-        ],
+        label: 'Research & Insight',
+        title: 'What clinicians struggled with',
+        content: 'From interviews and live walkthroughs, one theme repeated.\n\nKey issues:\n\n• Unclear system state\n• Tools scattered across the interface\n• Fear of making irreversible mistakes\n\nThis was a structural issue, not a single interaction problem.',
+        highlight: '"I\'m never fully sure where I am — scanning, editing, or reviewing."',
       },
       {
         type: 'achieveGoals',
-        label: 'Defining Success',
-        title: 'Goals & Metrics',
+        label: 'Goals & KPIs',
+        title: 'Defining success before redesign',
         leftColumn: {
           title: 'Goals',
           goals: [
-            { number: '1', text: 'Reduce cognitive load during live scanning' },
-            { number: '2', text: 'Make system state visible at all times' },
-            { number: '3', text: 'Align tools with clinical decision-making' },
-            { number: '4', text: 'Enable multi-scan workflows safely' },
-            { number: '5', text: 'Create a scalable foundation for future features' },
+            { number: '1', text: 'Create a unified Scan & View experience' },
+            { number: '2', text: 'Reduce cognitive load during live procedures' },
+            { number: '3', text: 'Enable complex workflows without adding confusion' },
+            { number: '4', text: 'Build a scalable structure for future features' },
           ],
         },
         rightColumn: {
-          title: 'Metrics',
+          title: 'KPIs',
           goals: [
-            { number: '1', text: 'Time to select a tool during live scanning' },
-            { number: '2', text: 'Misclick rate during procedures' },
-            { number: '3', text: 'Adoption of advanced tools (AI, additional scans)' },
-            { number: '4', text: 'Overall chair time' },
+            { number: '1', text: 'Average time to select a tool' },
+            { number: '2', text: 'Overall scan duration' },
+            { number: '3', text: 'Misclick rate during scanning' },
+            { number: '4', text: 'Adoption of advanced features (AI detect, multi-scan)' },
           ],
         },
       },
       {
-        type: 'text',
-        label: 'Redesign Strategy',
-        title: 'Rebuilding around real workflows',
-        content: 'Instead of treating this as a visual cleanup, the redesign focused on end-to-end workflow clarity.\n\nThe work progressed through three main areas:\n\n• Live scan interaction\n• Post-scan tools\n• Scan structure and review\n\nEach step revealed the next limitation to solve.',
+        type: 'chapter',
+        number: '02',
+        title: 'Building the Foundation',
+        subtitle: 'A scalable icon language',
       },
       {
         type: 'challengeSolution',
-        label: 'Flow 01 — Live Scan Toolbar',
-        title: 'Creating a reliable interaction foundation',
-        challenge: 'The toolbar was the primary interaction surface during scanning, but lacked hierarchy and predictability.\nMisclicks and hesitation were common in high-pressure moments.\n\nMultiple layouts were explored: vertical toolbar, horizontal top toolbar, horizontal bottom toolbar.\n\nStatic screens were not enough. Using Cursor, I built interactive prototypes that simulated real tool behavior, states, and interruptions, allowing clinicians to test options in realistic conditions.',
-        solution: 'A unified horizontal top toolbar with:\n\n• Standardized click targets\n• Reduced visual noise\n• Optional labels for confidence\n\nThis created a predictable and faster interaction during scanning.',
-        image: '',
+        label: 'Icons',
+        title: 'Icons that worked individually failed as a system',
+        challenge: 'As the toolset grew, icons became inconsistent:\n\n• Mixed stroke weights\n• Unclear metaphors\n• Uneven visual hierarchy\n\nWhen grouped together, they created visual noise.',
+        solution: 'Creating a scalable icon language.\n\nBefore touching layout, the visual language was unified:\n\n• Standardized grid and stroke rules\n• Consistent visual weight\n• Simplified metaphors\n\nThis created a foundation for grouping and expansion.',
+      },
+      {
+        type: 'chapter',
+        number: '03',
+        title: 'Live Scanning Structure',
+        subtitle: 'A single home for scanning actions',
       },
       {
         type: 'challengeSolution',
-        label: 'Flow 02 — Core Tools (Prep · Margin · Trim)',
-        title: 'Shifting from manipulation to decision-making',
-        challenge: 'Post-scan tools treated clinicians as technical editors:\n\n• Validation felt manual\n• AI capabilities were hidden or optional\n• Precision interactions were difficult with gloves',
-        solution: 'Tools were reframed around clinical intent:\n\n• Prep Review became a validation checkpoint\n• Margin Line moved to an AI-first review flow with clear tooth context\n• Trim adopted a touch-native confirm / undo model\n\nThis reduced effort and aligned tool behavior with clinical judgment.',
-        image: '',
+        label: 'Toolbar placement',
+        title: 'Tools without a predictable structure',
+        challenge: 'Even with aligned icons, tools were:\n\n• Scattered across the screen\n• Hard to reach with one hand\n• Competing with the scan canvas\n\nClinicians searched mid-scan.',
+        solution: 'Defining a single home for scanning actions.\n\nMultiple toolbar positions were tested: vertical, bottom, top.\n\nThe horizontal top toolbar proved most stable:\n\n• Predictable reach\n• Minimal obstruction\n• Strong muscle memory',
       },
       {
         type: 'challengeSolution',
-        label: 'Flow 03 — Multi-Scan Workflows',
-        title: 'Enabling advanced clinical scenarios',
-        challenge: 'The system assumed a single scan per session.\nAdditional scans required workarounds and made comparison risky.',
-        solution: 'Multi-scan support was designed and introduced as a new system capability:\n\n• Each scan has a clear purpose\n• All scans exist within the same session\n• Scan context is always visible\n\nA tab-based scan selector was introduced to provide a familiar, scalable mental model.',
-        image: '',
+        label: 'Adaptive toolbar',
+        title: 'One static toolbar couldn\'t support all experience levels',
+        challenge: 'Different clinicians had different needs:\n\n• Experts wanted speed\n• Others wanted clarity and reassurance\n\nIcons alone were not always sufficient.',
+        solution: 'An adaptive toolbar for speed and confidence.\n\nThe toolbar supports two states:\n\n• Collapsed — icons only\n• Expanded — icons with labels\n\nClinicians can switch between them without interrupting scanning.',
       },
       {
-        type: 'feature',
-        label: 'Review & Comparison',
-        title: 'Controlling complexity after scanning',
-        description: 'With multiple scans available, review required precision.\n\nA dedicated View panel allows clinicians to show or hide scan layers, adjust opacity per scan, and compare scans safely without losing context.\n\nScans are treated as layers, not files.',
-        image: '',
-        bullets: ['Show or hide scan layers', 'Adjust opacity per scan', 'Compare scans safely without losing context', 'Scans are treated as layers, not files'],
-        splitRatio: 50,
+        type: 'chapter',
+        number: '03',
+        title: 'Clinical Tools',
+        subtitle: 'Prep Review · Margin Line · Trim',
+      },
+      {
+        type: 'challengeSolution',
+        label: 'Prep Review',
+        title: 'Validation felt like manual editing',
+        challenge: 'The legacy Prep Review required:\n\n• Adjusting technical parameters\n• Manually correcting AI hints\n• Focusing on "how to fix" instead of "is it acceptable?"\n\nClinicians acted like data editors.',
+        solution: 'Turning validation into a decision checkpoint.\n\nPrep Review was reframed as a binary decision.\n\n• Primary action: "Select" (accept scan)\n• Secondary action: "Erase & Rescan"\n• AI performs validation, clinician confirms\n\nThe interaction shifted from manipulation to judgment.',
+      },
+      {
+        type: 'challengeSolution',
+        label: 'Margin Line',
+        title: 'AI existed but was hidden',
+        challenge: 'Previously:\n\n• AI detection was buried in menus\n• Clinicians manually drew margins\n• High fatigue and human error\n\nAI was passive instead of central.',
+        solution: 'AI-first detection with visible context.\n\nThe margin tool was redesigned around AI detection.\n\n• Primary CTA: "Detect"\n• Visible tooth header (e.g., Tooth 11, Upper Jaw)\n• Clinician reviews instead of draws\n\nAI handles precision. The clinician provides oversight.',
+      },
+      {
+        type: 'challengeSolution',
+        label: 'Trim Tool',
+        title: 'Precision tapping during live scanning',
+        challenge: 'The old Trim tool:\n\n• Required small target selection\n• Was difficult with gloves\n• Increased open-mouth time\n\nInteraction demanded accuracy under pressure.',
+        solution: 'A touch-native confirm loop.\n\nTrim was redesigned for one-handed interaction.\n\n• Large gesture-based trimming\n• Massive Confirm / Undo buttons\n• Clear stage-based interaction\n\nThis reduced physical strain and interaction errors.',
+      },
+      {
+        type: 'chapter',
+        number: '03',
+        title: 'Multi-Scan Workflows',
+        subtitle: 'Structuring multiple scans as a session',
+      },
+      {
+        type: 'challengeSolution',
+        label: 'Multi-scan',
+        title: 'A single-scan mental model',
+        challenge: 'Real cases require:\n\n• Additional scans\n• Revisions\n• Bite scans\n• Pre / post comparisons\n\nThe previous system wasn\'t structured for multi-scan sessions.\nSwitching context felt risky.',
+        solution: 'Structuring multiple scans as a session.\n\nMulti-scan capability was introduced as a core feature.\n\n• Chrome-like tab system\n• Clear scan labeling (Pre, Post, Bite, Additional)\n• Safe switching between scans\n\nThis provided flexibility without losing orientation.',
+      },
+      {
+        type: 'chapter',
+        number: '04',
+        title: 'Review & Control',
+        subtitle: 'Layer control and safe comparison',
+      },
+      {
+        type: 'challengeSolution',
+        label: 'View panel',
+        title: 'Reviewing felt fragile and unsafe',
+        challenge: 'Clinicians feared:\n\n• Accidentally editing data\n• Losing track of active layers\n• Incorrect comparisons\n\nReview required confidence, not caution.',
+        solution: 'A dedicated View panel for layer control.\n\nA structured View panel was introduced.\n\n• Show / hide layers\n• Adjust opacity\n• Compare scans safely\n\nReview became controlled and intentional.',
       },
       {
         type: 'outcomes',
         label: 'Outcomes',
-        title: 'What improved',
+        title: 'From hesitation to confidence',
         outcomes: [
-          { title: 'Faster tool selection during live scanning', description: '' },
-          { title: 'Fewer misclicks and interruptions', description: '' },
-          { title: 'Increased adoption of advanced tools', description: '' },
-          { title: 'Multi-scan workflows enabled for the first time', description: '' },
-          { title: 'A scalable interaction model for future features', description: '' },
+          { title: 'Faster tool selection', description: '' },
+          { title: 'Reduced hesitation during live scanning', description: '' },
+          { title: 'Increased adoption of AI detection', description: '' },
+          { title: 'Higher usage of multi-scan workflows', description: '' },
+          { title: 'The system became scalable and predictable', description: '' },
         ],
       },
       {
-        type: 'outcomes',
-        label: 'Key Learnings',
-        title: 'What this project reinforced',
-        outcomes: [
-          { title: 'Adoption depends on workflow clarity, not feature count', description: '' },
-          { title: 'Visible system structure builds confidence under pressure', description: '' },
-          { title: 'Testing real behavior reveals issues static designs can\'t', description: '' },
-          { title: 'Defining success early keeps decisions focused', description: '' },
-        ],
+        type: 'text',
+        label: 'Key Takeaway',
+        title: 'Designing for clarity under pressure',
+        content: 'In live clinical environments:\n\n• Structure reduces cognitive load\n• Visible state builds confidence\n• Predictability drives adoption\n\nRedesigning the system — not just the screens — changed the experience.',
       },
       {
         type: 'end',
@@ -1073,77 +1336,12 @@ const compressDataImages = async (data) => {
   return data;
 };
 
-// ========== IndexedDB Storage (Primary - much larger limits) ==========
-const DB_NAME = 'PortfolioCaseStudies';
-const DB_VERSION = 1;
-const STORE_NAME = 'caseStudies';
+// ========== IndexedDB Storage via Dexie (shared PortfolioDev database) ==========
+import { saveCaseStudy, getCaseStudy, deleteCaseStudy, listCaseStudies } from '../storage/devStore';
 
-const openDB = () => {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result);
-    
-    request.onupgradeneeded = (event) => {
-      const db = event.target.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-      }
-    };
-  });
-};
-
-const getFromIndexedDB = async (projectId) => {
-  try {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(STORE_NAME, 'readonly');
-      const store = transaction.objectStore(STORE_NAME);
-      const request = store.get(projectId);
-      
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(request.result?.data || null);
-    });
-  } catch (e) {
-    console.warn('IndexedDB read failed:', e);
-    return null;
-  }
-};
-
-const saveToIndexedDB = async (projectId, data) => {
-  try {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(STORE_NAME, 'readwrite');
-      const store = transaction.objectStore(STORE_NAME);
-      const request = store.put({ id: projectId, data, updatedAt: Date.now() });
-      
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(true);
-    });
-  } catch (e) {
-    console.warn('IndexedDB write failed:', e);
-    return false;
-  }
-};
-
-const deleteFromIndexedDB = async (projectId) => {
-  try {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(STORE_NAME, 'readwrite');
-      const store = transaction.objectStore(STORE_NAME);
-      const request = store.delete(projectId);
-      
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(true);
-    });
-  } catch (e) {
-    console.warn('IndexedDB delete failed:', e);
-    return false;
-  }
-};
+const getFromIndexedDB = (projectId) => getCaseStudy(projectId);
+const saveToIndexedDB = (projectId, data) => saveCaseStudy(projectId, data);
+const deleteFromIndexedDB = (projectId) => deleteCaseStudy(projectId);
 
 // ========== Public API ==========
 export const getCaseStudyData = (projectId) => {
@@ -1304,6 +1502,43 @@ export const resetCaseStudyData = async (projectId) => {
   localStorage.removeItem(`caseStudy_${projectId}`);
   await deleteFromIndexedDB(projectId);
   return defaultCaseStudies[projectId];
+};
+
+/**
+ * List all case studies that have saved data (IndexedDB + localStorage).
+ * Returns [{ projectId, slideCount, updatedAt? }] sorted by slideCount descending.
+ * Use this to find which project has your 30+ slides.
+ */
+export const listSavedCaseStudies = async () => {
+  const byId = new Map();
+  try {
+    const idbList = await listCaseStudies();
+    idbList.forEach(({ id, slideCount, updatedAt }) => {
+      byId.set(id, { projectId: id, slideCount, updatedAt });
+    });
+  } catch (e) {
+    console.warn('[listSavedCaseStudies] IndexedDB list failed:', e);
+  }
+  try {
+    const keys = Object.keys(localStorage);
+    keys.forEach((key) => {
+      if (key.startsWith('caseStudy_') && !key.includes('_idb') && !key.includes('_minimal')) {
+        const projectId = key.replace(/^caseStudy_/, '');
+        if (byId.has(projectId)) return;
+        try {
+          const raw = localStorage.getItem(key);
+          const data = raw ? JSON.parse(raw) : null;
+          const slideCount = data?.slides?.length ?? 0;
+          byId.set(projectId, { projectId, slideCount });
+        } catch (_) {}
+      }
+    });
+  } catch (e) {
+    console.warn('[listSavedCaseStudies] localStorage scan failed:', e);
+  }
+  const list = Array.from(byId.values());
+  list.sort((a, b) => (b.slideCount || 0) - (a.slideCount || 0));
+  return list;
 };
 
 export const getAllProjectIds = () => Object.keys(defaultCaseStudies);

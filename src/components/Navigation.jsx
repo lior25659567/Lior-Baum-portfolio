@@ -7,19 +7,10 @@ import { useEdit } from '../context/EditContext';
 import './Navigation.css';
 
 const Navigation = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditingLink, setIsEditingLink] = useState(false);
   const location = useLocation();
   const { content, editMode, updateContent } = useEdit();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Close menu on route change
   useEffect(() => {
@@ -61,7 +52,7 @@ const Navigation = () => {
   return (
     <>
       <motion.nav
-        className={`navigation ${isScrolled ? 'scrolled' : ''} ${isMenuOpen ? 'menu-open' : ''}`}
+        className={`navigation ${isMenuOpen ? 'menu-open' : ''}`}
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
@@ -69,8 +60,7 @@ const Navigation = () => {
         <div className="nav-container">
           {/* Logo */}
           <Link to="/" className="nav-logo">
-            {/* Replace with your logo image: <img src="/logo.svg" alt="Lior Baum" /> */}
-            <span className="logo-text">LB</span>
+            <img src="/logo/liorbaum-logo.svg" alt="Lior Baum" />
           </Link>
 
           {/* Desktop Links */}

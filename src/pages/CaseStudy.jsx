@@ -3,7 +3,7 @@ import { useRef, useState, useEffect, useCallback, Component, memo, useMemo } fr
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedButton from '../components/AnimatedButton';
 import { useEdit } from '../context/EditContext';
-import { getCaseStudyData, getCaseStudyDataAsync, saveCaseStudyData, resetCaseStudyData, slideTemplates, templateCategories, compressImage, defaultCaseStudies } from '../data/caseStudyData';
+import { getCaseStudyData, getCaseStudyDataAsync, saveCaseStudyData, resetCaseStudyData, listSavedCaseStudies, slideTemplates, templateCategories, compressImage, defaultCaseStudies } from '../data/caseStudyData';
 import './CaseStudy.css';
 
 // Error Boundary to catch rendering errors
@@ -77,6 +77,7 @@ const TemplatePreview = ({ type }) => {
     imageMosaic: 'Tiled image grid background with a centered title overlay. Perfect for showing old versions, screen collections, or visual overviews.',
     chapter: 'Section divider slide with large number, title, and optional subtitle. Use to separate case study chapters.',
     problemSolution: 'Two-column layout: smaller problem image with bullets on the left, larger solution image with bullets on the right. Title spans full width.',
+    dynamic: 'Fully composable slide. Add any combination of titles, text, bullets, images, stats, quotes, and dividers in any order.',
   };
 
   return (
@@ -485,6 +486,18 @@ const TemplatePreview = ({ type }) => {
               </div>
             </div>
           )}
+          {type === 'dynamic' && (
+            <div className="mockup-dynamic">
+              <div className="mockup-title-sm">Title Block</div>
+              <div className="line" /><div className="line short" />
+              <div className="mockup-dynamic-bullets">
+                <div className="line short" />
+                <div className="line short" />
+              </div>
+              <div className="mockup-image small"><span className="mockup-img-icon">🖼</span></div>
+              <div className="mockup-dynamic-add">+ Add blocks</div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -599,6 +612,9 @@ const CaseStudy = () => {
   const [parsedPreview, setParsedPreview] = useState(null); // { slides, preview }
   const [lightboxImage, setLightboxImage] = useState(null);
   const [activeTwiImageControl, setActiveTwiImageControl] = useState(null);
+  const [psEmbedInput, setPsEmbedInput] = useState({ tabIdx: null, draft: '' });
+  const [savedCaseStudiesList, setSavedCaseStudiesList] = useState([]);
+  const [showSavedList, setShowSavedList] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null); // 'saving', 'saved', 'error'
   const [builderStep, setBuilderStep] = useState(0);
   const [builderData, setBuilderData] = useState({
@@ -622,6 +638,9 @@ const CaseStudy = () => {
   const isScrollingRef = useRef(false);
   const scrollTimeoutRef = useRef(null);
   const totalSlides = project.slides.length;
+  const [slideNavVisible, setSlideNavVisible] = useState(false);
+  const slideNavHideTimeoutRef = useRef(null);
+  const hideSlideNavRef = useRef(null);
 
   // Track if we've loaded initial data (to avoid saving on first load)
   const hasLoadedRef = useRef(false);
@@ -840,6 +859,16 @@ const CaseStudy = () => {
     };
   }, [projectId, editMode, hasUnsavedChanges]);
 
+  // Load list of saved case studies when in edit mode (so user can find their 30+ slide one)
+  useEffect(() => {
+    if (!editMode) return;
+    let cancelled = false;
+    listSavedCaseStudies().then((list) => {
+      if (!cancelled) setSavedCaseStudiesList(list);
+    });
+    return () => { cancelled = true; };
+  }, [editMode, projectId]);
+
   // Hide main navigation when on case study
   useEffect(() => {
     document.body.classList.add('case-study-active');
@@ -889,6 +918,7 @@ const CaseStudy = () => {
 
     const handleWheel = (e) => {
       e.preventDefault();
+      hideSlideNavRef.current?.();
       if (isScrollingRef.current) return;
       
       // Immediate response - no accumulation delay
@@ -906,6 +936,9 @@ const CaseStudy = () => {
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         e.preventDefault();
         goToSlide(-1);
+      } else if (e.key === 'r' || e.key === 'R') {
+        e.preventDefault();
+        setCurrentSlide(0);
       }
     };
 
@@ -951,6 +984,64 @@ const CaseStudy = () => {
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     };
   }, [totalSlides, editMode]);
+
+  const goToSlide = useCallback((direction) => {
+    if (isScrollingRef.current) return;
+    isScrollingRef.current = true;
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    setCurrentSlide((prev) => {
+      const next = prev + direction;
+      if (next < 0) return 0;
+      if (next >= totalSlides) return totalSlides - 1;
+      return next;
+    });
+    scrollTimeoutRef.current = setTimeout(() => {
+      isScrollingRef.current = false;
+    }, 400);
+  }, [totalSlides]);
+
+  const showSlideNav = useCallback(() => {
+    if (slideNavHideTimeoutRef.current) {
+      clearTimeout(slideNavHideTimeoutRef.current);
+      slideNavHideTimeoutRef.current = null;
+    }
+    setSlideNavVisible(true);
+  }, []);
+
+  const hideSlideNavAfterDelay = useCallback(() => {
+    if (slideNavHideTimeoutRef.current) {
+      clearTimeout(slideNavHideTimeoutRef.current);
+    }
+    slideNavHideTimeoutRef.current = setTimeout(() => {
+      setSlideNavVisible(false);
+      slideNavHideTimeoutRef.current = null;
+    }, 1200);
+  }, []);
+
+  const hideSlideNavImmediate = useCallback(() => {
+    if (slideNavHideTimeoutRef.current) {
+      clearTimeout(slideNavHideTimeoutRef.current);
+      slideNavHideTimeoutRef.current = null;
+    }
+    setSlideNavVisible(false);
+  }, []);
+
+  hideSlideNavRef.current = hideSlideNavImmediate;
+
+  // Hide slide nav on any wheel (window listener so we always catch it)
+  useEffect(() => {
+    if (editMode) return;
+    const onWheelHideNav = () => hideSlideNavRef.current?.();
+    window.addEventListener('wheel', onWheelHideNav, { passive: true });
+    return () => window.removeEventListener('wheel', onWheelHideNav, { passive: true });
+  }, [editMode]);
+
+  // Click on slide inner → next slide (skip links, buttons, inputs, images)
+  const handleSlideAreaClick = useCallback((e) => {
+    if (editMode || totalSlides <= 1 || currentSlide >= totalSlides - 1) return;
+    if (e.target.closest('a, button, input, select, textarea, [contenteditable="true"], img, [data-no-slide-advance]')) return;
+    goToSlide(1);
+  }, [editMode, totalSlides, currentSlide, goToSlide]);
 
   // Edit mode functions
   const updateSlide = useCallback((slideIndex, updates) => {
@@ -1013,6 +1104,71 @@ const CaseStudy = () => {
     });
     setCurrentSlide(toIndex);
   }, [project.slides.length]);
+
+  // Dynamic slide block CRUD
+  const addBlock = useCallback((slideIndex, blockType, afterBlockIndex) => {
+    const defaults = {
+      label: { type: 'label', value: 'Label' },
+      title: { type: 'title', value: 'Title' },
+      subtitle: { type: 'subtitle', value: 'Subtitle' },
+      paragraph: { type: 'paragraph', value: 'New paragraph...' },
+      bullets: { type: 'bullets', items: ['First point', 'Second point'], title: '' },
+      image: { type: 'image', images: [{ src: '', caption: '', position: 'center center', size: 'large', fit: 'cover' }], gridColumns: 1 },
+      stats: { type: 'stats', items: [{ value: '0', label: 'Metric', suffix: '' }], gridColumns: 3 },
+      quote: { type: 'quote', text: 'Quote text...', author: 'Author' },
+      divider: { type: 'divider' },
+    };
+    const newBlock = { ...defaults[blockType] };
+    setProject(prev => {
+      const newSlides = [...prev.slides];
+      const slide = { ...newSlides[slideIndex] };
+      const blocks = [...(slide.blocks || [])];
+      const insertAt = afterBlockIndex !== undefined ? afterBlockIndex + 1 : blocks.length;
+      blocks.splice(insertAt, 0, newBlock);
+      slide.blocks = blocks;
+      newSlides[slideIndex] = slide;
+      return { ...prev, slides: newSlides };
+    });
+  }, []);
+
+  const removeBlock = useCallback((slideIndex, blockIndex) => {
+    setProject(prev => {
+      const newSlides = [...prev.slides];
+      const slide = { ...newSlides[slideIndex] };
+      const blocks = [...(slide.blocks || [])];
+      if (blocks.length <= 1) return prev;
+      blocks.splice(blockIndex, 1);
+      slide.blocks = blocks;
+      newSlides[slideIndex] = slide;
+      return { ...prev, slides: newSlides };
+    });
+  }, []);
+
+  const moveBlock = useCallback((slideIndex, blockIndex, direction) => {
+    setProject(prev => {
+      const newSlides = [...prev.slides];
+      const slide = { ...newSlides[slideIndex] };
+      const blocks = [...(slide.blocks || [])];
+      const toIndex = blockIndex + direction;
+      if (toIndex < 0 || toIndex >= blocks.length) return prev;
+      [blocks[blockIndex], blocks[toIndex]] = [blocks[toIndex], blocks[blockIndex]];
+      slide.blocks = blocks;
+      newSlides[slideIndex] = slide;
+      return { ...prev, slides: newSlides };
+    });
+  }, []);
+
+  const updateBlock = useCallback((slideIndex, blockIndex, updates) => {
+    setProject(prev => {
+      const newSlides = [...prev.slides];
+      const slide = { ...newSlides[slideIndex] };
+      const blocks = [...(slide.blocks || [])];
+      blocks[blockIndex] = { ...blocks[blockIndex], ...updates };
+      slide.blocks = blocks;
+      newSlides[slideIndex] = slide;
+      return { ...prev, slides: newSlides };
+    });
+  }, []);
 
   const handleReset = useCallback(async () => {
     if (window.confirm('Reset all changes to default? This cannot be undone.')) {
@@ -1893,9 +2049,9 @@ const CaseStudy = () => {
 
   // Optional field component with toggle (memoized for stable identity)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const OptionalField = useMemo(() => ({ slide, index, field, label, defaultValue = '', multiline = false, children }) => {
+  const OptionalField = useMemo(() => ({ slide, index, field, label, defaultValue = '', multiline = false, children, updateSlideOverride }) => {
     const hasValue = slide[field] !== undefined && slide[field] !== null;
-    
+    const doUpdate = updateSlideOverride || updateSlide;
     if (!editMode && !hasValue) return null;
     
     if (editMode && !hasValue) {
@@ -1916,7 +2072,7 @@ const CaseStudy = () => {
             <p className={`field-${field}`}>
               <EditableField
                 value={slide[field]}
-                onChange={(v) => updateSlide(index, { [field]: v })}
+                onChange={(v) => doUpdate(index, { [field]: v })}
                 multiline
               />
             </p>
@@ -1924,7 +2080,7 @@ const CaseStudy = () => {
             <span className={`field-${field}`}>
               <EditableField
                 value={slide[field]}
-                onChange={(v) => updateSlide(index, { [field]: v })}
+                onChange={(v) => doUpdate(index, { [field]: v })}
               />
             </span>
           )
@@ -2063,7 +2219,8 @@ const CaseStudy = () => {
   // ========== DYNAMIC BULLETS COMPONENT ==========
   // Reusable bullet points with optional section title - can be added to any slide (memoized for stable identity)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const DynamicBullets = useMemo(() => ({ slide, slideIndex, field = 'bullets', titleField, className = '', maxBullets = 0, label = 'Bullet' }) => {
+  const DynamicBullets = useMemo(() => ({ slide, slideIndex, field = 'bullets', titleField, className = '', maxBullets = 0, label = 'Bullet', updateSlideOverride }) => {
+    const doUpdate = updateSlideOverride || updateSlide;
     // Support both string bullets and { title, text } objects for per-bullet titles
     const rawBullets = Array.isArray(slide[field]) ? slide[field] : [];
     const sectionTitle = titleField ? slide[titleField] : null;
@@ -2091,7 +2248,7 @@ const CaseStudy = () => {
       } else {
         newBullets[bIndex] = value;
       }
-      updateSlide(slideIndex, { [field]: newBullets });
+      doUpdate(slideIndex, { [field]: newBullets });
     };
     
     const updateBulletTitle = (bIndex, value) => {
@@ -2102,7 +2259,7 @@ const CaseStudy = () => {
       } else {
         newBullets[bIndex] = { title: value, text: current || '' };
       }
-      updateSlide(slideIndex, { [field]: newBullets });
+      doUpdate(slideIndex, { [field]: newBullets });
     };
     
     const toggleBulletTitle = (bIndex) => {
@@ -2115,26 +2272,26 @@ const CaseStudy = () => {
         // Add title, convert to object
         newBullets[bIndex] = { title: 'Title', text: getBulletText(current) };
       }
-      updateSlide(slideIndex, { [field]: newBullets });
+      doUpdate(slideIndex, { [field]: newBullets });
     };
     
     const addBullet = () => {
       if (maxBullets > 0 && rawBullets.length >= maxBullets) return;
       const newBullets = [...rawBullets, 'New bullet point'];
-      updateSlide(slideIndex, { [field]: newBullets });
+      doUpdate(slideIndex, { [field]: newBullets });
     };
     
     const removeBullet = (bIndex) => {
       const newBullets = rawBullets.filter((_, i) => i !== bIndex);
-      updateSlide(slideIndex, { [field]: newBullets });
+      doUpdate(slideIndex, { [field]: newBullets });
     };
     
     const toggleSectionTitle = () => {
       if (!titleField) return;
       if (hasSectionTitle) {
-        updateSlide(slideIndex, { [titleField]: undefined });
+        doUpdate(slideIndex, { [titleField]: undefined });
       } else {
-        updateSlide(slideIndex, { [titleField]: 'Section Title' });
+        doUpdate(slideIndex, { [titleField]: 'Section Title' });
       }
     };
     
@@ -2166,7 +2323,7 @@ const CaseStudy = () => {
           <div className="bullets-section-title">
             <EditableField 
               value={sectionTitle} 
-              onChange={(v) => updateSlide(slideIndex, { [titleField]: v })} 
+              onChange={(v) => doUpdate(slideIndex, { [titleField]: v })} 
             />
             {editMode && (
               <button 
@@ -2227,11 +2384,22 @@ const CaseStudy = () => {
     );
   }, [editMode, updateSlide]);
 
+  // ========== FIGMA EMBED HELPER ==========
+  const toFigmaEmbedUrl = useCallback((url) => {
+    if (!url || typeof url !== 'string') return null;
+    const trimmed = url.trim();
+    if (!/^https?:\/\/([\w-]+\.)*figma\.com\//i.test(trimmed)) return null;
+    if (trimmed.includes('/embed?')) return trimmed;
+    return `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(trimmed)}`;
+  }, []);
+
   // ========== DYNAMIC IMAGES COMPONENT ==========
   // Handles single image OR array of images with add/remove and position control (memoized for stable identity)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const DynamicImages = useMemo(() => ({ slide, slideIndex, field = 'image', captionField = 'caption', className = '', maxImages = 3 }) => {
     const [activePositionControl, setActivePositionControl] = useState(null);
+    const [embedInputIndex, setEmbedInputIndex] = useState(null);
+    const [embedDraft, setEmbedDraft] = useState('');
     
     // Check if it's an array or single string
     const isArray = Array.isArray(slide[field]);
@@ -2240,26 +2408,36 @@ const CaseStudy = () => {
     if (isArray) {
       images = slide[field].map((img, i) => 
         typeof img === 'object' 
-          ? { position: 'center center', size: 'large', fit: 'cover', ...img } 
-          : { src: img, caption: slide.captions?.[i] || '', position: 'center center', size: 'large', fit: 'cover' }
+          ? { position: 'center center', size: 'large', fit: 'cover', embedUrl: '', ...img } 
+          : { src: img, caption: slide.captions?.[i] || '', position: 'center center', size: 'large', fit: 'cover', embedUrl: '' }
       );
-    } else if (slide[field]) {
+    } else if (slide[field] || slide[`${field}EmbedUrl`]) {
       const isVideoVal = slide[`${field}IsVideo`] || false;
       const isGifVal = slide[`${field}IsGif`] || false;
       images = [{ 
-        src: slide[field], 
+        src: slide[field] || '', 
         caption: slide[captionField] || '', 
         isVideo: isVideoVal,
         isGif: isGifVal,
         position: slide.imagePosition || 'center center',
         size: slide.imageSize || 'large',
-        fit: slide.imageFit || 'cover'
+        fit: slide.imageFit || 'cover',
+        embedUrl: slide[`${field}EmbedUrl`] || '',
       }];
     }
     
     // updateImage can take either (imgIndex, field, value) or (imgIndex, fieldsObject)
     const updateImage = (imgIndex, imgFieldOrObj, value) => {
       const updates = typeof imgFieldOrObj === 'object' ? imgFieldOrObj : { [imgFieldOrObj]: value };
+      
+      // Mutual exclusivity: setting embedUrl clears src/isVideo/isGif and vice versa
+      if (updates.embedUrl !== undefined) {
+        updates.src = '';
+        updates.isVideo = false;
+        updates.isGif = false;
+      } else if (updates.src !== undefined && updates.src) {
+        updates.embedUrl = '';
+      }
       
       if (isArray) {
         const newImages = [...images];
@@ -2282,6 +2460,8 @@ const CaseStudy = () => {
             slideUpdates[`${field}IsVideo`] = val;
           } else if (key === 'isGif') {
             slideUpdates[`${field}IsGif`] = val;
+          } else if (key === 'embedUrl') {
+            slideUpdates[`${field}EmbedUrl`] = val;
           }
         });
         updateSlide(slideIndex, slideUpdates);
@@ -2351,10 +2531,10 @@ const CaseStudy = () => {
     
     const addImage = () => {
       const newImages = isArray 
-        ? [...images, { src: '', caption: '', position: 'center center', size: 'large' }] 
+        ? [...images, { src: '', caption: '', position: 'center center', size: 'large', embedUrl: '' }] 
         : [
-            { src: slide[field] || '', caption: slide[captionField] || '', position: slide.imagePosition || 'center center', size: slide.imageSize || 'large' }, 
-            { src: '', caption: '', position: 'center center', size: 'large' }
+            { src: slide[field] || '', caption: slide[captionField] || '', position: slide.imagePosition || 'center center', size: slide.imageSize || 'large', embedUrl: slide[`${field}EmbedUrl`] || '' }, 
+            { src: '', caption: '', position: 'center center', size: 'large', embedUrl: '' }
           ];
       updateSlide(slideIndex, { [field]: newImages });
     };
@@ -2450,9 +2630,10 @@ const CaseStudy = () => {
                 className={`dynamic-image-item img-size-${imgSize} img-fit-${imgFit}`}
               >
                 <div 
-                  className={`dynamic-image-wrapper ${!editMode && imgData.src ? 'clickable' : ''}`}
-                  style={wrapperContainStyle}
+                  className={`dynamic-image-wrapper ${!editMode && (imgData.src || imgData.embedUrl) ? 'clickable' : ''} ${imgData.embedUrl ? 'has-embed' : ''}`}
+                  style={imgData.embedUrl ? {} : wrapperContainStyle}
                   onClick={() => {
+                    if (imgData.embedUrl) return;
                     if (editMode && !activePositionControl) {
                       handleDynamicImageUpload(imgIndex);
                     } else if (!editMode && imgData.src) {
@@ -2460,7 +2641,21 @@ const CaseStudy = () => {
                     }
                   }}
                 >
-                  {imgData.src ? (
+                  {imgData.embedUrl ? (
+                    <>
+                      <iframe
+                        src={imgData.embedUrl}
+                        title="Figma Embed"
+                        allowFullScreen
+                        className="figma-embed-iframe"
+                      />
+                      {editMode && (
+                        <div className="embed-edit-controls" onClick={(e) => e.stopPropagation()}>
+                          <button type="button" className="embed-remove-btn" onClick={() => updateImage(imgIndex, { embedUrl: '' })} title="Remove embed">× Remove</button>
+                        </div>
+                      )}
+                    </>
+                  ) : imgData.src ? (
                     <>
                       {imgData.isVideo ? (
                         <video 
@@ -2590,8 +2785,57 @@ const CaseStudy = () => {
                         </div>
                       )}
                     </>
+                  ) : editMode ? (
+                    <div className="media-type-picker">
+                      {embedInputIndex === imgIndex ? (
+                        <div className="figma-embed-input" onClick={(e) => e.stopPropagation()}>
+                          <input
+                            type="text"
+                            className="editable-field figma-url-input"
+                            placeholder="Paste Figma prototype URL..."
+                            value={embedDraft}
+                            onChange={(e) => setEmbedDraft(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                const converted = toFigmaEmbedUrl(embedDraft);
+                                if (converted) {
+                                  updateImage(imgIndex, { embedUrl: converted });
+                                  setEmbedDraft('');
+                                  setEmbedInputIndex(null);
+                                } else {
+                                  alert('Please enter a valid Figma URL (figma.com)');
+                                }
+                              }
+                            }}
+                            autoFocus
+                          />
+                          <button type="button" className="figma-embed-confirm" onClick={() => {
+                            const converted = toFigmaEmbedUrl(embedDraft);
+                            if (converted) {
+                              updateImage(imgIndex, { embedUrl: converted });
+                              setEmbedDraft('');
+                              setEmbedInputIndex(null);
+                            } else {
+                              alert('Please enter a valid Figma URL (figma.com)');
+                            }
+                          }}>Embed</button>
+                          <button type="button" className="figma-embed-cancel" onClick={() => { setEmbedInputIndex(null); setEmbedDraft(''); }}>Cancel</button>
+                        </div>
+                      ) : (
+                        <div className="media-type-buttons">
+                          <button type="button" className="media-type-btn" onClick={() => handleDynamicImageUpload(imgIndex)}>
+                            <span className="media-type-icon">+</span>
+                            <span>Upload Image</span>
+                          </button>
+                          <button type="button" className="media-type-btn media-type-figma" onClick={(e) => { e.stopPropagation(); setEmbedInputIndex(imgIndex); setEmbedDraft(''); }}>
+                            <span className="media-type-icon">◈</span>
+                            <span>Embed Figma</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   ) : (
-                    <div className="image-placeholder">{editMode ? 'Click to add image' : ''}</div>
+                    <div className="image-placeholder"></div>
                   )}
                 </div>
                 
@@ -2635,7 +2879,7 @@ const CaseStudy = () => {
         )}
       </div>
     );
-  }, [editMode, updateSlide]);
+  }, [editMode, updateSlide, toFigmaEmbedUrl]);
 
   // ========== SPLIT RATIO CONTROL ==========
   // Allows adjusting the width ratio between text and images in split layouts (memoized for stable identity)
@@ -3011,6 +3255,7 @@ const CaseStudy = () => {
                 />
               </h2>
               <DynamicContent slide={slide} slideIndex={index} field="content" className="text-content-wrapper" />
+              <DynamicContent slide={slide} slideIndex={index} field="paragraphs" className="text-paragraphs-wrapper" maxParagraphs={5} optional />
               <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="text-bullets" label="Bullet" />
               <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
                 <div className="text-highlight">
@@ -3607,148 +3852,180 @@ const CaseStudy = () => {
           <div className="slide slide-goals" key={index}>
             {slideControls}
             <div className="slide-inner">
-              <span className="slide-label">
-                <EditableField
-                  value={slide.label}
-                  onChange={(v) => updateSlide(index, { label: v })}
-                />
-              </span>
-              <h2 className="goals-title">
-                <EditableField
-                  value={slide.title}
-                  onChange={(v) => updateSlide(index, { title: v })}
-                  allowLineBreaks
-                />
-              </h2>
-              <DynamicContent slide={slide} slideIndex={index} field="description" className="goals-description-wrapper" maxParagraphs={3} optional />
-              
-              {/* Grid Layout Control */}
-              {editMode && (
-                <div className="grid-layout-control">
-                  <span className="grid-control-label">Grid Columns:</span>
-                  <div className="grid-control-buttons">
-                    {[1, 2, 3, 4].map(cols => (
-                      <button
-                        key={cols}
-                        className={`grid-col-btn ${(slide.gridColumns || 2) === cols ? 'active' : ''}`}
-                        onClick={() => updateSlide(index, { gridColumns: cols })}
-                      >
-                        {cols}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {/* Goals cards section - can be removed in edit mode */}
-              {slide.showGoalsSection !== false ? (
-                <div className="goals-cards-section-wrapper">
-                  {editMode && (
-                    <button
-                      type="button"
-                      className="remove-section-btn remove-goals-section-btn"
-                      onClick={() => updateSlide(index, { showGoalsSection: false })}
-                      title="Remove goals section"
-                    >
-                      ×
-                    </button>
-                  )}
-                  {slide.goals?.length > 0 && (
-                    <div
-                      className="goals-grid"
-                      style={{ gridTemplateColumns: `repeat(${slide.gridColumns || 2}, 1fr)` }}
-                    >
-                      {slide.goals.map((goal, i) => (
-                        <div key={i} className="goal-item">
-                          <span className="goal-number">{i + 1}</span>
-                          <div className="goal-content">
-                            <span className="goal-title-text">
-                              <EditableField
-                                value={goal.title}
-                                onChange={(v) => updateSlideItem(index, 'goals', i, { ...goal, title: v })}
-                              />
-                            </span>
-                            {(goal.description || editMode) && (
-                              <span className="goal-description">
-                                <EditableField
-                                  value={goal.description || ''}
-                                  onChange={(v) => updateSlideItem(index, 'goals', i, { ...goal, description: v })}
-                                />
-                              </span>
-                            )}
-                          </div>
-                          <ArrayItemControls onRemove={() => removeArrayItem(index, 'goals', i)} />
-                        </div>
+              <div className="goals-content">
+                <span className="slide-label">
+                  <EditableField
+                    value={slide.label}
+                    onChange={(v) => updateSlide(index, { label: v })}
+                  />
+                </span>
+                <h2 className="goals-title">
+                  <EditableField
+                    value={slide.title}
+                    onChange={(v) => updateSlide(index, { title: v })}
+                    allowLineBreaks
+                  />
+                </h2>
+                <DynamicContent slide={slide} slideIndex={index} field="description" className="goals-description-wrapper" maxParagraphs={3} optional />
+                
+                {/* Grid Layout Control */}
+                {editMode && (
+                  <div className="grid-layout-control">
+                    <span className="grid-control-label">Grid Columns:</span>
+                    <div className="grid-control-buttons">
+                      {[1, 2, 3, 4].map(cols => (
+                        <button
+                          key={cols}
+                          className={`grid-col-btn ${(slide.gridColumns || 2) === cols ? 'active' : ''}`}
+                          onClick={() => updateSlide(index, { gridColumns: cols })}
+                        >
+                          {cols}
+                        </button>
                       ))}
                     </div>
-                  )}
-                  <AddItemButton
-                    onClick={() => addArrayItem(index, 'goals', { number: String(slide.goals?.length + 1 || 1), title: 'New Goal', description: '' })}
-                    label="Goal"
-                  />
-                </div>
-              ) : editMode ? (
-                <button
-                  type="button"
-                  className="add-section-btn add-goals-section-btn"
-                  onClick={() => updateSlide(index, { showGoalsSection: true })}
-                >
-                  + Add goals section
-                </button>
-              ) : null}
-
-              {/* KPIs section - can be removed in edit mode */}
-              {slide.showKpisSection !== false ? (
-                <div className="kpis-section-wrapper">
-                  {editMode && (
-                    <button
-                      type="button"
-                      className="remove-section-btn remove-kpis-section-btn"
-                      onClick={() => updateSlide(index, { showKpisSection: false })}
-                      title="Remove KPIs section"
-                    >
-                      ×
-                    </button>
-                  )}
-                  {slide.kpis?.length > 0 && (
-                    <div className="kpis-section">
-                      <span className="kpis-label">KPIs</span>
-                      <div className="kpis-grid">
-                        {slide.kpis.map((kpi, i) => (
-                          <div key={i} className="kpi-card">
-                            <EditableField
-                              value={kpi}
-                              onChange={(v) => updateSlideItem(index, 'kpis', i, v)}
-                            />
-                            <ArrayItemControls onRemove={() => removeArrayItem(index, 'kpis', i)} />
+                  </div>
+                )}
+                
+                {/* Goals cards section - can be removed in edit mode */}
+                {slide.showGoalsSection !== false ? (
+                  <div className="goals-cards-section-wrapper">
+                    {editMode && (
+                      <button
+                        type="button"
+                        className="remove-section-btn remove-goals-section-btn"
+                        onClick={() => updateSlide(index, { showGoalsSection: false })}
+                        title="Remove goals section"
+                      >
+                        ×
+                      </button>
+                    )}
+                    <div className="goals-cards-section">
+                      {(editMode || (slide.goalsCardsTitle != null && String(slide.goalsCardsTitle).trim() !== '')) && (
+                        <span className="kpis-label goals-cards-label">
+                          <EditableField
+                            value={slide.goalsCardsTitle ?? ''}
+                            onChange={(v) => updateSlide(index, { goalsCardsTitle: v })}
+                            placeholder="Goals"
+                          />
+                        </span>
+                      )}
+                      {slide.goals?.length > 0 && (
+                        <div
+                          className="goals-grid"
+                          style={{ gridTemplateColumns: `repeat(${slide.gridColumns || 2}, 1fr)` }}
+                        >
+                        {slide.goals.map((goal, i) => (
+                          <div key={i} className="goal-item">
+                            <span className="goal-number">{i + 1}</span>
+                            <div className="goal-content">
+                              <span className="goal-title-text">
+                                <EditableField
+                                  value={goal.title}
+                                  onChange={(v) => updateSlideItem(index, 'goals', i, { ...goal, title: v })}
+                                />
+                              </span>
+                              {(goal.description || editMode) && (
+                                <span className="goal-description">
+                                  <EditableField
+                                    value={goal.description || ''}
+                                    onChange={(v) => updateSlideItem(index, 'goals', i, { ...goal, description: v })}
+                                  />
+                                </span>
+                              )}
+                            </div>
+                            <ArrayItemControls onRemove={() => removeArrayItem(index, 'goals', i)} />
                           </div>
                         ))}
-                      </div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  <AddItemButton
-                    onClick={() => addArrayItem(index, 'kpis', 'New KPI')}
-                    label="KPI"
-                  />
-                </div>
-              ) : editMode ? (
-                <button
-                  type="button"
-                  className="add-section-btn add-kpis-section-btn"
-                  onClick={() => updateSlide(index, { showKpisSection: true })}
-                >
-                  + Add KPIs section
-                </button>
-              ) : null}
-              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                <div className="goals-highlight">
-                  <EditableField
-                    value={slide.highlight}
-                    onChange={(v) => updateSlide(index, { highlight: v })}
-                    multiline
-                  />
-                </div>
-              </OptionalField>
+                    <AddItemButton
+                      onClick={() => addArrayItem(index, 'goals', { number: String(slide.goals?.length + 1 || 1), title: 'New Goal', description: '' })}
+                      label="Goal"
+                    />
+                  </div>
+                ) : editMode ? (
+                  <button
+                    type="button"
+                    className="add-section-btn add-goals-section-btn"
+                    onClick={() => updateSlide(index, { showGoalsSection: true })}
+                  >
+                    + Add goals section
+                  </button>
+                ) : null}
+
+                {/* KPIs section - can be removed in edit mode */}
+                {slide.showKpisSection !== false ? (
+                  <div className="kpis-section-wrapper">
+                    {editMode && (
+                      <button
+                        type="button"
+                        className="remove-section-btn remove-kpis-section-btn"
+                        onClick={() => updateSlide(index, { showKpisSection: false })}
+                        title="Remove KPIs section"
+                      >
+                        ×
+                      </button>
+                    )}
+                    {editMode && (
+                      <div className="grid-layout-control">
+                        <span className="grid-control-label">KPIs grid:</span>
+                        <div className="grid-control-buttons">
+                          {[1, 2, 3, 4].map(cols => (
+                            <button
+                              key={cols}
+                              className={`grid-col-btn ${(slide.kpisGridColumns ?? 3) === cols ? 'active' : ''}`}
+                              onClick={() => updateSlide(index, { kpisGridColumns: cols })}
+                            >
+                              {cols}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {slide.kpis?.length > 0 && (
+                      <div className="kpis-section">
+                        <span className="kpis-label">KPIs</span>
+                        <div
+                          className="kpis-grid"
+                          style={{ ['--kpis-cols']: slide.kpisGridColumns ?? 3 }}
+                        >
+                          {slide.kpis.map((kpi, i) => (
+                            <div key={i} className="kpi-card">
+                              <EditableField
+                                value={kpi}
+                                onChange={(v) => updateSlideItem(index, 'kpis', i, v)}
+                              />
+                              <ArrayItemControls onRemove={() => removeArrayItem(index, 'kpis', i)} />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <AddItemButton
+                      onClick={() => addArrayItem(index, 'kpis', 'New KPI')}
+                      label="KPI"
+                    />
+                  </div>
+                ) : editMode ? (
+                  <button
+                    type="button"
+                    className="add-section-btn add-kpis-section-btn"
+                    onClick={() => updateSlide(index, { showKpisSection: true })}
+                  >
+                    + Add KPIs section
+                  </button>
+                ) : null}
+                <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                  <div className="goals-highlight">
+                    <EditableField
+                      value={slide.highlight}
+                      onChange={(v) => updateSlide(index, { highlight: v })}
+                      multiline
+                    />
+                  </div>
+                </OptionalField>
+              </div>
             </div>
           </div>
         );
@@ -4333,85 +4610,173 @@ const CaseStudy = () => {
           <div className="slide slide-issues-breakdown" key={index}>
             {slideControls}
             <div className="slide-inner">
-              <span className="slide-label">
-                <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-              </span>
-              <h2 className="issues-breakdown-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
-              </h2>
-              <DynamicContent slide={slide} slideIndex={index} field="description" className="issues-breakdown-description-wrapper" maxParagraphs={2} optional />
-              
-              {/* Grid Layout Control */}
-              {editMode && (
-                <div className="grid-layout-control">
-                  <span className="grid-control-label">Grid Columns:</span>
-                  <div className="grid-control-buttons">
-                    {[1, 2, 3, 4].map(cols => (
+              <div className="issues-breakdown-content">
+                <span className="slide-label">
+                  <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
+                </span>
+                <h2 className="issues-breakdown-title">
+                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
+                </h2>
+                {/* Optional subtitle */}
+                {(slide.subtitle != null && slide.subtitle !== '' || editMode) && (
+                  <div className="issues-breakdown-subtitle-wrapper">
+                    <h3 className="issues-breakdown-subtitle">
+                      <EditableField value={slide.subtitle || ''} onChange={(v) => updateSlide(index, { subtitle: v })} placeholder="Subtitle (optional)" />
+                    </h3>
+                    {editMode && (
+                      <button type="button" className="remove-field-btn issues-breakdown-remove" onClick={() => updateSlide(index, { subtitle: null })} title="Remove subtitle">× Remove subtitle</button>
+                    )}
+                  </div>
+                )}
+                {editMode && (slide.subtitle == null || slide.subtitle === '') && (
+                  <button className="add-field-btn" onClick={() => updateSlide(index, { subtitle: 'Subtitle' })}>+ Add subtitle</button>
+                )}
+                {/* Optional paragraph / description */}
+                <DynamicContent slide={slide} slideIndex={index} field="description" className="issues-breakdown-description-wrapper" maxParagraphs={3} optional />
+
+                {/* Optional title before the cards */}
+                {(slide.cardsTitle != null && slide.cardsTitle !== '' || editMode) && (
+                  <div className="issues-breakdown-cards-title-wrapper">
+                    <h3 className="issues-breakdown-cards-title">
+                      <EditableField
+                        value={slide.cardsTitle || ''}
+                        onChange={(v) => updateSlide(index, { cardsTitle: v })}
+                        placeholder="Title before cards (optional)"
+                      />
+                    </h3>
+                    {editMode && (
                       <button
-                        key={cols}
-                        className={`grid-col-btn ${(slide.gridColumns || 2) === cols ? 'active' : ''}`}
-                        onClick={() => updateSlide(index, { gridColumns: cols })}
+                        type="button"
+                        className="remove-field-btn issues-breakdown-remove"
+                        onClick={() => updateSlide(index, { cardsTitle: null })}
+                        title="Remove title"
                       >
-                        {cols}
+                        × Remove title
                       </button>
+                    )}
+                  </div>
+                )}
+                {editMode && (slide.cardsTitle == null || slide.cardsTitle === '') && (
+                  <button
+                    className="add-field-btn"
+                    onClick={() => updateSlide(index, { cardsTitle: 'Section title' })}
+                  >
+                    + Add title before cards
+                  </button>
+                )}
+
+                {/* Cards layout: 1–4 columns */}
+                {editMode && (
+                  <div className="issues-breakdown-grid-control">
+                    <span className="grid-control-label">Cards layout:</span>
+                    <div className="grid-control-buttons">
+                      {[1, 2, 3, 4].map(cols => (
+                        <button
+                          key={cols}
+                          type="button"
+                          className={`grid-col-btn ${(slide.gridColumns || 2) === cols ? 'active' : ''}`}
+                          onClick={() => updateSlide(index, { gridColumns: cols })}
+                        >
+                          {cols} {cols === 1 ? 'column' : 'columns'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {slide.issues?.length > 0 && (
+                  <div 
+                    className="issues-breakdown-grid"
+                    style={{ gridTemplateColumns: `repeat(${slide.gridColumns || 2}, minmax(0, 1fr))` }}
+                  >
+                    {slide.issues.map((issue, i) => (
+                      <div key={i} className="issue-breakdown-card">
+                        <div className="issue-breakdown-number">{issue.number || i + 1}</div>
+                        <div className="issue-breakdown-content">
+                          <h4 className="issue-breakdown-heading">
+                            <EditableField 
+                              value={issue.title} 
+                              onChange={(v) => updateSlideItem(index, 'issues', i, { ...issue, title: v })} 
+                            />
+                          </h4>
+                          {(issue.description != null && issue.description !== '' || editMode) && (
+                            <div className="issue-breakdown-desc-wrapper">
+                              <p className="issue-breakdown-desc">
+                                <EditableField 
+                                  value={issue.description || ''} 
+                                  onChange={(v) => updateSlideItem(index, 'issues', i, { ...issue, description: v })} 
+                                  multiline
+                                  placeholder="Description (optional)"
+                                />
+                              </p>
+                              {editMode && (
+                                <button
+                                  type="button"
+                                  className="remove-field-btn issues-breakdown-remove issues-breakdown-remove-desc"
+                                  onClick={() => updateSlideItem(index, 'issues', i, { ...issue, description: null })}
+                                  title="Remove description"
+                                >
+                                  × Remove description
+                                </button>
+                              )}
+                            </div>
+                          )}
+                          {editMode && (issue.description == null || issue.description === '') && (
+                            <button
+                              type="button"
+                              className="add-field-btn add-field-btn-sm"
+                              onClick={() => updateSlideItem(index, 'issues', i, { ...issue, description: 'Add description...' })}
+                            >
+                              + Add description
+                            </button>
+                          )}
+                        </div>
+                        {editMode && (
+                          <button
+                            type="button"
+                            className="remove-item-btn issue-breakdown-remove-item"
+                            onClick={() => removeArrayItem(index, 'issues', i)}
+                            title="Remove issue"
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
                     ))}
                   </div>
-                </div>
-              )}
-              
-              {slide.issues?.length > 0 && (
-                <div 
-                  className="issues-breakdown-grid"
-                  style={{ gridTemplateColumns: `repeat(${slide.gridColumns || 2}, 1fr)` }}
-                >
-                  {slide.issues.map((issue, i) => (
-                    <div key={i} className="issue-breakdown-card">
-                      <div className="issue-breakdown-number">{issue.number || i + 1}</div>
-                      <div className="issue-breakdown-content">
-                        <h4 className="issue-breakdown-heading">
-                          <EditableField 
-                            value={issue.title} 
-                            onChange={(v) => updateSlideItem(index, 'issues', i, { ...issue, title: v })} 
-                          />
-                        </h4>
-                        <p className="issue-breakdown-desc">
-                          <EditableField 
-                            value={issue.description} 
-                            onChange={(v) => updateSlideItem(index, 'issues', i, { ...issue, description: v })} 
-                            multiline
-                          />
-                        </p>
-                      </div>
-                      <ArrayItemControls onRemove={() => removeArrayItem(index, 'issues', i)} />
+                )}
+                <AddItemButton 
+                  onClick={() => addArrayItem(index, 'issues', { number: String((slide.issues?.length || 0) + 1), title: 'New issue', description: '' })}
+                  label="Issue"
+                />
+                
+                {((slide.highlight != null && slide.highlight !== '') || (editMode && slide.highlight !== null && slide.highlight !== undefined)) && (
+                  <div className="issues-breakdown-highlight-wrapper">
+                    <div className="issues-breakdown-highlight">
+                      <EditableField value={slide.highlight || ''} onChange={(v) => updateSlide(index, { highlight: v })} multiline placeholder="Add highlighted note..." />
                     </div>
-                  ))}
-                </div>
-              )}
-              <AddItemButton 
-                onClick={() => addArrayItem(index, 'issues', { number: String((slide.issues?.length || 0) + 1), title: 'New issue', description: '' })}
-                label="Issue"
-              />
-              
-              {(slide.conclusion || editMode) && (
-                <div className="issues-breakdown-conclusion">
-                  <EditableField 
-                    value={slide.conclusion || 'Add conclusion here'} 
-                    onChange={(v) => updateSlide(index, { conclusion: v })} 
-                    multiline
-                  />
-                  <ToggleFieldButton 
-                    hasValue={!!slide.conclusion}
-                    onToggle={() => updateSlide(index, { conclusion: slide.conclusion ? null : 'Add conclusion here' })}
-                    label="Conclusion"
-                  />
-                </div>
-              )}
-              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                <div className="issues-breakdown-highlight">
-                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                </div>
-              </OptionalField>
-              <SlideCta slide={slide} index={index} updateSlide={updateSlide} />
+                    {editMode && (
+                      <button
+                        type="button"
+                        className="remove-field-btn issues-breakdown-remove"
+                        onClick={() => updateSlide(index, { highlight: null })}
+                        title="Remove Highlight"
+                      >
+                        × Remove Highlight
+                      </button>
+                    )}
+                  </div>
+                )}
+                {editMode && (slide.highlight == null || slide.highlight === undefined) && (
+                  <button
+                    className="add-field-btn"
+                    onClick={() => updateSlide(index, { highlight: 'Add highlighted note...' })}
+                  >
+                    + Add Highlight
+                  </button>
+                )}
+                <SlideCta slide={slide} index={index} updateSlide={updateSlide} />
+              </div>
             </div>
           </div>
         );
@@ -5174,53 +5539,291 @@ const CaseStudy = () => {
         );
       }
       
-      case 'problemSolution':
+      case 'problemSolution': {
+        const MIN_TABS = 2;
+        const MAX_TABS = 6;
+        const getPsTabs = (s) => {
+          if (Array.isArray(s.psTabs) && s.psTabs.length >= MIN_TABS) {
+            return s.psTabs.map(t => ({
+              label: t.label ?? '',
+              columnLabel: t.columnLabel ?? '',
+              image: t.image ?? '',
+              embedUrl: t.embedUrl ?? '',
+              bullets: Array.isArray(t.bullets) ? t.bullets : [],
+              bulletsTitle: t.bulletsTitle ?? '',
+            }));
+          }
+          return [
+            { label: s.problemLabel ?? 'Problem', columnLabel: '', image: s.problemImage ?? '', embedUrl: '', bullets: Array.isArray(s.problemBullets) ? s.problemBullets : [], bulletsTitle: s.problemBulletsTitle ?? '' },
+            { label: s.solutionLabel ?? 'Solution', columnLabel: '', image: s.solutionImage ?? '', embedUrl: '', bullets: Array.isArray(s.solutionBullets) ? s.solutionBullets : [], bulletsTitle: s.solutionBulletsTitle ?? '' },
+          ];
+        };
+        const tabs = getPsTabs(slide);
+        const rawActive = slide.psActiveView;
+        const psActiveView = typeof rawActive === 'number' && rawActive >= 0 && rawActive < tabs.length
+          ? rawActive
+          : rawActive === 'solution' ? 1 : 0;
+        const activeTab = tabs[psActiveView] || tabs[0];
+        const updatePsTab = (tabIndex, updates) => {
+          const next = [...tabs];
+          next[tabIndex] = { ...next[tabIndex], ...updates };
+          updateSlide(index, { psTabs: next });
+        };
+        const setPsTabCount = (count) => {
+          const n = Math.min(MAX_TABS, Math.max(MIN_TABS, count));
+          const next = [];
+          for (let i = 0; i < n; i++) next.push(tabs[i] || { label: `Tab ${i + 1}`, image: '', embedUrl: '', bullets: [], bulletsTitle: '' });
+          updateSlide(index, { psTabs: next, psActiveView: Math.min(psActiveView, n - 1) });
+        };
+        const updateSlideForActiveTab = (idx, updates) => {
+          if (idx !== index) { updateSlide(idx, updates); return; }
+          const u = {};
+          if (updates.problemLabel !== undefined) u.columnLabel = updates.problemLabel;
+          if (updates.problemBullets !== undefined) u.bullets = updates.problemBullets;
+          if (updates.problemBulletsTitle !== undefined) u.bulletsTitle = updates.problemBulletsTitle;
+          if (Object.keys(u).length) updatePsTab(psActiveView, u);
+          else updateSlide(idx, updates);
+        };
+        const labelAboveBullets = activeTab.columnLabel || activeTab.label;
+        const slideView = { ...slide, problemLabel: labelAboveBullets, problemBullets: activeTab.bullets, problemBulletsTitle: activeTab.bulletsTitle };
         return (
           <div className="slide slide-problem-solution" key={index}>
             {slideControls}
-            <div className="slide-inner">
-              {/* Header: label + title */}
-              <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="The Solution">
-                <span className="slide-label">
-                  <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-                </span>
-              </OptionalField>
-              <h2 className="ps-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
-              </h2>
+            <SplitRatioControl slide={slide} slideIndex={index} />
+            <div className="slide-inner slide-split" style={getSplitStyle({ ...slide, splitRatio: slide.splitRatio ?? 50 })}>
+              {/* Left: same structure as problem slide – split-content */}
+              <div className="split-content">
+                <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="The Solution">
+                  <span className="slide-label">
+                    <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
+                  </span>
+                </OptionalField>
+                <h2 className="problem-title">
+                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
+                </h2>
 
-              {/* Two columns: problem (smaller) | solution (larger) */}
-              <div className="ps-columns">
-                {/* Problem column */}
-                <div className="ps-column ps-problem-col">
-                  <DynamicImages slide={slide} slideIndex={index} field="problemImage" className="ps-image" />
-                  <OptionalField slide={slide} index={index} field="problemLabel" label="Problem Label" defaultValue="Problem:">
-                    <span className="ps-col-label ps-problem-label">
-                      <EditableField value={slide.problemLabel} onChange={(v) => updateSlide(index, { problemLabel: v })} />
-                    </span>
-                  </OptionalField>
-                  <DynamicBullets slide={slide} slideIndex={index} field="problemBullets" titleField="problemBulletsTitle" className="ps-bullets" label="Point" />
+                {/* Optional subtitle */}
+                {((slide.subtitle != null && slide.subtitle !== '') || (editMode && slide.subtitle !== null)) && (
+                  <div className="ps-subtitle-wrapper">
+                    <p className="ps-subtitle">
+                      <EditableField value={slide.subtitle || ''} onChange={(v) => updateSlide(index, { subtitle: v })} placeholder="Subtitle (optional)" />
+                    </p>
+                    {editMode && (
+                      <button type="button" className="remove-field-btn issues-breakdown-remove" onClick={() => updateSlide(index, { subtitle: null })} title="Remove subtitle">× Remove subtitle</button>
+                    )}
+                  </div>
+                )}
+                {editMode && (slide.subtitle == null || slide.subtitle === '') && (
+                  <button type="button" className="add-field-btn" onClick={() => updateSlide(index, { subtitle: 'Add subtitle...' })}>+ Add subtitle</button>
+                )}
+
+                {/* Optional paragraphs */}
+                {((slide.psParagraph1 != null && slide.psParagraph1 !== '') || (editMode && slide.psParagraph1 !== null)) && (
+                  <div className="ps-paragraph-wrapper">
+                    <p className="ps-paragraph">
+                      <EditableField value={slide.psParagraph1 || ''} onChange={(v) => updateSlide(index, { psParagraph1: v })} multiline placeholder="First paragraph (optional)" />
+                    </p>
+                    {editMode && (
+                      <button type="button" className="remove-field-btn issues-breakdown-remove" onClick={() => updateSlide(index, { psParagraph1: null })} title="Remove paragraph">× Remove paragraph</button>
+                    )}
+                  </div>
+                )}
+                {editMode && (slide.psParagraph1 == null || slide.psParagraph1 === '') && (
+                  <button type="button" className="add-field-btn add-field-btn-sm" onClick={() => updateSlide(index, { psParagraph1: 'Add first paragraph...' })}>+ Add paragraph 1</button>
+                )}
+                {((slide.psParagraph2 != null && slide.psParagraph2 !== '') || (editMode && slide.psParagraph2 !== null)) && (
+                  <div className="ps-paragraph-wrapper">
+                    <p className="ps-paragraph">
+                      <EditableField value={slide.psParagraph2 || ''} onChange={(v) => updateSlide(index, { psParagraph2: v })} multiline placeholder="Second paragraph (optional)" />
+                    </p>
+                    {editMode && (
+                      <button type="button" className="remove-field-btn issues-breakdown-remove" onClick={() => updateSlide(index, { psParagraph2: null })} title="Remove paragraph">× Remove paragraph</button>
+                    )}
+                  </div>
+                )}
+                {editMode && (slide.psParagraph2 == null || slide.psParagraph2 === '') && (
+                  <button type="button" className="add-field-btn add-field-btn-sm" onClick={() => updateSlide(index, { psParagraph2: 'Add second paragraph...' })}>+ Add paragraph 2</button>
+                )}
+
+                <div className="ps-view-tabs-row">
+                  {editMode && (
+                    <div className="ps-tab-count-edit">
+                      <span className="ps-tab-edit-caption">Tabs</span>
+                      <div className="ps-tab-count-btns">
+                        {[2, 3, 4, 5].map(n => (
+                          <button key={n} type="button" className={`ps-tab-count-btn ${tabs.length === n ? 'active' : ''}`} onClick={() => setPsTabCount(n)}>{n}</button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="ps-view-tabs">
+                    {tabs.map((tab, i) => (
+                      <button key={i} type="button" className={`ps-tab ${psActiveView === i ? 'active' : ''}`} onClick={() => updateSlide(index, { psActiveView: i })}>
+                        {tab.label || `Tab ${i + 1}`}
+                      </button>
+                    ))}
+                  </div>
+                  {editMode && (
+                    <div className="ps-tab-titles-edit">
+                      <label className="ps-tab-edit-label">
+                        <span className="ps-tab-edit-caption">Tab titles</span>
+                        <span className="ps-tab-edit-fields">
+                          {tabs.map((tab, i) => (
+                            <input
+                              key={i}
+                              type="text"
+                              value={tab.label ?? ''}
+                              onChange={(e) => updatePsTab(i, { label: e.target.value || undefined })}
+                              placeholder={`Tab ${i + 1}`}
+                              className="ps-tab-edit-input"
+                            />
+                          ))}
+                        </span>
+                      </label>
+                    </div>
+                  )}
                 </div>
-                {/* Solution column */}
-                <div className="ps-column ps-solution-col">
-                  <DynamicImages slide={slide} slideIndex={index} field="solutionImage" className="ps-image" />
-                  <OptionalField slide={slide} index={index} field="solutionLabel" label="Solution Label" defaultValue="Solution:">
-                    <span className="ps-col-label ps-solution-label">
-                      <EditableField value={slide.solutionLabel} onChange={(v) => updateSlide(index, { solutionLabel: v })} />
-                    </span>
-                  </OptionalField>
-                  <DynamicBullets slide={slide} slideIndex={index} field="solutionBullets" titleField="solutionBulletsTitle" className="ps-bullets" label="Point" />
-                </div>
+
+                {/* Active tab content: label above bullets (defaults to tab name; can be set separately) + bullets */}
+                <OptionalField slide={slideView} index={index} field="problemLabel" label="Label above bullets" defaultValue="" updateSlideOverride={updateSlideForActiveTab}>
+                  <span className="ps-col-label ps-problem-label">
+                    <EditableField
+                      value={activeTab.columnLabel ?? ''}
+                      placeholder={activeTab.label || `Tab ${psActiveView + 1}`}
+                      onChange={(v) => updatePsTab(psActiveView, { columnLabel: v || undefined })}
+                    />
+                  </span>
+                </OptionalField>
+                <DynamicBullets slide={slideView} slideIndex={index} field="problemBullets" titleField="problemBulletsTitle" className="problem-issues-wrapper" label="Point" updateSlideOverride={updateSlideForActiveTab} />
+
+                <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                  <div className="problem-highlight">
+                    <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                  </div>
+                </OptionalField>
               </div>
 
-              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                <div className="ps-highlight">
-                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                </div>
-              </OptionalField>
+              {/* Right: one image per tab – split-images-wrapper style */}
+              <div className="split-images-wrapper ps-split-image-wrap">
+                {tabs.map((tab, tabIdx) => {
+                  const tabSrc = (tab.image && (typeof tab.image === 'string' ? tab.image : (Array.isArray(tab.image) ? tab.image[0]?.src : null))) || '';
+                  const tabEmbed = tab.embedUrl || '';
+                  const openFileForTab = () => {
+                    const inp = document.createElement('input');
+                    inp.type = 'file';
+                    inp.accept = 'image/*,video/mp4,video/webm,.gif';
+                    inp.style.position = 'absolute';
+                    inp.style.opacity = '0';
+                    inp.style.pointerEvents = 'none';
+                    inp.onchange = async (e) => {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      const r = new FileReader();
+                      r.onload = async (ev) => {
+                        try {
+                          const d = ev.target?.result;
+                          if (f.type.startsWith('video/') || f.type === 'image/gif') {
+                            updatePsTab(tabIdx, { image: d, embedUrl: '' });
+                          } else {
+                            const c = await compressImage(d);
+                            updatePsTab(tabIdx, { image: c, embedUrl: '' });
+                          }
+                        } catch {
+                          updatePsTab(tabIdx, { image: ev.target?.result, embedUrl: '' });
+                        }
+                        inp.remove();
+                      };
+                      r.readAsDataURL(f);
+                    };
+                    document.body.appendChild(inp);
+                    inp.click();
+                    setTimeout(() => { try { inp.remove(); } catch (_) {} }, 500);
+                  };
+                  const hasContent = tabSrc || tabEmbed;
+                  return (
+                    <div key={tabIdx} className={`ps-split-image-panel ${psActiveView === tabIdx ? 'ps-split-image-panel-visible' : ''}`} aria-hidden={psActiveView !== tabIdx}>
+                      {tabEmbed ? (
+                        <div className="ps-img-wrap ps-img-contain">
+                          <div className="ps-img-inner ps-embed-inner">
+                            <iframe src={tabEmbed} title="Figma Embed" allowFullScreen className="figma-embed-iframe" />
+                          </div>
+                          {editMode && (
+                            <div className="ps-img-controls">
+                              <button type="button" className="ps-remove-img" onClick={() => updatePsTab(tabIdx, { embedUrl: '' })}>× Remove embed</button>
+                            </div>
+                          )}
+                        </div>
+                      ) : tabSrc ? (
+                        <div className="ps-img-wrap ps-img-contain">
+                          <div className="ps-img-inner" onClick={() => {
+                            if (editMode) openFileForTab();
+                            else if (tabSrc) setLightboxImage(tabSrc);
+                          }}>
+                            <img src={tabSrc} alt={tab.label || `Tab ${tabIdx + 1}`} style={{ objectFit: 'contain' }} />
+                            {editMode && <div className="image-edit-overlay">Click to change</div>}
+                          </div>
+                          {editMode && (
+                            <div className="ps-img-controls">
+                              <button type="button" className="ps-remove-img" onClick={() => updatePsTab(tabIdx, { image: '' })}>× Remove image</button>
+                            </div>
+                          )}
+                        </div>
+                      ) : editMode ? (
+                        <div className="ps-media-type-picker">
+                          {psEmbedInput.tabIdx === tabIdx ? (
+                            <div className="figma-embed-input">
+                              <input
+                                type="text"
+                                className="editable-field figma-url-input"
+                                placeholder="Paste Figma prototype URL..."
+                                value={psEmbedInput.draft}
+                                onChange={(e) => setPsEmbedInput({ tabIdx, draft: e.target.value })}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    const converted = toFigmaEmbedUrl(psEmbedInput.draft);
+                                    if (converted) {
+                                      updatePsTab(tabIdx, { embedUrl: converted, image: '' });
+                                      setPsEmbedInput({ tabIdx: null, draft: '' });
+                                    } else {
+                                      alert('Please enter a valid Figma URL (figma.com)');
+                                    }
+                                  }
+                                }}
+                                autoFocus
+                              />
+                              <button type="button" className="figma-embed-confirm" onClick={() => {
+                                const converted = toFigmaEmbedUrl(psEmbedInput.draft);
+                                if (converted) {
+                                  updatePsTab(tabIdx, { embedUrl: converted, image: '' });
+                                  setPsEmbedInput({ tabIdx: null, draft: '' });
+                                } else {
+                                  alert('Please enter a valid Figma URL (figma.com)');
+                                }
+                              }}>Embed</button>
+                              <button type="button" className="figma-embed-cancel" onClick={() => setPsEmbedInput({ tabIdx: null, draft: '' })}>Cancel</button>
+                            </div>
+                          ) : (
+                            <div className="media-type-buttons">
+                              <button type="button" className="media-type-btn" onClick={openFileForTab}>
+                                <span className="media-type-icon">+</span>
+                                <span>Upload Image</span>
+                              </button>
+                              <button type="button" className="media-type-btn media-type-figma" onClick={() => setPsEmbedInput({ tabIdx, draft: '' })}>
+                                <span className="media-type-icon">◈</span>
+                                <span>Embed Figma</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         );
+      }
 
       case 'chapter':
         return (
@@ -5248,6 +5851,287 @@ const CaseStudy = () => {
             </div>
           </div>
         );
+
+      case 'dynamic': {
+        const blocks = slide.blocks || [];
+
+        const renderBlock = (block, bIdx) => {
+          const blockControls = editMode && (
+            <div className="dynamic-block-controls">
+              <button onClick={() => moveBlock(index, bIdx, -1)} disabled={bIdx === 0} title="Move up">↑</button>
+              <button onClick={() => moveBlock(index, bIdx, 1)} disabled={bIdx === blocks.length - 1} title="Move down">↓</button>
+              <button onClick={() => removeBlock(index, bIdx)} disabled={blocks.length <= 1} title="Remove block" className="delete">×</button>
+            </div>
+          );
+
+          switch (block.type) {
+            case 'label':
+              return (
+                <div className="dynamic-block dynamic-block-label" key={bIdx}>
+                  {blockControls}
+                  <span className="slide-label">
+                    <EditableField value={block.value} onChange={(v) => updateBlock(index, bIdx, { value: v })} />
+                  </span>
+                </div>
+              );
+            case 'title':
+              return (
+                <div className="dynamic-block dynamic-block-title" key={bIdx}>
+                  {blockControls}
+                  <h2 className="dyn-title">
+                    <EditableField value={block.value} onChange={(v) => updateBlock(index, bIdx, { value: v })} allowLineBreaks />
+                  </h2>
+                </div>
+              );
+            case 'subtitle':
+              return (
+                <div className="dynamic-block dynamic-block-subtitle" key={bIdx}>
+                  {blockControls}
+                  <h3 className="dyn-subtitle">
+                    <EditableField value={block.value} onChange={(v) => updateBlock(index, bIdx, { value: v })} />
+                  </h3>
+                </div>
+              );
+            case 'paragraph':
+              return (
+                <div className="dynamic-block dynamic-block-paragraph" key={bIdx}>
+                  {blockControls}
+                  <p className="dyn-paragraph">
+                    <EditableField value={block.value} onChange={(v) => updateBlock(index, bIdx, { value: v })} multiline />
+                  </p>
+                </div>
+              );
+            case 'bullets': {
+              const bulletItems = Array.isArray(block.items) ? block.items : [];
+              const getBulletText = (b) => typeof b === 'object' && b !== null ? b.text || '' : String(b || '');
+              const getBulletTitle = (b) => typeof b === 'object' && b !== null ? b.title || '' : '';
+              const hasBulletTitle = (b) => typeof b === 'object' && b !== null && b.title !== undefined;
+              return (
+                <div className="dynamic-block dynamic-block-bullets" key={bIdx}>
+                  {blockControls}
+                  {block.title && (
+                    <h4 className="dyn-bullets-title">
+                      <EditableField value={block.title} onChange={(v) => updateBlock(index, bIdx, { title: v })} />
+                    </h4>
+                  )}
+                  {editMode && !block.title && (
+                    <button className="add-section-title-btn" onClick={() => updateBlock(index, bIdx, { title: 'Section Title' })}>+ Add Title</button>
+                  )}
+                  <ul className="bullet-list">
+                    {bulletItems.map((bullet, bi) => (
+                      <li key={bi} className={hasBulletTitle(bullet) ? 'has-title' : ''}>
+                        {hasBulletTitle(bullet) && (
+                          <span className="bullet-title">
+                            <EditableField value={getBulletTitle(bullet)} onChange={(v) => {
+                              const newItems = [...bulletItems];
+                              newItems[bi] = { ...newItems[bi], title: v };
+                              updateBlock(index, bIdx, { items: newItems });
+                            }} />
+                          </span>
+                        )}
+                        <span className={hasBulletTitle(bullet) ? 'bullet-text' : ''}>
+                          <EditableField value={getBulletText(bullet)} onChange={(v) => {
+                            const newItems = [...bulletItems];
+                            if (typeof newItems[bi] === 'object' && newItems[bi] !== null) {
+                              newItems[bi] = { ...newItems[bi], text: v };
+                            } else {
+                              newItems[bi] = v;
+                            }
+                            updateBlock(index, bIdx, { items: newItems });
+                          }} />
+                        </span>
+                        {editMode && (
+                          <button className="remove-bullet-btn" onClick={() => {
+                            const newItems = bulletItems.filter((_, i) => i !== bi);
+                            updateBlock(index, bIdx, { items: newItems });
+                          }}>×</button>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                  {editMode && (
+                    <button className="add-bullet-btn" onClick={() => updateBlock(index, bIdx, { items: [...bulletItems, 'New point'] })}>+ Add Bullet</button>
+                  )}
+                </div>
+              );
+            }
+            case 'image': {
+              const blockImages = Array.isArray(block.images) ? block.images : [];
+              const gridCols = block.gridColumns || 1;
+              const handleBlockImageUpload = (imgIdx) => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*,video/mp4,video/webm,.gif';
+                input.onchange = async (e) => {
+                  const file = e.target.files[0];
+                  if (!file) return;
+                  const reader = new FileReader();
+                  reader.onload = async (event) => {
+                    const dataUrl = event.target.result;
+                    const isVideo = file.type.startsWith('video/');
+                    const isGif = file.type === 'image/gif';
+                    const newImages = [...blockImages];
+                    if (isVideo || isGif) {
+                      newImages[imgIdx] = { ...newImages[imgIdx], src: dataUrl, isVideo, isGif };
+                    } else {
+                      try {
+                        const compressed = await compressImage(dataUrl);
+                        newImages[imgIdx] = { ...newImages[imgIdx], src: compressed, isVideo: false };
+                      } catch {
+                        newImages[imgIdx] = { ...newImages[imgIdx], src: dataUrl, isVideo: false };
+                      }
+                    }
+                    updateBlock(index, bIdx, { images: newImages });
+                  };
+                  reader.readAsDataURL(file);
+                };
+                input.click();
+              };
+              return (
+                <div className="dynamic-block dynamic-block-image" key={bIdx}>
+                  {blockControls}
+                  {editMode && blockImages.length > 1 && (
+                    <div className="dynamic-grid-buttons">
+                      {[1, 2, 3].map(n => (
+                        <button key={n} className={`grid-col-btn ${gridCols === n ? 'active' : ''}`} onClick={() => updateBlock(index, bIdx, { gridColumns: n })}>{n} Col{n > 1 ? 's' : ''}</button>
+                      ))}
+                    </div>
+                  )}
+                  <div className="dyn-image-grid" style={{ gridTemplateColumns: `repeat(${Math.min(gridCols, blockImages.length)}, 1fr)` }}>
+                    {blockImages.map((img, ii) => (
+                      <div key={ii} className="dyn-image-item">
+                        {img.src ? (
+                          img.isVideo ? (
+                            <video src={img.src} className="dyn-image-media" style={{ objectFit: img.fit || 'cover', objectPosition: img.position || 'center center' }} autoPlay muted loop playsInline />
+                          ) : (
+                            <img src={img.src} alt={img.caption || ''} className="dyn-image-media" style={{ objectFit: img.fit || 'cover', objectPosition: img.position || 'center center' }} />
+                          )
+                        ) : editMode ? (
+                          <button className="dyn-image-upload-btn" onClick={() => handleBlockImageUpload(ii)}>+ Upload Image</button>
+                        ) : null}
+                        {editMode && img.src && (
+                          <button className="dyn-image-change-btn" onClick={() => handleBlockImageUpload(ii)}>Change</button>
+                        )}
+                        {editMode && blockImages.length > 1 && (
+                          <button className="dyn-image-remove-btn" onClick={() => {
+                            const newImages = blockImages.filter((_, i) => i !== ii);
+                            updateBlock(index, bIdx, { images: newImages });
+                          }}>×</button>
+                        )}
+                        {(img.caption || editMode) && (
+                          <span className="dyn-image-caption">
+                            <EditableField value={img.caption || ''} onChange={(v) => {
+                              const newImages = [...blockImages];
+                              newImages[ii] = { ...newImages[ii], caption: v };
+                              updateBlock(index, bIdx, { images: newImages });
+                            }} />
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  {editMode && (
+                    <button className="add-item-btn" onClick={() => updateBlock(index, bIdx, { images: [...blockImages, { src: '', caption: '', position: 'center center', size: 'large', fit: 'cover' }] })}>+ Add Image</button>
+                  )}
+                </div>
+              );
+            }
+            case 'stats': {
+              const statItems = Array.isArray(block.items) ? block.items : [];
+              const statCols = block.gridColumns || 3;
+              return (
+                <div className="dynamic-block dynamic-block-stats" key={bIdx}>
+                  {blockControls}
+                  <div className="stats-grid" style={{ gridTemplateColumns: `repeat(${Math.min(statCols, statItems.length || 1)}, 1fr)` }}>
+                    {statItems.map((stat, si) => (
+                      <div key={si} className="stat-item">
+                        <span className="stat-value">
+                          <EditableField value={stat.value} onChange={(v) => {
+                            const newItems = [...statItems];
+                            newItems[si] = { ...newItems[si], value: v };
+                            updateBlock(index, bIdx, { items: newItems });
+                          }} />
+                          {stat.suffix && <span className="stat-suffix">{stat.suffix}</span>}
+                        </span>
+                        <span className="stat-label">
+                          <EditableField value={stat.label} onChange={(v) => {
+                            const newItems = [...statItems];
+                            newItems[si] = { ...newItems[si], label: v };
+                            updateBlock(index, bIdx, { items: newItems });
+                          }} />
+                        </span>
+                        {editMode && (
+                          <button className="remove-item-btn" onClick={() => {
+                            const newItems = statItems.filter((_, i) => i !== si);
+                            updateBlock(index, bIdx, { items: newItems });
+                          }}>×</button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  {editMode && (
+                    <button className="add-item-btn" onClick={() => updateBlock(index, bIdx, { items: [...statItems, { value: '0', label: 'Metric', suffix: '' }] })}>+ Add Stat</button>
+                  )}
+                </div>
+              );
+            }
+            case 'quote':
+              return (
+                <div className="dynamic-block dynamic-block-quote" key={bIdx}>
+                  {blockControls}
+                  <blockquote className="dyn-quote">
+                    "<EditableField value={block.text} onChange={(v) => updateBlock(index, bIdx, { text: v })} multiline />"
+                  </blockquote>
+                  <span className="dyn-quote-author">
+                    — <EditableField value={block.author} onChange={(v) => updateBlock(index, bIdx, { author: v })} />
+                  </span>
+                </div>
+              );
+            case 'divider':
+              return (
+                <div className="dynamic-block dynamic-block-divider" key={bIdx}>
+                  {blockControls}
+                  <hr className="dyn-divider" />
+                </div>
+              );
+            default:
+              return (
+                <div className="dynamic-block" key={bIdx}>
+                  {blockControls}
+                  <p>Unknown block: {block.type}</p>
+                </div>
+              );
+          }
+        };
+
+        const blockTypes = [
+          { type: 'label', label: 'Label' },
+          { type: 'title', label: 'Title' },
+          { type: 'subtitle', label: 'Subtitle' },
+          { type: 'paragraph', label: 'Paragraph' },
+          { type: 'bullets', label: 'Bullets' },
+          { type: 'image', label: 'Image' },
+          { type: 'stats', label: 'Stats' },
+          { type: 'quote', label: 'Quote' },
+          { type: 'divider', label: 'Divider' },
+        ];
+
+        return (
+          <div className="slide slide-dynamic" key={index}>
+            {slideControls}
+            <div className="slide-inner slide-dynamic-inner">
+              {blocks.map((block, bIdx) => renderBlock(block, bIdx))}
+              {editMode && (
+                <div className="dynamic-add-block-bar">
+                  {blockTypes.map(bt => (
+                    <button key={bt.type} className="dynamic-add-block-btn" onClick={() => addBlock(index, bt.type)}>+ {bt.label}</button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
 
       default:
         return (
@@ -5760,6 +6644,30 @@ const CaseStudy = () => {
         </div>
       )}
 
+      {/* In edit mode: list saved case studies so you can find the one with 30+ slides */}
+      {editMode && savedCaseStudiesList.length > 0 && (
+        <div className="saved-case-studies-bar">
+          <button type="button" className="saved-case-studies-toggle" onClick={() => setShowSavedList((v) => !v)} aria-expanded={showSavedList}>
+            {showSavedList ? '▼' : '▶'} Find saved case studies ({savedCaseStudiesList.length})
+          </button>
+          {showSavedList && (
+            <div className="saved-case-studies-list">
+              {savedCaseStudiesList.map(({ projectId: id, slideCount }) => (
+                <Link
+                  key={id}
+                  to={`/case-study/${id}`}
+                  className={`saved-case-study-link ${id === projectId ? 'current' : ''}`}
+                  onClick={() => setShowSavedList(false)}
+                >
+                  <span className="saved-case-study-id">{id}</span>
+                  <span className="saved-case-study-slides">{slideCount} slide{slideCount !== 1 ? 's' : ''}</span>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="case-nav">
         <Link to="/" className="nav-back">
           <span className="back-icon">←</span>
@@ -5777,29 +6685,66 @@ const CaseStudy = () => {
         </div>
       </div>
 
-      <div className="slides-container">
-        <motion.div 
-          className="slides-track"
-          animate={{ x: `-${currentSlide * 100}%` }}
-          transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-        >
-          {project.slides.map((slide, index) => (
-            <SlideErrorBoundary key={`error-${index}`}>
-              {renderSlide(slide, index)}
-            </SlideErrorBoundary>
-          ))}
-        </motion.div>
-      </div>
+      <div
+        className="case-study-slides-wrapper"
+        onMouseEnter={showSlideNav}
+        onMouseLeave={hideSlideNavAfterDelay}
+      >
+        <div className="slides-container" onClick={handleSlideAreaClick}>
+          <motion.div 
+            className="slides-track"
+            animate={{ x: `-${currentSlide * 100}%` }}
+            transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+          >
+            {project.slides.map((slide, index) => (
+              <SlideErrorBoundary key={`error-${index}`}>
+                {renderSlide(slide, index)}
+              </SlideErrorBoundary>
+            ))}
+          </motion.div>
+        </div>
 
-      <div className="slide-indicators">
-        {project.slides.map((_, index) => (
-          <button
-            key={index}
-            className={`indicator ${currentSlide === index ? 'active' : ''}`}
-            onClick={() => setCurrentSlide(index)}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
+        {!editMode && totalSlides > 1 && (
+          <>
+            <div
+              className="slide-nav-hover-zone"
+              onMouseEnter={showSlideNav}
+              onMouseLeave={hideSlideNavAfterDelay}
+              aria-hidden="true"
+            />
+            <div
+              className={`slide-nav-pill ${slideNavVisible ? 'slide-nav-pill--visible' : ''}`}
+              onMouseEnter={showSlideNav}
+              onMouseLeave={hideSlideNavAfterDelay}
+              role="group"
+              aria-label="Slide navigation"
+            >
+            <button
+              type="button"
+              className="slide-nav-pill-btn"
+              onClick={() => { goToSlide(-1); showSlideNav(); }}
+              disabled={currentSlide === 0}
+              aria-label="Previous slide"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 4L8 10L12 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            <span className="slide-nav-pill-divider" aria-hidden="true" />
+            <button
+              type="button"
+              className="slide-nav-pill-btn"
+              onClick={() => { goToSlide(1); showSlideNav(); }}
+              disabled={currentSlide >= totalSlides - 1}
+              aria-label="Next slide"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 4L12 10L8 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Lightbox for viewing images in full size */}

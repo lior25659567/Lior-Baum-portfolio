@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { saveData, getData, deleteData } from '../storage/devStore';
 
 const EditContext = createContext();
 
@@ -6,10 +7,12 @@ const EditContext = createContext();
 const defaultContent = {
   hero: {
     label: 'Product Designer',
-    greeting: "Hello, I'm",
+    greeting: "Hello! I'm ",
     name: 'Lior Baum',
     description: 'Crafting digital experiences that merge aesthetics with functionality. Based in Israel, currently available for freelance work.',
     cvLink: '/resume.pdf',
+    ctaText: 'View work',
+    ctaLink: '#projects',
   },
   about: {
     label: 'About Me',
@@ -78,36 +81,54 @@ const defaultStyles = {
   },
 };
 
+function mergeContent(saved) {
+  if (!saved) return defaultContent;
+  return {
+    ...defaultContent,
+    ...saved,
+    hero: { ...defaultContent.hero, ...saved.hero },
+    footer: { ...defaultContent.footer, ...saved.footer },
+    about: { ...defaultContent.about, ...saved.about },
+    projects: { ...defaultContent.projects, ...saved.projects },
+  };
+}
+
 export const EditProvider = ({ children }) => {
   const [editMode, setEditMode] = useState(() => {
     return sessionStorage.getItem('editMode') === 'true';
   });
   const [showPanel, setShowPanel] = useState(false);
   const [activeSection, setActiveSection] = useState('content');
-  
-  // Load content from localStorage or use defaults
+  const hydrated = useRef(false);
+
   const [content, setContent] = useState(() => {
-    const saved = localStorage.getItem('siteContent');
-    if (saved) {
-      const parsedContent = JSON.parse(saved);
-      // Deep merge to ensure new fields like cvLink are included
-      return {
-        ...defaultContent,
-        ...parsedContent,
-        hero: { ...defaultContent.hero, ...parsedContent.hero },
-        footer: { ...defaultContent.footer, ...parsedContent.footer },
-        about: { ...defaultContent.about, ...parsedContent.about },
-        projects: { ...defaultContent.projects, ...parsedContent.projects },
-      };
-    }
-    return defaultContent;
+    try {
+      const saved = localStorage.getItem('siteContent');
+      return saved ? mergeContent(JSON.parse(saved)) : defaultContent;
+    } catch { return defaultContent; }
   });
-  
-  // Load styles from localStorage or use defaults
+
   const [styles, setStyles] = useState(() => {
-    const saved = localStorage.getItem('siteStyles');
-    return saved ? { ...defaultStyles, ...JSON.parse(saved) } : defaultStyles;
+    try {
+      const saved = localStorage.getItem('siteStyles');
+      return saved ? { ...defaultStyles, ...JSON.parse(saved) } : defaultStyles;
+    } catch { return defaultStyles; }
   });
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const [savedContent, savedStyles] = await Promise.all([
+        getData('siteContent'),
+        getData('siteStyles'),
+      ]);
+      if (cancelled) return;
+      if (savedContent) setContent(mergeContent(savedContent));
+      if (savedStyles) setStyles(prev => ({ ...prev, ...savedStyles }));
+      hydrated.current = true;
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   // Toggle edit mode with Cmd+E (Mac) or Ctrl+E (Windows/Linux)
   useEffect(() => {
@@ -163,18 +184,16 @@ export const EditProvider = ({ children }) => {
     }
   }, [editMode, showPanel]);
 
-  // Save content to localStorage
   useEffect(() => {
-    if (editMode) {
-      localStorage.setItem('siteContent', JSON.stringify(content));
-    }
+    if (!editMode || !hydrated.current) return;
+    saveData('siteContent', content);
+    try { localStorage.setItem('siteContent', JSON.stringify(content)); } catch { /* quota */ }
   }, [content, editMode]);
 
-  // Save styles to localStorage
   useEffect(() => {
-    if (editMode) {
-      localStorage.setItem('siteStyles', JSON.stringify(styles));
-    }
+    if (!editMode || !hydrated.current) return;
+    saveData('siteStyles', styles);
+    try { localStorage.setItem('siteStyles', JSON.stringify(styles)); } catch { /* quota */ }
   }, [styles, editMode]);
 
   // Apply CSS variables when styles change
@@ -224,6 +243,8 @@ export const EditProvider = ({ children }) => {
     setStyles(defaultStyles);
     localStorage.removeItem('siteContent');
     localStorage.removeItem('siteStyles');
+    deleteData('siteContent');
+    deleteData('siteStyles');
   };
 
   return (

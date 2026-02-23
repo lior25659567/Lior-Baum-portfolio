@@ -1,8 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEdit } from '../context/EditContext';
 import './Projects.css';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Default projects - used as fallback
 const defaultProjects = [
@@ -45,6 +49,7 @@ const defaultProjects = [
 
 const ProjectCard = ({ project, index, editMode, onImageChange, onRemove }) => {
   const fileInputRef = useRef(null);
+  const fileInputId = `project-image-${project.id}`;
 
   const handleImageUpload = useCallback((e) => {
     const file = e.target.files?.[0];
@@ -75,53 +80,102 @@ const ProjectCard = ({ project, index, editMode, onImageChange, onRemove }) => {
   }, [project.id, onImageChange]);
 
   return (
-    <motion.article
-      className="project-card"
-      initial={{ opacity: 0, y: 60 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-    >
-      <Link to={`/project/${project.id}`} className="project-link">
-        <div className="project-image-wrapper">
-          <div
-            className="project-image"
-            style={{ backgroundImage: `url(${project.image})` }}
+    <article className="project-card work-grid-project">
+      <Link to={`/project/${project.id}`} className="project-link" aria-label={project.title} />
+      <div className="project-media">
+        <div className="project-image-wrapper media-wrapper">
+          <div className="project-image media-inner" style={{ backgroundImage: project.image ? `url(${project.image})` : undefined }} />
+          {!project.image && <div className="project-image-placeholder" />}
+        </div>
+      </div>
+      {/* Content overlay: visible on hover (hidden in edit mode so Change Image takes over) */}
+      {!editMode && (
+        <div className="project-content">
+          <h3 className="project-content-title">{project.title}</h3>
+          <p className="project-content-meta">
+            <span className="project-content-category">{project.category}</span>
+            <span className="project-content-year">{project.year}</span>
+          </p>
+        </div>
+      )}
+      {editMode && (
+        <div className="project-image-overlay">
+          <label htmlFor={fileInputId} className="project-image-overlay-label">
+            <span className="image-overlay-icon">📷</span>
+            <span className="image-overlay-text">Change Image</span>
+          </label>
+          <input
+            id={fileInputId}
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="project-image-file-input"
           />
-          {editMode && (
-            <div className="project-image-overlay" onClick={(e) => { e.preventDefault(); e.stopPropagation(); fileInputRef.current?.click(); }}>
-              <span className="image-overlay-icon">📷</span>
-              <span className="image-overlay-text">Change Image</span>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                style={{ display: 'none' }}
-              />
-            </div>
-          )}
         </div>
-        
-        <div className="project-info">
-          <h3 className="project-title">{project.title}</h3>
-          <div className="project-meta">
-            <span className="project-category">{project.category}</span>
-            <span className="project-year">{project.year}</span>
-          </div>
-        </div>
-      </Link>
+      )}
       {editMode && onRemove && (
         <button className="project-remove-btn" onClick={(e) => { e.preventDefault(); e.stopPropagation(); onRemove(project.id); }} title="Remove project">×</button>
       )}
-    </motion.article>
+    </article>
   );
 };
 
 const Projects = () => {
   const { content, setContent, editMode } = useEdit();
   const navigate = useNavigate();
-  
+  const titleRef = useRef(null);
+  const gridRef = useRef(null);
+
+  // GSAP scroll animation for project cards (smoother entrance)
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    const cards = grid.querySelectorAll('.work-grid-project');
+    if (!cards.length) return;
+    gsap.set(cards, { y: 56, opacity: 0 });
+    const st = ScrollTrigger.create({
+      trigger: grid,
+      start: 'top 82%',
+      once: true,
+      onEnter: () => {
+        gsap.to(cards, {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: 'power3.out',
+        });
+      },
+    });
+    return () => st.kill();
+  }, []);
+
+  // Word-stagger scroll animation for section title (same as Services)
+  useEffect(() => {
+    const el = titleRef.current;
+    if (!el) return;
+    const words = el.querySelectorAll('.section-title-word');
+    if (!words.length) return;
+
+    gsap.set(words, { y: 28, opacity: 0 });
+    const st = ScrollTrigger.create({
+      trigger: el,
+      start: 'top 82%',
+      once: true,
+      onEnter: () => {
+        gsap.to(words, {
+          y: 0,
+          opacity: 1,
+          duration: 0.55,
+          stagger: 0.055,
+          ease: 'power3.out',
+        });
+      },
+    });
+    return () => st.kill();
+  }, [content.projects?.sectionTitle]);
+
   // Merge default projects with saved content, and include any extra saved projects
   const projects = (() => {
     const savedItems = content.projects?.items || [];
@@ -189,18 +243,30 @@ const Projects = () => {
       <div className="projects-container">
         <motion.div
           className="projects-header"
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
         >
-          <span className="section-label">{content.projects?.sectionLabel || 'Portfolio'}</span>
-          <h2 className="section-title serif">
-            {content.projects?.sectionTitle || 'Selected Projects'}
+          <motion.span
+            className="section-label"
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            {content.projects?.sectionLabel || 'Portfolio'}
+          </motion.span>
+          <h2 ref={titleRef} className="section-title cta-text serif highlight">
+            {((content.projects?.sectionTitle) || 'Selected Projects').split(/\s+/).map((word, i) => (
+              <span key={i} className="section-title-word">
+                {word}{' '}
+              </span>
+            ))}
           </h2>
         </motion.div>
         
-        <div className="projects-grid">
+        <div className="projects-grid" ref={gridRef}>
           {projects.map((project, index) => (
             <ProjectCard
               key={project.id}
@@ -211,15 +277,13 @@ const Projects = () => {
               onRemove={!defaultIds.includes(project.id) ? handleRemoveProject : null}
             />
           ))}
-          
-          {/* Add New Project card - only visible in edit mode */}
           {editMode && (
             <motion.article
               className="project-card project-card--add"
-              initial={{ opacity: 0, y: 60 }}
+              initial={{ opacity: 0, y: 48 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
               onClick={handleAddProject}
             >
               <div className="add-project-content">

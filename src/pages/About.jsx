@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEdit } from '../context/EditContext';
 import AnimatedButton from '../components/AnimatedButton';
+import Footer from '../components/Footer';
 import './About.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -15,6 +16,8 @@ const About = () => {
   const line1Ref = useRef(null);
   const line2Ref = useRef(null);
   const fileInputRef = useRef(null);
+  const skillsRef = useRef(null);
+  const experienceRef = useRef(null);
   const [profileImage, setProfileImage] = useState(() => {
     return localStorage.getItem('aboutProfileImage') || '';
   });
@@ -120,6 +123,54 @@ const About = () => {
     return () => ctx.revert();
   }, []);
 
+  // Scroll animation for Skills (same style as Services/Projects)
+  useEffect(() => {
+    const el = skillsRef.current;
+    if (!el) return;
+    const cards = el.querySelectorAll('.skill-card');
+    if (!cards.length) return;
+    gsap.set(cards, { y: 50, opacity: 0 });
+    const st = ScrollTrigger.create({
+      trigger: el,
+      start: 'top 82%',
+      once: true,
+      onEnter: () => {
+        gsap.to(cards, {
+          y: 0,
+          opacity: 1,
+          duration: 0.75,
+          stagger: 0.1,
+          ease: 'power3.out',
+        });
+      },
+    });
+    return () => st.kill();
+  }, []);
+
+  // Scroll animation for Experience (same style)
+  useEffect(() => {
+    const el = experienceRef.current;
+    if (!el) return;
+    const items = el.querySelectorAll('.experience-item');
+    if (!items.length) return;
+    gsap.set(items, { y: 50, opacity: 0 });
+    const st = ScrollTrigger.create({
+      trigger: el,
+      start: 'top 82%',
+      once: true,
+      onEnter: () => {
+        gsap.to(items, {
+          y: 0,
+          opacity: 1,
+          duration: 0.75,
+          stagger: 0.1,
+          ease: 'power3.out',
+        });
+      },
+    });
+    return () => st.kill();
+  }, []);
+
   return (
     <section className={`about-page ${editMode ? 'edit-mode-active' : ''}`}>
       <div className="about-container">
@@ -210,65 +261,41 @@ const About = () => {
         </div>
 
         {/* Skills Section */}
-        <motion.div
-          className="skills-section"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
+        <div className="skills-section">
           <h2 className="section-heading">Skills & Expertise</h2>
-          <div className="skills-grid">
-            {skills.map((skillGroup, index) => (
-              <motion.div
-                key={skillGroup.category}
-                className="skill-card"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
+          <div className="skills-grid" ref={skillsRef}>
+            {skills.map((skillGroup) => (
+              <div key={skillGroup.category} className="skill-card">
                 <h3 className="skill-category">{skillGroup.category}</h3>
                 <ul className="skill-list">
                   {skillGroup.items.map((skill) => (
                     <li key={skill} className="skill-item">{skill}</li>
                   ))}
                 </ul>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Experience Section */}
-        <motion.div
-          className="experience-section"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
+        <div className="experience-section">
           <h2 className="section-heading">Experience</h2>
-          <div className="experience-timeline">
+          <div className="experience-timeline" ref={experienceRef}>
             {experience.map((exp, index) => (
-              <motion.div
-                key={index}
-                className="experience-item"
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.15 }}
-              >
+              <div key={index} className="experience-item">
                 <div className="experience-year">{exp.year}</div>
                 <div className="experience-content">
                   <h3 className="experience-role">{exp.role}</h3>
                   <p className="experience-company">{exp.company}</p>
                   <p className="experience-description">{exp.description}</p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
+
+      <Footer />
     </section>
   );
 };

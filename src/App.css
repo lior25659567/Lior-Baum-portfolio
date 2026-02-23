@@ -20,6 +20,12 @@
 
 main {
   flex: 1;
+  min-height: 0;
+}
+
+/* Ensure footer is visible after About (and other pages) */
+.footer {
+  flex-shrink: 0;
 }
 
 /* Smooth reveal animations */
