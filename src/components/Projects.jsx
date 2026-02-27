@@ -18,32 +18,11 @@ const defaultProjects = [
     year: '2024',
   },
   {
-    id: 'itero-scan-view',
-    title: 'iTero Scan & View',
-    category: 'MedTech / Clinical UX',
-    image: 'https://images.unsplash.com/photo-1609840114035-3c981b782dfe?w=800&h=600&fit=crop',
-    year: '2024',
-  },
-  {
     id: 'wizecare',
     title: 'WizeCare',
     category: 'B2B Complex System',
     image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop',
     year: '2023',
-  },
-  {
-    id: 'webflow',
-    title: 'Webflow',
-    category: 'Web Design',
-    image: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&h=600&fit=crop',
-    year: '2023',
-  },
-  {
-    id: 'shenkar',
-    title: 'Shenkar',
-    category: 'Brand Identity',
-    image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&h=600&fit=crop',
-    year: '2022',
   },
 ];
 
@@ -82,38 +61,42 @@ const ProjectCard = ({ project, index, editMode, onImageChange, onRemove }) => {
   return (
     <article className="project-card work-grid-project">
       <Link to={`/project/${project.id}`} className="project-link" aria-label={project.title} />
+
+      {/* Image area */}
       <div className="project-media">
         <div className="project-image-wrapper media-wrapper">
           <div className="project-image media-inner" style={{ backgroundImage: project.image ? `url(${project.image})` : undefined }} />
           {!project.image && <div className="project-image-placeholder" />}
         </div>
+
+        {/* Edit overlay scoped to image only */}
+        {editMode && (
+          <div className="project-image-overlay">
+            <label htmlFor={fileInputId} className="project-image-overlay-label">
+              <span className="image-overlay-icon">📷</span>
+              <span className="image-overlay-text">Change Image</span>
+            </label>
+            <input
+              id={fileInputId}
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="project-image-file-input"
+            />
+          </div>
+        )}
       </div>
-      {/* Content overlay: visible on hover (hidden in edit mode so Change Image takes over) */}
-      {!editMode && (
-        <div className="project-content">
-          <h3 className="project-content-title">{project.title}</h3>
-          <p className="project-content-meta">
-            <span className="project-content-category">{project.category}</span>
-            <span className="project-content-year">{project.year}</span>
-          </p>
-        </div>
-      )}
-      {editMode && (
-        <div className="project-image-overlay">
-          <label htmlFor={fileInputId} className="project-image-overlay-label">
-            <span className="image-overlay-icon">📷</span>
-            <span className="image-overlay-text">Change Image</span>
-          </label>
-          <input
-            id={fileInputId}
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="project-image-file-input"
-          />
-        </div>
-      )}
+
+      {/* Title always visible below the image */}
+      <div className="project-content">
+        <h3 className="project-content-title">{project.title}</h3>
+        <p className="project-content-meta">
+          <span className="project-content-category">{project.category}</span>
+          <span className="project-content-year">{project.year}</span>
+        </p>
+      </div>
+
       {editMode && onRemove && (
         <button className="project-remove-btn" onClick={(e) => { e.preventDefault(); e.stopPropagation(); onRemove(project.id); }} title="Remove project">×</button>
       )}

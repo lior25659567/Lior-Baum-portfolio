@@ -13,6 +13,7 @@ export const slideTemplates = {
     focusLabel: 'Focus',
     focus: 'Project Focus Area',
     logo: '',
+    introHeaderMode: 'both', // 'both' = title + logo at bottom, 'logo' = logo only in title position
     splitRatio: 50,
   },
   info: {
@@ -38,24 +39,18 @@ export const slideTemplates = {
     image: '',
     caption: 'Image caption describing what this shows.',
   },
-  context: {
-    type: 'context',
-    label: 'Context',
-    title: 'Understanding the environment',
-    content: 'Describe the context and background.',
-    highlight: 'Key insight or important note.',
-    image: '',
-    splitRatio: 50,
-  },
-  problem: {
+  textAndImage: {
     type: 'problem',
-    label: 'The Problem',
-    title: 'What needed to be solved',
-    content: 'Describe the problem.',
-    issues: ['Issue 1', 'Issue 2', 'Issue 3'],
-    conclusion: 'Summary of the core problem.',
+    label: 'Section',
+    title: 'Heading',
+    content: 'Add your text here. Use for context, problem, testing, feature, or any split layout.',
+    issues: ['Point 1', 'Point 2', 'Point 3'],
+    issuesTitle: '',
+    conclusion: 'Optional conclusion or takeaway.',
     image: '',
     splitRatio: 50,
+    bullets2: [],
+    bullets2Title: '',
   },
   quotes: {
     type: 'quotes',
@@ -66,6 +61,8 @@ export const slideTemplates = {
       { text: 'Quote from user', author: 'User Name' },
       { text: 'Another quote', author: 'User Name' },
     ],
+    bullets: [],
+    bulletsTitle: '',
   },
   goals: {
     type: 'goals',
@@ -78,16 +75,6 @@ export const slideTemplates = {
     ],
     kpis: ['KPI 1', 'KPI 2', 'KPI 3'],
     kpisGridColumns: 3,
-  },
-  testing: {
-    type: 'testing',
-    label: 'Testing',
-    title: 'Validating the solution',
-    content: 'Describe the testing process.',
-    layouts: ['Option 1', 'Option 2', 'Option 3'],
-    conclusion: 'What we learned from testing.',
-    image: '',
-    splitRatio: 50,
   },
   stats: {
     type: 'stats',
@@ -141,16 +128,6 @@ export const slideTemplates = {
     ],
   },
   
-  // Feature highlight
-  feature: {
-    type: 'feature',
-    label: 'Key Feature',
-    title: 'Feature Name',
-    description: 'Detailed description of this feature and why it matters.',
-    image: '',
-    bullets: ['Benefit 1', 'Benefit 2', 'Benefit 3'],
-    splitRatio: 50,
-  },
   
   // Two-column text
   twoColumn: {
@@ -382,9 +359,9 @@ export const templateCategories = {
   'Introduction': ['intro', 'info', 'chapter'],
   'Content': ['text', 'twoColumn', 'insight', 'textWithImages'],
   'Visual': ['image', 'video', 'projectShowcase', 'goalsShowcase', 'imageMosaic'],
-  'Research': ['context', 'problem', 'issuesBreakdown', 'oldExperience', 'quotes', 'testimonial'],
-  'Process': ['goals', 'achieveGoals', 'process', 'timeline', 'testing'],
-  'Features': ['feature', 'comparison', 'challengeSolution', 'solutionShowcase', 'problemSolution', 'tools'],
+  'Research': ['textAndImage', 'issuesBreakdown', 'oldExperience', 'quotes', 'testimonial'],
+  'Process': ['goals', 'achieveGoals', 'process', 'timeline'],
+  'Features': ['comparison', 'challengeSolution', 'solutionShowcase', 'problemSolution', 'tools'],
   'Results': ['stats', 'outcomes', 'end'],
 };
 
@@ -975,292 +952,9 @@ export const defaultCaseStudies = {
         cta: 'Get in touch',
       },
     ],
-  },
-  'webflow': {
-    title: 'WEBFLOW',
-    subtitle: 'No-code website builder experience',
-    category: 'Web Design',
-    year: '2022',
-    color: '#E85D75',
-    slides: [
-      {
-        type: 'intro',
-        title: 'WEB\nFLOW',
-        subtitle: 'Web Design • 2022',
-        description: 'Contributed to new features for the Webflow editor, focusing on improving the learning curve for new users.',
-        image: '',
-      },
-      {
-        type: 'info',
-        title: 'Project Info',
-        items: [
-          { label: 'Role', value: 'UI Designer' },
-          { label: 'Duration', value: '3 Months' },
-          { label: 'Team', value: '4 Designers, 8 Engineers' },
-          { label: 'Deliverables', value: 'Onboarding Flow' },
-        ],
-      },
-      {
-        type: 'text',
-        label: '01 — The Challenge',
-        title: 'Steep Learning Curve',
-        content: 'New users often felt overwhelmed by the power and flexibility of Webflow, leading to high drop-off rates during onboarding.',
-      },
-      {
-        type: 'stats',
-        label: '02 — Results',
-        title: 'Impact',
-        stats: [
-          { value: '45%', label: 'Increase in completion' },
-          { value: '30%', label: 'Faster first publish' },
-          { value: '4.6', label: 'Onboarding rating', suffix: '/5' },
-        ],
-      },
-      {
-        type: 'end',
-        title: 'Thank You',
-        subtitle: 'Want to work together?',
-        cta: 'Get in touch',
-      },
-    ],
-  },
-  'shenkar': {
-    title: 'SHENKAR',
-    subtitle: 'Brand identity for design college',
-    category: 'Brand Identity',
-    year: '2021',
-    color: '#F5A623',
-    slides: [
-      {
-        type: 'intro',
-        title: 'SHEN\nKAR',
-        subtitle: 'Brand Identity • 2021',
-        description: 'Developed a comprehensive brand identity system for a leading design college.',
-        image: '',
-      },
-      {
-        type: 'info',
-        title: 'Project Info',
-        items: [
-          { label: 'Role', value: 'Brand Designer' },
-          { label: 'Duration', value: '2 Months' },
-          { label: 'Team', value: 'Solo Project' },
-          { label: 'Deliverables', value: 'Logo, Guidelines' },
-        ],
-      },
-      {
-        type: 'text',
-        label: '01 — The Challenge',
-        title: 'Balancing Tradition',
-        content: 'The college needed a brand that would appeal to prospective students while honoring its rich history in design education.',
-      },
-      {
-        type: 'image',
-        label: '02 — Logo Design',
-        title: 'Visual Identity',
-        image: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=1400&h=800&fit=crop',
-        caption: 'Contemporary logo system with flexible applications',
-      },
-      {
-        type: 'end',
-        title: 'Thank You',
-        subtitle: 'Want to work together?',
-        cta: 'Get in touch',
-      },
-    ],
-  },
-
-  'itero-scan-view': {
-    title: 'iTero\nScan & View',
-    subtitle: 'Redesigning a live clinical scanning experience',
-    category: 'MedTech / Clinical UX',
-    year: '2024',
-    color: '#5B8DEF',
-    slides: [
-      {
-        type: 'intro',
-        title: 'iTero Scan & View',
-        description: 'Redesigning a live clinical scanning experience',
-        clientLabel: 'Client',
-        client: 'Align Technology',
-        focusLabel: 'Platform',
-        focus: 'Touch-based Clinical Interface',
-      },
-      {
-        type: 'context',
-        label: 'Background',
-        title: 'What is Align Technology',
-        content: 'Align Technology develops digital systems used by clinicians during live dental procedures.\n\niTero is a real-time intraoral scanner used while the patient is in the chair.\n\nThis is not exploratory software.\nEvery interaction must be precise, predictable, and fast.',
-        highlight: '',
-        image: '',
-        splitRatio: 50,
-      },
-      {
-        type: 'context',
-        label: 'Context',
-        title: 'Scanning is a high-pressure environment',
-        content: 'During a scan:\n\nThe scanner is held in one hand.\nAttention shifts between patient and screen.\nDelays increase chair time.\n\nThe interface must support flow without demanding attention.',
-        highlight: 'One hand · Patient and screen · Chair time',
-        image: '',
-        splitRatio: 50,
-      },
-      {
-        type: 'issuesBreakdown',
-        label: 'The Breakdown',
-        title: 'When incremental improvements stopped working',
-        issues: [
-          { number: '1', title: 'New scan types', description: 'More tools and features were added over time.' },
-          { number: '2', title: 'More post-scan tools', description: 'Each solved a local need.' },
-          { number: '3', title: 'Additional review capabilities', description: 'Together they created a fragmented experience.' },
-        ],
-        conclusion: 'Scanning, editing, and reviewing no longer felt like one coherent flow.',
-      },
-      {
-        type: 'text',
-        label: 'Research & Insight',
-        title: 'What clinicians struggled with',
-        content: 'From interviews and live walkthroughs, one theme repeated.\n\nKey issues:\n\n• Unclear system state\n• Tools scattered across the interface\n• Fear of making irreversible mistakes\n\nThis was a structural issue, not a single interaction problem.',
-        highlight: '"I\'m never fully sure where I am — scanning, editing, or reviewing."',
-      },
-      {
-        type: 'achieveGoals',
-        label: 'Goals & KPIs',
-        title: 'Defining success before redesign',
-        leftColumn: {
-          title: 'Goals',
-          goals: [
-            { number: '1', text: 'Create a unified Scan & View experience' },
-            { number: '2', text: 'Reduce cognitive load during live procedures' },
-            { number: '3', text: 'Enable complex workflows without adding confusion' },
-            { number: '4', text: 'Build a scalable structure for future features' },
-          ],
-        },
-        rightColumn: {
-          title: 'KPIs',
-          goals: [
-            { number: '1', text: 'Average time to select a tool' },
-            { number: '2', text: 'Overall scan duration' },
-            { number: '3', text: 'Misclick rate during scanning' },
-            { number: '4', text: 'Adoption of advanced features (AI detect, multi-scan)' },
-          ],
-        },
-      },
-      {
-        type: 'chapter',
-        number: '02',
-        title: 'Building the Foundation',
-        subtitle: 'A scalable icon language',
-      },
-      {
-        type: 'challengeSolution',
-        label: 'Icons',
-        title: 'Icons that worked individually failed as a system',
-        challenge: 'As the toolset grew, icons became inconsistent:\n\n• Mixed stroke weights\n• Unclear metaphors\n• Uneven visual hierarchy\n\nWhen grouped together, they created visual noise.',
-        solution: 'Creating a scalable icon language.\n\nBefore touching layout, the visual language was unified:\n\n• Standardized grid and stroke rules\n• Consistent visual weight\n• Simplified metaphors\n\nThis created a foundation for grouping and expansion.',
-      },
-      {
-        type: 'chapter',
-        number: '03',
-        title: 'Live Scanning Structure',
-        subtitle: 'A single home for scanning actions',
-      },
-      {
-        type: 'challengeSolution',
-        label: 'Toolbar placement',
-        title: 'Tools without a predictable structure',
-        challenge: 'Even with aligned icons, tools were:\n\n• Scattered across the screen\n• Hard to reach with one hand\n• Competing with the scan canvas\n\nClinicians searched mid-scan.',
-        solution: 'Defining a single home for scanning actions.\n\nMultiple toolbar positions were tested: vertical, bottom, top.\n\nThe horizontal top toolbar proved most stable:\n\n• Predictable reach\n• Minimal obstruction\n• Strong muscle memory',
-      },
-      {
-        type: 'challengeSolution',
-        label: 'Adaptive toolbar',
-        title: 'One static toolbar couldn\'t support all experience levels',
-        challenge: 'Different clinicians had different needs:\n\n• Experts wanted speed\n• Others wanted clarity and reassurance\n\nIcons alone were not always sufficient.',
-        solution: 'An adaptive toolbar for speed and confidence.\n\nThe toolbar supports two states:\n\n• Collapsed — icons only\n• Expanded — icons with labels\n\nClinicians can switch between them without interrupting scanning.',
-      },
-      {
-        type: 'chapter',
-        number: '03',
-        title: 'Clinical Tools',
-        subtitle: 'Prep Review · Margin Line · Trim',
-      },
-      {
-        type: 'challengeSolution',
-        label: 'Prep Review',
-        title: 'Validation felt like manual editing',
-        challenge: 'The legacy Prep Review required:\n\n• Adjusting technical parameters\n• Manually correcting AI hints\n• Focusing on "how to fix" instead of "is it acceptable?"\n\nClinicians acted like data editors.',
-        solution: 'Turning validation into a decision checkpoint.\n\nPrep Review was reframed as a binary decision.\n\n• Primary action: "Select" (accept scan)\n• Secondary action: "Erase & Rescan"\n• AI performs validation, clinician confirms\n\nThe interaction shifted from manipulation to judgment.',
-      },
-      {
-        type: 'challengeSolution',
-        label: 'Margin Line',
-        title: 'AI existed but was hidden',
-        challenge: 'Previously:\n\n• AI detection was buried in menus\n• Clinicians manually drew margins\n• High fatigue and human error\n\nAI was passive instead of central.',
-        solution: 'AI-first detection with visible context.\n\nThe margin tool was redesigned around AI detection.\n\n• Primary CTA: "Detect"\n• Visible tooth header (e.g., Tooth 11, Upper Jaw)\n• Clinician reviews instead of draws\n\nAI handles precision. The clinician provides oversight.',
-      },
-      {
-        type: 'challengeSolution',
-        label: 'Trim Tool',
-        title: 'Precision tapping during live scanning',
-        challenge: 'The old Trim tool:\n\n• Required small target selection\n• Was difficult with gloves\n• Increased open-mouth time\n\nInteraction demanded accuracy under pressure.',
-        solution: 'A touch-native confirm loop.\n\nTrim was redesigned for one-handed interaction.\n\n• Large gesture-based trimming\n• Massive Confirm / Undo buttons\n• Clear stage-based interaction\n\nThis reduced physical strain and interaction errors.',
-      },
-      {
-        type: 'chapter',
-        number: '03',
-        title: 'Multi-Scan Workflows',
-        subtitle: 'Structuring multiple scans as a session',
-      },
-      {
-        type: 'challengeSolution',
-        label: 'Multi-scan',
-        title: 'A single-scan mental model',
-        challenge: 'Real cases require:\n\n• Additional scans\n• Revisions\n• Bite scans\n• Pre / post comparisons\n\nThe previous system wasn\'t structured for multi-scan sessions.\nSwitching context felt risky.',
-        solution: 'Structuring multiple scans as a session.\n\nMulti-scan capability was introduced as a core feature.\n\n• Chrome-like tab system\n• Clear scan labeling (Pre, Post, Bite, Additional)\n• Safe switching between scans\n\nThis provided flexibility without losing orientation.',
-      },
-      {
-        type: 'chapter',
-        number: '04',
-        title: 'Review & Control',
-        subtitle: 'Layer control and safe comparison',
-      },
-      {
-        type: 'challengeSolution',
-        label: 'View panel',
-        title: 'Reviewing felt fragile and unsafe',
-        challenge: 'Clinicians feared:\n\n• Accidentally editing data\n• Losing track of active layers\n• Incorrect comparisons\n\nReview required confidence, not caution.',
-        solution: 'A dedicated View panel for layer control.\n\nA structured View panel was introduced.\n\n• Show / hide layers\n• Adjust opacity\n• Compare scans safely\n\nReview became controlled and intentional.',
-      },
-      {
-        type: 'outcomes',
-        label: 'Outcomes',
-        title: 'From hesitation to confidence',
-        outcomes: [
-          { title: 'Faster tool selection', description: '' },
-          { title: 'Reduced hesitation during live scanning', description: '' },
-          { title: 'Increased adoption of AI detection', description: '' },
-          { title: 'Higher usage of multi-scan workflows', description: '' },
-          { title: 'The system became scalable and predictable', description: '' },
-        ],
-      },
-      {
-        type: 'text',
-        label: 'Key Takeaway',
-        title: 'Designing for clarity under pressure',
-        content: 'In live clinical environments:\n\n• Structure reduces cognitive load\n• Visible state builds confidence\n• Predictability drives adoption\n\nRedesigning the system — not just the screens — changed the experience.',
-      },
-      {
-        type: 'end',
-        title: 'Thank You',
-        subtitle: 'Want to work together on your next project?',
-        buttons: [
-          { text: 'Get in touch', link: 'mailto:hello@example.com' },
-          { text: 'View more projects', link: '/' },
-        ],
-      },
-    ],
-  },
+  }
 };
+
 
 // Helper functions for localStorage
 
@@ -1269,6 +963,11 @@ export const compressImage = (dataUrl, maxWidth = 1600, quality = 0.8) => {
   return new Promise((resolve) => {
     // If not a data URL or not an image, return as-is
     if (!dataUrl || !dataUrl.startsWith('data:image')) {
+      resolve(dataUrl);
+      return;
+    }
+    // SVGs are vector — skip canvas entirely, return unchanged
+    if (dataUrl.startsWith('data:image/svg+xml')) {
       resolve(dataUrl);
       return;
     }
@@ -1292,12 +991,12 @@ export const compressImage = (dataUrl, maxWidth = 1600, quality = 0.8) => {
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
       
-      // Always use JPEG for compression (much smaller file size)
-      // PNG is only preserved for very small images (likely icons/logos)
+      // Preserve PNG format to keep alpha channel (transparency).
+      // Convert everything else (JPEG, WEBP, etc.) to JPEG for smaller file sizes.
       const originalSize = dataUrl.length;
-      const isSmallPng = dataUrl.startsWith('data:image/png') && originalSize < 50000; // 50KB
-      const format = isSmallPng ? 'image/png' : 'image/jpeg';
-      const outputQuality = isSmallPng ? 1.0 : quality;
+      const isPng = dataUrl.startsWith('data:image/png');
+      const format = isPng ? 'image/png' : 'image/jpeg';
+      const outputQuality = isPng ? 0.95 : quality;
       
       const compressed = canvas.toDataURL(format, outputQuality);
       

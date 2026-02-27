@@ -30,7 +30,7 @@ const EditPanel = () => {
   ];
 
   const fontOptions = [
-    { value: "'Playfair Display', Georgia, serif", label: 'Playfair Display' },
+    { value: "'Crimson Text', Georgia, serif", label: 'Crimson Text' },
     { value: "'Syne', system-ui, sans-serif", label: 'Syne' },
     { value: "'Inter', system-ui, sans-serif", label: 'Inter' },
     { value: "'Poppins', system-ui, sans-serif", label: 'Poppins' },

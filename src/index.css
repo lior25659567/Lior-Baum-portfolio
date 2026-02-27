@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Syne:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Syne:wght@400;500;600;700;800&display=swap');
 
 /* Light Mode (Default) */
 :root {
@@ -11,7 +11,7 @@
   --color-border: #e0e0e0;
   --color-image-contain-bg: #e8e8e8; /* Softer background for "fit" image gaps (light) */
   
-  --font-display: 'Playfair Display', serif;
+  --font-display: 'Crimson Text', serif;
   --font-body: 'Syne', sans-serif;
   
   /* Type scale */
@@ -264,8 +264,8 @@ img {
   font-family: var(--font-body);
   font-size: var(--text-caption);
   font-weight: var(--fw-heading);
-  text-transform: uppercase;
-  letter-spacing: var(--ls-label);
+  text-transform: none;
+  letter-spacing: normal;
   color: var(--color-text-muted);
   margin-bottom: var(--spacing-sm);
 }

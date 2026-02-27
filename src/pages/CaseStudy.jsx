@@ -45,21 +45,18 @@ const TemplatePreview = ({ type }) => {
   if (!template) return <p>No preview available</p>;
 
   const previewDescriptions = {
-    intro: 'Intro slide with project title, description, Client/Focus info, and square image.',
+    intro: 'Intro slide with project title, description, Client/Focus info, optional logo, and square image.',
     info: 'Grid layout showing project details like client, role, duration, and deliverables.',
     text: 'Simple text slide with a label, title, and paragraph content.',
     image: 'Full image slide with label, title, image area, and caption.',
-    context: 'Split layout with text content on the left and an image on the right. Includes highlight box.',
-    problem: 'Problem definition slide with issues list and conclusion. Split layout with image.',
+    textAndImage: 'Split layout: text (label, title, body, bullets, optional conclusion, highlight) on the left, image on the right.',
     quotes: 'User research quotes displayed in a card grid layout.',
     goals: 'Goals with numbered items and KPI cards at the bottom.',
-    testing: 'Testing/validation slide with options list and conclusion. Split layout.',
     stats: 'Large statistics display with values and labels in a grid.',
     outcomes: 'Results grid showing outcomes with titles and descriptions.',
     end: 'Thank you slide with CTA buttons.',
     comparison: 'Before/After comparison with two images side by side.',
     process: 'Process steps displayed horizontally with numbers and descriptions.',
-    feature: 'Feature highlight with description, bullet points, and image.',
     twoColumn: 'Two-column text layout for comparing or contrasting content.',
     timeline: 'Vertical timeline showing project phases or events.',
     video: 'Video embed slide with caption.',
@@ -135,24 +132,11 @@ const TemplatePreview = ({ type }) => {
               <div className="mockup-caption" />
             </div>
           )}
-          {type === 'context' && (
+          {type === 'textAndImage' && (
             <div className="mockup-split">
               <div className="mockup-split-content">
                 <div className="mockup-label" />
-                <div className="mockup-title-sm">The Context</div>
-                <div className="mockup-text-lines">
-                  <div className="line" /><div className="line" /><div className="line short" />
-                </div>
-                <div className="mockup-highlight-box">Key Point</div>
-              </div>
-              <div className="mockup-image"><span className="mockup-img-icon">🖼</span></div>
-            </div>
-          )}
-          {type === 'problem' && (
-            <div className="mockup-split">
-              <div className="mockup-split-content">
-                <div className="mockup-label" />
-                <div className="mockup-title-sm">The Problem</div>
+                <div className="mockup-title-sm">Heading</div>
                 <div className="mockup-issues-list">
                   <div className="mockup-issue"><span>•</span><div className="line" /></div>
                   <div className="mockup-issue"><span>•</span><div className="line" /></div>
@@ -161,36 +145,6 @@ const TemplatePreview = ({ type }) => {
                 <div className="mockup-conclusion-box">Conclusion</div>
               </div>
               <div className="mockup-image"><span className="mockup-img-icon">🖼</span></div>
-            </div>
-          )}
-          {type === 'testing' && (
-            <div className="mockup-split">
-              <div className="mockup-split-content">
-                <div className="mockup-label" />
-                <div className="mockup-title-sm">Testing Results</div>
-                <div className="mockup-issues-list">
-                  <div className="mockup-issue"><span>✓</span><div className="line" /></div>
-                  <div className="mockup-issue"><span>✓</span><div className="line" /></div>
-                </div>
-                <div className="mockup-conclusion-box">Key Finding</div>
-              </div>
-              <div className="mockup-image"><span className="mockup-img-icon">📊</span></div>
-            </div>
-          )}
-          {type === 'feature' && (
-            <div className="mockup-split">
-              <div className="mockup-split-content">
-                <div className="mockup-label" />
-                <div className="mockup-title-sm">Key Feature</div>
-                <div className="mockup-text-lines">
-                  <div className="line" /><div className="line short" />
-                </div>
-                <div className="mockup-bullet-list">
-                  <div className="mockup-bullet"><span>→</span><div className="line" /></div>
-                  <div className="mockup-bullet"><span>→</span><div className="line" /></div>
-                </div>
-              </div>
-              <div className="mockup-image"><span className="mockup-img-icon">✨</span></div>
             </div>
           )}
           {type === 'challengeSolution' && (
@@ -888,10 +842,10 @@ const CaseStudy = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [lightboxImage]);
 
-  // Navigation handlers with proper debouncing
+  // Navigation handlers with proper debouncing (work in both view and edit mode)
   useEffect(() => {
     const container = containerRef.current;
-    if (!container || editMode) return;
+    if (!container) return;
 
     const goToSlide = (direction) => {
       if (isScrollingRef.current) return;
@@ -928,8 +882,10 @@ const CaseStudy = () => {
     };
 
     const handleKeyDown = (e) => {
-      if (editMode) return;
-      
+      // Don't intercept if user is typing in an input/textarea
+      const target = e.target;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return;
+
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         e.preventDefault();
         goToSlide(1);
@@ -953,7 +909,7 @@ const CaseStudy = () => {
     };
 
     const handleTouchEnd = (e) => {
-      if (isScrollingRef.current || editMode) return;
+      if (isScrollingRef.current) return;
       
       const touchEndX = e.changedTouches[0].clientX;
       const touchEndY = e.changedTouches[0].clientY;
@@ -1190,6 +1146,7 @@ const CaseStudy = () => {
         subtitle: `${d.category || 'Case Study'} • ${d.year}`,
         description: d.description || '',
         image: '',
+        logo: '',
       });
     }
     
@@ -1223,7 +1180,7 @@ const CaseStudy = () => {
     if (d.problem || d.issues.some(i => i)) {
       slides.push({
         type: 'problem',
-        label: 'The Problem',
+        label: 'The problem',
         title: 'What needed to be solved',
         content: d.problem,
         issues: d.issues.filter(i => i),
@@ -1251,7 +1208,7 @@ const CaseStudy = () => {
     if (d.solution) {
       slides.push({
         type: 'text',
-        label: 'The Solution',
+        label: 'The solution',
         title: 'How we solved it',
         content: d.solution,
       });
@@ -1474,6 +1431,7 @@ const CaseStudy = () => {
         title: projectTitle,
         description: projectDescription,
         image: '',
+        logo: '',
       };
       if (infoItems.length > 0) {
         introSlide.clientLabel = infoItems[0]?.label || 'Client';
@@ -1624,7 +1582,7 @@ const CaseStudy = () => {
         if (issues.length >= 2) {
           slides.push({
             type: 'issuesBreakdown',
-            label: heading || 'The Problem',
+            label: heading || 'The problem',
             title: subtitle || 'What started to break',
             issues: issues.map((issue, i) => ({
               number: String(i + 1),
@@ -1638,7 +1596,7 @@ const CaseStudy = () => {
           const issueTexts = [...numberedItems, ...bulletItems].slice(0, 5);
           slides.push({
             type: 'problem',
-            label: heading || 'The Problem',
+            label: heading || 'The problem',
             title: subtitle || 'What needed to be solved',
             content: paragraphs[0] || contentText.slice(0, 400),
             issues: issueTexts.length > 0 ? issueTexts : [],
@@ -1685,7 +1643,7 @@ const CaseStudy = () => {
         if (items.length >= 2) {
           slides.push({
             type: 'outcomes',
-            label: heading || 'Key Findings',
+            label: heading || 'Key findings',
             title: subtitle || 'What the research revealed',
             outcomes: items.slice(0, 6).map(item => ({
               title: item,
@@ -1696,7 +1654,7 @@ const CaseStudy = () => {
         } else {
           slides.push({
             type: 'insight',
-            label: heading || 'Key Insight',
+            label: heading || 'Key insight',
             insight: items[0] || paragraphs[0] || contentText.slice(0, 200),
             supporting: paragraphs.length > 1 ? paragraphs[1] : '',
           });
@@ -1722,7 +1680,7 @@ const CaseStudy = () => {
         if (goalItems.length > 0 && metricItems.length > 0) {
           slides.push({
             type: 'achieveGoals',
-            label: heading || 'Defining Goals',
+            label: heading || 'Defining goals',
             title: subtitle || 'What did we want to achieve?',
             leftColumn: {
               title: 'Goals',
@@ -1773,7 +1731,7 @@ const CaseStudy = () => {
         if (problemText && solutionText) {
           slides.push({
             type: 'challengeSolution',
-            label: heading || 'Design Solution',
+            label: heading || 'Design solution',
             title: subtitle || 'Challenge & Solution',
             challenge: problemText,
             solution: solutionText,
@@ -1846,7 +1804,7 @@ const CaseStudy = () => {
         if (items.length >= 2) {
           slides.push({
             type: 'outcomes',
-            label: heading || 'Key Learnings',
+            label: heading || 'Key learnings',
             title: subtitle || 'What we learned',
             outcomes: items.slice(0, 6).map(item => ({
               title: item,
@@ -1857,7 +1815,7 @@ const CaseStudy = () => {
         } else {
           slides.push({
             type: 'insight',
-            label: heading || 'Key Learning',
+            label: heading || 'Key learning',
             insight: items[0] || paragraphs[0] || allContent[0] || '',
             supporting: items.length > 1 ? items.slice(1).join('. ') : (paragraphs.length > 1 ? paragraphs[1] : ''),
           });
@@ -1943,13 +1901,13 @@ const CaseStudy = () => {
           slides.push({
             type: 'outcomes',
             label: heading || 'Overview',
-            title: subtitle || heading || 'Key Points',
+            title: subtitle || heading || 'Key points',
             outcomes: items.slice(0, 6).map(item => ({
               title: item,
               description: '',
             })),
           });
-          preview.push({ type: 'outcomes', label: `${heading || 'Key Points'} — ${items.length} items` });
+          preview.push({ type: 'outcomes', label: `${heading || 'Key points'} — ${items.length} items` });
         } else {
           slides.push({
             type: 'text',
@@ -2385,12 +2343,24 @@ const CaseStudy = () => {
   }, [editMode, updateSlide]);
 
   // ========== FIGMA EMBED HELPER ==========
-  const toFigmaEmbedUrl = useCallback((url) => {
-    if (!url || typeof url !== 'string') return null;
-    const trimmed = url.trim();
+  // Accepts: Figma URL, Figma embed URL, or full <iframe> tag (extracts src)
+  const toFigmaEmbedUrl = useCallback((input) => {
+    if (!input || typeof input !== 'string') return null;
+    let trimmed = input.trim();
+
+    // Extract src from <iframe ...> tag
+    const iframeMatch = trimmed.match(/<iframe[^>]+src=["']([^"']+)["']/i);
+    if (iframeMatch) trimmed = iframeMatch[1];
+
     if (!/^https?:\/\/([\w-]+\.)*figma\.com\//i.test(trimmed)) return null;
-    if (trimmed.includes('/embed?')) return trimmed;
-    return `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(trimmed)}`;
+
+    // Already an embed URL
+    if (trimmed.includes('/embed') || trimmed.includes('embed.figma.com')) {
+      if (!trimmed.includes('scaling=')) return trimmed + (trimmed.includes('?') ? '&' : '?') + 'scaling=scale-down-width';
+      return trimmed;
+    }
+
+    return `https://www.figma.com/embed?embed_host=share&scaling=scale-down-width&url=${encodeURIComponent(trimmed)}`;
   }, []);
 
   // ========== DYNAMIC IMAGES COMPONENT ==========
@@ -2478,6 +2448,7 @@ const CaseStudy = () => {
         if (file) {
           const isVideo = file.type.startsWith('video/');
           const isGif = file.type === 'image/gif';
+          const isSvg = file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg');
           
           // File size limits (in MB)
           const maxVideoSize = 100; // 100MB for videos
@@ -2493,7 +2464,7 @@ const CaseStudy = () => {
             alert(`GIF file is too large (${fileSizeMB.toFixed(1)}MB). Maximum size is ${maxGifSize}MB. Please use a smaller GIF.`);
             return;
           }
-          if (!isVideo && !isGif && fileSizeMB > maxImageSize) {
+          if (!isVideo && !isGif && !isSvg && fileSizeMB > maxImageSize) {
             alert(`Image file is too large (${fileSizeMB.toFixed(1)}MB). Maximum size is ${maxImageSize}MB.`);
             return;
           }
@@ -2506,8 +2477,8 @@ const CaseStudy = () => {
             try {
               const dataUrl = event.target.result;
               
-              // Don't compress videos or GIFs - update src, isVideo, isGif in single call
-              if (isVideo || isGif) {
+              // Don't compress videos, GIFs, or SVGs — use as-is
+              if (isVideo || isGif || isSvg) {
                 updateImage(imgIndex, { src: dataUrl, isVideo: isVideo, isGif: isGif });
               } else {
                 try {
@@ -2792,7 +2763,7 @@ const CaseStudy = () => {
                           <input
                             type="text"
                             className="editable-field figma-url-input"
-                            placeholder="Paste Figma prototype URL..."
+                            placeholder="Paste Figma URL or <iframe> embed code..."
                             value={embedDraft}
                             onChange={(e) => setEmbedDraft(e.target.value)}
                             onKeyDown={(e) => {
@@ -2803,7 +2774,7 @@ const CaseStudy = () => {
                                   setEmbedDraft('');
                                   setEmbedInputIndex(null);
                                 } else {
-                                  alert('Please enter a valid Figma URL (figma.com)');
+                                  alert('Please enter a valid Figma URL or <iframe> embed code');
                                 }
                               }
                             }}
@@ -2816,7 +2787,7 @@ const CaseStudy = () => {
                               setEmbedDraft('');
                               setEmbedInputIndex(null);
                             } else {
-                              alert('Please enter a valid Figma URL (figma.com)');
+                              alert('Please enter a valid Figma URL or <iframe> embed code');
                             }
                           }}>Embed</button>
                           <button type="button" className="figma-embed-cancel" onClick={() => { setEmbedInputIndex(null); setEmbedDraft(''); }}>Cancel</button>
@@ -2999,13 +2970,14 @@ const CaseStudy = () => {
   const handleImageUpload = (slideIndex, field = 'image') => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = 'image/*,video/mp4,video/webm,.gif';
+    input.accept = 'image/*,video/mp4,video/webm,.gif,.svg,image/svg+xml';
     input.onchange = async (e) => {
       const file = e.target.files[0];
       if (file) {
         const isVideo = file.type.startsWith('video/');
         const isGif = file.type === 'image/gif';
-        
+        const isSvg = file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg');
+
         // File size limits (in MB)
         const maxVideoSize = 100;
         const maxGifSize = 40;
@@ -3020,7 +2992,7 @@ const CaseStudy = () => {
           alert(`GIF file is too large (${fileSizeMB.toFixed(1)}MB). Maximum size is ${maxGifSize}MB. Please use a smaller GIF.`);
           return;
         }
-        if (!isVideo && !isGif && fileSizeMB > maxImageSize) {
+        if (!isVideo && !isGif && !isSvg && fileSizeMB > maxImageSize) {
           alert(`Image file is too large (${fileSizeMB.toFixed(1)}MB). Maximum size is ${maxImageSize}MB.`);
           return;
         }
@@ -3033,8 +3005,8 @@ const CaseStudy = () => {
           try {
             const dataUrl = event.target.result;
             
-            // Don't compress videos or GIFs
-            if (isVideo || isGif) {
+            // Don't compress videos, GIFs, or SVGs — use as-is
+            if (isVideo || isGif || isSvg) {
               updateSlide(slideIndex, { [field]: dataUrl, [`${field}IsVideo`]: isVideo, [`${field}IsGif`]: isGif });
             } else {
               try {
@@ -3067,126 +3039,168 @@ const CaseStudy = () => {
     );
 
     switch (slide.type) {
-      case 'intro':
+      case 'intro': {
+        // Support dynamic metaItems array; fall back to legacy client/focus fields
+        const introMeta = slide.metaItems ?? [
+          { label: slide.clientLabel || 'Client', value: slide.client || 'Client Name' },
+          { label: slide.focusLabel || 'Focus',   value: slide.focus  || 'Project Focus' },
+        ];
+        const introHeaderMode = slide.introHeaderMode || 'both'; // 'both' = title + logo at bottom, 'logo' = logo in title position only
+        const showTitle = introHeaderMode === 'both';
+        const showLogoInTitlePosition = introHeaderMode === 'logo';
+        const showLogoAtBottom = introHeaderMode === 'both';
+
+        const introLogoBlock = (wrapperClass = '', imgClass = '') => (slide.logo || editMode) && (
+          <div className={`intro-logo ${wrapperClass}`.trim()}>
+            <div
+              className={`intro-logo-img ${imgClass} ${!slide.logo ? 'intro-logo-empty' : ''}`.trim()}
+              onClick={() => editMode && handleImageUpload(index, 'logo')}
+              role={editMode ? 'button' : undefined}
+              tabIndex={editMode ? 0 : undefined}
+              onKeyDown={editMode ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleImageUpload(index, 'logo'); } } : undefined}
+            >
+              {slide.logo ? (
+                <>
+                  <img src={slide.logo} alt="Logo" />
+                  {editMode && (
+                    <span className="image-edit-overlay">Edit</span>
+                  )}
+                </>
+              ) : (
+                <span className="intro-logo-placeholder">{editMode ? 'Click to add logo' : ''}</span>
+              )}
+            </div>
+            {editMode && slide.logo && (
+              <button
+                type="button"
+                className="intro-remove-btn"
+                onClick={(e) => { e.stopPropagation(); updateSlide(index, { logo: '' }); }}
+              >
+                × Remove logo
+              </button>
+            )}
+          </div>
+        );
+
         return (
           <div className="slide slide-intro" key={index}>
             {slideControls}
             <SplitRatioControl slide={slide} slideIndex={index} />
             <div className="slide-inner slide-intro-layout" style={getSplitStyle(slide)}>
+
+              {/* ── Left: content ── */}
               <div className="intro-content">
-                <OptionalField slide={slide} index={index} field="label" label="Section Label" defaultValue="Introduction">
-                  <span className="slide-label">
-                    <EditableField
-                      value={slide.label}
-                      onChange={(v) => updateSlide(index, { label: v })}
-                    />
+
+                {/* Header mode: Title + Logo (logo at bottom) | Logo only (logo in title position) */}
+                {editMode && (
+                  <div className="intro-header-mode-control">
+                    <span className="intro-header-mode-label">Header:</span>
+                    <button
+                      type="button"
+                      className={`intro-header-mode-btn ${introHeaderMode === 'both' ? 'active' : ''}`}
+                      onClick={() => updateSlide(index, { introHeaderMode: 'both' })}
+                      title="Show title with logo at bottom"
+                    >
+                      Title + Logo
+                    </button>
+                    <button
+                      type="button"
+                      className={`intro-header-mode-btn ${introHeaderMode === 'logo' ? 'active' : ''}`}
+                      onClick={() => updateSlide(index, { introHeaderMode: 'logo' })}
+                      title="Show only logo in title position"
+                    >
+                      Logo only
+                    </button>
+                  </div>
+                )}
+
+                {/* Label */}
+                <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="Case study">
+                  <span className="intro-label slide-label">
+                    <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
                   </span>
                 </OptionalField>
-                {(slide.logo || editMode) && (
-                  <div className="intro-logo">
-                    <div
-                      className="intro-logo-wrapper"
-                      onClick={() => editMode && handleImageUpload(index, 'logo')}
-                    >
-                      {slide.logo ? (
-                        <>
-                          <img src={slide.logo} alt="Logo" />
-                          {editMode && <div className="image-edit-overlay">Click to change</div>}
-                        </>
-                      ) : (
-                        <div className="image-placeholder">{editMode ? 'Click to add logo' : ''}</div>
-                      )}
-                    </div>
-                    {editMode && slide.logo && (
-                      <button
-                        type="button"
-                        className="remove-logo-btn"
-                        onClick={(e) => { e.stopPropagation(); updateSlide(index, { logo: '' }); }}
-                      >
-                        × Remove logo
-                      </button>
-                    )}
-                  </div>
+
+                {/* Title (Title + Logo mode only) */}
+                {showTitle && (
+                  <h1 className="intro-title">
+                    <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
+                  </h1>
                 )}
-                <h1 className="intro-title">
-                  <EditableField
-                    value={slide.title}
-                    onChange={(v) => updateSlide(index, { title: v })}
-                    allowLineBreaks
-                  />
-                </h1>
-                {(slide.subtitle || editMode) && (
-                  <p className="intro-subtitle">
-                    <EditableField
-                      value={slide.subtitle || ''}
-                      onChange={(v) => updateSlide(index, { subtitle: v })}
-                    />
-                    {editMode && (
-                      <button
-                        type="button"
-                        className="toggle-subtitle-btn"
-                        onClick={() => updateSlide(index, { subtitle: slide.subtitle ? '' : 'Add a subtitle' })}
-                      >
-                        {slide.subtitle ? '× Remove subtitle' : '+ Add subtitle'}
-                      </button>
-                    )}
-                  </p>
-                )}
-                <p className="intro-description">
-                  <EditableField
-                    value={slide.description}
-                    onChange={(v) => updateSlide(index, { description: v })}
-                    multiline
-                  />
-                </p>
-                
-                {/* Client & Focus Info Row */}
-                <div className="intro-meta-row">
-                  <div className="intro-meta-item">
-                    <span className="intro-meta-label">
-                      <EditableField
-                        value={slide.clientLabel || 'Client'}
-                        onChange={(v) => updateSlide(index, { clientLabel: v })}
-                      />
-                    </span>
-                    <span className="intro-meta-value">
-                      <EditableField
-                        value={slide.client || 'Client Name'}
-                        onChange={(v) => updateSlide(index, { client: v })}
-                      />
-                    </span>
-                  </div>
-                  <div className="intro-meta-item">
-                    <span className="intro-meta-label">
-                      <EditableField
-                        value={slide.focusLabel || 'Focus'}
-                        onChange={(v) => updateSlide(index, { focusLabel: v })}
-                      />
-                    </span>
-                    <span className="intro-meta-value">
-                      <EditableField
-                        value={slide.focus || 'Project Focus'}
-                        onChange={(v) => updateSlide(index, { focus: v })}
-                      />
-                    </span>
-                  </div>
+
+                {/* Logo + Subtitle in one group */}
+                <div className="intro-logo-subtitle-group">
+                  {showLogoInTitlePosition && introLogoBlock('intro-logo-in-title-position', 'intro-logo-img-title-size')}
+                  <OptionalField slide={slide} index={index} field="subtitle" label="Subtitle / Tagline" defaultValue="A short tagline for this project">
+                    <p className="intro-subtitle">
+                      <EditableField value={slide.subtitle} onChange={(v) => updateSlide(index, { subtitle: v })} />
+                    </p>
+                  </OptionalField>
+                  {showLogoAtBottom && introLogoBlock('intro-logo-at-bottom', '')}
                 </div>
-                <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="intro-bullets" label="Bullet" />
-                <SlideCta slide={slide} index={index} updateSlide={updateSlide} />
+
+                {/* Description — body paragraph */}
+                <OptionalField slide={slide} index={index} field="description" label="Description" defaultValue="Brief project description goes here.">
+                  <p className="intro-description">
+                    <EditableField value={slide.description} onChange={(v) => updateSlide(index, { description: v })} multiline />
+                  </p>
+                </OptionalField>
+
+                {/* Dynamic meta row */}
+                <div className="intro-meta-row">
+                  {introMeta.map((item, i) => (
+                    <div key={i} className="intro-meta-item">
+                      {editMode && (
+                        <ArrayItemControls onRemove={() => {
+                          const next = [...introMeta];
+                          next.splice(i, 1);
+                          updateSlide(index, { metaItems: next });
+                        }} />
+                      )}
+                      <span className="intro-meta-label">
+                        <EditableField
+                          value={item.label}
+                          onChange={(v) => {
+                            const next = [...introMeta];
+                            next[i] = { ...next[i], label: v };
+                            updateSlide(index, { metaItems: next });
+                          }}
+                        />
+                      </span>
+                      <span className="intro-meta-value">
+                        <EditableField
+                          value={item.value}
+                          onChange={(v) => {
+                            const next = [...introMeta];
+                            next[i] = { ...next[i], value: v };
+                            updateSlide(index, { metaItems: next });
+                          }}
+                        />
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <AddItemButton
+                  onClick={() => updateSlide(index, { metaItems: [...introMeta, { label: 'Label', value: 'Value' }] })}
+                  label="Meta Item"
+                />
+
               </div>
-              
-              {/* Image */}
+
+              {/* ── Right: cover image ── */}
               <DynamicImages slide={slide} slideIndex={index} field="image" className="intro-images-wrapper" />
+
             </div>
           </div>
         );
+      }
       
       case 'info':
         return (
           <div className="slide slide-info" key={index}>
             {slideControls}
             <div className="slide-inner">
-              <OptionalField slide={slide} index={index} field="label" label="Section Label" defaultValue="Project Info">
+              <OptionalField slide={slide} index={index} field="label" label="Section Label" defaultValue="Project info">
                 <span className="slide-label">
                   <EditableField
                     value={slide.label}
@@ -3692,43 +3706,16 @@ const CaseStudy = () => {
         );
 
       case 'context':
-        return (
-          <div className="slide slide-context" key={index}>
-            {slideControls}
-            <SplitRatioControl slide={slide} slideIndex={index} />
-            <div className="slide-inner slide-split" style={getSplitStyle(slide)}>
-              <div className="split-content">
-                <span className="slide-label">
-                  <EditableField
-                    value={slide.label}
-                    onChange={(v) => updateSlide(index, { label: v })}
-                  />
-                </span>
-                <h2 className="context-title">
-                  <EditableField
-                    value={slide.title}
-                    onChange={(v) => updateSlide(index, { title: v })}
-                    allowLineBreaks
-                  />
-                </h2>
-                <DynamicContent slide={slide} slideIndex={index} field="content" className="context-text-wrapper" />
-                <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="context-bullets" label="Bullet" />
-                <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlight..." multiline>
-                  <p className="context-highlight">
-                    <EditableField
-                      value={slide.highlight}
-                      onChange={(v) => updateSlide(index, { highlight: v })}
-                      multiline
-                    />
-                  </p>
-                </OptionalField>
-              </div>
-              <DynamicImages slide={slide} slideIndex={index} field="image" className="split-images-wrapper" />
-            </div>
-          </div>
-        );
-
       case 'problem':
+      case 'testing':
+      case 'feature': {
+        // Single split template (based on problem): label, title, body, bullets, optional conclusion, highlight, image
+        const t = slide.type;
+        const contentField = t === 'feature' ? 'description' : 'content';
+        const bulletsField = t === 'problem' ? 'issues' : (t === 'testing' ? 'layouts' : 'bullets');
+        const bulletsTitleField = t === 'problem' ? 'issuesTitle' : (t === 'testing' ? 'layoutsTitle' : 'bulletsTitle');
+        const bulletsLabel = t === 'problem' ? 'Issue' : (t === 'testing' ? 'Option' : 'Bullet');
+        const showConclusion = t === 'problem' || t === 'testing';
         return (
           <div className="slide slide-problem" key={index}>
             {slideControls}
@@ -3748,16 +3735,19 @@ const CaseStudy = () => {
                     allowLineBreaks
                   />
                 </h2>
-                <DynamicContent slide={slide} slideIndex={index} field="content" className="problem-text-wrapper" />
-                <DynamicBullets slide={slide} slideIndex={index} field="issues" titleField="issuesTitle" className="problem-issues-wrapper" label="Issue" />
-                <OptionalField slide={slide} index={index} field="conclusion" label="Conclusion" defaultValue="Add conclusion...">
-                  <p className="problem-conclusion">
-                    <EditableField
-                      value={slide.conclusion}
-                      onChange={(v) => updateSlide(index, { conclusion: v })}
-                    />
-                  </p>
-                </OptionalField>
+                <DynamicContent slide={slide} slideIndex={index} field={contentField} className="problem-text-wrapper" />
+                <DynamicBullets slide={slide} slideIndex={index} field={bulletsField} titleField={bulletsTitleField} className="problem-issues-wrapper" label={bulletsLabel} />
+                <DynamicBullets slide={slide} slideIndex={index} field="bullets2" titleField="bullets2Title" className="problem-issues-wrapper problem-bullets-second" label="Bullet" />
+                {showConclusion && (
+                  <OptionalField slide={slide} index={index} field="conclusion" label="Conclusion" defaultValue="Add conclusion...">
+                    <p className="problem-conclusion">
+                      <EditableField
+                        value={slide.conclusion}
+                        onChange={(v) => updateSlide(index, { conclusion: v })}
+                      />
+                    </p>
+                  </OptionalField>
+                )}
                 <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
                   <div className="problem-highlight">
                     <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
@@ -3768,6 +3758,7 @@ const CaseStudy = () => {
             </div>
           </div>
         );
+      }
 
       case 'quotes':
         return (
@@ -3838,6 +3829,7 @@ const CaseStudy = () => {
                 onClick={() => addArrayItem(index, 'quotes', { text: 'New quote...', author: 'User Name' })}
                 label="Quote"
               />
+              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="quotes-bullets" label="Bullet" />
               <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
                 <div className="quotes-highlight">
                   <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
@@ -4030,55 +4022,6 @@ const CaseStudy = () => {
           </div>
         );
 
-      case 'testing':
-        return (
-          <div className="slide slide-testing" key={index}>
-            {slideControls}
-            <SplitRatioControl slide={slide} slideIndex={index} />
-            <div className="slide-inner slide-split" style={getSplitStyle(slide)}>
-              <div className="split-content">
-                <span className="slide-label">
-                  <EditableField
-                    value={slide.label}
-                    onChange={(v) => updateSlide(index, { label: v })}
-                  />
-                </span>
-                <h2 className="testing-title">
-                  <EditableField
-                    value={slide.title}
-                    onChange={(v) => updateSlide(index, { title: v })}
-                    allowLineBreaks
-                  />
-                </h2>
-                <OptionalField slide={slide} index={index} field="content" label="Description" defaultValue="Add description..." multiline>
-                  <p className="testing-text">
-                    <EditableField
-                      value={slide.content}
-                      onChange={(v) => updateSlide(index, { content: v })}
-                      multiline
-                    />
-                  </p>
-                </OptionalField>
-                <DynamicBullets slide={slide} slideIndex={index} field="layouts" titleField="layoutsTitle" className="testing-options" label="Option" />
-                <OptionalField slide={slide} index={index} field="conclusion" label="Conclusion" defaultValue="Add conclusion...">
-                  <p className="testing-conclusion">
-                    <EditableField
-                      value={slide.conclusion}
-                      onChange={(v) => updateSlide(index, { conclusion: v })}
-                    />
-                  </p>
-                </OptionalField>
-                <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                  <div className="testing-highlight">
-                    <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                  </div>
-                </OptionalField>
-              </div>
-              <DynamicImages slide={slide} slideIndex={index} field="image" className="split-images-wrapper" />
-            </div>
-          </div>
-        );
-
       case 'outcomes':
         return (
           <div className="slide slide-outcomes" key={index}>
@@ -4182,7 +4125,7 @@ const CaseStudy = () => {
           <div className="slide slide-comparison" key={index}>
             {slideControls}
             <div className="slide-inner">
-              <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="Before & After">
+              <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="Before & after">
                 <span className="slide-label">
                   <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
                 </span>
@@ -4255,32 +4198,6 @@ const CaseStudy = () => {
                   <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
                 </div>
               </OptionalField>
-            </div>
-          </div>
-        );
-
-      case 'feature':
-        return (
-          <div className="slide slide-feature" key={index}>
-            {slideControls}
-            <SplitRatioControl slide={slide} slideIndex={index} />
-            <div className="slide-inner slide-split" style={getSplitStyle(slide)}>
-              <div className="split-content">
-                <span className="slide-label">
-                  <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-                </span>
-                <h2 className="feature-title">
-                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
-                </h2>
-                <DynamicContent slide={slide} slideIndex={index} field="description" className="feature-description-wrapper" />
-                <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="feature-bullets-wrapper" label="Bullet" />
-                <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                  <div className="feature-highlight">
-                    <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                  </div>
-                </OptionalField>
-              </div>
-              <DynamicImages slide={slide} slideIndex={index} field="image" className="split-images-wrapper" />
             </div>
           </div>
         );
@@ -4461,7 +4378,7 @@ const CaseStudy = () => {
             {slideControls}
             <div className="slide-inner">
               {/* Header */}
-              <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="The Solution">
+              <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="The solution">
                 <span className="slide-label">
                   <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
                 </span>
@@ -5593,7 +5510,7 @@ const CaseStudy = () => {
             <div className="slide-inner slide-split" style={getSplitStyle({ ...slide, splitRatio: slide.splitRatio ?? 50 })}>
               {/* Left: same structure as problem slide – split-content */}
               <div className="split-content">
-                <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="The Solution">
+                <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="The solution">
                   <span className="slide-label">
                     <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
                   </span>
@@ -5645,56 +5562,58 @@ const CaseStudy = () => {
                   <button type="button" className="add-field-btn add-field-btn-sm" onClick={() => updateSlide(index, { psParagraph2: 'Add second paragraph...' })}>+ Add paragraph 2</button>
                 )}
 
-                <div className="ps-view-tabs-row">
-                  {editMode && (
-                    <div className="ps-tab-count-edit">
-                      <span className="ps-tab-edit-caption">Tabs</span>
-                      <div className="ps-tab-count-btns">
-                        {[2, 3, 4, 5].map(n => (
-                          <button key={n} type="button" className={`ps-tab-count-btn ${tabs.length === n ? 'active' : ''}`} onClick={() => setPsTabCount(n)}>{n}</button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  <div className="ps-view-tabs">
-                    {tabs.map((tab, i) => (
-                      <button key={i} type="button" className={`ps-tab ${psActiveView === i ? 'active' : ''}`} onClick={() => updateSlide(index, { psActiveView: i })}>
-                        {tab.label || `Tab ${i + 1}`}
-                      </button>
-                    ))}
-                  </div>
-                  {editMode && (
-                    <div className="ps-tab-titles-edit">
-                      <label className="ps-tab-edit-label">
-                        <span className="ps-tab-edit-caption">Tab titles</span>
-                        <span className="ps-tab-edit-fields">
-                          {tabs.map((tab, i) => (
-                            <input
-                              key={i}
-                              type="text"
-                              value={tab.label ?? ''}
-                              onChange={(e) => updatePsTab(i, { label: e.target.value || undefined })}
-                              placeholder={`Tab ${i + 1}`}
-                              className="ps-tab-edit-input"
-                            />
+                <div className="ps-tabs-and-bullets">
+                  <div className="ps-view-tabs-row">
+                    {editMode && (
+                      <div className="ps-tab-count-edit">
+                        <span className="ps-tab-edit-caption">Tabs</span>
+                        <div className="ps-tab-count-btns">
+                          {[2, 3, 4, 5].map(n => (
+                            <button key={n} type="button" className={`ps-tab-count-btn ${tabs.length === n ? 'active' : ''}`} onClick={() => setPsTabCount(n)}>{n}</button>
                           ))}
-                        </span>
-                      </label>
+                        </div>
+                      </div>
+                    )}
+                    <div className="ps-view-tabs">
+                      {tabs.map((tab, i) => (
+                        <button key={i} type="button" className={`ps-tab ${psActiveView === i ? 'active' : ''}`} onClick={() => updateSlide(index, { psActiveView: i })}>
+                          {tab.label || `Tab ${i + 1}`}
+                        </button>
+                      ))}
                     </div>
-                  )}
-                </div>
+                    {editMode && (
+                      <div className="ps-tab-titles-edit">
+                        <label className="ps-tab-edit-label">
+                          <span className="ps-tab-edit-caption">Tab titles</span>
+                          <span className="ps-tab-edit-fields">
+                            {tabs.map((tab, i) => (
+                              <input
+                                key={i}
+                                type="text"
+                                value={tab.label ?? ''}
+                                onChange={(e) => updatePsTab(i, { label: e.target.value || undefined })}
+                                placeholder={`Tab ${i + 1}`}
+                                className="ps-tab-edit-input"
+                              />
+                            ))}
+                          </span>
+                        </label>
+                      </div>
+                    )}
+                  </div>
 
-                {/* Active tab content: label above bullets (defaults to tab name; can be set separately) + bullets */}
-                <OptionalField slide={slideView} index={index} field="problemLabel" label="Label above bullets" defaultValue="" updateSlideOverride={updateSlideForActiveTab}>
-                  <span className="ps-col-label ps-problem-label">
-                    <EditableField
-                      value={activeTab.columnLabel ?? ''}
-                      placeholder={activeTab.label || `Tab ${psActiveView + 1}`}
-                      onChange={(v) => updatePsTab(psActiveView, { columnLabel: v || undefined })}
-                    />
-                  </span>
-                </OptionalField>
-                <DynamicBullets slide={slideView} slideIndex={index} field="problemBullets" titleField="problemBulletsTitle" className="problem-issues-wrapper" label="Point" updateSlideOverride={updateSlideForActiveTab} />
+                  {/* Active tab content: label above bullets + bullets */}
+                  <OptionalField slide={slideView} index={index} field="problemLabel" label="Label above bullets" defaultValue="" updateSlideOverride={updateSlideForActiveTab}>
+                    <span className="ps-col-label ps-problem-label">
+                      <EditableField
+                        value={activeTab.columnLabel ?? ''}
+                        placeholder={activeTab.label || `Tab ${psActiveView + 1}`}
+                        onChange={(v) => updatePsTab(psActiveView, { columnLabel: v || undefined })}
+                      />
+                    </span>
+                  </OptionalField>
+                  <DynamicBullets slide={slideView} slideIndex={index} field="problemBullets" titleField="problemBulletsTitle" className="problem-issues-wrapper" label="Point" updateSlideOverride={updateSlideForActiveTab} />
+                </div>
 
                 <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
                   <div className="problem-highlight">
@@ -5775,7 +5694,7 @@ const CaseStudy = () => {
                               <input
                                 type="text"
                                 className="editable-field figma-url-input"
-                                placeholder="Paste Figma prototype URL..."
+                                placeholder="Paste Figma URL or <iframe> embed code..."
                                 value={psEmbedInput.draft}
                                 onChange={(e) => setPsEmbedInput({ tabIdx, draft: e.target.value })}
                                 onKeyDown={(e) => {
@@ -5785,7 +5704,7 @@ const CaseStudy = () => {
                                       updatePsTab(tabIdx, { embedUrl: converted, image: '' });
                                       setPsEmbedInput({ tabIdx: null, draft: '' });
                                     } else {
-                                      alert('Please enter a valid Figma URL (figma.com)');
+                                      alert('Please enter a valid Figma URL or <iframe> embed code');
                                     }
                                   }
                                 }}
@@ -5797,7 +5716,7 @@ const CaseStudy = () => {
                                   updatePsTab(tabIdx, { embedUrl: converted, image: '' });
                                   setPsEmbedInput({ tabIdx: null, draft: '' });
                                 } else {
-                                  alert('Please enter a valid Figma URL (figma.com)');
+                                  alert('Please enter a valid Figma URL or <iframe> embed code');
                                 }
                               }}>Embed</button>
                               <button type="button" className="figma-embed-cancel" onClick={() => setPsEmbedInput({ tabIdx: null, draft: '' })}>Cancel</button>
@@ -5829,11 +5748,16 @@ const CaseStudy = () => {
         return (
           <div className="slide slide-chapter" key={index}>
             {slideControls}
+            {slide.number && (
+              <span className="chapter-bg-number" aria-hidden="true">{slide.number}</span>
+            )}
             <div className="slide-inner">
               <OptionalField slide={slide} index={index} field="number" label="Number" defaultValue="01">
-                <span className="chapter-number">
-                  <EditableField value={slide.number} onChange={(v) => updateSlide(index, { number: v })} />
-                </span>
+                <div className="chapter-header">
+                  <span className="chapter-number">
+                    <EditableField value={slide.number} onChange={(v) => updateSlide(index, { number: v })} />
+                  </span>
+                </div>
               </OptionalField>
               <h1 className="chapter-title">
                 <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
@@ -5842,11 +5766,6 @@ const CaseStudy = () => {
                 <p className="chapter-subtitle">
                   <EditableField value={slide.subtitle} onChange={(v) => updateSlide(index, { subtitle: v })} />
                 </p>
-              </OptionalField>
-              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                <div className="chapter-highlight">
-                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                </div>
               </OptionalField>
             </div>
           </div>
@@ -6669,15 +6588,25 @@ const CaseStudy = () => {
       )}
 
       <div className="case-nav">
-        <Link to="/" className="nav-back">
-          <span className="back-icon">←</span>
-          <span className="back-text">Back</span>
-        </Link>
+        <div className="nav-label-left">
+          {editMode ? (
+            <span className="nav-slide-label nav-slide-label--edit">
+              <EditableField
+                value={project.slides[currentSlide]?.label || ''}
+                onChange={(v) => updateSlide(currentSlide, { label: v })}
+              />
+            </span>
+          ) : (
+            project.slides[currentSlide]?.label && (
+              <span className="nav-slide-label">{project.slides[currentSlide].label}</span>
+            )
+          )}
+        </div>
         <div className="nav-progress">
           <span className="progress-current">{String(currentSlide + 1).padStart(2, '0')}</span>
           <div className="progress-bar">
-            <div 
-              className="progress-fill" 
+            <div
+              className="progress-fill"
               style={{ width: `${((currentSlide + 1) / totalSlides) * 100}%` }}
             />
           </div>
