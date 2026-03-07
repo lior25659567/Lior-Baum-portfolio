@@ -1,0 +1,24 @@
+# Netlify build config for Vite React app
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# SPA: serve index.html for all routes (backup if public/_redirects isn’t enough)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Reduce caching so new deploys show up right away
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+[[headers]]
+  for = "/case-studies/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+[[headers]]
+  for = "/logo/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
