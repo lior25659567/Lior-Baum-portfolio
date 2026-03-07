@@ -1649,9 +1649,9 @@ body.case-study-active .footer {
 .kpi-card {
   width: 100%;
   padding: 1.25rem 1.5rem;
-  background: var(--color-bg-secondary);
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  border: 1px solid transparent;
   border-radius: var(--radius-lg);
   font-size: var(--text-body-sm);
   font-weight: 500;
@@ -1661,12 +1661,12 @@ body.case-study-active .footer {
   align-items: center;
   justify-content: center;
   min-height: 0;
-  transition: border-color var(--transition-fast), color var(--transition-fast);
+  transition: filter var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .kpi-card:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  filter: brightness(1.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
 .kpi-card .editable-field,

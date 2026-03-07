@@ -86,7 +86,7 @@ const Navigation = () => {
               </div>
             ))}
           </div>
-          
+
           {/* Desktop Right Section */}
           <div className="nav-right desktop-only">
             <ThemeToggle />

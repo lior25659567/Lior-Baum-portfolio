@@ -1,0 +1,14 @@
+# Disable LFS for this repo so images and media are committed and pushed as regular files.
+* -filter=lfs
+# Treat images and media as binary (no line-ending conversion).
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.svg binary
+*.ico binary
+*.mp4 binary
+*.webm binary
+*.mov binary
+*.pdf binary
