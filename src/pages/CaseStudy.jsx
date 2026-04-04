@@ -437,7 +437,7 @@ const getSplitStyleModule = (slide) => {
 //   'comparison'      → 'before-after'
 //   'problemSolution' → 'tabs'
 //   all others        → 'simple'
-const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideControls, editMode, updateSlide, OptionalField, DynamicImages, DynamicBullets, DynamicContent, SplitRatioControl, setLightboxImage, spacingStyle, titleSpacingControl }) {
+const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideControls, editMode, updateSlide, OptionalField, DynamicImages, DynamicBullets, DynamicContent, SplitRatioControl, SplitDragHandle, setLightboxImage, spacingStyle, titleSpacingControl }) {
   // ── mode ──
   const getDefaultMode = (s) => {
     if (s.slideMode) return s.slideMode;
@@ -448,6 +448,21 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
   const slideMode = getDefaultMode(slide);
   const setMode = (m) => updateSlide(index, { slideMode: m });
   const switcherStyle = slide.switcherStyle || 'pill'; // 'pill' | 'flat'
+
+  // ── carousel state ──
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const carouselImages = Array.isArray(slide.carouselImages) ? slide.carouselImages : [];
+  const carouselAuto = slide.carouselAuto !== false;
+  const carouselInterval = slide.carouselInterval || 4000;
+
+  // Auto-advance carousel
+  useEffect(() => {
+    if (slideMode !== 'carousel' || !carouselAuto || carouselImages.length <= 1 || editMode) return;
+    const timer = setInterval(() => {
+      setCarouselIndex(prev => (prev + 1) % carouselImages.length);
+    }, carouselInterval);
+    return () => clearInterval(timer);
+  }, [slideMode, carouselAuto, carouselImages.length, carouselInterval, editMode]);
 
   // ── before/after state ──
   const [baActiveTab, setBaActiveTab] = useState('before');
@@ -542,6 +557,7 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
           <button type="button" className={`comparison-mode-btn${slideMode === 'simple' ? ' active' : ''}`} onClick={() => setMode('simple')} title="Text + static image">Simple</button>
           <button type="button" className={`comparison-mode-btn${slideMode === 'before-after' ? ' active' : ''}`} onClick={() => setMode('before-after')} title="Before / After toggle">Before / After</button>
           <button type="button" className={`comparison-mode-btn${slideMode === 'tabs' ? ' active' : ''}`} onClick={() => setMode('tabs')} title="Multi-tab switcher with image per tab">Tabs</button>
+          <button type="button" className={`comparison-mode-btn${slideMode === 'carousel' ? ' active' : ''}`} onClick={() => setMode('carousel')} title="Auto-scrolling image carousel">Carousel</button>
           {(slideMode === 'before-after' || slideMode === 'tabs') && (
             <>
               <span className="comparison-mode-divider" />
@@ -697,6 +713,9 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
           </OptionalField>
         </div>
 
+        {/* ── DRAG HANDLE ── */}
+        {SplitDragHandle && <SplitDragHandle slide={slide} slideIndex={index} />}
+
         {/* ── RIGHT SIDE ── */}
         {slideMode === 'simple' && (
           <DynamicImages slide={slide} slideIndex={index} field="image" className="split-images-wrapper" />
@@ -775,6 +794,87 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
                 </div>
               );
             })}
+          </div>
+        )}
+        {slideMode === 'carousel' && (
+          <div className="split-images-wrapper carousel-wrapper">
+            <div className="carousel-track" style={{ transform: `translateX(-${carouselIndex * 100}%)` }}>
+              {carouselImages.map((img, ci) => (
+                <div key={ci} className="carousel-slide">
+                  {img.src ? (
+                    <img
+                      src={img.src}
+                      alt={img.caption || `Slide ${ci + 1}`}
+                      onClick={() => { if (!editMode && setLightboxImage) setLightboxImage(img.src); }}
+                      style={{ cursor: editMode ? 'default' : 'pointer' }}
+                    />
+                  ) : (
+                    <div className="carousel-placeholder" onClick={() => {
+                      if (!editMode) return;
+                      const input = document.createElement('input');
+                      input.type = 'file';
+                      input.accept = 'image/*';
+                      input.onchange = (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                          const newImages = [...carouselImages];
+                          newImages[ci] = { ...newImages[ci], src: ev.target.result };
+                          updateSlide(index, { carouselImages: newImages });
+                        };
+                        reader.readAsDataURL(file);
+                      };
+                      input.click();
+                    }}>
+                      {editMode ? 'Click to add image' : ''}
+                    </div>
+                  )}
+                  {img.caption && <span className="carousel-caption">{img.caption}</span>}
+                </div>
+              ))}
+            </div>
+            {/* Navigation dots */}
+            {carouselImages.length > 1 && (
+              <div className="carousel-dots">
+                {carouselImages.map((_, ci) => (
+                  <button
+                    key={ci}
+                    className={`carousel-dot ${carouselIndex === ci ? 'active' : ''}`}
+                    onClick={(e) => { e.stopPropagation(); setCarouselIndex(ci); }}
+                    data-no-slide-advance="true"
+                  />
+                ))}
+              </div>
+            )}
+            {/* Prev/Next arrows */}
+            {carouselImages.length > 1 && (
+              <>
+                <button className="carousel-arrow carousel-prev" onClick={(e) => { e.stopPropagation(); setCarouselIndex(prev => (prev - 1 + carouselImages.length) % carouselImages.length); }} data-no-slide-advance="true">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 4L8 10L12 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </button>
+                <button className="carousel-arrow carousel-next" onClick={(e) => { e.stopPropagation(); setCarouselIndex(prev => (prev + 1) % carouselImages.length); }} data-no-slide-advance="true">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M8 4L12 10L8 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </button>
+              </>
+            )}
+            {/* Edit controls */}
+            {editMode && (
+              <div className="carousel-edit-controls">
+                <button className="carousel-add-btn" onClick={() => updateSlide(index, { carouselImages: [...carouselImages, { src: '', caption: '' }] })}>+ Add Image</button>
+                {carouselImages.length > 1 && (
+                  <button className="carousel-remove-btn" onClick={() => {
+                    const newImages = carouselImages.filter((_, ci) => ci !== carouselIndex);
+                    setCarouselIndex(prev => Math.min(prev, newImages.length - 1));
+                    updateSlide(index, { carouselImages: newImages });
+                  }}>Remove Current</button>
+                )}
+                <label className="carousel-auto-label">
+                  <input type="checkbox" checked={carouselAuto} onChange={(e) => updateSlide(index, { carouselAuto: e.target.checked })} />
+                  Auto-play
+                </label>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -2922,6 +3022,7 @@ My instructions: `;
       const input = document.createElement('input');
       input.type = 'file';
       input.accept = 'image/*,video/mp4,video/webm,.gif';
+      input.value = ''; // Reset so same file can be re-selected
       input.onchange = async (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -3009,29 +3110,97 @@ My instructions: `;
     ];
     
     if (images.length === 0 && !editMode) return null;
-    
+
     const imageCount = images.length;
     const gridCols = slide.gridCols || (imageCount >= 3 ? 3 : imageCount >= 2 ? 2 : 1);
-    
+    const imageDisplayMode = slide.imageDisplayMode || 'grid';
+    const effectiveMaxImages = imageDisplayMode === 'carousel' ? 5 : maxImages;
+
+    const [carouselIdx, setCarouselIdx] = useState(0);
+    const carouselRef = useRef(null);
+
+    // Auto-advance carousel
+    useEffect(() => {
+      if (imageDisplayMode !== 'carousel' || imageCount <= 1 || editMode) return;
+      const timer = setInterval(() => {
+        setCarouselIdx(prev => (prev + 1) % imageCount);
+      }, 4000);
+      return () => clearInterval(timer);
+    }, [imageDisplayMode, imageCount, editMode]);
+
+    // Reset index if images change or mode switches away
+    useEffect(() => {
+      if (imageDisplayMode !== 'carousel' || carouselIdx >= imageCount) setCarouselIdx(0);
+    }, [imageCount, imageDisplayMode]);
+
     return (
       <div className={`dynamic-images images-count-${imageCount} ${className}`}>
         {editMode && imageCount >= 2 && (
           <div className="dynamic-grid-control">
-            <span className="dynamic-grid-label">Grid</span>
+            <span className="dynamic-grid-label">Layout</span>
             <div className="dynamic-grid-buttons">
               {[1, 2, 3].map(cols => (
                 <button
                   key={cols}
-                  className={`dynamic-grid-btn ${gridCols === cols ? 'active' : ''}`}
-                  onClick={() => updateSlide(slideIndex, { gridCols: cols })}
+                  className={`dynamic-grid-btn ${imageDisplayMode === 'grid' && gridCols === cols ? 'active' : ''}`}
+                  onClick={() => {
+                    const updates = { gridCols: cols, imageDisplayMode: 'grid' };
+                    // Reset images array to exactly match selected count
+                    const emptyImg = { src: '', caption: '', position: 'center center', size: 'large', fit: 'cover', embedUrl: '' };
+                    const newImages = Array.from({ length: cols }, (_, i) => images[i] ? { ...images[i] } : { ...emptyImg });
+                    updates[field] = newImages;
+                    updateSlide(slideIndex, updates);
+                  }}
                   title={`${cols} column${cols > 1 ? 's' : ''}`}
                 >
                   {cols}
                 </button>
               ))}
+              <button
+                className={`dynamic-grid-btn ${imageDisplayMode === 'carousel' ? 'active' : ''}`}
+                onClick={() => {
+                  const emptyImg = { src: '', caption: '', position: 'center center', size: 'large', fit: 'cover', embedUrl: '' };
+                  // Ensure at least 2 images for carousel
+                  const newImages = images.length >= 2 ? [...images] : [...images, ...Array.from({ length: 2 - images.length }, () => ({ ...emptyImg }))];
+                  updateSlide(slideIndex, { imageDisplayMode: 'carousel', [field]: newImages });
+                }}
+                title="Carousel"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 4L4 12l4 8M16 4l4 8-4 8" /><rect x="8" y="6" width="8" height="12" rx="1" /></svg>
+              </button>
             </div>
           </div>
         )}
+        {imageDisplayMode === 'carousel' && imageCount >= 2 ? (
+          <div className="dynamic-carousel" ref={carouselRef} onClick={(e) => e.stopPropagation()} data-no-slide-advance="true">
+            <div className="dynamic-carousel-track" style={{ transform: `translateX(-${carouselIdx * 100}%)` }}>
+              {images.map((imgData, imgIndex) => (
+                <div key={imgIndex} className="dynamic-carousel-slide">
+                  {imgData.src ? (
+                    <img src={imgData.src} alt={`Image ${imgIndex + 1}`} style={{ objectFit: imgData.fit || 'cover', objectPosition: imgData.position || 'center center' }} onClick={() => !editMode && setLightboxImage && setLightboxImage(imgData.src)} />
+                  ) : editMode ? (
+                    <div className="carousel-placeholder" onClick={() => { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*,video/*'; input.onchange = (ev) => { const file = ev.target.files?.[0]; if (!file) return; const reader = new FileReader(); reader.onload = (r) => updateImage(imgIndex, 'src', r.target.result); reader.readAsDataURL(file); }; input.click(); }}>Click to add image</div>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+            {imageCount > 1 && (
+              <>
+                <div className="carousel-dots">
+                  {images.map((_, ci) => (
+                    <button key={ci} className={`carousel-dot ${carouselIdx === ci ? 'active' : ''}`} onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(ci); }} data-no-slide-advance="true" />
+                  ))}
+                </div>
+                <button className="carousel-arrow carousel-prev" onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(prev => (prev - 1 + imageCount) % imageCount); }} data-no-slide-advance="true">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 4L8 10L12 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </button>
+                <button className="carousel-arrow carousel-next" onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(prev => (prev + 1) % imageCount); }} data-no-slide-advance="true">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M8 4L12 10L8 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </button>
+              </>
+            )}
+          </div>
+        ) : (
         <div className="dynamic-images-grid" style={imageCount >= 2 ? { gridTemplateColumns: `repeat(${gridCols}, 1fr)` } : undefined}>
           {images.map((imgData, imgIndex) => {
             const position = imgData.position || 'center center';
@@ -3123,9 +3292,13 @@ My instructions: `;
                           style={mediaContainStyle}
                         />
                       )}
-                      {editMode && <div className="image-edit-overlay">Click to change</div>}
+                      {editMode && (
+                        <div className="image-edit-overlay" onClick={(e) => { e.stopPropagation(); handleDynamicImageUpload(imgIndex); }}>
+                          Replace Image
+                        </div>
+                      )}
                       {!editMode && !imgData.isVideo && !imgData.isGif && <div className="image-zoom-hint">🔍</div>}
-                      
+
                       {/* Fill / Fit control - visible for all media */}
                       {editMode && imgData.src && (
                         <div className="media-fit-inline" onClick={(e) => e.stopPropagation()}>
@@ -3348,9 +3521,10 @@ My instructions: `;
             );
           })}
         </div>
-        {editMode && images.length < maxImages && (
+        )}
+        {editMode && images.length < effectiveMaxImages && (
           <button className="add-dynamic-image-btn" onClick={addImage}>
-            + Add Image ({images.length}/{maxImages})
+            + Add Image ({images.length}/{effectiveMaxImages})
           </button>
         )}
       </div>
@@ -3362,13 +3536,13 @@ My instructions: `;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const SplitRatioControl = useMemo(() => ({ slide, slideIndex }) => {
     if (!editMode) return null;
-    
-    const ratio = slide.splitRatio || 50; // Default 50/50
-    
+
+    const ratio = slide.splitRatio || 50;
+
     const handleRatioChange = (newRatio) => {
-      updateSlide(slideIndex, { splitRatio: newRatio });
+      updateSlide(slideIndex, { splitRatio: Math.max(20, Math.min(80, newRatio)) });
     };
-    
+
     const presets = [
       { label: '30/70', value: 30 },
       { label: '40/60', value: 40 },
@@ -3376,10 +3550,10 @@ My instructions: `;
       { label: '60/40', value: 60 },
       { label: '70/30', value: 70 },
     ];
-    
+
     return (
       <div className="split-ratio-control">
-        <span className="ratio-label">Layout ratio:</span>
+        <span className="ratio-label">Layout:</span>
         <div className="ratio-presets">
           {presets.map(preset => (
             <button
@@ -3391,15 +3565,57 @@ My instructions: `;
             </button>
           ))}
         </div>
-        <input
-          type="range"
-          min="20"
-          max="80"
-          value={ratio}
-          onChange={(e) => handleRatioChange(parseInt(e.target.value))}
-          className="ratio-slider"
-        />
-        <span className="ratio-value">{ratio}% / {100 - ratio}%</span>
+        <span className="ratio-value">{ratio}/{100 - ratio}</span>
+      </div>
+    );
+  }, [editMode, updateSlide]);
+
+  // Draggable split divider — renders between the two grid columns
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const SplitDragHandle = useMemo(() => ({ slide, slideIndex }) => {
+    if (!editMode) return null;
+
+    const handleDrag = useCallback((e) => {
+      e.preventDefault();
+      const slideEl = e.target.closest('.slide-split, .slide-intro-layout, .project-showcase-layout');
+      if (!slideEl) return;
+
+      const rect = slideEl.getBoundingClientRect();
+      const startX = e.clientX;
+      const startRatio = slide.splitRatio || 50;
+
+      const onMove = (moveE) => {
+        const dx = moveE.clientX - startX;
+        const pct = (dx / rect.width) * 100;
+        const newRatio = Math.round(Math.max(20, Math.min(80, startRatio + pct)));
+        updateSlide(slideIndex, { splitRatio: newRatio });
+      };
+
+      const onUp = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      };
+
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    }, [slide, slideIndex]);
+
+    return (
+      <div
+        className="split-drag-handle"
+        onMouseDown={handleDrag}
+        title="Drag to resize"
+        data-no-slide-advance="true"
+      >
+        <div className="split-drag-line" />
+        <div className="split-drag-grip">
+          <span /><span /><span />
+        </div>
+        <div className="split-drag-line" />
       </div>
     );
   }, [editMode, updateSlide]);
@@ -3780,6 +3996,8 @@ My instructions: `;
 
               </div>
 
+              <SplitDragHandle slide={slide} slideIndex={index} />
+
               {/* ── Right: cover image ── */}
               <DynamicImages slide={slide} slideIndex={index} field="image" className="intro-images-wrapper" />
 
@@ -4076,6 +4294,7 @@ My instructions: `;
                     </div>
                   </OptionalField>
                 </div>
+                <SplitDragHandle slide={slide} slideIndex={index} />
                 {/* Right Panel - Image with highlight-style wrapper */}
                 <div className="project-showcase-visual">
                   <div className="project-showcase-image-highlight-wrapper">
@@ -4182,6 +4401,7 @@ My instructions: `;
             DynamicBullets={DynamicBullets}
             DynamicContent={DynamicContent}
             SplitRatioControl={SplitRatioControl}
+            SplitDragHandle={SplitDragHandle}
             setLightboxImage={setLightboxImage}
             spacingStyle={spacingStyle}
             titleSpacingControl={titleSpacingControl}
@@ -4587,6 +4807,7 @@ My instructions: `;
             DynamicBullets={DynamicBullets}
             DynamicContent={DynamicContent}
             SplitRatioControl={SplitRatioControl}
+            SplitDragHandle={SplitDragHandle}
             setLightboxImage={setLightboxImage}
             spacingStyle={spacingStyle}
             titleSpacingControl={titleSpacingControl}
@@ -5148,6 +5369,7 @@ My instructions: `;
             DynamicBullets={DynamicBullets}
             DynamicContent={DynamicContent}
             SplitRatioControl={SplitRatioControl}
+            SplitDragHandle={SplitDragHandle}
             setLightboxImage={setLightboxImage}
             spacingStyle={spacingStyle}
             titleSpacingControl={titleSpacingControl}
