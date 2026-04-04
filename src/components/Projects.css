@@ -169,6 +169,30 @@
   opacity: 0.8;
 }
 
+/* Inline edit inputs (edit mode) */
+.project-inline-edit {
+  background: transparent;
+  border: 1px dashed transparent;
+  border-radius: 4px;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+  padding: 0.15rem 0.3rem;
+  margin: -0.15rem -0.3rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.project-inline-edit:hover,
+.project-inline-edit:focus {
+  border-color: var(--color-accent);
+  background: var(--color-bg-secondary);
+}
+
+.project-inline-edit--small {
+  font-size: inherit;
+}
+
 /* Image change overlay (edit mode) */
 .project-image-overlay {
   position: absolute;

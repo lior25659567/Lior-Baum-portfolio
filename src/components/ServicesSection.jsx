@@ -137,12 +137,10 @@ const ServicesSection = () => {
             return (
               <article key={item.number} className="services-card">
                 <div className="services-card-inner">
-                  <div className="services-card-header">
-                    <span className="services-card-number">{item.number}</span>
-                    <div className="services-card-icon-wrap">
-                      <Icon />
-                    </div>
+                  <div className="services-card-icon-wrap">
+                    <Icon />
                   </div>
+                  <span className="services-card-number">{item.number}</span>
                   <h3 className="services-card-title">{item.title}</h3>
                   <p className="services-card-desc">{item.description}</p>
                 </div>

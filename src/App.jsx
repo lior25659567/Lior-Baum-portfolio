@@ -6,6 +6,8 @@ import EditPanel from './components/EditPanel';
 import Home from './pages/Home';
 import About from './pages/About';
 import CaseStudy from './pages/CaseStudy';
+import SlideDocumentation from './pages/SlideDocumentation';
+import CVBuilder from './pages/CVBuilder';
 import './App.css';
 
 function AppLayout() {
@@ -20,6 +22,8 @@ function AppLayout() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/project/:projectId" element={<CaseStudy />} />
+          <Route path="/docs/slides" element={<SlideDocumentation />} />
+          <Route path="/cv" element={<CVBuilder />} />
         </Routes>
       </main>
       {!isAbout && <Footer />}

@@ -18,6 +18,13 @@ const defaultProjects = [
     year: '2024',
   },
   {
+    id: 'itero-scan-workflow',
+    title: 'iTero Scan Experience',
+    category: 'Clinical Workflow Redesign',
+    image: '',
+    year: '2024',
+  },
+  {
     id: 'wizecare',
     title: 'WizeCare',
     category: 'B2B Complex System',
@@ -26,7 +33,7 @@ const defaultProjects = [
   },
 ];
 
-const ProjectCard = ({ project, index, editMode, onImageChange, onRemove }) => {
+const ProjectCard = ({ project, index, editMode, onImageChange, onRemove, onUpdate }) => {
   const fileInputRef = useRef(null);
   const fileInputId = `project-image-${project.id}`;
 
@@ -90,11 +97,48 @@ const ProjectCard = ({ project, index, editMode, onImageChange, onRemove }) => {
 
       {/* Title always visible below the image */}
       <div className="project-content">
-        <h3 className="project-content-title">{project.title}</h3>
-        <p className="project-content-meta">
-          <span className="project-content-category">{project.category}</span>
-          <span className="project-content-year">{project.year}</span>
-        </p>
+        {editMode ? (
+          <>
+            <h3 className="project-content-title">
+              <input
+                className="project-inline-edit"
+                value={project.title || ''}
+                onChange={(e) => onUpdate(project.id, { title: e.target.value })}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                placeholder="Project Title"
+              />
+            </h3>
+            <p className="project-content-meta">
+              <span className="project-content-category">
+                <input
+                  className="project-inline-edit project-inline-edit--small"
+                  value={project.category || ''}
+                  onChange={(e) => onUpdate(project.id, { category: e.target.value })}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  placeholder="Category"
+                />
+              </span>
+              <span className="project-content-year">
+                <input
+                  className="project-inline-edit project-inline-edit--small"
+                  value={project.year || ''}
+                  onChange={(e) => onUpdate(project.id, { year: e.target.value })}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  placeholder="Year"
+                  style={{ textAlign: 'right', width: '4rem' }}
+                />
+              </span>
+            </p>
+          </>
+        ) : (
+          <>
+            <h3 className="project-content-title">{project.title}</h3>
+            <p className="project-content-meta">
+              <span className="project-content-category">{project.category}</span>
+              <span className="project-content-year">{project.year}</span>
+            </p>
+          </>
+        )}
       </div>
 
       {editMode && onRemove && (
@@ -162,15 +206,29 @@ const Projects = () => {
   // Merge default projects with saved content, and include any extra saved projects
   const projects = (() => {
     const savedItems = content.projects?.items || [];
-    // Start with defaults merged with saved overrides
-    const merged = defaultProjects.map(defaultProject => {
-      const savedItem = savedItems.find(item => item.id === defaultProject.id);
-      return savedItem ? { ...defaultProject, ...savedItem } : defaultProject;
-    });
-    // Add any saved items that aren't in defaults (user-created projects)
+    const removedIds = content.projects?.removedIds || [];
+    // Start with defaults merged with saved overrides, excluding removed
+    const merged = defaultProjects
+      .filter(p => !removedIds.includes(p.id))
+      .map(defaultProject => {
+        const savedItem = savedItems.find(item => item.id === defaultProject.id);
+        return savedItem ? { ...defaultProject, ...savedItem } : defaultProject;
+      });
+    // Add any saved items that aren't in defaults and not removed (user-created projects)
     const defaultIds = defaultProjects.map(p => p.id);
-    const extras = savedItems.filter(item => !defaultIds.includes(item.id));
-    return [...merged, ...extras];
+    const extras = savedItems.filter(item => !defaultIds.includes(item.id) && !removedIds.includes(item.id));
+    const all = [...merged, ...extras];
+    // In edit mode, add the template demo project if not already present
+    if (editMode && !all.some(p => p.id === 'template-demo')) {
+      all.push({
+        id: 'template-demo',
+        title: 'Template Demo',
+        category: 'Template Reference',
+        image: '',
+        year: '2025',
+      });
+    }
+    return all;
   })();
 
   const handleImageChange = useCallback((projectId, imageDataUrl) => {
@@ -206,16 +264,38 @@ const Projects = () => {
     setTimeout(() => navigate(`/project/${id}`), 100);
   }, [setContent, navigate]);
 
+  const handleUpdateProject = useCallback((projectId, updates) => {
+    setContent(prev => {
+      const items = (prev.projects?.items || defaultProjects.map(p => ({ ...p }))).map(item =>
+        item.id === projectId ? { ...item, ...updates } : item
+      );
+      // If not found in items (default project not yet saved), add it
+      if (!items.find(item => item.id === projectId)) {
+        const defaultProject = defaultProjects.find(p => p.id === projectId);
+        if (defaultProject) items.push({ ...defaultProject, ...updates });
+      }
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
+  }, [setContent]);
+
   const handleRemoveProject = useCallback((projectId) => {
     if (!window.confirm('Remove this project from the portfolio?')) return;
     setContent(prev => {
       const items = (prev.projects?.items || []).filter(item => item.id !== projectId);
-      return { ...prev, projects: { ...prev.projects, items } };
+      const removedIds = [...(prev.projects?.removedIds || [])];
+      if (!removedIds.includes(projectId)) removedIds.push(projectId);
+      return { ...prev, projects: { ...prev.projects, items, removedIds } };
     });
     // Also clean up saved case study data
     localStorage.removeItem(`caseStudy_${projectId}`);
     localStorage.removeItem(`caseStudy_${projectId}_minimal`);
     localStorage.removeItem(`caseStudy_${projectId}_idb`);
+    // Delete from source files (dev only)
+    fetch('/api/delete-case-study', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ projectId }),
+    }).catch(() => {}); // silently fail in production
   }, [setContent]);
 
   // Only allow removal of user-created projects (not defaults)
@@ -257,7 +337,8 @@ const Projects = () => {
               index={index}
               editMode={editMode}
               onImageChange={handleImageChange}
-              onRemove={!defaultIds.includes(project.id) ? handleRemoveProject : null}
+              onUpdate={handleUpdateProject}
+              onRemove={handleRemoveProject}
             />
           ))}
           {editMode && (

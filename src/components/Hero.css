@@ -170,7 +170,7 @@
   margin: 0 0 clamp(8px, 1.2vh, 16px);
   font-family: var(--font-body);
   font-size: clamp(3.6rem, 8vw, 6.5rem);
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: -0.045em;
   line-height: 0.92;
   color: var(--color-text);
@@ -220,6 +220,20 @@
   color: var(--color-accent);
   letter-spacing: -0.01em;
   line-height: 1.15;
+  position: relative;
+  display: inline-block;
+}
+
+.hero-role-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: var(--color-accent);
+  opacity: 0.35;
+  border-radius: 1px;
+  transform: scaleX(0);
 }
 
 /* ── Description ─────────────────────────── */

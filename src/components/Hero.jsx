@@ -1,4 +1,4 @@
-import { useEffect, useRef, useLayoutEffect } from 'react';
+import { useEffect, useRef, useLayoutEffect, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEdit } from '../context/EditContext';
@@ -28,6 +28,14 @@ const marqueeRow2 = [
   { text: 'Wireframing', accent: true },
 ];
 
+// Rotating chip labels — each position cycles through its own pool
+const chipPools = [
+  ['UX Research', 'User Testing', 'Heuristic Evaluation', 'Journey Mapping', 'Interviews'],
+  ['Figma', 'Prototyping', 'Wireframing', 'Design Systems', 'Framer'],
+  ['Interaction Design', 'Motion Design', 'Micro-interactions', 'Visual Design', 'UI Design'],
+  ['Product Strategy', 'B2B SaaS', 'MedTech', 'Clinical UX', 'Information Architecture'],
+];
+
 const Hero = () => {
   const { content, editMode } = useEdit();
 
@@ -44,16 +52,14 @@ const Hero = () => {
   const nameRef   = useRef(null);
   const roleRef   = useRef(null);
   const descRef   = useRef(null);
-  const ctaRef    = useRef(null);
-  const statsRef  = useRef(null);
   const scrollRef = useRef(null);
+  const chipRefs  = useRef([]);
+  const roleLineRef = useRef(null);
 
   const labelText = (content.hero.greeting || "Hello! I'm").trim();
   const line1Text = (content.hero.name     || 'Lior Baum').trim();
   const line2Text = (content.hero.label    || 'Product Designer').trim();
   const descText  = content.hero.description || 'Crafting digital experiences that merge clarity, precision, and human behavior.';
-  const ctaText   = content.hero.ctaText   || 'View Work';
-  const ctaLink   = content.hero.ctaLink   || '#projects';
 
   const nameTokens = Array.from(line1Text).map((char, i) => ({
     char, key: i, isSpace: char === ' ',
@@ -63,56 +69,66 @@ const Hero = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.12 });
+      const tl = gsap.timeline({ delay: 0.15 });
 
+      // Greeting label — fade in with subtle blur
       tl.fromTo(metaRef.current,
-        { y: 22, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }
+        { y: 18, opacity: 0, filter: 'blur(4px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.6, ease: 'power2.out' }
       );
 
+      // Name — per-character reveal from below with elastic ease
       const chars = nameRef.current?.querySelectorAll('.hero-char');
       if (chars?.length) {
         tl.fromTo(chars,
-          { yPercent: 115 },
-          { yPercent: 0, duration: 0.72, stagger: 0.038, ease: 'power3.out' },
-          '-=0.28'
+          { yPercent: 120, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 0.8, stagger: 0.04, ease: 'back.out(1.4)' },
+          '-=0.35'
         );
       }
 
+      // Role — slide in with the dash expanding
       tl.fromTo(roleRef.current,
-        { y: 28, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out' },
-        '-=0.4'
+        { y: 24, opacity: 0, filter: 'blur(3px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.6, ease: 'power3.out' },
+        '-=0.45'
       );
 
-      tl.fromTo(descRef.current,
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
-        '-=0.3'
-      );
-
-      tl.fromTo(ctaRef.current,
-        { y: 18, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
-        '-=0.28'
-      );
-
-      const statEls = statsRef.current ? Array.from(statsRef.current.children) : [];
-      if (statEls.length) {
-        tl.fromTo(statEls,
-          { y: 14, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.45, stagger: 0.07, ease: 'power2.out' },
-          '-=0.22'
+      // Role underline accent
+      if (roleLineRef.current) {
+        tl.fromTo(roleLineRef.current,
+          { scaleX: 0, transformOrigin: 'left center' },
+          { scaleX: 1, duration: 0.7, ease: 'power3.out' },
+          '-=0.3'
         );
       }
 
+      // Description — fade up
+      tl.fromTo(descRef.current,
+        { y: 16, opacity: 0, filter: 'blur(2px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.55, ease: 'power2.out' },
+        '-=0.35'
+      );
+
+      // Chips — stagger pop in
+      const chips = chipRefs.current.filter(Boolean);
+      if (chips.length) {
+        tl.fromTo(chips,
+          { scale: 0.6, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'back.out(2)' },
+          '-=0.4'
+        );
+      }
+
+      // Scroll indicator
       tl.fromTo(scrollRef.current,
         { opacity: 0 },
         { opacity: 1, duration: 0.7, ease: 'power2.out' },
         '-=0.1'
       );
 
-      const elements = [metaRef, nameRef, roleRef, descRef, ctaRef, statsRef]
+      // Scroll-away
+      const elements = [metaRef, nameRef, roleRef, descRef]
         .map(r => r.current).filter(Boolean);
 
       ScrollTrigger.create({
@@ -129,6 +145,35 @@ const Hero = () => {
     const t = setTimeout(() => ScrollTrigger.refresh(), 100);
     return () => { clearTimeout(t); ctx.revert(); };
   }, [line1Text, line2Text, labelText]);
+
+  // Chip label cycling — each chip fades through its pool
+  useEffect(() => {
+    const indices = chipPools.map(() => 0);
+    const interval = setInterval(() => {
+      // Pick a random chip to update (not all at once — feels more organic)
+      const chipIdx = Math.floor(Math.random() * chipPools.length);
+      const el = chipRefs.current[chipIdx];
+      if (!el) return;
+
+      const nextIdx = (indices[chipIdx] + 1) % chipPools[chipIdx].length;
+      indices[chipIdx] = nextIdx;
+      const nextLabel = chipPools[chipIdx][nextIdx];
+
+      // Crossfade: out → swap text → in
+      gsap.to(el, {
+        opacity: 0, y: -6, duration: 0.3, ease: 'power2.in',
+        onComplete: () => {
+          el.textContent = nextLabel;
+          gsap.fromTo(el,
+            { opacity: 0, y: 6 },
+            { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }
+          );
+        }
+      });
+    }, 2200);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Mouse parallax — direct DOM mutations, zero React re-renders
   useEffect(() => {
@@ -201,10 +246,6 @@ const Hero = () => {
         <div className="hero-left">
 
           <div className="hero-meta" ref={metaRef}>
-            <div className="hero-badge">
-              <span className="hero-badge-dot" />
-              <span>Available for work</span>
-            </div>
             <span className="section-label hero-greeting">{labelText}</span>
           </div>
 
@@ -221,45 +262,28 @@ const Hero = () => {
           </h1>
 
           <div className="hero-role" ref={roleRef}>
-            <span className="hero-role-dash" aria-hidden="true">—</span>
-            <span className="hero-role-text">{line2Text}</span>
+            <span className="hero-role-text">
+              {line2Text}
+              <span className="hero-role-line" ref={roleLineRef} />
+            </span>
           </div>
 
           <p className="hero-desc" ref={descRef}>{descText}</p>
 
-          <div className="hero-cta" ref={ctaRef}>
-            <AnimatedButton href={ctaLink} variant="primary" icon="→" className="hero-cta-btn">
-              {ctaText}
-            </AnimatedButton>
-            <AnimatedButton href="#contact" variant="outline" icon={null} className="hero-cta-btn">
-              Let's Talk
-            </AnimatedButton>
-          </div>
-
-          <div className="hero-stats" ref={statsRef}>
-            <div className="hero-stat">
-              <span className="hero-stat-value">5+</span>
-              <span className="hero-stat-label">Years</span>
-            </div>
-            <div className="hero-stat-divider" aria-hidden="true" />
-            <div className="hero-stat">
-              <span className="hero-stat-value">20+</span>
-              <span className="hero-stat-label">Projects</span>
-            </div>
-            <div className="hero-stat-divider" aria-hidden="true" />
-            <div className="hero-stat">
-              <span className="hero-stat-value">B2B</span>
-              <span className="hero-stat-label">SaaS · MedTech</span>
-            </div>
-          </div>
+          {/* CTA buttons and stats hidden for now */}
         </div>
 
         {/* ── RIGHT: 3D scene ── */}
         <div className="hero-right" ref={rightColRef} aria-hidden="true">
-          <div className="hero-chip hero-chip--1">UX Research</div>
-          <div className="hero-chip hero-chip--2">Figma</div>
-          <div className="hero-chip hero-chip--3">Interaction Design</div>
-          <div className="hero-chip hero-chip--4">Prototyping</div>
+          {chipPools.map((pool, i) => (
+            <div
+              key={i}
+              className={`hero-chip hero-chip--${i + 1}`}
+              ref={el => chipRefs.current[i] = el}
+            >
+              {pool[0]}
+            </div>
+          ))}
 
           <div className="hero-3d-wrap" ref={cubeWrapRef}>
             <div className="hero-3d-mouse-layer">

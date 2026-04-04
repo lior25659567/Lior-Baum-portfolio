@@ -70,28 +70,28 @@ const About = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Initial animation on load
+      // Initial animation on load — blur reveal with elastic ease
       const tl = gsap.timeline();
-      
+
       tl.fromTo(
         labelRef.current,
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }
+        { y: 18, opacity: 0, filter: 'blur(4px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.6, ease: 'power2.out' }
       )
       .fromTo(
         line1Ref.current,
-        { y: 80, opacity: 0, skewY: 5 },
-        { y: 0, opacity: 1, skewY: 0, duration: 0.8, ease: 'power3.out' },
-        '-=0.2'
+        { y: 60, opacity: 0, filter: 'blur(4px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'back.out(1.4)' },
+        '-=0.3'
       )
       .fromTo(
         line2Ref.current,
-        { y: 80, opacity: 0, skewY: 5 },
-        { y: 0, opacity: 1, skewY: 0, duration: 0.8, ease: 'power3.out' },
+        { y: 60, opacity: 0, filter: 'blur(4px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'back.out(1.4)' },
         '-=0.5'
       );
 
-      // Scroll-based parallax
+      // Scroll-based parallax (reverse on scroll up naturally via scrub)
       ScrollTrigger.create({
         trigger: heroRef.current,
         start: 'top top',
@@ -102,18 +102,19 @@ const About = () => {
           gsap.to(labelRef.current, {
             y: progress * 30,
             opacity: 1 - progress * 0.6,
+            filter: `blur(${progress * 4}px)`,
             duration: 0.1
           });
           gsap.to(line1Ref.current, {
             y: progress * 60,
-            skewY: progress * 2,
             opacity: 1 - progress * 0.7,
+            filter: `blur(${progress * 4}px)`,
             duration: 0.1
           });
           gsap.to(line2Ref.current, {
             y: progress * 80,
-            skewY: progress * 2,
             opacity: 1 - progress * 0.7,
+            filter: `blur(${progress * 4}px)`,
             duration: 0.1
           });
         }

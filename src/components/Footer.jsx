@@ -25,35 +25,33 @@ const Footer = () => {
   useEffect(() => {
     const lines = [line1Ref.current, line2Ref.current, line3Ref.current, line4Ref.current];
 
-    gsap.set(lines, { y: 80, opacity: 0, skewY: 5 });
+    gsap.set(lines, { y: 60, opacity: 0, filter: 'blur(4px)' });
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ctaRef.current,
-          start: 'top 85%',
-          end: 'top 50%',
-          toggleActions: 'play none none reverse',
-          onEnter: () => {
-            gsap.to(lines, {
-              y: 0,
-              opacity: 1,
-              skewY: 0,
-              duration: 0.8,
-              stagger: 0.1,
-              ease: 'power3.out'
-            });
-          },
-          onLeaveBack: () => {
-            gsap.to(lines, {
-              y: 80,
-              opacity: 0,
-              skewY: 5,
-              duration: 0.5,
-              stagger: 0.05,
-              ease: 'power3.in'
-            });
-          }
+      ScrollTrigger.create({
+        trigger: ctaRef.current,
+        start: 'top 85%',
+        end: 'top 50%',
+        toggleActions: 'play none none reverse',
+        onEnter: () => {
+          gsap.to(lines, {
+            y: 0,
+            opacity: 1,
+            filter: 'blur(0px)',
+            duration: 0.8,
+            stagger: 0.1,
+            ease: 'back.out(1.2)'
+          });
+        },
+        onLeaveBack: () => {
+          gsap.to(lines, {
+            y: 60,
+            opacity: 0,
+            filter: 'blur(4px)',
+            duration: 0.5,
+            stagger: 0.05,
+            ease: 'power3.in'
+          });
         }
       });
     }, footerRef);

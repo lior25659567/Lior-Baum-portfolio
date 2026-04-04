@@ -23,7 +23,14 @@
   padding: var(--spacing-xl) 0;
 }
 
-/* Section label inherits from global .section-label in index.css */
+/* About hero: same font logic as Hero section (sans = body, serif = display, accent = primary) */
+.about-hero .section-label {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: var(--fw-body);
+  letter-spacing: var(--ls-heading);
+  color: var(--color-text);
+}
 
 .title-line-wrapper {
   overflow: hidden;
@@ -34,18 +41,20 @@
   will-change: transform;
 }
 
+/* Match Hero headline typography: size scale, weight, line-height, letter-spacing */
 .about-title {
-  font-size: clamp(2rem, 5vw, 3.75rem);
-  font-weight: var(--fw-heading);
-  line-height: 1.15;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: var(--fw-body);
+  line-height: 1.05;
+  letter-spacing: var(--ls-heading);
   overflow: visible !important;
   padding-bottom: 0.4em;
 }
 
 .about-title .sans {
   font-family: var(--font-body);
-  font-weight: var(--fw-heading);
+  font-weight: var(--fw-body);
+  color: var(--color-text);
   display: inline-block;
   overflow: visible !important;
 }
@@ -54,11 +63,15 @@
   font-family: var(--font-display);
   font-style: normal;
   font-weight: var(--fw-body);
+  color: var(--color-text);
   display: inline-block;
   overflow: visible !important;
 }
 
 .about-title .accent {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: var(--fw-body);
   color: var(--color-accent);
 }
 
@@ -113,6 +126,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--font-body);
+  font-weight: var(--fw-body);
   color: white;
   font-size: var(--text-body-sm);
   opacity: 0;
@@ -130,6 +145,8 @@
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, var(--color-bg-secondary), var(--color-bg));
+  font-family: var(--font-body);
+  font-weight: var(--fw-body);
   color: var(--color-text-muted);
   font-size: var(--text-body);
 }
@@ -152,6 +169,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  font-family: var(--font-body);
+  font-weight: var(--fw-body);
   font-size: var(--text-caption);
 }
 
@@ -179,7 +198,8 @@
 .bio-heading {
   font-family: var(--font-body);
   font-size: clamp(1.2rem, 2.5vw, 1.5rem);
-  font-weight: var(--fw-medium);
+  font-weight: var(--fw-body);
+  letter-spacing: var(--ls-heading);
   color: var(--color-text);
   margin-bottom: var(--spacing-sm);
 }
@@ -187,7 +207,9 @@
 .bio-text {
   font-family: var(--font-body);
   font-size: var(--text-body-sm);
+  font-weight: var(--fw-body);
   line-height: var(--lh-body);
+  letter-spacing: 0.01em;
   color: var(--color-text-muted);
   margin-bottom: var(--spacing-sm);
 }
@@ -204,8 +226,10 @@
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-body);
   font-size: var(--text-body);
-  font-weight: var(--fw-heading);
+  font-weight: var(--fw-body);
+  letter-spacing: 0.02em;
   border-radius: 100px;
   transition: all var(--transition-medium);
 }
@@ -251,7 +275,7 @@
   padding: var(--spacing-xl) 0;
 }
 
-/* Section headings: consistent with Projects/Services */
+/* Section headings: same font logic as Hero (body font, heading letter-spacing) */
 .section-heading {
   font-family: var(--font-body);
   font-size: clamp(1.4rem, 3.2vw, 2rem);
@@ -284,7 +308,7 @@
 .skill-category {
   font-family: var(--font-body);
   font-size: var(--text-caption);
-  font-weight: var(--fw-heading);
+  font-weight: var(--fw-body);
   letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: var(--color-accent);
@@ -298,6 +322,7 @@
 .skill-item {
   font-family: var(--font-body);
   font-size: var(--text-body-sm);
+  font-weight: var(--fw-body);
   color: var(--color-text-muted);
   padding: var(--spacing-xs) 0;
   transition: color var(--transition-fast);
@@ -337,16 +362,17 @@
 .experience-year {
   font-family: var(--font-body);
   font-size: var(--text-body-sm);
-  font-weight: var(--fw-heading);
-  letter-spacing: 0.02em;
+  font-weight: var(--fw-body);
+  letter-spacing: var(--ls-heading);
   color: var(--color-accent);
 }
 
 .experience-role {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: clamp(1.1rem, 1.8vw, 1.35rem);
-  font-weight: var(--fw-heading);
-  letter-spacing: var(--ls-heading);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: normal;
   color: var(--color-text);
   margin-bottom: var(--spacing-xs);
 }
@@ -354,6 +380,7 @@
 .experience-company {
   font-family: var(--font-body);
   font-size: var(--text-body-sm);
+  font-weight: var(--fw-body);
   color: var(--color-text-muted);
   margin-bottom: var(--spacing-sm);
 }
@@ -361,6 +388,7 @@
 .experience-description {
   font-family: var(--font-body);
   font-size: var(--text-body-sm);
+  font-weight: var(--fw-body);
   line-height: var(--lh-body);
   color: var(--color-text-muted);
 }

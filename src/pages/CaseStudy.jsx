@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedButton from '../components/AnimatedButton';
 import { useEdit } from '../context/EditContext';
 import { getCaseStudyData, getCaseStudyDataAsync, saveCaseStudyData, resetCaseStudyData, listSavedCaseStudies, slideTemplates, templateCategories, compressImage, defaultCaseStudies } from '../data/caseStudyData';
+import { slideTemplateDocs } from '../data/slideTemplateDocs';
 import './CaseStudy.css';
 
 // Error Boundary to catch rendering errors
@@ -47,8 +48,7 @@ const TemplatePreview = ({ type }) => {
   const previewDescriptions = {
     intro: 'Intro slide with project title, description, Client/Focus info, optional logo, and square image.',
     info: 'Grid layout showing project details like client, role, duration, and deliverables.',
-    text: 'Simple text slide with a label, title, and paragraph content.',
-    image: 'Full image slide with label, title, image area, and caption.',
+    media: 'Full media slide supporting images, videos, Figma embeds, and video URL embeds.',
     textAndImage: 'Split layout: text (label, title, body, bullets, optional conclusion, highlight) on the left, image on the right.',
     quotes: 'User research quotes displayed in a card grid layout.',
     goals: 'Goals with numbered items and KPI cards at the bottom.',
@@ -57,24 +57,14 @@ const TemplatePreview = ({ type }) => {
     end: 'Thank you slide with CTA buttons.',
     comparison: 'Before/After comparison with two images side by side.',
     process: 'Process steps displayed horizontally with numbers and descriptions.',
-    twoColumn: 'Two-column text layout for comparing or contrasting content.',
     timeline: 'Vertical timeline showing project phases or events.',
-    video: 'Video embed slide with caption.',
     tools: 'Tools and technologies grid with names and descriptions.',
-    challengeSolution: 'Challenge and Solution blocks with supporting image.',
     testimonial: 'Large quote/testimonial centered on the slide.',
-    insight: 'Key insight or learning highlighted prominently.',
     issuesBreakdown: 'Issues displayed in a 2x2 grid with numbered circles. Includes conclusion box.',
-    oldExperience: 'Describes the old/current state with bullet point issues and a highlighted insight.',
     achieveGoals: 'Two-column layout with KPIs on the left and Key Metrics on the right, each with numbered items.',
-    textWithImages: 'Title with description text at top, images at the bottom (up to 6). Grid adapts to image count. Perfect for comparisons or showcasing variations.',
     projectShowcase: 'Two-column layout with large number, title, description, tags, and optional logo on left. Full image on right.',
-    goalsShowcase: 'Two-column layout with large number, title, optional description, and numbered goals list. Full image on right.',
-    solutionShowcase: 'Two-column comparison: problem images and text on left, solution images and bullet points on right.',
     imageMosaic: 'Tiled image grid background with a centered title overlay. Perfect for showing old versions, screen collections, or visual overviews.',
     chapter: 'Section divider slide with large number, title, and optional subtitle. Use to separate case study chapters.',
-    problemSolution: 'Two-column layout: smaller problem image with bullets on the left, larger solution image with bullets on the right. Title spans full width.',
-    dynamic: 'Fully composable slide. Add any combination of titles, text, bullets, images, stats, quotes, and dividers in any order.',
   };
 
   return (
@@ -115,16 +105,7 @@ const TemplatePreview = ({ type }) => {
               <div className="mockup-info-item"><span>Deliverables</span><span>UI/UX, Design System</span></div>
             </div>
           )}
-          {type === 'text' && (
-            <div className="mockup-text-slide">
-              <div className="mockup-label" />
-              <div className="mockup-title-sm">Section Title</div>
-              <div className="mockup-text-lines">
-                <div className="line" /><div className="line" /><div className="line" /><div className="line short" />
-              </div>
-            </div>
-          )}
-          {type === 'image' && (
+          {(type === 'media' || type === 'image') && (
             <div className="mockup-image-slide">
               <div className="mockup-label" />
               <div className="mockup-title-sm">Visual Showcase</div>
@@ -145,24 +126,6 @@ const TemplatePreview = ({ type }) => {
                 <div className="mockup-conclusion-box">Conclusion</div>
               </div>
               <div className="mockup-image"><span className="mockup-img-icon">🖼</span></div>
-            </div>
-          )}
-          {type === 'challengeSolution' && (
-            <div className="mockup-challenge-solution">
-              <div className="mockup-cs-row">
-                <div className="mockup-cs-block challenge">
-                  <span className="mockup-cs-label">Challenge</span>
-                  <div className="mockup-text-lines"><div className="line" /><div className="line short" /></div>
-                </div>
-                <div className="mockup-image tiny"><span className="mockup-img-icon">🔴</span></div>
-              </div>
-              <div className="mockup-cs-row">
-                <div className="mockup-cs-block solution">
-                  <span className="mockup-cs-label">Solution</span>
-                  <div className="mockup-text-lines"><div className="line" /><div className="line short" /></div>
-                </div>
-                <div className="mockup-image tiny"><span className="mockup-img-icon">🟢</span></div>
-              </div>
             </div>
           )}
           {type === 'quotes' && (
@@ -224,15 +187,11 @@ const TemplatePreview = ({ type }) => {
           )}
           {type === 'comparison' && (
             <div className="mockup-comparison">
-              <div className="mockup-compare-item">
-                <span>Before</span>
-                <div className="mockup-image"><span className="mockup-img-icon">📷</span></div>
+              <div className="mockup-switcher">
+                <span className="mockup-tab active">Before</span>
+                <span className="mockup-tab">After</span>
               </div>
-              <span className="mockup-arrow">→</span>
-              <div className="mockup-compare-item">
-                <span>After</span>
-                <div className="mockup-image"><span className="mockup-img-icon">✨</span></div>
-              </div>
+              <div className="mockup-image" style={{ width: '100%' }}><span className="mockup-img-icon">📷</span></div>
             </div>
           )}
           {type === 'process' && (
@@ -244,18 +203,6 @@ const TemplatePreview = ({ type }) => {
               <div className="mockup-step"><span>03</span><div className="step-title">Test</div></div>
               <div className="mockup-step-arrow">→</div>
               <div className="mockup-step"><span>04</span><div className="step-title">Launch</div></div>
-            </div>
-          )}
-          {type === 'twoColumn' && (
-            <div className="mockup-two-col">
-              <div className="mockup-col">
-                <div className="mockup-col-title">Column 1</div>
-                <div className="line" /><div className="line" /><div className="line short" />
-              </div>
-              <div className="mockup-col">
-                <div className="mockup-col-title">Column 2</div>
-                <div className="line" /><div className="line" /><div className="line short" />
-              </div>
             </div>
           )}
           {type === 'timeline' && (
@@ -273,26 +220,11 @@ const TemplatePreview = ({ type }) => {
               <div className="mockup-author">— Client Name, Role</div>
             </div>
           )}
-          {type === 'insight' && (
-            <div className="mockup-insight">
-              <span className="insight-icon">💡</span>
-              <div className="mockup-title">Key Insight</div>
-              <div className="mockup-insight-text">The most important learning from this project...</div>
-            </div>
-          )}
           {type === 'tools' && (
             <div className="mockup-tools">
               <div className="mockup-tool"><span>🎨</span><div>Figma</div></div>
               <div className="mockup-tool"><span>⚛️</span><div>React</div></div>
               <div className="mockup-tool"><span>📊</span><div>Analytics</div></div>
-            </div>
-          )}
-          {type === 'video' && (
-            <div className="mockup-video">
-              <div className="mockup-video-player">
-                <span className="play-icon">▶</span>
-              </div>
-              <div className="mockup-video-caption">Video caption here</div>
             </div>
           )}
           {type === 'issuesBreakdown' && (
@@ -320,22 +252,6 @@ const TemplatePreview = ({ type }) => {
               <div className="mockup-conclusion-box">Conclusion summary</div>
             </div>
           )}
-          {type === 'oldExperience' && (
-            <div className="mockup-old-experience">
-              <div className="mockup-label" />
-              <div className="mockup-title-sm">the old experience</div>
-              <div className="mockup-subtitle-text">Explanation</div>
-              <div className="mockup-text-lines">
-                <div className="line" /><div className="line" /><div className="line short" />
-              </div>
-              <div className="mockup-bullet-list">
-                <div className="mockup-bullet"><span>•</span><div className="line" /></div>
-                <div className="mockup-bullet"><span>•</span><div className="line" /></div>
-                <div className="mockup-bullet"><span>•</span><div className="line" /></div>
-              </div>
-              <div className="mockup-highlight-box">Key insight or quote</div>
-            </div>
-          )}
           {type === 'achieveGoals' && (
             <div className="mockup-achieve-goals">
               <div className="mockup-label" />
@@ -356,19 +272,6 @@ const TemplatePreview = ({ type }) => {
               </div>
             </div>
           )}
-          {type === 'textWithImages' && (
-            <div className="mockup-text-with-images">
-              <div className="mockup-label" />
-              <div className="mockup-title-sm">Title with description</div>
-              <div className="mockup-text-lines">
-                <div className="line" /><div className="line" /><div className="line short" />
-              </div>
-              <div className="mockup-two-images">
-                <div className="mockup-image-box"><span className="mockup-img-icon">🖼</span></div>
-                <div className="mockup-image-box"><span className="mockup-img-icon">🖼</span></div>
-              </div>
-            </div>
-          )}
           {type === 'projectShowcase' && (
             <div className="mockup-project-showcase">
               <div className="mockup-ps-info">
@@ -381,22 +284,6 @@ const TemplatePreview = ({ type }) => {
                 <div className="mockup-ps-logo" />
               </div>
               <div className="mockup-ps-visual">
-                <div className="mockup-image"><span className="mockup-img-icon large">🖼</span></div>
-              </div>
-            </div>
-          )}
-          {type === 'goalsShowcase' && (
-            <div className="mockup-goals-showcase">
-              <div className="mockup-gs-info">
-                <div className="mockup-gs-number">02</div>
-                <div className="mockup-gs-title">Goals</div>
-                <div className="mockup-gs-goals">
-                  <div className="mockup-gs-goal"><span>01</span><div className="line" /></div>
-                  <div className="mockup-gs-goal"><span>02</span><div className="line" /></div>
-                  <div className="mockup-gs-goal"><span>03</span><div className="line" /></div>
-                </div>
-              </div>
-              <div className="mockup-gs-visual">
                 <div className="mockup-image"><span className="mockup-img-icon large">🖼</span></div>
               </div>
             </div>
@@ -418,38 +305,6 @@ const TemplatePreview = ({ type }) => {
               <div className="mockup-chapter-number">01</div>
               <div className="mockup-chapter-title">Research</div>
               <div className="mockup-chapter-subtitle">Understanding the problem</div>
-            </div>
-          )}
-          {type === 'problemSolution' && (
-            <div className="mockup-problem-solution">
-              <div className="mockup-ps-header">
-                <div className="mockup-label" />
-                <div className="mockup-title-sm">Title</div>
-              </div>
-              <div className="mockup-ps-columns">
-                <div className="mockup-ps-col mockup-ps-problem">
-                  <div className="mockup-image small"><span className="mockup-img-icon">🔴</span></div>
-                  <div className="mockup-ps-label">Problem:</div>
-                  <div className="line short" />
-                </div>
-                <div className="mockup-ps-col mockup-ps-solution">
-                  <div className="mockup-image"><span className="mockup-img-icon">🟢</span></div>
-                  <div className="mockup-ps-label">Solution:</div>
-                  <div className="line" /><div className="line short" />
-                </div>
-              </div>
-            </div>
-          )}
-          {type === 'dynamic' && (
-            <div className="mockup-dynamic">
-              <div className="mockup-title-sm">Title Block</div>
-              <div className="line" /><div className="line short" />
-              <div className="mockup-dynamic-bullets">
-                <div className="line short" />
-                <div className="line short" />
-              </div>
-              <div className="mockup-image small"><span className="mockup-img-icon">🖼</span></div>
-              <div className="mockup-dynamic-add">+ Add blocks</div>
             </div>
           )}
         </div>
@@ -552,6 +407,381 @@ const EditableField = memo(function EditableField({ value, onChange, multiline =
   );
 });
 
+// Module-level Figma URL helper (used by ComparisonSlide and CaseStudy)
+const toFigmaEmbedUrlModule = (input) => {
+  if (!input || typeof input !== 'string') return null;
+  let trimmed = input.trim();
+  const iframeMatch = trimmed.match(/<iframe[^>]+src=["']([^"']+)["']/i);
+  if (iframeMatch) trimmed = iframeMatch[1];
+  if (!/^https?:\/\/([\w-]+\.)*figma\.com\//i.test(trimmed)) return null;
+  if (trimmed.includes('/embed') || trimmed.includes('embed.figma.com')) {
+    if (!trimmed.includes('scaling=')) return trimmed + (trimmed.includes('?') ? '&' : '?') + 'scaling=scale-down-width';
+    return trimmed;
+  }
+  return `https://www.figma.com/embed?embed_host=share&scaling=scale-down-width&url=${encodeURIComponent(trimmed)}`;
+};
+
+// Shared helper — used by ComparisonSlide and CaseStudy's getSplitStyle
+const getSplitStyleModule = (slide) => {
+  const ratio = slide.splitRatio || 50;
+  return { gridTemplateColumns: `${ratio}fr ${100 - ratio}fr` };
+};
+
+// ─── UNIFIED SPLIT SLIDE ────────────────────────────────────────────────────
+// Handles three modes, toggled in edit mode:
+//   'simple'     — label + title + text/bullets + static image (problem/context/feature style)
+//   'before-after' — Before/After pill toggle + per-tab description/bullets + switching image
+//   'tabs'       — Multi-tab switcher (2–6 tabs) with per-tab bullets and image (problemSolution style)
+//
+// Type defaults:
+//   'comparison'      → 'before-after'
+//   'problemSolution' → 'tabs'
+//   all others        → 'simple'
+const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideControls, editMode, updateSlide, OptionalField, DynamicImages, DynamicBullets, DynamicContent, SplitRatioControl, setLightboxImage, spacingStyle, titleSpacingControl }) {
+  // ── mode ──
+  const getDefaultMode = (s) => {
+    if (s.slideMode) return s.slideMode;
+    if (s.type === 'comparison') return 'before-after';
+    if (s.type === 'problemSolution') return 'tabs';
+    return 'simple';
+  };
+  const slideMode = getDefaultMode(slide);
+  const setMode = (m) => updateSlide(index, { slideMode: m });
+  const switcherStyle = slide.switcherStyle || 'pill'; // 'pill' | 'flat'
+
+  // ── before/after state ──
+  const [baActiveTab, setBaActiveTab] = useState('before');
+  const beforeLabel = slide.beforeLabel || 'Before';
+  const afterLabel = slide.afterLabel || 'After';
+
+  // ── tabs (problemSolution) state ──
+  const [psEmbedInput, setPsEmbedInput] = useState({ tabIdx: null, draft: '', type: 'figma' });
+  const PS_MIN = 2; const PS_MAX = 6;
+  const getPsTabs = (s) => {
+    if (Array.isArray(s.psTabs) && s.psTabs.length >= PS_MIN) {
+      return s.psTabs.map(t => ({
+        label: t.label ?? '', columnLabel: t.columnLabel ?? '',
+        image: t.image ?? '', embedUrl: t.embedUrl ?? '', embedType: t.embedType ?? 'figma',
+        bullets: Array.isArray(t.bullets) ? t.bullets : [], bulletsTitle: t.bulletsTitle ?? '',
+      }));
+    }
+    return [
+      { label: s.problemLabel ?? 'Problem', columnLabel: '', image: s.problemImage ?? '', embedUrl: '', embedType: 'figma', bullets: Array.isArray(s.problemBullets) ? s.problemBullets : [], bulletsTitle: s.problemBulletsTitle ?? '' },
+      { label: s.solutionLabel ?? 'Solution', columnLabel: '', image: s.solutionImage ?? '', embedUrl: '', embedType: 'figma', bullets: Array.isArray(s.solutionBullets) ? s.solutionBullets : [], bulletsTitle: s.solutionBulletsTitle ?? '' },
+    ];
+  };
+  const psTabs = getPsTabs(slide);
+  const rawPsActive = slide.psActiveView;
+  const psActiveView = typeof rawPsActive === 'number' && rawPsActive >= 0 && rawPsActive < psTabs.length
+    ? rawPsActive : rawPsActive === 'solution' ? 1 : 0;
+  const psActiveTab = psTabs[psActiveView] || psTabs[0];
+  const updatePsTab = (tabIdx, updates) => {
+    const next = [...psTabs]; next[tabIdx] = { ...next[tabIdx], ...updates };
+    updateSlide(index, { psTabs: next });
+  };
+  const setPsTabCount = (count) => {
+    const n = Math.min(PS_MAX, Math.max(PS_MIN, count));
+    const next = [];
+    for (let i = 0; i < n; i++) next.push(psTabs[i] || { label: `Tab ${i + 1}`, image: '', embedUrl: '', embedType: 'figma', bullets: [], bulletsTitle: '' });
+    updateSlide(index, { psTabs: next, psActiveView: Math.min(psActiveView, n - 1) });
+  };
+  const updateSlideForPsTab = (idx, updates) => {
+    if (idx !== index) { updateSlide(idx, updates); return; }
+    const u = {};
+    if (updates.problemLabel !== undefined) u.columnLabel = updates.problemLabel;
+    if (updates.problemBullets !== undefined) u.bullets = updates.problemBullets;
+    if (updates.problemBulletsTitle !== undefined) u.bulletsTitle = updates.problemBulletsTitle;
+    if (Object.keys(u).length) updatePsTab(psActiveView, u); else updateSlide(idx, updates);
+  };
+  const psLabelAboveBullets = psActiveTab.columnLabel || psActiveTab.label;
+  const psSlideView = { ...slide, problemLabel: psLabelAboveBullets, problemBullets: psActiveTab.bullets, problemBulletsTitle: psActiveTab.bulletsTitle };
+
+  // ── simple-mode field mapping ──
+  const t = slide.type;
+  const contentField = t === 'feature' ? 'description' : 'content';
+  const bulletsField = t === 'problem' ? 'issues' : (t === 'testing' ? 'layouts' : 'bullets');
+  const bulletsTitleField = t === 'problem' ? 'issuesTitle' : (t === 'testing' ? 'layoutsTitle' : 'bulletsTitle');
+  const bulletsLabel = t === 'problem' ? 'Issue' : (t === 'testing' ? 'Option' : 'Bullet');
+  const showConclusion = t === 'problem' || t === 'testing';
+
+  // ── right-side image source ──
+  const baImageField = baActiveTab === 'before' ? 'beforeImage' : 'afterImage';
+
+  // ── tabs: open-file helper ──
+  const openFileForPsTab = (tabIdx) => {
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'image/*,video/mp4,video/webm,.gif';
+    inp.style.cssText = 'position:absolute;opacity:0;pointer-events:none';
+    inp.onchange = async (e) => {
+      const f = e.target.files?.[0]; if (!f) return;
+      const r = new FileReader();
+      r.onload = async (ev) => {
+        try {
+          const d = ev.target?.result;
+          if (f.type.startsWith('video/') || f.type === 'image/gif') { updatePsTab(tabIdx, { image: d, embedUrl: '' }); }
+          else { const c = await compressImage(d); updatePsTab(tabIdx, { image: c, embedUrl: '' }); }
+        } catch { updatePsTab(tabIdx, { image: ev.target?.result, embedUrl: '' }); }
+        inp.remove();
+      };
+      r.readAsDataURL(f);
+    };
+    document.body.appendChild(inp); inp.click();
+    setTimeout(() => { try { inp.remove(); } catch (_) {} }, 500);
+  };
+
+  return (
+    <div className={`slide slide-problem slide-comparison-unified mode-${slideMode}`} style={spacingStyle}>
+      {slideControls}
+      {titleSpacingControl}
+      {SplitRatioControl && <SplitRatioControl slide={slide} slideIndex={index} />}
+
+      {/* ── Edit-mode: style mode picker ── */}
+      {editMode && (
+        <div className="comparison-mode-control">
+          <span className="comparison-mode-label">Style:</span>
+          <button type="button" className={`comparison-mode-btn${slideMode === 'simple' ? ' active' : ''}`} onClick={() => setMode('simple')} title="Text + static image">Simple</button>
+          <button type="button" className={`comparison-mode-btn${slideMode === 'before-after' ? ' active' : ''}`} onClick={() => setMode('before-after')} title="Before / After toggle">Before / After</button>
+          <button type="button" className={`comparison-mode-btn${slideMode === 'tabs' ? ' active' : ''}`} onClick={() => setMode('tabs')} title="Multi-tab switcher with image per tab">Tabs</button>
+          {(slideMode === 'before-after' || slideMode === 'tabs') && (
+            <>
+              <span className="comparison-mode-divider" />
+              <span className="comparison-mode-label">Switcher:</span>
+              <button type="button" className={`comparison-mode-btn${switcherStyle === 'pill' ? ' active' : ''}`} onClick={() => updateSlide(index, { switcherStyle: 'pill' })} title="Rounded pill switcher">Pill</button>
+              <button type="button" className={`comparison-mode-btn${switcherStyle === 'flat' ? ' active' : ''}`} onClick={() => updateSlide(index, { switcherStyle: 'flat' })} title="Flat tab switcher">Flat</button>
+            </>
+          )}
+        </div>
+      )}
+
+      <div className="slide-inner slide-split" style={getSplitStyleModule(slide)}>
+        <div className="split-content">
+          {/* Label + Title — always present */}
+          <span className="slide-label">
+            <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
+          </span>
+          <h2 className="problem-title">
+            <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
+          </h2>
+
+          {/* ══ SIMPLE ══ */}
+          {slideMode === 'simple' && (
+            <>
+              <DynamicContent slide={slide} slideIndex={index} field={contentField} className="problem-text-wrapper" />
+              <DynamicBullets slide={slide} slideIndex={index} field={bulletsField} titleField={bulletsTitleField} className="problem-issues-wrapper" label={bulletsLabel} />
+              <DynamicBullets slide={slide} slideIndex={index} field="bullets2" titleField="bullets2Title" className="problem-issues-wrapper problem-bullets-second" label="Bullet" />
+              {showConclusion && (
+                <OptionalField slide={slide} index={index} field="conclusion" label="Conclusion" defaultValue="Add conclusion...">
+                  <p className="problem-conclusion">
+                    <EditableField value={slide.conclusion} onChange={(v) => updateSlide(index, { conclusion: v })} />
+                  </p>
+                </OptionalField>
+              )}
+            </>
+          )}
+
+          {/* ══ BEFORE / AFTER ══ */}
+          {slideMode === 'before-after' && (
+            <>
+              <DynamicContent slide={slide} slideIndex={index} field="description" className="comparison-description-wrapper" maxParagraphs={2} optional />
+              <div className={switcherStyle === 'flat' ? 'ps-view-tabs' : 'comparison-switcher'}>
+                <button type="button" className={`${switcherStyle === 'flat' ? 'ps-tab' : 'comparison-tab'}${baActiveTab === 'before' ? ' active' : ''}`} onClick={() => setBaActiveTab('before')}>{beforeLabel}</button>
+                <button type="button" className={`${switcherStyle === 'flat' ? 'ps-tab' : 'comparison-tab'}${baActiveTab === 'after' ? ' active' : ''}`} onClick={() => setBaActiveTab('after')}>{afterLabel}</button>
+              </div>
+              {editMode && (
+                <div className="comparison-label-edit">
+                  <input type="text" value={slide.beforeLabel || ''} placeholder="Before label" onChange={(e) => updateSlide(index, { beforeLabel: e.target.value || undefined })} className="comparison-label-input" />
+                  <input type="text" value={slide.afterLabel || ''} placeholder="After label" onChange={(e) => updateSlide(index, { afterLabel: e.target.value || undefined })} className="comparison-label-input" />
+                </div>
+              )}
+              <div className="comparison-panel">
+                {baActiveTab === 'before' ? (
+                  <>
+                    <OptionalField slide={slide} index={index} field="beforeDescription" label="Before Description" defaultValue="Describe the before state..." multiline>
+                      <p className="comparison-side-description"><EditableField value={slide.beforeDescription} onChange={(v) => updateSlide(index, { beforeDescription: v })} multiline /></p>
+                    </OptionalField>
+                    <DynamicBullets slide={slide} slideIndex={index} field="beforeBullets" titleField="beforeBulletsTitle" className="comparison-side-bullets" label="Before Point" />
+                  </>
+                ) : (
+                  <>
+                    <OptionalField slide={slide} index={index} field="afterDescription" label="After Description" defaultValue="Describe the after state..." multiline>
+                      <p className="comparison-side-description"><EditableField value={slide.afterDescription} onChange={(v) => updateSlide(index, { afterDescription: v })} multiline /></p>
+                    </OptionalField>
+                    <DynamicBullets slide={slide} slideIndex={index} field="afterBullets" titleField="afterBulletsTitle" className="comparison-side-bullets" label="After Point" />
+                  </>
+                )}
+              </div>
+              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="comparison-bullets" label="Bullet" />
+            </>
+          )}
+
+          {/* ══ TABS ══ */}
+          {slideMode === 'tabs' && (
+            <>
+              {/* Optional subtitle + paragraphs */}
+              {((slide.subtitle != null && slide.subtitle !== '') || (editMode && slide.subtitle !== null)) && (
+                <div className="ps-subtitle-wrapper">
+                  <p className="ps-subtitle"><EditableField value={slide.subtitle || ''} onChange={(v) => updateSlide(index, { subtitle: v })} placeholder="Subtitle (optional)" /></p>
+                  {editMode && <button type="button" className="remove-field-btn issues-breakdown-remove" onClick={() => updateSlide(index, { subtitle: null })}>× Remove subtitle</button>}
+                </div>
+              )}
+              {editMode && (slide.subtitle == null || slide.subtitle === '') && (
+                <button type="button" className="add-field-btn" onClick={() => updateSlide(index, { subtitle: 'Add subtitle...' })}>+ Add subtitle</button>
+              )}
+              {((slide.psParagraph1 != null && slide.psParagraph1 !== '') || (editMode && slide.psParagraph1 !== null)) && (
+                <div className="ps-paragraph-wrapper">
+                  <p className="ps-paragraph"><EditableField value={slide.psParagraph1 || ''} onChange={(v) => updateSlide(index, { psParagraph1: v })} multiline placeholder="First paragraph (optional)" /></p>
+                  {editMode && <button type="button" className="remove-field-btn issues-breakdown-remove" onClick={() => updateSlide(index, { psParagraph1: null })}>× Remove paragraph</button>}
+                </div>
+              )}
+              {editMode && (slide.psParagraph1 == null || slide.psParagraph1 === '') && (
+                <button type="button" className="add-field-btn add-field-btn-sm" onClick={() => updateSlide(index, { psParagraph1: 'Add first paragraph...' })}>+ Add paragraph 1</button>
+              )}
+              {((slide.psParagraph2 != null && slide.psParagraph2 !== '') || (editMode && slide.psParagraph2 !== null)) && (
+                <div className="ps-paragraph-wrapper">
+                  <p className="ps-paragraph"><EditableField value={slide.psParagraph2 || ''} onChange={(v) => updateSlide(index, { psParagraph2: v })} multiline placeholder="Second paragraph (optional)" /></p>
+                  {editMode && <button type="button" className="remove-field-btn issues-breakdown-remove" onClick={() => updateSlide(index, { psParagraph2: null })}>× Remove paragraph</button>}
+                </div>
+              )}
+              {editMode && (slide.psParagraph2 == null || slide.psParagraph2 === '') && (
+                <button type="button" className="add-field-btn add-field-btn-sm" onClick={() => updateSlide(index, { psParagraph2: 'Add second paragraph...' })}>+ Add paragraph 2</button>
+              )}
+
+              {/* Tabs row */}
+              <div className="ps-tabs-and-bullets">
+                <div className="ps-view-tabs-row">
+                  {editMode && (
+                    <div className="ps-tab-count-edit">
+                      <span className="ps-tab-edit-caption">Tabs</span>
+                      <div className="ps-tab-count-btns">
+                        {[2, 3, 4, 5].map(n => (
+                          <button key={n} type="button" className={`ps-tab-count-btn ${psTabs.length === n ? 'active' : ''}`} onClick={() => setPsTabCount(n)}>{n}</button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className={switcherStyle === 'pill' ? 'comparison-switcher' : 'ps-view-tabs'}>
+                    {psTabs.map((tab, i) => (
+                      <button key={i} type="button" className={`${switcherStyle === 'pill' ? 'comparison-tab' : 'ps-tab'} ${psActiveView === i ? 'active' : ''}`} onClick={() => updateSlide(index, { psActiveView: i })}>
+                        {tab.label || `Tab ${i + 1}`}
+                      </button>
+                    ))}
+                  </div>
+                  {editMode && (
+                    <div className="ps-tab-titles-edit">
+                      <label className="ps-tab-edit-label">
+                        <span className="ps-tab-edit-caption">Tab titles</span>
+                        <span className="ps-tab-edit-fields">
+                          {psTabs.map((tab, i) => (
+                            <input key={i} type="text" value={tab.label ?? ''} onChange={(e) => updatePsTab(i, { label: e.target.value || undefined })} placeholder={`Tab ${i + 1}`} className="ps-tab-edit-input" />
+                          ))}
+                        </span>
+                      </label>
+                    </div>
+                  )}
+                </div>
+                <OptionalField slide={psSlideView} index={index} field="problemLabel" label="Label above bullets" defaultValue="" updateSlideOverride={updateSlideForPsTab}>
+                  <span className="ps-col-label ps-problem-label">
+                    <EditableField value={psActiveTab.columnLabel ?? ''} placeholder={psActiveTab.label || `Tab ${psActiveView + 1}`} onChange={(v) => updatePsTab(psActiveView, { columnLabel: v || undefined })} />
+                  </span>
+                </OptionalField>
+                <DynamicBullets slide={psSlideView} slideIndex={index} field="problemBullets" titleField="problemBulletsTitle" className="problem-issues-wrapper" label="Point" updateSlideOverride={updateSlideForPsTab} />
+              </div>
+            </>
+          )}
+
+          {/* Shared: highlight */}
+          <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+            <div className="problem-highlight">
+              <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+            </div>
+          </OptionalField>
+        </div>
+
+        {/* ── RIGHT SIDE ── */}
+        {slideMode === 'simple' && (
+          <DynamicImages slide={slide} slideIndex={index} field="image" className="split-images-wrapper" />
+        )}
+        {slideMode === 'before-after' && (
+          <DynamicImages slide={slide} slideIndex={index} field={baImageField} maxImages={1} className="split-images-wrapper" />
+        )}
+        {slideMode === 'tabs' && (
+          <div className="split-images-wrapper ps-split-image-wrap">
+            {psTabs.map((tab, tabIdx) => {
+              const tabSrc = (tab.image && (typeof tab.image === 'string' ? tab.image : (Array.isArray(tab.image) ? tab.image[0]?.src : null))) || '';
+              const tabEmbed = tab.embedUrl || '';
+              return (
+                <div key={tabIdx} className={`ps-split-image-panel ${psActiveView === tabIdx ? 'ps-split-image-panel-visible' : ''}`} aria-hidden={psActiveView !== tabIdx}>
+                  {tabEmbed ? (
+                    <div className="ps-img-wrap ps-img-contain">
+                      <div className="ps-img-inner ps-embed-inner">
+                        <iframe src={tabEmbed} title={tab.embedType === 'site' ? 'Site Embed' : 'Figma Embed'} allowFullScreen className={tab.embedType === 'site' ? 'site-embed-iframe' : 'figma-embed-iframe'} />
+                      </div>
+                      {editMode && <div className="ps-img-controls"><button type="button" className="ps-remove-img" onClick={() => updatePsTab(tabIdx, { embedUrl: '' })}>× Remove embed</button></div>}
+                    </div>
+                  ) : tabSrc ? (
+                    <div className="ps-img-wrap ps-img-contain">
+                      <div className="ps-img-inner" onClick={() => { if (editMode) openFileForPsTab(tabIdx); else if (tabSrc && setLightboxImage) setLightboxImage(tabSrc); }}>
+                        <img src={tabSrc} alt={tab.label || `Tab ${tabIdx + 1}`} style={{ objectFit: 'contain' }} />
+                        {editMode && <div className="image-edit-overlay">Click to change</div>}
+                      </div>
+                      {editMode && <div className="ps-img-controls"><button type="button" className="ps-remove-img" onClick={() => updatePsTab(tabIdx, { image: '' })}>× Remove image</button></div>}
+                    </div>
+                  ) : editMode ? (
+                    <div className="ps-media-type-picker">
+                      {psEmbedInput.tabIdx === tabIdx ? (
+                        <div className="figma-embed-input">
+                          <input
+                            type="text"
+                            className="editable-field figma-url-input"
+                            placeholder={psEmbedInput.type === 'site' ? 'Paste website URL to embed...' : 'Paste Figma URL or <iframe> embed code...'}
+                            value={psEmbedInput.draft}
+                            onChange={(e) => setPsEmbedInput({ ...psEmbedInput, draft: e.target.value })}
+                            onKeyDown={(e) => {
+                              if (e.key !== 'Enter') return;
+                              if (psEmbedInput.type === 'site') {
+                                const url = psEmbedInput.draft.trim();
+                                if (url && /^https?:\/\/.+/i.test(url)) { updatePsTab(tabIdx, { embedUrl: url, embedType: 'site', image: '' }); setPsEmbedInput({ tabIdx: null, draft: '', type: 'figma' }); }
+                                else alert('Please enter a valid URL (starting with http:// or https://)');
+                              } else {
+                                const converted = toFigmaEmbedUrlModule(psEmbedInput.draft);
+                                if (converted) { updatePsTab(tabIdx, { embedUrl: converted, image: '' }); setPsEmbedInput({ tabIdx: null, draft: '', type: 'figma' }); }
+                                else alert('Please enter a valid Figma URL or <iframe> embed code');
+                              }
+                            }}
+                            autoFocus
+                          />
+                          <button type="button" className="figma-embed-confirm" onClick={() => {
+                            if (psEmbedInput.type === 'site') {
+                              const url = psEmbedInput.draft.trim();
+                              if (url && /^https?:\/\/.+/i.test(url)) { updatePsTab(tabIdx, { embedUrl: url, embedType: 'site', image: '' }); setPsEmbedInput({ tabIdx: null, draft: '', type: 'figma' }); }
+                              else alert('Please enter a valid URL (starting with http:// or https://)');
+                            } else {
+                              const converted = toFigmaEmbedUrlModule(psEmbedInput.draft);
+                              if (converted) { updatePsTab(tabIdx, { embedUrl: converted, image: '' }); setPsEmbedInput({ tabIdx: null, draft: '', type: 'figma' }); }
+                              else alert('Please enter a valid Figma URL or <iframe> embed code');
+                            }
+                          }}>Embed</button>
+                          <button type="button" className="figma-embed-cancel" onClick={() => setPsEmbedInput({ tabIdx: null, draft: '', type: 'figma' })}>Cancel</button>
+                        </div>
+                      ) : (
+                        <div className="media-type-buttons">
+                          <button type="button" className="media-type-btn" onClick={() => openFileForPsTab(tabIdx)}><span className="media-type-icon">+</span><span>Upload Image</span></button>
+                          <button type="button" className="media-type-btn media-type-figma" onClick={() => setPsEmbedInput({ tabIdx, draft: '', type: 'figma' })}><span className="media-type-icon">◈</span><span>Embed Figma</span></button>
+                          <button type="button" className="media-type-btn media-type-site" onClick={() => setPsEmbedInput({ tabIdx, draft: '', type: 'site' })}><span className="media-type-icon">⧉</span><span>Embed Site</span></button>
+                        </div>
+                      )}
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+});
+
 const CaseStudy = () => {
   const { projectId } = useParams();
   const { editMode, setEditMode, setShowPanel } = useEdit(); // Use global edit mode from context
@@ -566,10 +796,18 @@ const CaseStudy = () => {
   const [parsedPreview, setParsedPreview] = useState(null); // { slides, preview }
   const [lightboxImage, setLightboxImage] = useState(null);
   const [activeTwiImageControl, setActiveTwiImageControl] = useState(null);
-  const [psEmbedInput, setPsEmbedInput] = useState({ tabIdx: null, draft: '' });
   const [savedCaseStudiesList, setSavedCaseStudiesList] = useState([]);
   const [showSavedList, setShowSavedList] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null); // 'saving', 'saved', 'error'
+  const [showImportJSON, setShowImportJSON] = useState(false);
+  const [importJSONText, setImportJSONText] = useState('');
+  const [importError, setImportError] = useState('');
+  const [showSlideSorter, setShowSlideSorter] = useState(true); // slide sorter panel in edit mode
+  const [dragState, setDragState] = useState({ dragging: null, over: null });
+  const [editSlideJSON, setEditSlideJSON] = useState(null); // { index, text, error }
+  const [cardStyle, setCardStyle] = useState(() => {
+    try { return localStorage.getItem(`caseStudy_${projectId}_cardStyle`) || 'outlined'; } catch { return 'outlined'; }
+  });
   const [builderStep, setBuilderStep] = useState(0);
   const [builderData, setBuilderData] = useState({
     projectName: '',
@@ -752,59 +990,80 @@ const CaseStudy = () => {
       setHasUnsavedChanges(false);
     }
   }, [project, editMode]);
+
+  // Auto-save to IndexedDB while editing (debounced, every 3 seconds after a change)
+  useEffect(() => {
+    if (!editMode || !hasLoadedRef.current || !initialProjectRef.current) return;
+    const currentState = JSON.stringify(project);
+    if (currentState === initialProjectRef.current) return; // No changes
+
+    const autoSaveTimer = setTimeout(async () => {
+      try {
+        console.log('[auto-save] Saving to IndexedDB...');
+        const success = await saveCaseStudyData(projectId, project);
+        if (success) {
+          console.log('[auto-save] Saved successfully');
+          setSaveStatus('saved');
+          setTimeout(() => setSaveStatus(null), 1500);
+        }
+      } catch (err) {
+        console.warn('[auto-save] Failed:', err);
+      }
+    }, 3000);
+
+    return () => clearTimeout(autoSaveTimer);
+  }, [project, editMode, projectId]);
   
   // Save before page unloads (backup save)
   useEffect(() => {
-    const handleBeforeUnload = async (e) => {
-      // Try to save before leaving - use sendBeacon for async save
-      if (editMode || hasUnsavedChanges) {
-        try {
-          // Try synchronous localStorage save first (most reliable)
-          const jsonData = JSON.stringify(projectRef.current);
-          const sizeInMB = new Blob([jsonData]).size / (1024 * 1024);
-          if (sizeInMB < 4) {
-            localStorage.setItem(`caseStudy_${projectId}`, jsonData);
-            console.log('[beforeunload] Saved to localStorage');
-          } else {
-            // Data too large, mark for IndexedDB
-            localStorage.setItem(`caseStudy_${projectId}_idb`, 'true');
-            // Try to save minimal version
-            try {
-              const minimalCopy = JSON.parse(JSON.stringify(projectRef.current));
-              const removeImages = (obj) => {
-                if (typeof obj === 'string' && obj.startsWith('data:image')) return '';
-                if (Array.isArray(obj)) return obj.map(item => removeImages(item));
-                if (obj && typeof obj === 'object') {
-                  const result = {};
-                  for (const key in obj) result[key] = removeImages(obj[key]);
-                  return result;
-                }
-                return obj;
-              };
-              const minimal = removeImages(minimalCopy);
-              const minimalJson = JSON.stringify(minimal);
-              const minimalSize = new Blob([minimalJson]).size / (1024 * 1024);
-              if (minimalSize < 2) {
-                localStorage.setItem(`caseStudy_${projectId}_minimal`, minimalJson);
+    const handleBeforeUnload = (e) => {
+      if (!(editMode || hasUnsavedChanges)) return;
+      try {
+        const jsonData = JSON.stringify(projectRef.current);
+        const sizeInMB = new Blob([jsonData]).size / (1024 * 1024);
+        if (sizeInMB < 4) {
+          localStorage.setItem(`caseStudy_${projectId}`, jsonData);
+          console.log('[beforeunload] Saved to localStorage');
+        } else {
+          // Data too large for localStorage — save minimal structure + mark for IndexedDB
+          localStorage.setItem(`caseStudy_${projectId}_idb`, 'true');
+          try {
+            const removeMedia = (obj) => {
+              if (typeof obj === 'string' && (obj.startsWith('data:image') || obj.startsWith('data:video') || obj.startsWith('data:application'))) return '';
+              if (Array.isArray(obj)) return obj.map(item => removeMedia(item));
+              if (obj && typeof obj === 'object') {
+                const result = {};
+                for (const key in obj) result[key] = removeMedia(obj[key]);
+                return result;
               }
-            } catch (err) {
-              console.warn('[beforeunload] Failed to save minimal version:', err);
+              return obj;
+            };
+            const minimal = removeMedia(JSON.parse(jsonData));
+            const minimalJson = JSON.stringify(minimal);
+            if (new Blob([minimalJson]).size / (1024 * 1024) < 2) {
+              localStorage.setItem(`caseStudy_${projectId}_minimal`, minimalJson);
             }
+          } catch (err) {
+            console.warn('[beforeunload] Failed to save minimal version:', err);
           }
-        } catch (e) {
-          console.error('[beforeunload] Failed to save on unload:', e);
         }
+        // Always fire-and-forget IndexedDB save as well (may complete before page closes)
+        saveCaseStudyData(projectId, projectRef.current).catch(() => {});
+      } catch (e) {
+        console.error('[beforeunload] Failed to save on unload:', e);
       }
     };
-    
+
     // Also listen for visibility change (tab switch, minimize, etc.)
     const handleVisibilityChange = () => {
       if (document.hidden && (editMode || hasUnsavedChanges)) {
-        // Page is being hidden, try to save
-        handleBeforeUnload();
+        // Page is being hidden — save to IndexedDB (async, more reliable than beforeunload)
+        saveCaseStudyData(projectId, projectRef.current).catch((err) => {
+          console.warn('[visibilitychange] IndexedDB save failed:', err);
+        });
       }
     };
-    
+
     window.addEventListener('beforeunload', handleBeforeUnload);
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => {
@@ -846,6 +1105,11 @@ const CaseStudy = () => {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+
+    // When exiting edit mode, blur any focused input so keyboard nav works immediately
+    if (!editMode && document.activeElement && document.activeElement !== document.body) {
+      document.activeElement.blur();
+    }
 
     const goToSlide = (direction) => {
       if (isScrollingRef.current) return;
@@ -938,6 +1202,8 @@ const CaseStudy = () => {
       container.removeEventListener('touchend', handleTouchEnd);
       window.removeEventListener('keydown', handleKeyDown);
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      // Reset scrolling lock so navigation isn't stuck after editMode toggle
+      isScrollingRef.current = false;
     };
   }, [totalSlides, editMode]);
 
@@ -994,10 +1260,13 @@ const CaseStudy = () => {
 
   // Click on slide inner → next slide (skip links, buttons, inputs, images)
   const handleSlideAreaClick = useCallback((e) => {
-    if (editMode || totalSlides <= 1 || currentSlide >= totalSlides - 1) return;
-    if (e.target.closest('a, button, input, select, textarea, [contenteditable="true"], img, [data-no-slide-advance]')) return;
+    if (editMode || totalSlides <= 1) return;
+    if (e.target.closest('a, button, input, select, textarea, [contenteditable="true"], [data-no-slide-advance]')) return;
+    // Click navigation bypasses scroll debounce for reliable response
+    isScrollingRef.current = false;
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     goToSlide(1);
-  }, [editMode, totalSlides, currentSlide, goToSlide]);
+  }, [editMode, totalSlides, goToSlide]);
 
   // Edit mode functions
   const updateSlide = useCallback((slideIndex, updates) => {
@@ -1060,6 +1329,40 @@ const CaseStudy = () => {
     });
     setCurrentSlide(toIndex);
   }, [project.slides.length]);
+
+  // Drag-and-drop reorder for slide sorter
+  const handleDragStart = useCallback((index) => {
+    setDragState(prev => ({ ...prev, dragging: index }));
+  }, []);
+
+  const handleDragOver = useCallback((e, index) => {
+    e.preventDefault();
+    setDragState(prev => prev.over !== index ? { ...prev, over: index } : prev);
+  }, []);
+
+  const handleDragEnd = useCallback(() => {
+    const { dragging, over } = dragState;
+    if (dragging !== null && over !== null && dragging !== over) {
+      setProject(prev => {
+        const newSlides = [...prev.slides];
+        const [moved] = newSlides.splice(dragging, 1);
+        newSlides.splice(over, 0, moved);
+        return { ...prev, slides: newSlides };
+      });
+      setCurrentSlide(over);
+    }
+    setDragState({ dragging: null, over: null });
+  }, [dragState]);
+
+  const duplicateSlide = useCallback((index) => {
+    setProject(prev => {
+      const clone = JSON.parse(JSON.stringify(prev.slides[index]));
+      const newSlides = [...prev.slides];
+      newSlides.splice(index + 1, 0, clone);
+      return { ...prev, slides: newSlides };
+    });
+    setCurrentSlide(index + 1);
+  }, []);
 
   // Dynamic slide block CRUD
   const addBlock = useCallback((slideIndex, blockType, afterBlockIndex) => {
@@ -1132,6 +1435,194 @@ const CaseStudy = () => {
       setProject(defaultData);
     }
   }, [projectId]);
+
+  // ── Save to Code (writes to source files via dev API) ──────────
+  const handleSaveToCode = useCallback(async () => {
+    // Strip base64 media to keep JSON files lean
+    const stripMedia = (obj) => {
+      if (typeof obj === 'string' && (obj.startsWith('data:image') || obj.startsWith('data:video') || obj.startsWith('data:application'))) return '';
+      if (Array.isArray(obj)) return obj.map(item => stripMedia(item));
+      if (obj && typeof obj === 'object') {
+        const result = {};
+        for (const key in obj) result[key] = stripMedia(obj[key]);
+        return result;
+      }
+      return obj;
+    };
+
+    const cleanData = stripMedia(JSON.parse(JSON.stringify(project)));
+
+    try {
+      setSaveStatus('saving-code');
+      const res = await fetch('/api/save-case-study', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectId, data: cleanData }),
+      });
+      const result = await res.json();
+      if (result.ok) {
+        setSaveStatus('saved-code');
+        setTimeout(() => setSaveStatus(null), 2500);
+      } else {
+        setSaveStatus('error-code');
+        console.error('Save to code failed:', result.error);
+        setTimeout(() => setSaveStatus(null), 3000);
+      }
+    } catch (err) {
+      setSaveStatus('error-code');
+      console.error('Save to code failed:', err);
+      setTimeout(() => setSaveStatus(null), 3000);
+    }
+  }, [project, projectId]);
+
+  // ── Copy JSON for ChatGPT ──────────────────────────────────────
+  const handleCopyJSON = useCallback(() => {
+    // Strip media (base64 images/videos) from the project data
+    const stripMedia = (obj) => {
+      if (typeof obj === 'string' && (obj.startsWith('data:image') || obj.startsWith('data:video') || obj.startsWith('data:application'))) return '';
+      if (Array.isArray(obj)) return obj.map(item => stripMedia(item));
+      if (obj && typeof obj === 'object') {
+        const result = {};
+        for (const key in obj) result[key] = stripMedia(obj[key]);
+        return result;
+      }
+      return obj;
+    };
+
+    const strippedProject = stripMedia(JSON.parse(JSON.stringify(project)));
+
+    // Build template reference from slideTemplates + slideTemplateDocs
+    const templateRef = Object.keys(slideTemplates).map(key => {
+      const template = slideTemplates[key];
+      const docs = slideTemplateDocs[key];
+      const entry = { type: key, fields: Object.keys(template).filter(k => k !== 'type') };
+      if (docs) {
+        entry.description = docs.shortDescription;
+        entry.whenToUse = docs.whenToUse;
+        if (docs.contentLimits) entry.contentLimits = docs.contentLimits;
+        if (docs.requiredFields) entry.requiredFields = docs.requiredFields;
+        if (docs.optionalFields) entry.optionalFields = docs.optionalFields;
+      }
+      // Include the default template shape so ChatGPT knows the exact field structure
+      entry.defaultShape = template;
+      return entry;
+    });
+
+    const prompt = `You are helping me create a case study presentation for my portfolio website.
+
+## Available Slide Templates
+
+Below are all the slide templates you can use. Each slide in the "slides" array must have a "type" field matching one of these template names, and should only use fields defined in that template's shape.
+
+\`\`\`json
+${JSON.stringify(templateRef, null, 2)}
+\`\`\`
+
+## Current Case Study JSON
+
+Here is the current case study data (images have been stripped — leave image fields as empty strings ""):
+
+\`\`\`json
+${JSON.stringify(strippedProject, null, 2)}
+\`\`\`
+
+## Instructions
+
+Please modify/rewrite the case study JSON above based on my instructions below. Return ONLY valid JSON — the full case study object with the same top-level structure (title, subtitle, category, year, color, slides). Each slide must use one of the template types listed above and follow its field structure exactly. Do not invent new field names.
+
+My instructions: `;
+
+    navigator.clipboard.writeText(prompt).then(() => {
+      setSaveStatus('copied');
+      setTimeout(() => setSaveStatus(null), 2000);
+    }).catch(() => {
+      // Fallback: open in a textarea for manual copy
+      const textarea = document.createElement('textarea');
+      textarea.value = prompt;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      setSaveStatus('copied');
+      setTimeout(() => setSaveStatus(null), 2000);
+    });
+  }, [project]);
+
+  // ── Import JSON from ChatGPT ───────────────────────────────────
+  const handleImportJSON = useCallback(() => {
+    setImportError('');
+    try {
+      // Try to extract JSON from the pasted text (handle markdown code blocks)
+      let jsonText = importJSONText.trim();
+      const codeBlockMatch = jsonText.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
+      if (codeBlockMatch) {
+        jsonText = codeBlockMatch[1].trim();
+      }
+
+      const parsed = JSON.parse(jsonText);
+
+      // Validate structure
+      if (!parsed.slides || !Array.isArray(parsed.slides)) {
+        setImportError('Invalid structure: JSON must have a "slides" array.');
+        return;
+      }
+
+      // Validate each slide has a type that exists in slideTemplates
+      const validTypes = Object.keys(slideTemplates);
+      // Also accept aliases that CaseStudy.jsx renders via textAndImage
+      const typeAliases = ['problem', 'context', 'testing', 'feature'];
+      const allValidTypes = [...validTypes, ...typeAliases];
+      for (let i = 0; i < parsed.slides.length; i++) {
+        const slide = parsed.slides[i];
+        if (!slide.type) {
+          setImportError(`Slide ${i + 1} is missing a "type" field.`);
+          return;
+        }
+        if (!allValidTypes.includes(slide.type)) {
+          setImportError(`Slide ${i + 1} has unknown type "${slide.type}". Valid types: ${validTypes.join(', ')}`);
+          return;
+        }
+      }
+
+      // Merge: keep existing images/media from current project where the new slide has empty strings
+      const mergedSlides = parsed.slides.map((newSlide, i) => {
+        const oldSlide = project.slides[i];
+        if (!oldSlide) return newSlide;
+        // Only merge media fields from old slide if new slide left them empty
+        const merged = { ...newSlide };
+        const mediaKeys = ['image', 'logo', 'beforeImage', 'afterImage', 'images'];
+        mediaKeys.forEach(key => {
+          if (key in merged && key in oldSlide) {
+            if (merged[key] === '' && oldSlide[key] !== '') {
+              merged[key] = oldSlide[key];
+            }
+            if (Array.isArray(merged[key]) && merged[key].length === 0 && Array.isArray(oldSlide[key]) && oldSlide[key].length > 0) {
+              merged[key] = oldSlide[key];
+            }
+          }
+        });
+        return merged;
+      });
+
+      // Apply the imported data
+      setProject(prev => ({
+        ...prev,
+        title: parsed.title || prev.title,
+        subtitle: parsed.subtitle || prev.subtitle,
+        category: parsed.category || prev.category,
+        year: parsed.year || prev.year,
+        color: parsed.color || prev.color,
+        slides: mergedSlides,
+      }));
+
+      setShowImportJSON(false);
+      setImportJSONText('');
+      setImportError('');
+      setCurrentSlide(0);
+    } catch (e) {
+      setImportError(`JSON parse error: ${e.message}`);
+    }
+  }, [importJSONText, project]);
 
   // Case Study Builder - Generate slides from form data
   const generateFromBuilder = () => {
@@ -1207,8 +1698,8 @@ const CaseStudy = () => {
     // Solution/Text slide
     if (d.solution) {
       slides.push({
-        type: 'text',
-        label: 'The solution',
+        type: 'context',
+            label: 'The solution',
         title: 'How we solved it',
         content: d.solution,
       });
@@ -1628,12 +2119,12 @@ const CaseStudy = () => {
       if (matchesKeywords(headingLower, sectionKeywords.research)) {
         const methods = [...bulletItems, ...shortItems].filter(i => i.length > 10);
         slides.push({
-          type: 'text',
-          label: heading || 'Research',
+          type: 'context',
+            label: heading || 'Research',
           title: subtitle || 'Understanding the problem space',
           content: paragraphs.join('\n\n') + (methods.length > 0 ? '\n\n' + methods.map(m => '• ' + m).join('\n') : ''),
         });
-        preview.push({ type: 'text', label: `Research — ${heading}` });
+        preview.push({ type: 'context', label: `Research — ${heading}` });
         continue;
       }
 
@@ -1653,12 +2144,12 @@ const CaseStudy = () => {
           preview.push({ type: 'outcomes', label: `Findings — ${items.length} insights` });
         } else {
           slides.push({
-            type: 'insight',
+            type: 'testimonial',
             label: heading || 'Key insight',
-            insight: items[0] || paragraphs[0] || contentText.slice(0, 200),
-            supporting: paragraphs.length > 1 ? paragraphs[1] : '',
+            quote: items[0] || paragraphs[0] || contentText.slice(0, 200),
+            context: paragraphs.length > 1 ? paragraphs[1] : '',
           });
-          preview.push({ type: 'insight', label: `Insight — ${heading}` });
+          preview.push({ type: 'testimonial', label: `Insight — ${heading}` });
         }
         continue;
       }
@@ -1730,14 +2221,16 @@ const CaseStudy = () => {
 
         if (problemText && solutionText) {
           slides.push({
-            type: 'challengeSolution',
+            type: 'comparison',
+            slideMode: 'tabs',
             label: heading || 'Design solution',
             title: subtitle || 'Challenge & Solution',
-            challenge: problemText,
-            solution: solutionText,
-            image: '',
+            psTabs: [
+              { label: 'Challenge', columnLabel: '', image: '', embedUrl: '', bullets: problemText.split('\n').filter(Boolean), bulletsTitle: '' },
+              { label: 'Solution', columnLabel: '', image: '', embedUrl: '', bullets: solutionText.split('\n').filter(Boolean), bulletsTitle: '' },
+            ],
           });
-          preview.push({ type: 'challengeSolution', label: `Flow — ${heading}` });
+          preview.push({ type: 'comparison', label: `Flow — ${heading}` });
         } else {
           const description = paragraphs.join('\n\n') || allContent.join('\n');
           const bullets = [...bulletItems, ...shortItems].slice(0, 5);
@@ -1788,12 +2281,12 @@ const CaseStudy = () => {
           preview.push({ type: 'outcomes', label: `Outcomes — ${items.length} results` });
         } else {
           slides.push({
-            type: 'text',
+            type: 'context',
             label: heading || 'Outcomes',
             title: subtitle || 'Results',
             content: paragraphs.join('\n\n') || contentText,
           });
-          preview.push({ type: 'text', label: `Outcomes — ${heading}` });
+          preview.push({ type: 'context', label: `Outcomes — ${heading}` });
         }
         continue;
       }
@@ -1814,12 +2307,12 @@ const CaseStudy = () => {
           preview.push({ type: 'outcomes', label: `Learnings — ${items.length} items` });
         } else {
           slides.push({
-            type: 'insight',
+            type: 'testimonial',
             label: heading || 'Key learning',
-            insight: items[0] || paragraphs[0] || allContent[0] || '',
-            supporting: items.length > 1 ? items.slice(1).join('. ') : (paragraphs.length > 1 ? paragraphs[1] : ''),
+            quote: items[0] || paragraphs[0] || allContent[0] || '',
+            context: items.length > 1 ? items.slice(1).join('. ') : (paragraphs.length > 1 ? paragraphs[1] : ''),
           });
-          preview.push({ type: 'insight', label: `Learning — ${heading}` });
+          preview.push({ type: 'testimonial', label: `Learning — ${heading}` });
         }
         continue;
       }
@@ -1841,12 +2334,12 @@ const CaseStudy = () => {
           preview.push({ type: 'process', label: `Strategy — ${items.length} steps` });
         } else {
           slides.push({
-            type: 'text',
+            type: 'context',
             label: heading || 'Strategy',
             title: subtitle || 'Our Approach',
             content: paragraphs.join('\n\n') || allContent.join('\n'),
           });
-          preview.push({ type: 'text', label: `Strategy — ${heading}` });
+          preview.push({ type: 'context', label: `Strategy — ${heading}` });
         }
         continue;
       }
@@ -1868,12 +2361,12 @@ const CaseStudy = () => {
           preview.push({ type: 'process', label: `Process — ${steps.length} steps` });
         } else {
           slides.push({
-            type: 'text',
+            type: 'context',
             label: heading || 'Process',
             title: subtitle || heading,
             content: paragraphs.join('\n\n') || allContent.join('\n'),
           });
-          preview.push({ type: 'text', label: `Process — ${heading}` });
+          preview.push({ type: 'context', label: `Process — ${heading}` });
         }
         continue;
       }
@@ -1910,12 +2403,12 @@ const CaseStudy = () => {
           preview.push({ type: 'outcomes', label: `${heading || 'Key points'} — ${items.length} items` });
         } else {
           slides.push({
-            type: 'text',
+            type: 'context',
             label: heading || 'Content',
             title: subtitle || heading || 'Details',
             content: (paragraphs.join('\n\n') || allContent.join('\n')).slice(0, 1000),
           });
-          preview.push({ type: 'text', label: heading ? `${heading}` : 'Content' });
+          preview.push({ type: 'context', label: heading ? `${heading}` : 'Content' });
         }
       }
     }
@@ -2344,24 +2837,7 @@ const CaseStudy = () => {
 
   // ========== FIGMA EMBED HELPER ==========
   // Accepts: Figma URL, Figma embed URL, or full <iframe> tag (extracts src)
-  const toFigmaEmbedUrl = useCallback((input) => {
-    if (!input || typeof input !== 'string') return null;
-    let trimmed = input.trim();
-
-    // Extract src from <iframe ...> tag
-    const iframeMatch = trimmed.match(/<iframe[^>]+src=["']([^"']+)["']/i);
-    if (iframeMatch) trimmed = iframeMatch[1];
-
-    if (!/^https?:\/\/([\w-]+\.)*figma\.com\//i.test(trimmed)) return null;
-
-    // Already an embed URL
-    if (trimmed.includes('/embed') || trimmed.includes('embed.figma.com')) {
-      if (!trimmed.includes('scaling=')) return trimmed + (trimmed.includes('?') ? '&' : '?') + 'scaling=scale-down-width';
-      return trimmed;
-    }
-
-    return `https://www.figma.com/embed?embed_host=share&scaling=scale-down-width&url=${encodeURIComponent(trimmed)}`;
-  }, []);
+  const toFigmaEmbedUrl = toFigmaEmbedUrlModule;
 
   // ========== DYNAMIC IMAGES COMPONENT ==========
   // Handles single image OR array of images with add/remove and position control (memoized for stable identity)
@@ -2370,6 +2846,7 @@ const CaseStudy = () => {
     const [activePositionControl, setActivePositionControl] = useState(null);
     const [embedInputIndex, setEmbedInputIndex] = useState(null);
     const [embedDraft, setEmbedDraft] = useState('');
+    const [embedInputType, setEmbedInputType] = useState('figma'); // 'figma' or 'site'
     
     // Check if it's an array or single string
     const isArray = Array.isArray(slide[field]);
@@ -2405,8 +2882,10 @@ const CaseStudy = () => {
         updates.src = '';
         updates.isVideo = false;
         updates.isGif = false;
+        if (!updates.embedUrl) updates.embedType = '';
       } else if (updates.src !== undefined && updates.src) {
         updates.embedUrl = '';
+        updates.embedType = '';
       }
       
       if (isArray) {
@@ -2616,9 +3095,9 @@ const CaseStudy = () => {
                     <>
                       <iframe
                         src={imgData.embedUrl}
-                        title="Figma Embed"
+                        title={imgData.embedType === 'site' ? 'Site Embed' : 'Figma Embed'}
                         allowFullScreen
-                        className="figma-embed-iframe"
+                        className={imgData.embedType === 'site' ? 'site-embed-iframe' : 'figma-embed-iframe'}
                       />
                       {editMode && (
                         <div className="embed-edit-controls" onClick={(e) => e.stopPropagation()}>
@@ -2647,8 +3126,8 @@ const CaseStudy = () => {
                       {editMode && <div className="image-edit-overlay">Click to change</div>}
                       {!editMode && !imgData.isVideo && !imgData.isGif && <div className="image-zoom-hint">🔍</div>}
                       
-                      {/* Fill / Fit control - visible for video and GIF */}
-                      {editMode && (imgData.isVideo || imgData.isGif) && (
+                      {/* Fill / Fit control - visible for all media */}
+                      {editMode && imgData.src && (
                         <div className="media-fit-inline" onClick={(e) => e.stopPropagation()}>
                           <button
                             type="button"
@@ -2763,31 +3242,53 @@ const CaseStudy = () => {
                           <input
                             type="text"
                             className="editable-field figma-url-input"
-                            placeholder="Paste Figma URL or <iframe> embed code..."
+                            placeholder={embedInputType === 'figma' ? "Paste Figma URL or <iframe> embed code..." : "Paste website URL to embed..."}
                             value={embedDraft}
                             onChange={(e) => setEmbedDraft(e.target.value)}
                             onKeyDown={(e) => {
                               if (e.key === 'Enter') {
-                                const converted = toFigmaEmbedUrl(embedDraft);
-                                if (converted) {
-                                  updateImage(imgIndex, { embedUrl: converted });
-                                  setEmbedDraft('');
-                                  setEmbedInputIndex(null);
+                                if (embedInputType === 'figma') {
+                                  const converted = toFigmaEmbedUrl(embedDraft);
+                                  if (converted) {
+                                    updateImage(imgIndex, { embedUrl: converted });
+                                    setEmbedDraft('');
+                                    setEmbedInputIndex(null);
+                                  } else {
+                                    alert('Please enter a valid Figma URL or <iframe> embed code');
+                                  }
                                 } else {
-                                  alert('Please enter a valid Figma URL or <iframe> embed code');
+                                  const url = embedDraft.trim();
+                                  if (url && /^https?:\/\/.+/i.test(url)) {
+                                    updateImage(imgIndex, { embedUrl: url, embedType: 'site' });
+                                    setEmbedDraft('');
+                                    setEmbedInputIndex(null);
+                                  } else {
+                                    alert('Please enter a valid URL (starting with http:// or https://)');
+                                  }
                                 }
                               }
                             }}
                             autoFocus
                           />
                           <button type="button" className="figma-embed-confirm" onClick={() => {
-                            const converted = toFigmaEmbedUrl(embedDraft);
-                            if (converted) {
-                              updateImage(imgIndex, { embedUrl: converted });
-                              setEmbedDraft('');
-                              setEmbedInputIndex(null);
+                            if (embedInputType === 'figma') {
+                              const converted = toFigmaEmbedUrl(embedDraft);
+                              if (converted) {
+                                updateImage(imgIndex, { embedUrl: converted });
+                                setEmbedDraft('');
+                                setEmbedInputIndex(null);
+                              } else {
+                                alert('Please enter a valid Figma URL or <iframe> embed code');
+                              }
                             } else {
-                              alert('Please enter a valid Figma URL or <iframe> embed code');
+                              const url = embedDraft.trim();
+                              if (url && /^https?:\/\/.+/i.test(url)) {
+                                updateImage(imgIndex, { embedUrl: url, embedType: 'site' });
+                                setEmbedDraft('');
+                                setEmbedInputIndex(null);
+                              } else {
+                                alert('Please enter a valid URL (starting with http:// or https://)');
+                              }
                             }
                           }}>Embed</button>
                           <button type="button" className="figma-embed-cancel" onClick={() => { setEmbedInputIndex(null); setEmbedDraft(''); }}>Cancel</button>
@@ -2798,9 +3299,13 @@ const CaseStudy = () => {
                             <span className="media-type-icon">+</span>
                             <span>Upload Image</span>
                           </button>
-                          <button type="button" className="media-type-btn media-type-figma" onClick={(e) => { e.stopPropagation(); setEmbedInputIndex(imgIndex); setEmbedDraft(''); }}>
+                          <button type="button" className="media-type-btn media-type-figma" onClick={(e) => { e.stopPropagation(); setEmbedInputType('figma'); setEmbedInputIndex(imgIndex); setEmbedDraft(''); }}>
                             <span className="media-type-icon">◈</span>
                             <span>Embed Figma</span>
+                          </button>
+                          <button type="button" className="media-type-btn media-type-site" onClick={(e) => { e.stopPropagation(); setEmbedInputType('site'); setEmbedInputIndex(imgIndex); setEmbedDraft(''); }}>
+                            <span className="media-type-icon">⧉</span>
+                            <span>Embed Site</span>
                           </button>
                         </div>
                       )}
@@ -2898,6 +3403,85 @@ const CaseStudy = () => {
       </div>
     );
   }, [editMode, updateSlide]);
+
+  // Title Spacing Control — lets users adjust gap between title and content per slide
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const TitleSpacingControl = useMemo(() => ({ slide, slideIndex }) => {
+    if (!editMode) return null;
+
+    const spacing = slide.titleSpacing || 'default';
+
+    const presets = [
+      { label: 'Tight', value: 'tight' },
+      { label: 'Default', value: 'default' },
+      { label: 'Relaxed', value: 'relaxed' },
+      { label: 'Loose', value: 'loose' },
+    ];
+
+    return (
+      <div className="title-spacing-control">
+        <span className="spacing-label">Spacing:</span>
+        <div className="spacing-presets">
+          {presets.map(preset => (
+            <button
+              key={preset.value}
+              className={`spacing-preset ${spacing === preset.value ? 'active' : ''}`}
+              onClick={() => updateSlide(slideIndex, { titleSpacing: preset.value })}
+            >
+              {preset.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }, [editMode, updateSlide]);
+
+  // Card variant control — per-slide card style (default / minimal / clean) + show/hide numbers
+  const CardVariantControl = useMemo(() => ({ slide, slideIndex }) => {
+    if (!editMode) return null;
+    const variant = slide.cardVariant || 'default';
+    const showNumbers = slide.showNumbers !== false;
+    const options = [
+      { label: 'Default', value: 'default' },
+      { label: 'Minimal', value: 'minimal' },
+      { label: 'Clean', value: 'clean' },
+    ];
+    return (
+      <div className="card-variant-control">
+        <span className="spacing-label">Cards:</span>
+        <div className="spacing-presets">
+          {options.map(opt => (
+            <button
+              key={opt.value}
+              className={`spacing-preset ${variant === opt.value ? 'active' : ''}`}
+              onClick={() => updateSlide(slideIndex, { cardVariant: opt.value })}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+        <button
+          className={`spacing-preset ${showNumbers ? 'active' : ''}`}
+          onClick={() => updateSlide(slideIndex, { showNumbers: !showNumbers })}
+          title={showNumbers ? 'Hide numbers' : 'Show numbers'}
+        >
+          {showNumbers ? '#' : 'No #'}
+        </button>
+      </div>
+    );
+  }, [editMode, updateSlide]);
+
+  // Helper to get title spacing CSS variable
+  const getTitleSpacingStyle = (slide) => {
+    const spacingMap = {
+      tight: '0.75rem',
+      default: '1.5rem',
+      relaxed: '2.5rem',
+      loose: '3.5rem',
+    };
+    const value = spacingMap[slide.titleSpacing] || spacingMap.default;
+    return { '--slide-title-gap': value };
+  };
 
   // Helper to get split grid style based on ratio
   const getSplitStyle = (slide) => {
@@ -3029,10 +3613,18 @@ const CaseStudy = () => {
   };
 
   const renderSlide = (slide, index) => {
+    const spacingStyle = getTitleSpacingStyle(slide);
+    const titleSpacingControl = <TitleSpacingControl slide={slide} slideIndex={index} />;
     const slideControls = editMode && (
       <div className="slide-edit-controls">
         <button onClick={() => moveSlide(index, -1)} disabled={index === 0}>↑</button>
         <button onClick={() => moveSlide(index, 1)} disabled={index === totalSlides - 1}>↓</button>
+        <button onClick={() => setEditSlideJSON({ index, text: JSON.stringify(slide, null, 2), error: '' })} className="json-edit" title="Edit slide JSON">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M8 3H7a2 2 0 00-2 2v5a2 2 0 01-2 2 2 2 0 012 2v5a2 2 0 002 2h1" />
+            <path d="M16 3h1a2 2 0 012 2v5a2 2 0 002 2 2 2 0 00-2 2v5a2 2 0 01-2 2h-1" />
+          </svg>
+        </button>
         <button onClick={() => deleteSlide(index)} className="delete">×</button>
         <button onClick={() => setShowTemplates(true)} className="add">+</button>
       </div>
@@ -3083,8 +3675,9 @@ const CaseStudy = () => {
         );
 
         return (
-          <div className="slide slide-intro" key={index}>
+          <div className="slide slide-intro" key={index} style={spacingStyle}>
             {slideControls}
+            {titleSpacingControl}
             <SplitRatioControl slide={slide} slideIndex={index} />
             <div className="slide-inner slide-intro-layout" style={getSplitStyle(slide)}>
 
@@ -3197,8 +3790,9 @@ const CaseStudy = () => {
       
       case 'info':
         return (
-          <div className="slide slide-info" key={index}>
+          <div className="slide slide-info" key={index} style={spacingStyle}>
             {slideControls}
+            {titleSpacingControl}
             <div className="slide-inner">
               <OptionalField slide={slide} index={index} field="label" label="Section Label" defaultValue="Project info">
                 <span className="slide-label">
@@ -3250,72 +3844,35 @@ const CaseStudy = () => {
           </div>
         );
       
-      case 'text':
-        return (
-          <div className="slide slide-text" key={index}>
-            {slideControls}
-            <div className="slide-inner">
-              <span className="slide-label">
-                <EditableField
-                  value={slide.label}
-                  onChange={(v) => updateSlide(index, { label: v })}
-                />
-              </span>
-              <h2 className="text-title">
-                <EditableField
-                  value={slide.title}
-                  onChange={(v) => updateSlide(index, { title: v })}
-                  allowLineBreaks
-                />
-              </h2>
-              <DynamicContent slide={slide} slideIndex={index} field="content" className="text-content-wrapper" />
-              <DynamicContent slide={slide} slideIndex={index} field="paragraphs" className="text-paragraphs-wrapper" maxParagraphs={5} optional />
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="text-bullets" label="Bullet" />
-              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                <div className="text-highlight">
-                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                </div>
-              </OptionalField>
-              <SlideCta slide={slide} index={index} />
-            </div>
-          </div>
-        );
-      
+      case 'media':
       case 'image':
         return (
-          <div className="slide slide-image" key={index}>
+          <div className="slide slide-image" key={index} style={spacingStyle}>
             {slideControls}
+            {titleSpacingControl}
             <div className="slide-inner">
               <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="Section Label">
                 <span className="slide-label">
                   <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
                 </span>
               </OptionalField>
-              <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="Image Title">
-                <h2 className="image-title">
-                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
-                </h2>
-              </OptionalField>
-              <DynamicContent slide={slide} slideIndex={index} field="description" className="image-description-wrapper" maxParagraphs={3} optional />
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="image-bullets-wrapper" label="Bullet" />
-              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                <div className="image-highlight">
-                  <EditableField
-                    value={slide.highlight}
-                    onChange={(v) => updateSlide(index, { highlight: v })}
-                    multiline
-                  />
-                </div>
-              </OptionalField>
-              <DynamicImages slide={slide} slideIndex={index} field="image" captionField="caption" className="image-gallery-wrapper" />
+              <div className="media-content">
+                <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="Image Title">
+                  <h2 className="image-title">
+                    <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
+                  </h2>
+                </OptionalField>
+                <DynamicImages slide={slide} slideIndex={index} field="image" captionField="caption" className="image-gallery-wrapper" />
+              </div>
             </div>
           </div>
         );
 
       case 'projectShowcase':
         return (
-          <div className="slide slide-project-showcase" key={index}>
+          <div className="slide slide-project-showcase" key={index} style={spacingStyle}>
             {slideControls}
+            {titleSpacingControl}
             <SplitRatioControl slide={slide} slideIndex={index} />
             <div className="slide-inner">
               <div className="project-showcase-layout" style={getSplitStyle(slide)}>
@@ -3530,127 +4087,12 @@ const CaseStudy = () => {
           </div>
         );
 
-      case 'goalsShowcase':
-        return (
-          <div className="slide slide-goals-showcase" key={index}>
-            {slideControls}
-            <SplitRatioControl slide={slide} slideIndex={index} />
-            <div className="slide-inner">
-              <div className="goals-showcase-layout" style={getSplitStyle(slide)}>
-                {/* Left Panel - Info */}
-                <div className="goals-showcase-info">
-                  {(slide.slideNumber || editMode) && (
-                    <div className="goals-showcase-number-wrapper">
-                      {slide.slideNumber ? (
-                        <div className="goals-showcase-number">
-                          <EditableField
-                            value={slide.slideNumber}
-                            onChange={(v) => updateSlide(index, { slideNumber: v })}
-                          />
-                        </div>
-                      ) : null}
-                      {editMode && (
-                        <button
-                          className="toggle-number-btn"
-                          onClick={() => updateSlide(index, { slideNumber: slide.slideNumber ? '' : '01' })}
-                        >
-                          {slide.slideNumber ? '× Remove' : '+ Add Number'}
-                        </button>
-                      )}
-                    </div>
-                  )}
-                  <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="Project Goals">
-                    <h2 className="goals-showcase-title">
-                      <EditableField
-                        value={slide.title}
-                        onChange={(v) => updateSlide(index, { title: v })}
-                        allowLineBreaks
-                      />
-                    </h2>
-                  </OptionalField>
-                  <OptionalField slide={slide} index={index} field="description" label="Description" defaultValue="What we aimed to achieve with this project." multiline>
-                    <p className="goals-showcase-description">
-                      <EditableField
-                        value={slide.description}
-                        onChange={(v) => updateSlide(index, { description: v })}
-                        multiline
-                      />
-                    </p>
-                  </OptionalField>
-                  {/* Goals List */}
-                  <div className="goals-showcase-goals">
-                    {(slide.goals || []).map((goal, i) => (
-                      <div key={i} className="goal-item">
-                        <span className="goal-number">{String(i + 1).padStart(2, '0')}</span>
-                        <div className="goal-content">
-                          <h3 className="goal-title">
-                            <EditableField
-                              value={goal.title}
-                              onChange={(v) => {
-                                const goals = [...(slide.goals || [])];
-                                goals[i] = { ...goals[i], title: v };
-                                updateSlide(index, { goals });
-                              }}
-                            />
-                          </h3>
-                          <p className="goal-description">
-                            <EditableField
-                              value={goal.description}
-                              onChange={(v) => {
-                                const goals = [...(slide.goals || [])];
-                                goals[i] = { ...goals[i], description: v };
-                                updateSlide(index, { goals });
-                              }}
-                              multiline
-                            />
-                          </p>
-                        </div>
-                        {editMode && slide.goals?.length > 1 && (
-                          <button
-                            className="remove-goal-btn"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              const goals = slide.goals.filter((_, idx) => idx !== i);
-                              updateSlide(index, { goals });
-                            }}
-                          >
-                            ×
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                    {editMode && (
-                      <button
-                        className="add-goal-btn"
-                        onClick={() => {
-                          const goals = [...(slide.goals || []), { title: 'New Goal', description: 'Goal description' }];
-                          updateSlide(index, { goals });
-                        }}
-                      >
-                        + Add Goal
-                      </button>
-                    )}
-                  </div>
-                  <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                    <div className="goals-showcase-highlight">
-                      <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                    </div>
-                  </OptionalField>
-                </div>
-                {/* Right Panel - Image */}
-                <div className="goals-showcase-visual">
-                  <DynamicImages slide={slide} slideIndex={index} field="image" className="goals-showcase-dynamic" />
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      
       case 'stats':
       case 'results':
         return (
-          <div className={`slide slide-stats ${slide.type === 'results' ? 'results' : ''}`} key={index}>
+          <div className={`slide slide-stats ${slide.type === 'results' ? 'results' : ''}`} key={index} style={spacingStyle}>
             {slideControls}
+            {titleSpacingControl}
             <div className="slide-inner">
               <span className="slide-label">
                 <EditableField
@@ -3666,8 +4108,24 @@ const CaseStudy = () => {
                 />
               </h2>
               <DynamicContent slide={slide} slideIndex={index} field="description" className="stats-description-wrapper" maxParagraphs={3} optional />
+              {editMode && (
+                <div className="grid-layout-control">
+                  <span className="grid-control-label">Grid Columns:</span>
+                  <div className="grid-control-buttons">
+                    {[1, 2, 3, 4].map(cols => (
+                      <button
+                        key={cols}
+                        className={`grid-col-btn ${(slide.gridColumns || 3) === cols ? 'active' : ''}`}
+                        onClick={() => updateSlide(index, { gridColumns: cols })}
+                      >
+                        {cols}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               {slide.stats?.length > 0 && (
-              <div className="stats-grid">
+              <div className="stats-grid" style={{ gridTemplateColumns: `repeat(${slide.gridColumns || 3}, 1fr)` }}>
                 {slide.stats.map((stat, i) => (
                   <div key={i} className="stat-item">
                     <span className="stat-value" style={{ '--color': project.color }}>
@@ -3708,62 +4166,34 @@ const CaseStudy = () => {
       case 'context':
       case 'problem':
       case 'testing':
-      case 'feature': {
-        // Single split template (based on problem): label, title, body, bullets, optional conclusion, highlight, image
-        const t = slide.type;
-        const contentField = t === 'feature' ? 'description' : 'content';
-        const bulletsField = t === 'problem' ? 'issues' : (t === 'testing' ? 'layouts' : 'bullets');
-        const bulletsTitleField = t === 'problem' ? 'issuesTitle' : (t === 'testing' ? 'layoutsTitle' : 'bulletsTitle');
-        const bulletsLabel = t === 'problem' ? 'Issue' : (t === 'testing' ? 'Option' : 'Bullet');
-        const showConclusion = t === 'problem' || t === 'testing';
+      case 'feature':
+      case 'textAndImage':
+        // Unified with comparison — ComparisonSlide handles both simple and before/after modes
         return (
-          <div className="slide slide-problem" key={index}>
-            {slideControls}
-            <SplitRatioControl slide={slide} slideIndex={index} />
-            <div className="slide-inner slide-split" style={getSplitStyle(slide)}>
-              <div className="split-content">
-                <span className="slide-label">
-                  <EditableField
-                    value={slide.label}
-                    onChange={(v) => updateSlide(index, { label: v })}
-                  />
-                </span>
-                <h2 className="problem-title">
-                  <EditableField
-                    value={slide.title}
-                    onChange={(v) => updateSlide(index, { title: v })}
-                    allowLineBreaks
-                  />
-                </h2>
-                <DynamicContent slide={slide} slideIndex={index} field={contentField} className="problem-text-wrapper" />
-                <DynamicBullets slide={slide} slideIndex={index} field={bulletsField} titleField={bulletsTitleField} className="problem-issues-wrapper" label={bulletsLabel} />
-                <DynamicBullets slide={slide} slideIndex={index} field="bullets2" titleField="bullets2Title" className="problem-issues-wrapper problem-bullets-second" label="Bullet" />
-                {showConclusion && (
-                  <OptionalField slide={slide} index={index} field="conclusion" label="Conclusion" defaultValue="Add conclusion...">
-                    <p className="problem-conclusion">
-                      <EditableField
-                        value={slide.conclusion}
-                        onChange={(v) => updateSlide(index, { conclusion: v })}
-                      />
-                    </p>
-                  </OptionalField>
-                )}
-                <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                  <div className="problem-highlight">
-                    <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                  </div>
-                </OptionalField>
-              </div>
-              <DynamicImages slide={slide} slideIndex={index} field="image" className="split-images-wrapper" />
-            </div>
-          </div>
+          <ComparisonSlide
+            key={index}
+            slide={slide}
+            index={index}
+            slideControls={slideControls}
+            editMode={editMode}
+            updateSlide={updateSlide}
+            OptionalField={OptionalField}
+            DynamicImages={DynamicImages}
+            DynamicBullets={DynamicBullets}
+            DynamicContent={DynamicContent}
+            SplitRatioControl={SplitRatioControl}
+            setLightboxImage={setLightboxImage}
+            spacingStyle={spacingStyle}
+            titleSpacingControl={titleSpacingControl}
+          />
         );
-      }
 
       case 'quotes':
         return (
-          <div className="slide slide-quotes" key={index}>
+          <div className="slide slide-quotes" key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'}>
             {slideControls}
+            {titleSpacingControl}
+            <CardVariantControl slide={slide} slideIndex={index} />
             <div className="slide-inner">
               <span className="slide-label">
                 <EditableField
@@ -3841,8 +4271,10 @@ const CaseStudy = () => {
 
       case 'goals':
         return (
-          <div className="slide slide-goals" key={index}>
+          <div className="slide slide-goals" key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'}>
             {slideControls}
+            {titleSpacingControl}
+            <CardVariantControl slide={slide} slideIndex={index} />
             <div className="slide-inner">
               <div className="goals-content">
                 <span className="slide-label">
@@ -3908,7 +4340,7 @@ const CaseStudy = () => {
                         >
                         {slide.goals.map((goal, i) => (
                           <div key={i} className="goal-item">
-                            <span className="goal-number">{i + 1}</span>
+                            {slide.showNumbers !== false && <span className="goal-number">{i + 1}</span>}
                             <div className="goal-content">
                               <span className="goal-title-text">
                                 <EditableField
@@ -3982,15 +4414,32 @@ const CaseStudy = () => {
                           className="kpis-grid"
                           style={{ ['--kpis-cols']: slide.kpisGridColumns ?? 3 }}
                         >
-                          {slide.kpis.map((kpi, i) => (
-                            <div key={i} className="kpi-card">
-                              <EditableField
-                                value={kpi}
-                                onChange={(v) => updateSlideItem(index, 'kpis', i, v)}
-                              />
-                              <ArrayItemControls onRemove={() => removeArrayItem(index, 'kpis', i)} />
-                            </div>
-                          ))}
+                          {slide.kpis.map((kpi, i) => {
+                            const isObj = typeof kpi === 'object' && kpi !== null;
+                            const kpiText = isObj ? kpi.text : kpi;
+                            const kpiDesc = isObj ? kpi.description : '';
+                            return (
+                              <div key={i} className="kpi-card">
+                                <EditableField
+                                  value={kpiText || ''}
+                                  onChange={(v) => updateSlideItem(index, 'kpis', i, isObj ? { ...kpi, text: v } : v)}
+                                />
+                                {(kpiDesc || editMode) && (
+                                  <span className="kpi-card-desc">
+                                    <EditableField
+                                      value={kpiDesc || ''}
+                                      onChange={(v) => {
+                                        const obj = isObj ? { ...kpi, description: v } : { text: kpiText, description: v };
+                                        updateSlideItem(index, 'kpis', i, obj);
+                                      }}
+                                      placeholder="Description (optional)"
+                                    />
+                                  </span>
+                                )}
+                                <ArrayItemControls onRemove={() => removeArrayItem(index, 'kpis', i)} />
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
@@ -4024,8 +4473,10 @@ const CaseStudy = () => {
 
       case 'outcomes':
         return (
-          <div className="slide slide-outcomes" key={index}>
+          <div className="slide slide-outcomes" key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'}>
             {slideControls}
+            {titleSpacingControl}
+            <CardVariantControl slide={slide} slideIndex={index} />
             <div className="slide-inner">
               <span className="slide-label">
                 <EditableField
@@ -4044,6 +4495,7 @@ const CaseStudy = () => {
               <div className="outcomes-grid">
                 {slide.outcomes.map((outcome, i) => (
                   <div key={i} className="outcome-item">
+                      {slide.showNumbers !== false && <div className="outcome-number">{String(i + 1).padStart(2, '0')}</div>}
                       <h3 className="outcome-title">
                         <EditableField
                           value={outcome.title}
@@ -4083,8 +4535,9 @@ const CaseStudy = () => {
       
       case 'end':
         return (
-          <div className="slide slide-end" key={index}>
+          <div className="slide slide-end" key={index} style={spacingStyle}>
             {slideControls}
+            {titleSpacingControl}
             <div className="slide-inner">
               <h2 className="end-title">
                 <EditableField
@@ -4122,51 +4575,30 @@ const CaseStudy = () => {
       
       case 'comparison':
         return (
-          <div className="slide slide-comparison" key={index}>
-            {slideControls}
-            <div className="slide-inner">
-              <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="Before & after">
-                <span className="slide-label">
-                  <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-                </span>
-              </OptionalField>
-              <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="The Transformation">
-                <h2 className="comparison-title">
-                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
-                </h2>
-              </OptionalField>
-              <div className="comparison-grid">
-                <div className="comparison-item">
-                  <OptionalField slide={slide} index={index} field="beforeLabel" label="Before Label" defaultValue="Before">
-                    <span className="comparison-label">
-                      <EditableField value={slide.beforeLabel} onChange={(v) => updateSlide(index, { beforeLabel: v })} />
-                    </span>
-                  </OptionalField>
-                  <DynamicImages slide={slide} slideIndex={index} field="beforeImage" maxImages={1} className="comparison-dynamic" />
-                </div>
-                <div className="comparison-item">
-                  <OptionalField slide={slide} index={index} field="afterLabel" label="After Label" defaultValue="After">
-                    <span className="comparison-label">
-                      <EditableField value={slide.afterLabel} onChange={(v) => updateSlide(index, { afterLabel: v })} />
-                    </span>
-                  </OptionalField>
-                  <DynamicImages slide={slide} slideIndex={index} field="afterImage" maxImages={1} className="comparison-dynamic" />
-                </div>
-              </div>
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="comparison-bullets" label="Bullet" />
-              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                <div className="comparison-highlight">
-                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                </div>
-              </OptionalField>
-            </div>
-          </div>
+          <ComparisonSlide
+            key={index}
+            slide={slide}
+            index={index}
+            slideControls={slideControls}
+            editMode={editMode}
+            updateSlide={updateSlide}
+            OptionalField={OptionalField}
+            DynamicImages={DynamicImages}
+            DynamicBullets={DynamicBullets}
+            DynamicContent={DynamicContent}
+            SplitRatioControl={SplitRatioControl}
+            setLightboxImage={setLightboxImage}
+            spacingStyle={spacingStyle}
+            titleSpacingControl={titleSpacingControl}
+          />
         );
 
       case 'process':
         return (
-          <div className="slide slide-process" key={index}>
+          <div className="slide slide-process" key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'}>
             {slideControls}
+            {titleSpacingControl}
+            <CardVariantControl slide={slide} slideIndex={index} />
             <div className="slide-inner">
               <span className="slide-label">
                 <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
@@ -4177,7 +4609,7 @@ const CaseStudy = () => {
               <div className="process-steps">
                 {slide.steps?.map((step, i) => (
                   <div key={i} className="process-step">
-                    <span className="step-number">{step.number}</span>
+                    {slide.showNumbers !== false && <span className="step-number">{step.number}</span>}
                     <div className="step-content">
                       <h3 className="step-title">
                         <EditableField value={step.title} onChange={(v) => updateSlideItem(index, 'steps', i, { ...step, title: v })} />
@@ -4202,42 +4634,11 @@ const CaseStudy = () => {
           </div>
         );
 
-      case 'twoColumn':
-        return (
-          <div className="slide slide-two-column" key={index}>
-            {slideControls}
-            <div className="slide-inner">
-              <span className="slide-label">
-                <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-              </span>
-              <h2 className="two-column-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
-              </h2>
-              <DynamicContent slide={slide} slideIndex={index} field="description" className="two-column-description-wrapper" maxParagraphs={2} optional />
-              <div className="two-column-grid">
-                <div className="column">
-                  <h3><EditableField value={slide.leftTitle} onChange={(v) => updateSlide(index, { leftTitle: v })} /></h3>
-                  <p><EditableField value={slide.leftContent} onChange={(v) => updateSlide(index, { leftContent: v })} multiline /></p>
-                </div>
-                <div className="column">
-                  <h3><EditableField value={slide.rightTitle} onChange={(v) => updateSlide(index, { rightTitle: v })} /></h3>
-                  <p><EditableField value={slide.rightContent} onChange={(v) => updateSlide(index, { rightContent: v })} multiline /></p>
-                </div>
-              </div>
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="two-column-bullets" label="Bullet" />
-              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                <div className="two-column-highlight">
-                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                </div>
-              </OptionalField>
-            </div>
-          </div>
-        );
-
       case 'timeline':
         return (
-          <div className="slide slide-timeline" key={index}>
+          <div className="slide slide-timeline" key={index} style={spacingStyle}>
             {slideControls}
+            {titleSpacingControl}
             <div className="slide-inner">
               <span className="slide-label">
                 <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
@@ -4274,8 +4675,9 @@ const CaseStudy = () => {
 
       case 'testimonial':
         return (
-          <div className="slide slide-testimonial" key={index}>
+          <div className="slide slide-testimonial" key={index} style={spacingStyle}>
             {slideControls}
+            {titleSpacingControl}
             <div className="slide-inner">
               <OptionalField slide={slide} index={index} field="label" label="Section Label" defaultValue="Testimonial">
                 <span className="slide-label">
@@ -4302,139 +4704,11 @@ const CaseStudy = () => {
           </div>
         );
 
-      case 'insight':
-        return (
-          <div className="slide slide-insight" key={index}>
-            {slideControls}
-            <div className="slide-inner">
-              <span className="slide-label">
-                <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-              </span>
-              <p className="insight-text">
-                <EditableField value={slide.insight} onChange={(v) => updateSlide(index, { insight: v })} multiline />
-              </p>
-              <OptionalField slide={slide} index={index} field="supporting" label="Supporting Text" defaultValue="Add supporting text..." multiline>
-                <p className="insight-supporting">
-                  <EditableField value={slide.supporting} onChange={(v) => updateSlide(index, { supporting: v })} multiline />
-                </p>
-              </OptionalField>
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="insight-bullets" label="Bullet" />
-              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                <div className="insight-highlight">
-                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                </div>
-              </OptionalField>
-            </div>
-          </div>
-        );
-
-      case 'challengeSolution':
-        return (
-          <div className="slide slide-challenge-solution" key={index}>
-            {slideControls}
-            <div className="slide-inner">
-              <span className="slide-label">
-                <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-              </span>
-              <h2 className="cs-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
-              </h2>
-              <div className="cs-rows">
-                {/* Challenge row */}
-                <div className="cs-row challenge-row">
-                  <div className="cs-block challenge">
-                    <h3>Challenge</h3>
-                    <p><EditableField value={slide.challenge} onChange={(v) => updateSlide(index, { challenge: v })} multiline /></p>
-                    <DynamicBullets slide={slide} slideIndex={index} field="challengeBullets" titleField="challengeBulletsTitle" className="cs-bullets" label="Point" />
-                  </div>
-                  <div className="cs-image-area">
-                    <DynamicImages slide={slide} slideIndex={index} field="challengeImage" className="cs-dynamic-image" />
-                  </div>
-                </div>
-                {/* Solution row */}
-                <div className="cs-row solution-row">
-                  <div className="cs-block solution">
-                    <h3>Solution</h3>
-                    <p><EditableField value={slide.solution} onChange={(v) => updateSlide(index, { solution: v })} multiline /></p>
-                    <DynamicBullets slide={slide} slideIndex={index} field="solutionBullets" titleField="solutionBulletsTitle" className="cs-bullets" label="Point" />
-                  </div>
-                  <div className="cs-image-area">
-                    <DynamicImages slide={slide} slideIndex={index} field="solutionImage" className="cs-dynamic-image" />
-                  </div>
-                </div>
-              </div>
-              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                <div className="cs-highlight">
-                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                </div>
-              </OptionalField>
-            </div>
-          </div>
-        );
-
-      case 'solutionShowcase': {
-        return (
-          <div className="slide slide-solution-showcase" key={index}>
-            {slideControls}
-            <div className="slide-inner">
-              {/* Header */}
-              <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="The solution">
-                <span className="slide-label">
-                  <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-                </span>
-              </OptionalField>
-              <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="Redesigning the experience">
-                <h2 className="showcase-title">
-                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
-                </h2>
-              </OptionalField>
-              
-              {/* Two Column Images */}
-              <div className="showcase-columns">
-                {/* Problem/Before Images */}
-                <div className="showcase-column problem-column">
-                  <DynamicImages slide={slide} slideIndex={index} field="problemImages" className="showcase-dynamic" />
-                  
-                  {/* Problem Description */}
-                  <OptionalField slide={slide} index={index} field="problemLabel" label="Problem Label" defaultValue="Problem:">
-                    <span className="showcase-desc-label problem-label">
-                      <EditableField value={slide.problemLabel} onChange={(v) => updateSlide(index, { problemLabel: v })} />
-                    </span>
-                  </OptionalField>
-                  <OptionalField slide={slide} index={index} field="problemText" label="Problem Text" defaultValue="Describe the main problem." multiline>
-                    <p className="showcase-desc-text">
-                      <EditableField value={slide.problemText} onChange={(v) => updateSlide(index, { problemText: v })} multiline />
-                    </p>
-                  </OptionalField>
-                </div>
-                
-                {/* Solution/After Images */}
-                <div className="showcase-column solution-column">
-                  <DynamicImages slide={slide} slideIndex={index} field="solutionImages" className="showcase-dynamic" />
-                  
-                  {/* Solution Description */}
-                  <OptionalField slide={slide} index={index} field="solutionLabel" label="Solution Label" defaultValue="Solution:">
-                    <span className="showcase-desc-label solution-label">
-                      <EditableField value={slide.solutionLabel} onChange={(v) => updateSlide(index, { solutionLabel: v })} />
-                    </span>
-                  </OptionalField>
-                  <DynamicBullets slide={slide} slideIndex={index} field="solutionPoints" titleField="solutionPointsTitle" className="showcase-solution-bullets" label="Point" />
-                </div>
-              </div>
-              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                <div className="showcase-highlight">
-                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                </div>
-              </OptionalField>
-            </div>
-          </div>
-        );
-      }
-
       case 'tools':
         return (
-          <div className="slide slide-tools" key={index}>
+          <div className="slide slide-tools" key={index} style={spacingStyle}>
             {slideControls}
+            {titleSpacingControl}
             <div className="slide-inner">
               <span className="slide-label">
                 <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
@@ -4464,68 +4738,13 @@ const CaseStudy = () => {
           </div>
         );
 
-      case 'video':
-        return (
-          <div className="slide slide-video" key={index}>
-            {slideControls}
-            <div className="slide-inner">
-              <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="Demo">
-                <span className="slide-label">
-                  <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-                </span>
-              </OptionalField>
-              <OptionalField slide={slide} index={index} field="title" label="Title" defaultValue="See It In Action">
-                <h2 className="video-title">
-                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
-                </h2>
-              </OptionalField>
-              <DynamicContent slide={slide} slideIndex={index} field="description" className="video-description-wrapper" maxParagraphs={2} optional />
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="video-bullets" label="Bullet" />
-              <div className="video-wrapper">
-                {slide.videoUrl ? (
-                  <iframe 
-                    src={slide.videoUrl} 
-                    title={slide.title}
-                    allowFullScreen
-                  />
-                ) : (
-                  <div className="video-placeholder">
-                    <span className="video-icon">▶</span>
-                    <span>Video URL:</span>
-                    {editMode ? (
-                      <input 
-                        type="text" 
-                        className="editable-field"
-                        placeholder="Paste YouTube/Vimeo embed URL"
-                        value={slide.videoUrl || ''}
-                        onChange={(e) => updateSlide(index, { videoUrl: e.target.value })}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    ) : (
-                      <span>No video set</span>
-                    )}
-                  </div>
-                )}
-              </div>
-              <OptionalField slide={slide} index={index} field="caption" label="Caption" defaultValue="Video walkthrough of the final product.">
-                <p className="video-caption">
-                  <EditableField value={slide.caption} onChange={(v) => updateSlide(index, { caption: v })} />
-                </p>
-              </OptionalField>
-              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                <div className="video-highlight">
-                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                </div>
-              </OptionalField>
-            </div>
-          </div>
-        );
-
       // === ISSUES BREAKDOWN - "what started to break" style ===
       case 'issuesBreakdown':
         return (
-          <div className="slide slide-issues-breakdown" key={index}>
+          <div className="slide slide-issues-breakdown" key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'}>
             {slideControls}
+            {titleSpacingControl}
+            <CardVariantControl slide={slide} slideIndex={index} />
             <div className="slide-inner">
               <div className="issues-breakdown-content">
                 <span className="slide-label">
@@ -4608,7 +4827,7 @@ const CaseStudy = () => {
                   >
                     {slide.issues.map((issue, i) => (
                       <div key={i} className="issue-breakdown-card">
-                        <div className="issue-breakdown-number">{issue.number || i + 1}</div>
+                        {slide.showNumbers !== false && <div className="issue-breakdown-number">{issue.number || i + 1}</div>}
                         <div className="issue-breakdown-content">
                           <h4 className="issue-breakdown-heading">
                             <EditableField 
@@ -4698,46 +4917,12 @@ const CaseStudy = () => {
           </div>
         );
 
-      // === OLD EXPERIENCE - showing the previous state ===
-      case 'oldExperience':
-        return (
-          <div className="slide slide-old-experience" key={index}>
-            {slideControls}
-            <div className="slide-inner">
-              <span className="slide-label">
-                <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-              </span>
-              <h2 className="old-experience-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
-              </h2>
-              <DynamicContent slide={slide} slideIndex={index} field="description" className="old-experience-description-wrapper" maxParagraphs={2} optional />
-              
-              <div className="old-experience-content">
-                <span className="old-experience-subtitle">
-                  <EditableField value={slide.subtitle || 'Explanation'} onChange={(v) => updateSlide(index, { subtitle: v })} />
-                </span>
-                <p className="old-experience-text">
-                  <EditableField value={slide.content} onChange={(v) => updateSlide(index, { content: v })} multiline />
-                </p>
-                
-                <DynamicBullets slide={slide} slideIndex={index} field="issues" titleField="issuesTitle" className="old-experience-issues-wrapper" label="Issue" />
-                
-                <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add key insight here" multiline>
-                  <div className="old-experience-highlight">
-                    <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                  </div>
-                </OptionalField>
-              </div>
-              <SlideCta slide={slide} index={index} updateSlide={updateSlide} />
-            </div>
-          </div>
-        );
-
       // === ACHIEVE GOALS - two-column goals layout ===
       case 'achieveGoals':
         return (
-          <div className="slide slide-achieve-goals" key={index}>
+          <div className="slide slide-achieve-goals" key={index} style={spacingStyle}>
             {slideControls}
+            {titleSpacingControl}
             <div className="slide-inner">
               <span className="slide-label">
                 <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
@@ -4858,513 +5043,6 @@ const CaseStudy = () => {
           </div>
         );
 
-      // === TEXT WITH IMAGES - Title, description, two images at bottom ===
-      case 'textWithImages':
-        // Helper to update paragraph at specific index
-        const updateParagraph = (pIndex, value) => {
-          const newParagraphs = [...(slide.paragraphs || [])];
-          newParagraphs[pIndex] = value;
-          updateSlide(index, { paragraphs: newParagraphs });
-        };
-        // Helper to remove paragraph
-        const removeParagraph = (pIndex) => {
-          const newParagraphs = (slide.paragraphs || []).filter((_, i) => i !== pIndex);
-          updateSlide(index, { paragraphs: newParagraphs });
-        };
-        // Helper to add paragraph
-        const addParagraph = () => {
-          const newParagraphs = [...(slide.paragraphs || []), 'New paragraph...'];
-          updateSlide(index, { paragraphs: newParagraphs });
-        };
-        // Helper to update image at specific index - accepts (imgIndex, field, value) or (imgIndex, fieldsObject)
-        const updateImage = (imgIndex, fieldOrObj, value) => {
-          const newImages = [...(slide.images || [])];
-          const updates = typeof fieldOrObj === 'object' ? fieldOrObj : { [fieldOrObj]: value };
-          newImages[imgIndex] = { ...newImages[imgIndex], ...updates };
-          updateSlide(index, { images: newImages });
-        };
-        // Helper to upload image/video from file picker
-        const handleTwiImageUpload = (imgIndex) => {
-          const input = document.createElement('input');
-          input.type = 'file';
-          input.accept = 'image/*,video/mp4,video/webm,.gif';
-          input.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (file) {
-              const isVideo = file.type.startsWith('video/');
-              const isGif = file.type === 'image/gif';
-              
-              // File size limits (in MB)
-              const maxVideoSize = 100;
-              const maxGifSize = 40;
-              const maxImageSize = 10;
-              const fileSizeMB = file.size / (1024 * 1024);
-              
-              if (isVideo && fileSizeMB > maxVideoSize) {
-                alert(`Video file is too large (${fileSizeMB.toFixed(1)}MB). Maximum size is ${maxVideoSize}MB.`);
-                return;
-              }
-              if (isGif && fileSizeMB > maxGifSize) {
-                alert(`GIF file is too large (${fileSizeMB.toFixed(1)}MB). Maximum size is ${maxGifSize}MB.`);
-                return;
-              }
-              if (!isVideo && !isGif && fileSizeMB > maxImageSize) {
-                alert(`Image file is too large (${fileSizeMB.toFixed(1)}MB). Maximum size is ${maxImageSize}MB.`);
-                return;
-              }
-              
-              const reader = new FileReader();
-              reader.onerror = () => alert('Error reading file. Please try again.');
-              reader.onload = async (event) => {
-                try {
-                  const dataUrl = event.target.result;
-                  
-                  // Don't compress videos or GIFs - update src, isVideo, isGif in single call
-                  if (isVideo || isGif) {
-                    updateImage(imgIndex, { src: dataUrl, isVideo: isVideo, isGif: isGif });
-                  } else {
-                    try {
-                      const compressed = await compressImage(dataUrl);
-                      updateImage(imgIndex, { src: compressed, isVideo: false });
-                    } catch (err) {
-                      console.error('Error compressing image:', err);
-                      updateImage(imgIndex, { src: dataUrl, isVideo: false });
-                    }
-                  }
-                } catch (err) {
-                  console.error('Error processing file:', err);
-                  alert('Error processing file. Please try a smaller file.');
-                }
-              };
-              reader.readAsDataURL(file);
-            }
-          };
-          input.click();
-        };
-        // Helper to remove image
-        const removeImage = (imgIndex) => {
-          const newImages = (slide.images || []).filter((_, i) => i !== imgIndex);
-          updateSlide(index, { images: newImages });
-        };
-        // Helper to add image
-        const addImage = () => {
-          const newImages = [...(slide.images || []), { src: '', caption: '', position: 'center center', size: 'large', fit: 'cover' }];
-          updateSlide(index, { images: newImages });
-        };
-        
-        // Position presets
-        const twiPositionPresets = [
-          { label: '↖', value: 'left top', title: 'Top Left' },
-          { label: '↑', value: 'center top', title: 'Top Center' },
-          { label: '↗', value: 'right top', title: 'Top Right' },
-          { label: '←', value: 'left center', title: 'Center Left' },
-          { label: '•', value: 'center center', title: 'Center' },
-          { label: '→', value: 'right center', title: 'Center Right' },
-          { label: '↙', value: 'left bottom', title: 'Bottom Left' },
-          { label: '↓', value: 'center bottom', title: 'Bottom Center' },
-          { label: '↘', value: 'right bottom', title: 'Bottom Right' },
-        ];
-        
-        // Size presets
-        const twiSizePresets = [
-          { label: 'S', value: 'small', title: 'Small' },
-          { label: 'M', value: 'medium', title: 'Medium' },
-          { label: 'L', value: 'large', title: 'Large (Full)' },
-        ];
-        
-        // Fit presets
-        const twiFitPresets = [
-          { label: 'Fill', value: 'cover', title: 'Fill - image covers entire area (may crop)' },
-          { label: 'Fit', value: 'contain', title: 'Fit - shows entire image (may have gaps)' },
-        ];
-        
-        const paragraphs = slide.paragraphs || [];
-        const images = slide.images || [];
-        const imageCount = images.length;
-        const maxImages = 6;
-        
-        // Calculate grid columns based on image count
-        const getGridColumns = (count) => {
-          switch (count) {
-            case 1: return '1fr';
-            case 2: return '1fr 1fr';
-            case 3: return '1fr 1fr 1fr';
-            case 4: return '1fr 1fr'; // 2x2
-            case 5: return '1fr 1fr 1fr'; // 3+2 rows
-            case 6: return '1fr 1fr 1fr'; // 3x2
-            default: return '1fr 1fr 1fr';
-          }
-        };
-        
-        return (
-          <div className="slide slide-text-with-images" key={index}>
-            {slideControls}
-            <div className="slide-inner">
-              <span className="slide-label">
-                <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-              </span>
-              <h2 className="twi-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
-              </h2>
-              
-              {/* Dynamic Paragraphs */}
-              <div className="twi-content">
-                {paragraphs.map((para, pIndex) => (
-                  <div key={pIndex} className="twi-paragraph-wrapper">
-                    <p className="twi-text">
-                      <EditableField 
-                        value={para} 
-                        onChange={(v) => updateParagraph(pIndex, v)} 
-                        multiline 
-                      />
-                    </p>
-                    {editMode && paragraphs.length > 1 && (
-                      <button 
-                        className="remove-paragraph-btn" 
-                        onClick={() => removeParagraph(pIndex)}
-                        title="Remove paragraph"
-                      >
-                        ×
-                      </button>
-                    )}
-                  </div>
-                ))}
-                {editMode && (
-                  <button className="add-paragraph-btn" onClick={addParagraph}>
-                    + Add Paragraph
-                  </button>
-                )}
-              </div>
-              
-              {/* Dynamic Bullets */}
-              <DynamicBullets 
-                slide={slide} 
-                slideIndex={index} 
-                field="bullets" 
-                titleField="bulletsTitle"
-                className="twi-bullets" 
-                label="Bullet" 
-              />
-              
-              {/* Optional Highlight */}
-              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                <div className="twi-highlight">
-                  <EditableField
-                    value={slide.highlight}
-                    onChange={(v) => updateSlide(index, { highlight: v })}
-                    multiline
-                  />
-                </div>
-              </OptionalField>
-              
-              {/* Grid Layout Control */}
-              {editMode && images.length > 1 && (
-                <div className="twi-grid-control">
-                  <span className="grid-control-label">Image Grid:</span>
-                  <div className="grid-control-buttons">
-                    {[
-                      { cols: 1, label: '1 col' },
-                      { cols: 2, label: '2 cols' },
-                      { cols: 3, label: '3 cols' },
-                    ].map(opt => (
-                      <button
-                        key={opt.cols}
-                        className={`grid-col-btn ${(slide.gridColumns || Math.min(imageCount, 3)) === opt.cols ? 'active' : ''}`}
-                        onClick={() => updateSlide(index, { gridColumns: opt.cols })}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {/* Dynamic Images Grid */}
-              {images.length === 0 && editMode ? (
-                <div 
-                  className="twi-images-empty-placeholder"
-                  onClick={() => {
-                    // Add an empty image first, then trigger upload
-                    const currentLength = images.length;
-                    addImage();
-                    // Use setTimeout to ensure state has updated, then trigger upload for the new image
-                    setTimeout(() => {
-                      handleTwiImageUpload(currentLength);
-                    }, 50);
-                  }}
-                >
-                  <div className="empty-placeholder-content">
-                    <span className="empty-placeholder-icon">📷</span>
-                    <span className="empty-placeholder-text">Click to add image</span>
-                  </div>
-                </div>
-              ) : images.length > 0 ? (
-                <div 
-                  className={`twi-images-grid twi-images-count-${imageCount}`}
-                  style={{ gridTemplateColumns: slide.gridColumns ? `repeat(${slide.gridColumns}, 1fr)` : getGridColumns(imageCount) }}
-                >
-                  {images.map((img, imgIndex) => {
-                    const imgPosition = img.position || 'center center';
-                    const imgSize = img.size || 'large';
-                    const imgFit = img.fit || 'cover';
-                    const controlKey = `twi-${index}-${imgIndex}`;
-                    
-                    return (
-                      <div key={imgIndex} className={`twi-image-item img-size-${imgSize} img-fit-${imgFit}`}>
-                        <div 
-                          className={`twi-image-wrapper ${!editMode && img.src ? 'clickable' : ''}`}
-                          onClick={() => {
-                            if (editMode && activeTwiImageControl !== controlKey) {
-                              handleTwiImageUpload(imgIndex);
-                            } else if (!editMode && img.src) {
-                              setLightboxImage(img.src);
-                            }
-                          }}
-                        >
-                          {img.src ? (
-                            <>
-                              {img.isVideo ? (
-                                <video 
-                                  src={img.src}
-                                  autoPlay
-                                  loop
-                                  muted
-                                  playsInline
-                                  style={{ objectPosition: imgPosition, objectFit: imgFit }}
-                                />
-                              ) : (
-                                <img 
-                                  src={img.src} 
-                                  alt={img.caption || `Image ${imgIndex + 1}`} 
-                                  style={{ objectPosition: imgPosition, objectFit: imgFit }}
-                                />
-                              )}
-                              {editMode && <div className="image-edit-overlay">Click to change</div>}
-                              {!editMode && !img.isVideo && !img.isGif && <div className="image-zoom-hint">🔍</div>}
-                              
-                              {/* Fill / Fit control - visible for video and GIF */}
-                              {editMode && (img.isVideo || img.isGif) && (
-                                <div className="media-fit-inline" onClick={(e) => e.stopPropagation()}>
-                                  <button
-                                    type="button"
-                                    className={`fit-inline-btn ${imgFit === 'cover' ? 'active' : ''}`}
-                                    onClick={() => updateImage(imgIndex, 'fit', 'cover')}
-                                    title="Fill - covers entire area (may crop)"
-                                  >
-                                    Fill
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className={`fit-inline-btn ${imgFit === 'contain' ? 'active' : ''}`}
-                                    onClick={() => updateImage(imgIndex, 'fit', 'contain')}
-                                    title="Fit - shows entire media (may have gaps)"
-                                  >
-                                    Fit
-                                  </button>
-                                </div>
-                              )}
-                              
-                              {/* Image Controls Button */}
-                              {editMode && (
-                                <div className="image-position-control">
-                                  <button 
-                                    className="position-toggle-btn"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setActiveTwiImageControl(activeTwiImageControl === controlKey ? null : controlKey);
-                                    }}
-                                    title="Adjust media settings"
-                                  >
-                                    ⊞
-                                  </button>
-                                </div>
-                              )}
-                              
-                              {/* Image Settings Panel */}
-                              {editMode && activeTwiImageControl === controlKey && (
-                                <div 
-                                  className="position-grid-overlay"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setActiveTwiImageControl(null);
-                                  }}
-                                >
-                                  <div className="image-settings-panel" onClick={(e) => e.stopPropagation()}>
-                                    {/* Focus Position */}
-                                    <div className="settings-section">
-                                      <span className="settings-section-title">Focus Point</span>
-                                      <div className="position-grid-buttons">
-                                        {twiPositionPresets.map((preset) => (
-                                          <button
-                                            key={preset.value}
-                                            className={`position-btn ${imgPosition === preset.value ? 'active' : ''}`}
-                                            onClick={() => updateImage(imgIndex, 'position', preset.value)}
-                                            title={preset.title}
-                                          >
-                                            {preset.label}
-                                          </button>
-                                        ))}
-                                      </div>
-                                    </div>
-                                    
-                                    {/* Size Control */}
-                                    <div className="settings-section">
-                                      <span className="settings-section-title">Image Size</span>
-                                      <div className="size-presets-row">
-                                        {twiSizePresets.map((preset) => (
-                                          <button
-                                            key={preset.value}
-                                            className={`size-preset-btn ${imgSize === preset.value ? 'active' : ''}`}
-                                            onClick={() => updateImage(imgIndex, 'size', preset.value)}
-                                            title={preset.title}
-                                          >
-                                            {preset.label}
-                                          </button>
-                                        ))}
-                                      </div>
-                                    </div>
-                                    
-                                    {/* Fit Control */}
-                                    <div className="settings-section">
-                                      <span className="settings-section-title">Image Fit</span>
-                                      <div className="fit-presets-row">
-                                        {twiFitPresets.map((preset) => (
-                                          <button
-                                            key={preset.value}
-                                            className={`fit-preset-btn ${imgFit === preset.value ? 'active' : ''}`}
-                                            onClick={() => updateImage(imgIndex, 'fit', preset.value)}
-                                            title={preset.title}
-                                          >
-                                            {preset.label}
-                                          </button>
-                                        ))}
-                                      </div>
-                                    </div>
-                                    
-                                    <button 
-                                      className="settings-done-btn"
-                                      onClick={() => setActiveTwiImageControl(null)}
-                                    >
-                                      Done
-                                    </button>
-                                  </div>
-                                </div>
-                              )}
-                            </>
-                          ) : (
-                            <div className="image-placeholder">{editMode ? 'Click to add image' : 'No image'}</div>
-                          )}
-                        </div>
-                        {/* Caption */}
-                        <div className="twi-caption-wrapper">
-                          <span className="twi-caption">
-                            <EditableField 
-                              value={img.caption || ''} 
-                              onChange={(v) => updateImage(imgIndex, 'caption', v)}
-                              placeholder="Add caption..."
-                            />
-                          </span>
-                          {editMode && img.caption && (
-                            <button 
-                              className="remove-caption-btn" 
-                              onClick={(e) => { e.stopPropagation(); updateImage(imgIndex, 'caption', ''); }}
-                              title="Remove caption"
-                            >
-                              ×
-                            </button>
-                          )}
-                        </div>
-                        {/* Per-image description */}
-                        {img.description ? (
-                          <div className="twi-image-description-wrapper">
-                            <p className="twi-image-description">
-                              <EditableField
-                                value={img.description}
-                                onChange={(v) => updateImage(imgIndex, 'description', v)}
-                                multiline
-                              />
-                            </p>
-                            {editMode && (
-                              <button className="remove-field-inline-btn" onClick={() => updateImage(imgIndex, 'description', '')} title="Remove description">×</button>
-                            )}
-                          </div>
-                        ) : editMode ? (
-                          <button className="add-field-btn twi-add-field" onClick={() => updateImage(imgIndex, 'description', 'Describe this image...')}>+ Description</button>
-                        ) : null}
-                        {/* Per-image bullets */}
-                        {img.bullets && img.bullets.length > 0 ? (
-                          <div className="twi-image-bullets-wrapper">
-                            {/* Bullets title */}
-                            {img.bulletsTitle ? (
-                              <div className="twi-image-bullets-title-wrapper">
-                                <span className="twi-image-bullets-title">
-                                  <EditableField
-                                    value={img.bulletsTitle}
-                                    onChange={(v) => updateImage(imgIndex, 'bulletsTitle', v)}
-                                  />
-                                </span>
-                                {editMode && (
-                                  <button className="remove-field-inline-btn" onClick={() => updateImage(imgIndex, 'bulletsTitle', '')} title="Remove title">×</button>
-                                )}
-                              </div>
-                            ) : editMode ? (
-                              <button className="add-field-btn twi-add-field" onClick={() => updateImage(imgIndex, 'bulletsTitle', 'Key points')}>+ Bullets Title</button>
-                            ) : null}
-                            <ul className="twi-image-bullets">
-                              {img.bullets.map((bullet, bIdx) => (
-                                <li key={bIdx} className="twi-image-bullet">
-                                  <EditableField
-                                    value={typeof bullet === 'object' ? bullet.text : bullet}
-                                    onChange={(v) => {
-                                      const newBullets = [...img.bullets];
-                                      newBullets[bIdx] = v;
-                                      updateImage(imgIndex, 'bullets', newBullets);
-                                    }}
-                                  />
-                                  {editMode && img.bullets.length > 1 && (
-                                    <button className="remove-twi-bullet-btn" onClick={() => {
-                                      const newBullets = img.bullets.filter((_, i) => i !== bIdx);
-                                      updateImage(imgIndex, 'bullets', newBullets);
-                                    }}>×</button>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
-                            {editMode && (
-                              <div className="twi-bullet-actions">
-                                <button className="add-twi-bullet-btn" onClick={() => updateImage(imgIndex, 'bullets', [...img.bullets, 'New point'])}>+ Point</button>
-                                <button className="remove-field-inline-btn" onClick={() => updateImage(imgIndex, 'bullets', [])} title="Remove all bullets">Remove Bullets</button>
-                              </div>
-                            )}
-                          </div>
-                        ) : editMode ? (
-                          <button className="add-field-btn twi-add-field" onClick={() => updateImage(imgIndex, 'bullets', ['First point'])}>+ Bullets</button>
-                        ) : null}
-                        {editMode && images.length > 1 && (
-                          <button 
-                            className="remove-image-btn" 
-                            onClick={() => removeImage(imgIndex)}
-                            title="Remove image"
-                          >
-                            ×
-                          </button>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : null}
-              {editMode && imageCount < maxImages && (
-                <button className="add-image-btn" onClick={addImage}>
-                  + Add Image {imageCount > 0 ? `(${imageCount}/${maxImages})` : ''}
-                </button>
-              )}
-              
-              <SlideCta slide={slide} index={index} updateSlide={updateSlide} />
-            </div>
-          </div>
-        );
-
       // === IMAGE MOSAIC - Grid of images with centered title ===
       case 'imageMosaic': {
         const MOSAIC_TILES = 24;
@@ -5409,7 +5087,7 @@ const CaseStudy = () => {
         };
 
         return (
-          <div className="slide slide-image-mosaic" key={index}>
+          <div className="slide slide-image-mosaic" key={index} style={spacingStyle}>
             {slideControls}
             <div className="slide-inner">
               {/* 24-tile mosaic background */}
@@ -5456,298 +5134,31 @@ const CaseStudy = () => {
         );
       }
       
-      case 'problemSolution': {
-        const MIN_TABS = 2;
-        const MAX_TABS = 6;
-        const getPsTabs = (s) => {
-          if (Array.isArray(s.psTabs) && s.psTabs.length >= MIN_TABS) {
-            return s.psTabs.map(t => ({
-              label: t.label ?? '',
-              columnLabel: t.columnLabel ?? '',
-              image: t.image ?? '',
-              embedUrl: t.embedUrl ?? '',
-              bullets: Array.isArray(t.bullets) ? t.bullets : [],
-              bulletsTitle: t.bulletsTitle ?? '',
-            }));
-          }
-          return [
-            { label: s.problemLabel ?? 'Problem', columnLabel: '', image: s.problemImage ?? '', embedUrl: '', bullets: Array.isArray(s.problemBullets) ? s.problemBullets : [], bulletsTitle: s.problemBulletsTitle ?? '' },
-            { label: s.solutionLabel ?? 'Solution', columnLabel: '', image: s.solutionImage ?? '', embedUrl: '', bullets: Array.isArray(s.solutionBullets) ? s.solutionBullets : [], bulletsTitle: s.solutionBulletsTitle ?? '' },
-          ];
-        };
-        const tabs = getPsTabs(slide);
-        const rawActive = slide.psActiveView;
-        const psActiveView = typeof rawActive === 'number' && rawActive >= 0 && rawActive < tabs.length
-          ? rawActive
-          : rawActive === 'solution' ? 1 : 0;
-        const activeTab = tabs[psActiveView] || tabs[0];
-        const updatePsTab = (tabIndex, updates) => {
-          const next = [...tabs];
-          next[tabIndex] = { ...next[tabIndex], ...updates };
-          updateSlide(index, { psTabs: next });
-        };
-        const setPsTabCount = (count) => {
-          const n = Math.min(MAX_TABS, Math.max(MIN_TABS, count));
-          const next = [];
-          for (let i = 0; i < n; i++) next.push(tabs[i] || { label: `Tab ${i + 1}`, image: '', embedUrl: '', bullets: [], bulletsTitle: '' });
-          updateSlide(index, { psTabs: next, psActiveView: Math.min(psActiveView, n - 1) });
-        };
-        const updateSlideForActiveTab = (idx, updates) => {
-          if (idx !== index) { updateSlide(idx, updates); return; }
-          const u = {};
-          if (updates.problemLabel !== undefined) u.columnLabel = updates.problemLabel;
-          if (updates.problemBullets !== undefined) u.bullets = updates.problemBullets;
-          if (updates.problemBulletsTitle !== undefined) u.bulletsTitle = updates.problemBulletsTitle;
-          if (Object.keys(u).length) updatePsTab(psActiveView, u);
-          else updateSlide(idx, updates);
-        };
-        const labelAboveBullets = activeTab.columnLabel || activeTab.label;
-        const slideView = { ...slide, problemLabel: labelAboveBullets, problemBullets: activeTab.bullets, problemBulletsTitle: activeTab.bulletsTitle };
+      case 'problemSolution':
         return (
-          <div className="slide slide-problem-solution" key={index}>
-            {slideControls}
-            <SplitRatioControl slide={slide} slideIndex={index} />
-            <div className="slide-inner slide-split" style={getSplitStyle({ ...slide, splitRatio: slide.splitRatio ?? 50 })}>
-              {/* Left: same structure as problem slide – split-content */}
-              <div className="split-content">
-                <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="The solution">
-                  <span className="slide-label">
-                    <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
-                  </span>
-                </OptionalField>
-                <h2 className="problem-title">
-                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
-                </h2>
-
-                {/* Optional subtitle */}
-                {((slide.subtitle != null && slide.subtitle !== '') || (editMode && slide.subtitle !== null)) && (
-                  <div className="ps-subtitle-wrapper">
-                    <p className="ps-subtitle">
-                      <EditableField value={slide.subtitle || ''} onChange={(v) => updateSlide(index, { subtitle: v })} placeholder="Subtitle (optional)" />
-                    </p>
-                    {editMode && (
-                      <button type="button" className="remove-field-btn issues-breakdown-remove" onClick={() => updateSlide(index, { subtitle: null })} title="Remove subtitle">× Remove subtitle</button>
-                    )}
-                  </div>
-                )}
-                {editMode && (slide.subtitle == null || slide.subtitle === '') && (
-                  <button type="button" className="add-field-btn" onClick={() => updateSlide(index, { subtitle: 'Add subtitle...' })}>+ Add subtitle</button>
-                )}
-
-                {/* Optional paragraphs */}
-                {((slide.psParagraph1 != null && slide.psParagraph1 !== '') || (editMode && slide.psParagraph1 !== null)) && (
-                  <div className="ps-paragraph-wrapper">
-                    <p className="ps-paragraph">
-                      <EditableField value={slide.psParagraph1 || ''} onChange={(v) => updateSlide(index, { psParagraph1: v })} multiline placeholder="First paragraph (optional)" />
-                    </p>
-                    {editMode && (
-                      <button type="button" className="remove-field-btn issues-breakdown-remove" onClick={() => updateSlide(index, { psParagraph1: null })} title="Remove paragraph">× Remove paragraph</button>
-                    )}
-                  </div>
-                )}
-                {editMode && (slide.psParagraph1 == null || slide.psParagraph1 === '') && (
-                  <button type="button" className="add-field-btn add-field-btn-sm" onClick={() => updateSlide(index, { psParagraph1: 'Add first paragraph...' })}>+ Add paragraph 1</button>
-                )}
-                {((slide.psParagraph2 != null && slide.psParagraph2 !== '') || (editMode && slide.psParagraph2 !== null)) && (
-                  <div className="ps-paragraph-wrapper">
-                    <p className="ps-paragraph">
-                      <EditableField value={slide.psParagraph2 || ''} onChange={(v) => updateSlide(index, { psParagraph2: v })} multiline placeholder="Second paragraph (optional)" />
-                    </p>
-                    {editMode && (
-                      <button type="button" className="remove-field-btn issues-breakdown-remove" onClick={() => updateSlide(index, { psParagraph2: null })} title="Remove paragraph">× Remove paragraph</button>
-                    )}
-                  </div>
-                )}
-                {editMode && (slide.psParagraph2 == null || slide.psParagraph2 === '') && (
-                  <button type="button" className="add-field-btn add-field-btn-sm" onClick={() => updateSlide(index, { psParagraph2: 'Add second paragraph...' })}>+ Add paragraph 2</button>
-                )}
-
-                <div className="ps-tabs-and-bullets">
-                  <div className="ps-view-tabs-row">
-                    {editMode && (
-                      <div className="ps-tab-count-edit">
-                        <span className="ps-tab-edit-caption">Tabs</span>
-                        <div className="ps-tab-count-btns">
-                          {[2, 3, 4, 5].map(n => (
-                            <button key={n} type="button" className={`ps-tab-count-btn ${tabs.length === n ? 'active' : ''}`} onClick={() => setPsTabCount(n)}>{n}</button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    <div className="ps-view-tabs">
-                      {tabs.map((tab, i) => (
-                        <button key={i} type="button" className={`ps-tab ${psActiveView === i ? 'active' : ''}`} onClick={() => updateSlide(index, { psActiveView: i })}>
-                          {tab.label || `Tab ${i + 1}`}
-                        </button>
-                      ))}
-                    </div>
-                    {editMode && (
-                      <div className="ps-tab-titles-edit">
-                        <label className="ps-tab-edit-label">
-                          <span className="ps-tab-edit-caption">Tab titles</span>
-                          <span className="ps-tab-edit-fields">
-                            {tabs.map((tab, i) => (
-                              <input
-                                key={i}
-                                type="text"
-                                value={tab.label ?? ''}
-                                onChange={(e) => updatePsTab(i, { label: e.target.value || undefined })}
-                                placeholder={`Tab ${i + 1}`}
-                                className="ps-tab-edit-input"
-                              />
-                            ))}
-                          </span>
-                        </label>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Active tab content: label above bullets + bullets */}
-                  <OptionalField slide={slideView} index={index} field="problemLabel" label="Label above bullets" defaultValue="" updateSlideOverride={updateSlideForActiveTab}>
-                    <span className="ps-col-label ps-problem-label">
-                      <EditableField
-                        value={activeTab.columnLabel ?? ''}
-                        placeholder={activeTab.label || `Tab ${psActiveView + 1}`}
-                        onChange={(v) => updatePsTab(psActiveView, { columnLabel: v || undefined })}
-                      />
-                    </span>
-                  </OptionalField>
-                  <DynamicBullets slide={slideView} slideIndex={index} field="problemBullets" titleField="problemBulletsTitle" className="problem-issues-wrapper" label="Point" updateSlideOverride={updateSlideForActiveTab} />
-                </div>
-
-                <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                  <div className="problem-highlight">
-                    <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                  </div>
-                </OptionalField>
-              </div>
-
-              {/* Right: one image per tab – split-images-wrapper style */}
-              <div className="split-images-wrapper ps-split-image-wrap">
-                {tabs.map((tab, tabIdx) => {
-                  const tabSrc = (tab.image && (typeof tab.image === 'string' ? tab.image : (Array.isArray(tab.image) ? tab.image[0]?.src : null))) || '';
-                  const tabEmbed = tab.embedUrl || '';
-                  const openFileForTab = () => {
-                    const inp = document.createElement('input');
-                    inp.type = 'file';
-                    inp.accept = 'image/*,video/mp4,video/webm,.gif';
-                    inp.style.position = 'absolute';
-                    inp.style.opacity = '0';
-                    inp.style.pointerEvents = 'none';
-                    inp.onchange = async (e) => {
-                      const f = e.target.files?.[0];
-                      if (!f) return;
-                      const r = new FileReader();
-                      r.onload = async (ev) => {
-                        try {
-                          const d = ev.target?.result;
-                          if (f.type.startsWith('video/') || f.type === 'image/gif') {
-                            updatePsTab(tabIdx, { image: d, embedUrl: '' });
-                          } else {
-                            const c = await compressImage(d);
-                            updatePsTab(tabIdx, { image: c, embedUrl: '' });
-                          }
-                        } catch {
-                          updatePsTab(tabIdx, { image: ev.target?.result, embedUrl: '' });
-                        }
-                        inp.remove();
-                      };
-                      r.readAsDataURL(f);
-                    };
-                    document.body.appendChild(inp);
-                    inp.click();
-                    setTimeout(() => { try { inp.remove(); } catch (_) {} }, 500);
-                  };
-                  const hasContent = tabSrc || tabEmbed;
-                  return (
-                    <div key={tabIdx} className={`ps-split-image-panel ${psActiveView === tabIdx ? 'ps-split-image-panel-visible' : ''}`} aria-hidden={psActiveView !== tabIdx}>
-                      {tabEmbed ? (
-                        <div className="ps-img-wrap ps-img-contain">
-                          <div className="ps-img-inner ps-embed-inner">
-                            <iframe src={tabEmbed} title="Figma Embed" allowFullScreen className="figma-embed-iframe" />
-                          </div>
-                          {editMode && (
-                            <div className="ps-img-controls">
-                              <button type="button" className="ps-remove-img" onClick={() => updatePsTab(tabIdx, { embedUrl: '' })}>× Remove embed</button>
-                            </div>
-                          )}
-                        </div>
-                      ) : tabSrc ? (
-                        <div className="ps-img-wrap ps-img-contain">
-                          <div className="ps-img-inner" onClick={() => {
-                            if (editMode) openFileForTab();
-                            else if (tabSrc) setLightboxImage(tabSrc);
-                          }}>
-                            <img src={tabSrc} alt={tab.label || `Tab ${tabIdx + 1}`} style={{ objectFit: 'contain' }} />
-                            {editMode && <div className="image-edit-overlay">Click to change</div>}
-                          </div>
-                          {editMode && (
-                            <div className="ps-img-controls">
-                              <button type="button" className="ps-remove-img" onClick={() => updatePsTab(tabIdx, { image: '' })}>× Remove image</button>
-                            </div>
-                          )}
-                        </div>
-                      ) : editMode ? (
-                        <div className="ps-media-type-picker">
-                          {psEmbedInput.tabIdx === tabIdx ? (
-                            <div className="figma-embed-input">
-                              <input
-                                type="text"
-                                className="editable-field figma-url-input"
-                                placeholder="Paste Figma URL or <iframe> embed code..."
-                                value={psEmbedInput.draft}
-                                onChange={(e) => setPsEmbedInput({ tabIdx, draft: e.target.value })}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    const converted = toFigmaEmbedUrl(psEmbedInput.draft);
-                                    if (converted) {
-                                      updatePsTab(tabIdx, { embedUrl: converted, image: '' });
-                                      setPsEmbedInput({ tabIdx: null, draft: '' });
-                                    } else {
-                                      alert('Please enter a valid Figma URL or <iframe> embed code');
-                                    }
-                                  }
-                                }}
-                                autoFocus
-                              />
-                              <button type="button" className="figma-embed-confirm" onClick={() => {
-                                const converted = toFigmaEmbedUrl(psEmbedInput.draft);
-                                if (converted) {
-                                  updatePsTab(tabIdx, { embedUrl: converted, image: '' });
-                                  setPsEmbedInput({ tabIdx: null, draft: '' });
-                                } else {
-                                  alert('Please enter a valid Figma URL or <iframe> embed code');
-                                }
-                              }}>Embed</button>
-                              <button type="button" className="figma-embed-cancel" onClick={() => setPsEmbedInput({ tabIdx: null, draft: '' })}>Cancel</button>
-                            </div>
-                          ) : (
-                            <div className="media-type-buttons">
-                              <button type="button" className="media-type-btn" onClick={openFileForTab}>
-                                <span className="media-type-icon">+</span>
-                                <span>Upload Image</span>
-                              </button>
-                              <button type="button" className="media-type-btn media-type-figma" onClick={() => setPsEmbedInput({ tabIdx, draft: '' })}>
-                                <span className="media-type-icon">◈</span>
-                                <span>Embed Figma</span>
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      ) : null}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
+          <ComparisonSlide
+            key={index}
+            slide={slide}
+            index={index}
+            slideControls={slideControls}
+            editMode={editMode}
+            updateSlide={updateSlide}
+            OptionalField={OptionalField}
+            DynamicImages={DynamicImages}
+            DynamicBullets={DynamicBullets}
+            DynamicContent={DynamicContent}
+            SplitRatioControl={SplitRatioControl}
+            setLightboxImage={setLightboxImage}
+            spacingStyle={spacingStyle}
+            titleSpacingControl={titleSpacingControl}
+          />
         );
-      }
 
       case 'chapter':
         return (
-          <div className="slide slide-chapter" key={index}>
+          <div className="slide slide-chapter" key={index} style={spacingStyle}>
             {slideControls}
+            {titleSpacingControl}
             {slide.number && (
               <span className="chapter-bg-number" aria-hidden="true">{slide.number}</span>
             )}
@@ -5771,287 +5182,6 @@ const CaseStudy = () => {
           </div>
         );
 
-      case 'dynamic': {
-        const blocks = slide.blocks || [];
-
-        const renderBlock = (block, bIdx) => {
-          const blockControls = editMode && (
-            <div className="dynamic-block-controls">
-              <button onClick={() => moveBlock(index, bIdx, -1)} disabled={bIdx === 0} title="Move up">↑</button>
-              <button onClick={() => moveBlock(index, bIdx, 1)} disabled={bIdx === blocks.length - 1} title="Move down">↓</button>
-              <button onClick={() => removeBlock(index, bIdx)} disabled={blocks.length <= 1} title="Remove block" className="delete">×</button>
-            </div>
-          );
-
-          switch (block.type) {
-            case 'label':
-              return (
-                <div className="dynamic-block dynamic-block-label" key={bIdx}>
-                  {blockControls}
-                  <span className="slide-label">
-                    <EditableField value={block.value} onChange={(v) => updateBlock(index, bIdx, { value: v })} />
-                  </span>
-                </div>
-              );
-            case 'title':
-              return (
-                <div className="dynamic-block dynamic-block-title" key={bIdx}>
-                  {blockControls}
-                  <h2 className="dyn-title">
-                    <EditableField value={block.value} onChange={(v) => updateBlock(index, bIdx, { value: v })} allowLineBreaks />
-                  </h2>
-                </div>
-              );
-            case 'subtitle':
-              return (
-                <div className="dynamic-block dynamic-block-subtitle" key={bIdx}>
-                  {blockControls}
-                  <h3 className="dyn-subtitle">
-                    <EditableField value={block.value} onChange={(v) => updateBlock(index, bIdx, { value: v })} />
-                  </h3>
-                </div>
-              );
-            case 'paragraph':
-              return (
-                <div className="dynamic-block dynamic-block-paragraph" key={bIdx}>
-                  {blockControls}
-                  <p className="dyn-paragraph">
-                    <EditableField value={block.value} onChange={(v) => updateBlock(index, bIdx, { value: v })} multiline />
-                  </p>
-                </div>
-              );
-            case 'bullets': {
-              const bulletItems = Array.isArray(block.items) ? block.items : [];
-              const getBulletText = (b) => typeof b === 'object' && b !== null ? b.text || '' : String(b || '');
-              const getBulletTitle = (b) => typeof b === 'object' && b !== null ? b.title || '' : '';
-              const hasBulletTitle = (b) => typeof b === 'object' && b !== null && b.title !== undefined;
-              return (
-                <div className="dynamic-block dynamic-block-bullets" key={bIdx}>
-                  {blockControls}
-                  {block.title && (
-                    <h4 className="dyn-bullets-title">
-                      <EditableField value={block.title} onChange={(v) => updateBlock(index, bIdx, { title: v })} />
-                    </h4>
-                  )}
-                  {editMode && !block.title && (
-                    <button className="add-section-title-btn" onClick={() => updateBlock(index, bIdx, { title: 'Section Title' })}>+ Add Title</button>
-                  )}
-                  <ul className="bullet-list">
-                    {bulletItems.map((bullet, bi) => (
-                      <li key={bi} className={hasBulletTitle(bullet) ? 'has-title' : ''}>
-                        {hasBulletTitle(bullet) && (
-                          <span className="bullet-title">
-                            <EditableField value={getBulletTitle(bullet)} onChange={(v) => {
-                              const newItems = [...bulletItems];
-                              newItems[bi] = { ...newItems[bi], title: v };
-                              updateBlock(index, bIdx, { items: newItems });
-                            }} />
-                          </span>
-                        )}
-                        <span className={hasBulletTitle(bullet) ? 'bullet-text' : ''}>
-                          <EditableField value={getBulletText(bullet)} onChange={(v) => {
-                            const newItems = [...bulletItems];
-                            if (typeof newItems[bi] === 'object' && newItems[bi] !== null) {
-                              newItems[bi] = { ...newItems[bi], text: v };
-                            } else {
-                              newItems[bi] = v;
-                            }
-                            updateBlock(index, bIdx, { items: newItems });
-                          }} />
-                        </span>
-                        {editMode && (
-                          <button className="remove-bullet-btn" onClick={() => {
-                            const newItems = bulletItems.filter((_, i) => i !== bi);
-                            updateBlock(index, bIdx, { items: newItems });
-                          }}>×</button>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                  {editMode && (
-                    <button className="add-bullet-btn" onClick={() => updateBlock(index, bIdx, { items: [...bulletItems, 'New point'] })}>+ Add Bullet</button>
-                  )}
-                </div>
-              );
-            }
-            case 'image': {
-              const blockImages = Array.isArray(block.images) ? block.images : [];
-              const gridCols = block.gridColumns || 1;
-              const handleBlockImageUpload = (imgIdx) => {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*,video/mp4,video/webm,.gif';
-                input.onchange = async (e) => {
-                  const file = e.target.files[0];
-                  if (!file) return;
-                  const reader = new FileReader();
-                  reader.onload = async (event) => {
-                    const dataUrl = event.target.result;
-                    const isVideo = file.type.startsWith('video/');
-                    const isGif = file.type === 'image/gif';
-                    const newImages = [...blockImages];
-                    if (isVideo || isGif) {
-                      newImages[imgIdx] = { ...newImages[imgIdx], src: dataUrl, isVideo, isGif };
-                    } else {
-                      try {
-                        const compressed = await compressImage(dataUrl);
-                        newImages[imgIdx] = { ...newImages[imgIdx], src: compressed, isVideo: false };
-                      } catch {
-                        newImages[imgIdx] = { ...newImages[imgIdx], src: dataUrl, isVideo: false };
-                      }
-                    }
-                    updateBlock(index, bIdx, { images: newImages });
-                  };
-                  reader.readAsDataURL(file);
-                };
-                input.click();
-              };
-              return (
-                <div className="dynamic-block dynamic-block-image" key={bIdx}>
-                  {blockControls}
-                  {editMode && blockImages.length > 1 && (
-                    <div className="dynamic-grid-buttons">
-                      {[1, 2, 3].map(n => (
-                        <button key={n} className={`grid-col-btn ${gridCols === n ? 'active' : ''}`} onClick={() => updateBlock(index, bIdx, { gridColumns: n })}>{n} Col{n > 1 ? 's' : ''}</button>
-                      ))}
-                    </div>
-                  )}
-                  <div className="dyn-image-grid" style={{ gridTemplateColumns: `repeat(${Math.min(gridCols, blockImages.length)}, 1fr)` }}>
-                    {blockImages.map((img, ii) => (
-                      <div key={ii} className="dyn-image-item">
-                        {img.src ? (
-                          img.isVideo ? (
-                            <video src={img.src} className="dyn-image-media" style={{ objectFit: img.fit || 'cover', objectPosition: img.position || 'center center' }} autoPlay muted loop playsInline />
-                          ) : (
-                            <img src={img.src} alt={img.caption || ''} className="dyn-image-media" style={{ objectFit: img.fit || 'cover', objectPosition: img.position || 'center center' }} />
-                          )
-                        ) : editMode ? (
-                          <button className="dyn-image-upload-btn" onClick={() => handleBlockImageUpload(ii)}>+ Upload Image</button>
-                        ) : null}
-                        {editMode && img.src && (
-                          <button className="dyn-image-change-btn" onClick={() => handleBlockImageUpload(ii)}>Change</button>
-                        )}
-                        {editMode && blockImages.length > 1 && (
-                          <button className="dyn-image-remove-btn" onClick={() => {
-                            const newImages = blockImages.filter((_, i) => i !== ii);
-                            updateBlock(index, bIdx, { images: newImages });
-                          }}>×</button>
-                        )}
-                        {(img.caption || editMode) && (
-                          <span className="dyn-image-caption">
-                            <EditableField value={img.caption || ''} onChange={(v) => {
-                              const newImages = [...blockImages];
-                              newImages[ii] = { ...newImages[ii], caption: v };
-                              updateBlock(index, bIdx, { images: newImages });
-                            }} />
-                          </span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  {editMode && (
-                    <button className="add-item-btn" onClick={() => updateBlock(index, bIdx, { images: [...blockImages, { src: '', caption: '', position: 'center center', size: 'large', fit: 'cover' }] })}>+ Add Image</button>
-                  )}
-                </div>
-              );
-            }
-            case 'stats': {
-              const statItems = Array.isArray(block.items) ? block.items : [];
-              const statCols = block.gridColumns || 3;
-              return (
-                <div className="dynamic-block dynamic-block-stats" key={bIdx}>
-                  {blockControls}
-                  <div className="stats-grid" style={{ gridTemplateColumns: `repeat(${Math.min(statCols, statItems.length || 1)}, 1fr)` }}>
-                    {statItems.map((stat, si) => (
-                      <div key={si} className="stat-item">
-                        <span className="stat-value">
-                          <EditableField value={stat.value} onChange={(v) => {
-                            const newItems = [...statItems];
-                            newItems[si] = { ...newItems[si], value: v };
-                            updateBlock(index, bIdx, { items: newItems });
-                          }} />
-                          {stat.suffix && <span className="stat-suffix">{stat.suffix}</span>}
-                        </span>
-                        <span className="stat-label">
-                          <EditableField value={stat.label} onChange={(v) => {
-                            const newItems = [...statItems];
-                            newItems[si] = { ...newItems[si], label: v };
-                            updateBlock(index, bIdx, { items: newItems });
-                          }} />
-                        </span>
-                        {editMode && (
-                          <button className="remove-item-btn" onClick={() => {
-                            const newItems = statItems.filter((_, i) => i !== si);
-                            updateBlock(index, bIdx, { items: newItems });
-                          }}>×</button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  {editMode && (
-                    <button className="add-item-btn" onClick={() => updateBlock(index, bIdx, { items: [...statItems, { value: '0', label: 'Metric', suffix: '' }] })}>+ Add Stat</button>
-                  )}
-                </div>
-              );
-            }
-            case 'quote':
-              return (
-                <div className="dynamic-block dynamic-block-quote" key={bIdx}>
-                  {blockControls}
-                  <blockquote className="dyn-quote">
-                    "<EditableField value={block.text} onChange={(v) => updateBlock(index, bIdx, { text: v })} multiline />"
-                  </blockquote>
-                  <span className="dyn-quote-author">
-                    — <EditableField value={block.author} onChange={(v) => updateBlock(index, bIdx, { author: v })} />
-                  </span>
-                </div>
-              );
-            case 'divider':
-              return (
-                <div className="dynamic-block dynamic-block-divider" key={bIdx}>
-                  {blockControls}
-                  <hr className="dyn-divider" />
-                </div>
-              );
-            default:
-              return (
-                <div className="dynamic-block" key={bIdx}>
-                  {blockControls}
-                  <p>Unknown block: {block.type}</p>
-                </div>
-              );
-          }
-        };
-
-        const blockTypes = [
-          { type: 'label', label: 'Label' },
-          { type: 'title', label: 'Title' },
-          { type: 'subtitle', label: 'Subtitle' },
-          { type: 'paragraph', label: 'Paragraph' },
-          { type: 'bullets', label: 'Bullets' },
-          { type: 'image', label: 'Image' },
-          { type: 'stats', label: 'Stats' },
-          { type: 'quote', label: 'Quote' },
-          { type: 'divider', label: 'Divider' },
-        ];
-
-        return (
-          <div className="slide slide-dynamic" key={index}>
-            {slideControls}
-            <div className="slide-inner slide-dynamic-inner">
-              {blocks.map((block, bIdx) => renderBlock(block, bIdx))}
-              {editMode && (
-                <div className="dynamic-add-block-bar">
-                  {blockTypes.map(bt => (
-                    <button key={bt.type} className="dynamic-add-block-btn" onClick={() => addBlock(index, bt.type)}>+ {bt.label}</button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        );
-      }
-
       default:
         return (
           <div className="slide slide-unknown" key={index}>
@@ -6065,7 +5195,7 @@ const CaseStudy = () => {
   };
 
   return (
-    <div className={`case-study ${editMode ? 'edit-mode' : ''}`} ref={containerRef}>
+    <div className={`case-study ${editMode ? 'edit-mode' : ''}`} ref={containerRef} data-card-style={cardStyle !== 'outlined' ? cardStyle : undefined}>
       {/* Edit Mode Indicator */}
       <AnimatePresence>
         {editMode && (
@@ -6078,6 +5208,27 @@ const CaseStudy = () => {
             <span>✏️ Edit Mode</span>
             <div className="edit-actions">
               <button className="builder-trigger" onClick={() => setShowBuilder(true)}>🚀 Build from Scratch</button>
+              <button onClick={handleCopyJSON}>{saveStatus === 'copied' ? '✓ Copied!' : '📋 Copy JSON for ChatGPT'}</button>
+              <button onClick={() => { setShowImportJSON(true); setImportJSONText(''); setImportError(''); }}>📥 Import JSON</button>
+              <select
+                className="card-style-select"
+                value={cardStyle}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setCardStyle(v);
+                  try { localStorage.setItem(`caseStudy_${projectId}_cardStyle`, v); } catch {}
+                }}
+                title="Card style"
+              >
+                <option value="outlined">Cards: Outlined</option>
+                <option value="filled">Cards: Filled</option>
+                <option value="ghost">Cards: Ghost</option>
+                <option value="elevated">Cards: Elevated</option>
+                <option value="accent-left">Cards: Accent Left</option>
+              </select>
+              <button onClick={handleSaveToCode} className={saveStatus === 'saved-code' ? 'save-code-done' : ''}>
+                {saveStatus === 'saving-code' ? 'Saving...' : saveStatus === 'saved-code' ? '✓ Saved to Code' : saveStatus === 'error-code' ? '✗ Error' : '💾 Save to Code'}
+              </button>
               <button onClick={handleReset}>Reset to Default</button>
               <button onClick={() => { setEditMode(false); setShowPanel(false); }}>Done Editing</button>
             </div>
@@ -6588,6 +5739,9 @@ const CaseStudy = () => {
       )}
 
       <div className="case-nav">
+        <Link to="/" className="nav-back-btn" title="Back to home" aria-label="Back to home">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M11.25 4.5 6.75 9l4.5 4.5"/></svg>
+        </Link>
         <div className="nav-label-left">
           {editMode ? (
             <span className="nav-slide-label nav-slide-label--edit">
@@ -6676,6 +5830,181 @@ const CaseStudy = () => {
         )}
       </div>
 
+      {/* Slide Sorter Panel (edit mode) */}
+      <AnimatePresence>
+        {editMode && showSlideSorter && (
+          <motion.div
+            className="slide-sorter"
+            initial={{ y: 120, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 120, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <div className="slide-sorter-header">
+              <span className="slide-sorter-title">Slides ({totalSlides})</span>
+              <div className="slide-sorter-actions">
+                <button
+                  className="slide-sorter-add"
+                  onClick={() => setShowTemplates(true)}
+                  title="Add slide"
+                >+</button>
+                <button
+                  className="slide-sorter-collapse"
+                  onClick={() => setShowSlideSorter(false)}
+                  title="Collapse"
+                >▼</button>
+              </div>
+            </div>
+            <div className="slide-sorter-track">
+              {project.slides.map((slide, index) => {
+                const typeLabel = (slide.type || 'unknown').replace(/([A-Z])/g, ' $1').trim();
+                const isDragging = dragState.dragging === index;
+                const isDragOver = dragState.over === index && dragState.dragging !== index;
+                return (
+                  <div
+                    key={index}
+                    className={`slide-sorter-thumb${currentSlide === index ? ' active' : ''}${isDragging ? ' dragging' : ''}${isDragOver ? ' drag-over' : ''}`}
+                    draggable
+                    onDragStart={() => handleDragStart(index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDragEnd={handleDragEnd}
+                    onClick={() => setCurrentSlide(index)}
+                  >
+                    <div className="thumb-number">{String(index + 1).padStart(2, '0')}</div>
+                    <div className="thumb-preview">
+                      <div className="thumb-type">{typeLabel}</div>
+                      <div className="thumb-title">{slide.title || slide.quote?.slice(0, 30) || ''}</div>
+                    </div>
+                    <div className="thumb-actions">
+                      <button title="Move up" onClick={(e) => { e.stopPropagation(); moveSlide(index, -1); }} disabled={index === 0}>↑</button>
+                      <button title="Move down" onClick={(e) => { e.stopPropagation(); moveSlide(index, 1); }} disabled={index === totalSlides - 1}>↓</button>
+                      <button title="Duplicate" onClick={(e) => { e.stopPropagation(); duplicateSlide(index); }}>⧉</button>
+                      <button title="Delete" className="thumb-delete" onClick={(e) => { e.stopPropagation(); deleteSlide(index); }} disabled={totalSlides <= 1}>×</button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Slide sorter collapsed toggle */}
+      {editMode && !showSlideSorter && (
+        <button
+          className="slide-sorter-toggle"
+          onClick={() => setShowSlideSorter(true)}
+          title="Show slide sorter"
+        >
+          ▲ Slides ({totalSlides})
+        </button>
+      )}
+
+      {/* Slide JSON Editor Modal */}
+      <AnimatePresence>
+        {editSlideJSON && (
+          <motion.div
+            className="import-json-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setEditSlideJSON(null)}
+          >
+            <motion.div
+              className="import-json-modal"
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="import-json-header">
+                <h2>Edit Slide {editSlideJSON.index + 1} JSON</h2>
+                <p>Edit the raw JSON for this slide. Changes apply when you click Apply.</p>
+                <button className="import-json-close" onClick={() => setEditSlideJSON(null)}>×</button>
+              </div>
+              <div className="import-json-body">
+                <textarea
+                  className="import-json-textarea"
+                  value={editSlideJSON.text}
+                  onChange={(e) => setEditSlideJSON(prev => ({ ...prev, text: e.target.value, error: '' }))}
+                  rows={20}
+                  spellCheck={false}
+                />
+                {editSlideJSON.error && <div className="import-json-error">{editSlideJSON.error}</div>}
+              </div>
+              <div className="import-json-actions">
+                <button className="builder-btn secondary" onClick={() => setEditSlideJSON(null)}>Cancel</button>
+                <button
+                  className="builder-btn primary"
+                  onClick={() => {
+                    try {
+                      const parsed = JSON.parse(editSlideJSON.text);
+                      if (!parsed.type) {
+                        setEditSlideJSON(prev => ({ ...prev, error: 'Slide must have a "type" field.' }));
+                        return;
+                      }
+                      setProject(prev => ({
+                        ...prev,
+                        slides: prev.slides.map((s, i) => i === editSlideJSON.index ? parsed : s)
+                      }));
+                      setEditSlideJSON(null);
+                    } catch (e) {
+                      setEditSlideJSON(prev => ({ ...prev, error: `JSON parse error: ${e.message}` }));
+                    }
+                  }}
+                >
+                  Apply
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Import JSON Modal */}
+      <AnimatePresence>
+        {showImportJSON && (
+          <motion.div
+            className="import-json-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowImportJSON(false)}
+          >
+            <motion.div
+              className="import-json-modal"
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="import-json-header">
+                <h2>📥 Import Case Study JSON</h2>
+                <p>Paste the JSON that ChatGPT generated. It will replace the current slides while preserving existing images.</p>
+                <button className="import-json-close" onClick={() => setShowImportJSON(false)}>×</button>
+              </div>
+              <div className="import-json-body">
+                <textarea
+                  className="import-json-textarea"
+                  value={importJSONText}
+                  onChange={(e) => { setImportJSONText(e.target.value); setImportError(''); }}
+                  placeholder={'Paste the full JSON here...\n\n{\n  "title": "Project Name",\n  "subtitle": "...",\n  "category": "...",\n  "year": "2024",\n  "color": "#E8847C",\n  "slides": [\n    { "type": "intro", ... },\n    ...\n  ]\n}'}
+                  rows={18}
+                  spellCheck={false}
+                />
+                {importError && <div className="import-json-error">{importError}</div>}
+              </div>
+              <div className="import-json-actions">
+                <button className="builder-btn secondary" onClick={() => setShowImportJSON(false)}>Cancel</button>
+                <button className="builder-btn primary" onClick={handleImportJSON} disabled={!importJSONText.trim()}>
+                  Apply JSON
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Lightbox for viewing images in full size */}
       <AnimatePresence>
         {lightboxImage && (
@@ -6703,4 +6032,5 @@ const CaseStudy = () => {
   );
 };
 
+export { TemplatePreview };
 export default CaseStudy;

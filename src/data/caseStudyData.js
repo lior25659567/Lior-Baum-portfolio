@@ -1,5 +1,8 @@
 // Case Study Data - Editable via Edit Mode (Cmd+E)
 // Data is saved to localStorage when edited
+// Use "Save to Code" in edit mode to persist changes to source files
+
+import { savedCaseStudies } from './case-studies/index.js';
 
 export const slideTemplates = {
   // === EXISTING TEMPLATES ===
@@ -26,18 +29,10 @@ export const slideTemplates = {
       { label: 'Deliverables', value: 'What you delivered' },
     ],
   },
-  text: {
-    type: 'text',
-    label: 'Section Label',
-    title: 'Section Title',
-    content: 'Add your content here. Describe the challenge, process, or solution.',
-  },
-  image: {
-    type: 'image',
-    label: 'Section Label',
-    title: 'Image Title',
-    image: '',
-    caption: 'Image caption describing what this shows.',
+  media: {
+    type: 'media',
+    title: 'Media Slide',
+    image: [{ src: '', caption: '', position: 'center center', size: 'large', fit: 'cover', embedUrl: '' }],
   },
   textAndImage: {
     type: 'problem',
@@ -104,15 +99,25 @@ export const slideTemplates = {
 
   // === NEW TEMPLATES ===
   
-  // Before/After comparison
+  // Before/After comparison — supports images, text, bullets, and highlight
   comparison: {
     type: 'comparison',
     label: 'Before & After',
     title: 'The Transformation',
+    description: '',
     beforeImage: '',
     afterImage: '',
     beforeLabel: 'Before',
     afterLabel: 'After',
+    beforeDescription: '',
+    afterDescription: '',
+    beforeBullets: [],
+    beforeBulletsTitle: '',
+    afterBullets: [],
+    afterBulletsTitle: '',
+    bullets: [],
+    bulletsTitle: '',
+    highlight: '',
   },
   
   // Process steps
@@ -129,17 +134,6 @@ export const slideTemplates = {
   },
   
   
-  // Two-column text
-  twoColumn: {
-    type: 'twoColumn',
-    label: 'Overview',
-    title: 'Section Title',
-    leftTitle: 'Left Column',
-    leftContent: 'Content for the left column.',
-    rightTitle: 'Right Column',
-    rightContent: 'Content for the right column.',
-  },
-  
   // Timeline
   timeline: {
     type: 'timeline',
@@ -153,14 +147,6 @@ export const slideTemplates = {
     ],
   },
   
-  // Video embed placeholder
-  video: {
-    type: 'video',
-    label: 'Demo',
-    title: 'See It In Action',
-    videoUrl: '',
-    caption: 'Video walkthrough of the final product.',
-  },
 
   // Issues Breakdown - "what started to break" style
   issuesBreakdown: {
@@ -175,20 +161,6 @@ export const slideTemplates = {
     ],
   },
 
-  // Old Experience - showing the previous state
-  oldExperience: {
-    type: 'oldExperience',
-    label: 'The problem',
-    title: 'the old experience',
-    subtitle: 'Explanation',
-    content: 'Describe what the old experience looked like and why it was problematic for users.',
-    issues: [
-      'First pain point or issue with the old experience',
-      'Second pain point users encountered',
-      'Third issue that needed addressing',
-    ],
-    highlight: 'A key quote or insight about the old experience',
-  },
 
   // Achievement Goals - two-column goals layout
   achieveGoals: {
@@ -225,33 +197,6 @@ export const slideTemplates = {
     ],
   },
   
-  // Challenge/Solution pair
-  challengeSolution: {
-    type: 'challengeSolution',
-    label: 'Problem Solving',
-    title: 'Challenge & Solution',
-    challenge: 'Describe the challenge faced.',
-    challengeImage: [{ src: '', caption: '' }],
-    solution: 'Describe how it was solved.',
-    solutionImage: [{ src: '', caption: '' }],
-  },
-  
-  // Solution Showcase - Problem/Solution with images comparison
-  solutionShowcase: {
-    type: 'solutionShowcase',
-    label: 'The Solution',
-    title: 'Redesigning the experience',
-    problemImages: [{ src: '', caption: '' }],
-    solutionImages: [{ src: '', caption: '' }],
-    problemLabel: 'Problem:',
-    problemText: 'Describe the main problem or pain point.',
-    solutionLabel: 'Solution:',
-    solutionPoints: [
-      'First improvement or change',
-      'Second improvement or change',
-    ],
-  },
-  
   // Big quote/testimonial
   testimonial: {
     type: 'testimonial',
@@ -260,29 +205,6 @@ export const slideTemplates = {
     role: 'CEO, Company',
   },
   
-  // Key insight
-  insight: {
-    type: 'insight',
-    label: 'Key Insight',
-    insight: 'One important learning or discovery from this project.',
-    supporting: 'Additional context or explanation.',
-  },
-
-  // Text with images below - flexible paragraphs and images
-  textWithImages: {
-    type: 'textWithImages',
-    label: 'Design Process',
-    title: 'Creating clarity before testing behavior',
-    paragraphs: [
-      'First paragraph describing the context or situation.',
-      'Second paragraph with additional details or explanation.',
-    ],
-    images: [
-      { src: '', caption: 'Before' },
-      { src: '', caption: 'After' },
-    ],
-  },
-
   // Project Showcase - Two column layout with info panel and image
   projectShowcase: {
     type: 'projectShowcase',
@@ -296,43 +218,12 @@ export const slideTemplates = {
     image: '',
   },
 
-  // Goals Showcase - Two column layout with goals list
-  goalsShowcase: {
-    type: 'goalsShowcase',
-    slideNumber: '02',
-    title: 'Project Goals',
-    description: 'What we aimed to achieve with this project.',
-    goals: [
-      { title: 'Goal 1', description: 'Description of the first goal' },
-      { title: 'Goal 2', description: 'Description of the second goal' },
-      { title: 'Goal 3', description: 'Description of the third goal' },
-    ],
-    image: '',
-  },
 
   // Image Mosaic - Tiled images background with centered title overlay
   imageMosaic: {
     type: 'imageMosaic',
     title: 'Old version',
     images: [],
-  },
-
-  // Problem & Solution - Two-column with problem image (left) and solution image (right) + bullets
-  problemSolution: {
-    type: 'problemSolution',
-    label: 'The Solution',
-    title: 'From form to conversation',
-    problemLabel: 'Problem:',
-    problemImage: '',
-    problemImageFit: 'cover',
-    problemBullets: [],
-    solutionLabel: 'Solution:',
-    solutionImage: '',
-    solutionImageFit: 'cover',
-    solutionBullets: [
-      'First improvement or change',
-      'Second improvement or change',
-    ],
   },
 
   // Chapter - Section divider slide
@@ -343,30 +234,24 @@ export const slideTemplates = {
     subtitle: 'Understanding the problem space',
   },
 
-  // Dynamic - Composable slide with ordered content blocks
-  dynamic: {
-    type: 'dynamic',
-    blocks: [
-      { type: 'title', value: 'Section Title' },
-      { type: 'paragraph', value: 'Add your content here. Use the toolbar below to add more blocks.' },
-    ],
-  },
+
 };
 
 // Template categories for easier navigation
 export const templateCategories = {
-  'Custom': ['dynamic'],
   'Introduction': ['intro', 'info', 'chapter'],
-  'Content': ['text', 'twoColumn', 'insight', 'textWithImages'],
-  'Visual': ['image', 'video', 'projectShowcase', 'goalsShowcase', 'imageMosaic'],
-  'Research': ['textAndImage', 'issuesBreakdown', 'oldExperience', 'quotes', 'testimonial'],
+  'Visual': ['media', 'imageMosaic'],
+  'Layout': ['testimonial'],
+  'Showcase': ['projectShowcase'],
+  'Research': ['textAndImage', 'issuesBreakdown', 'quotes'],
   'Process': ['goals', 'achieveGoals', 'process', 'timeline'],
-  'Features': ['comparison', 'challengeSolution', 'solutionShowcase', 'problemSolution', 'tools'],
+  'Features': ['comparison', 'tools'],
   'Results': ['stats', 'outcomes', 'end'],
 };
 
 export const defaultCaseStudies = {
   'align-technology': {
+    dataVersion: 2,
     title: 'iTero\nScan & View',
     subtitle: 'Redesigning a live clinical scanning experience',
     category: 'Clinical UX & System Design',
@@ -423,19 +308,16 @@ export const defaultCaseStudies = {
       },
       // Slide 4 — Research & Insight
       {
-        type: 'text',
+        type: 'context',
         label: 'Research & Insight',
         title: 'What clinicians struggled with',
-        content: 'From interviews and live walkthroughs, one theme repeated:',
+        content: 'From interviews and live walkthroughs, one theme repeated:\n\nThis was not a usability issue in isolation. It was a structural breakdown in the overall flow.',
         highlight: '"I\'m never fully sure where I am — scanning, editing, or reviewing."',
         bulletsTitle: 'Key issues:',
         bullets: [
           'Unclear system state',
           'Tools scattered across the interface',
           'Fear of making irreversible changes',
-        ],
-        paragraphs: [
-          'This was not a usability issue in isolation. It was a structural breakdown in the overall flow.',
         ],
       },
       // Slide 5 — Goals & KPIs
@@ -480,14 +362,10 @@ export const defaultCaseStudies = {
       },
       // Slide 7 — Icon System Solution
       {
-        type: 'text',
+        type: 'context',
         label: 'The Solution',
         title: 'Creating a scalable icon language',
-        content: 'The icon system was redesigned before adjusting layout.',
-        paragraphs: [
-          'Changes included unified grid and stroke rules, balanced visual weight, and simplified metaphors.',
-          'This created a visual foundation capable of scaling.',
-        ],
+        content: 'The icon system was redesigned before adjusting layout.\n\nChanges included unified grid and stroke rules, balanced visual weight, and simplified metaphors.\n\nThis created a visual foundation capable of scaling.',
         image: '',
       },
       // Chapter: LIVE SCANNING STRUCTURE
@@ -526,35 +404,25 @@ export const defaultCaseStudies = {
       },
       // Slide 10 — Scanning Solution
       {
-        type: 'text',
+        type: 'context',
         label: 'The Solution',
         title: 'Defining a single home for scanning actions',
-        content: 'The horizontal top toolbar proved most stable.',
-        paragraphs: [
-          'Predictable reach, minimal obstruction, and strong muscle memory.',
-          'This became the structural anchor of the Scan page.',
-        ],
+        content: 'The horizontal top toolbar proved most stable.\n\nPredictable reach, minimal obstruction, and strong muscle memory.\n\nThis became the structural anchor of the Scan page.',
         image: '',
       },
       // Slide 11 — Adaptive Problem
       {
-        type: 'text',
+        type: 'context',
         label: 'The Problem',
         title: 'One static toolbar couldn\'t support all moments',
-        content: 'Different clinicians had different needs.',
-        paragraphs: [
-          'Experts wanted speed. Others wanted reassurance. Icons alone were not always sufficient.',
-        ],
+        content: 'Different clinicians had different needs.\n\nExperts wanted speed. Others wanted reassurance. Icons alone were not always sufficient.',
       },
       // Slide 12 — Adaptive Solution
       {
-        type: 'text',
+        type: 'context',
         label: 'The Solution',
         title: 'An adaptive toolbar for speed and clarity',
-        content: 'The toolbar supports two states: collapsed (icons only) and expanded (icons with labels).',
-        paragraphs: [
-          'Clinicians can switch states without interrupting scanning.',
-        ],
+        content: 'The toolbar supports two states: collapsed (icons only) and expanded (icons with labels).\n\nClinicians can switch states without interrupting scanning.',
         image: '',
       },
       // Chapter: CLINICAL TOOLS
@@ -577,13 +445,10 @@ export const defaultCaseStudies = {
       },
       // Slide 14 — Prep Review Solution
       {
-        type: 'text',
+        type: 'context',
         label: 'Prep Review — Solution',
         title: 'Turning validation into a decision checkpoint',
-        content: 'Prep Review was reframed as a binary decision: Select, or Erase and Rescan.',
-        paragraphs: [
-          'AI validates. The clinician confirms.',
-        ],
+        content: 'Prep Review was reframed as a binary decision: Select, or Erase and Rescan.\n\nAI validates. The clinician confirms.',
         image: '',
       },
       // Slide 15 — Margin Line Problem
@@ -599,13 +464,10 @@ export const defaultCaseStudies = {
       },
       // Slide 16 — Margin Line Solution
       {
-        type: 'text',
+        type: 'context',
         label: 'Margin Line — Solution',
         title: 'Making AI the primary path',
-        content: 'The tool was redesigned around AI-first detection.',
-        paragraphs: [
-          'Detect as the main action. Visible tooth context. Review instead of draw.',
-        ],
+        content: 'The tool was redesigned around AI-first detection.\n\nDetect as the main action. Visible tooth context. Review instead of draw.',
         image: '',
       },
       // Slide 17 — Trim Tool Problem
@@ -621,13 +483,10 @@ export const defaultCaseStudies = {
       },
       // Slide 18 — Trim Tool Solution
       {
-        type: 'text',
+        type: 'context',
         label: 'Trim Tool — Solution',
         title: 'A touch-native confirm loop',
-        content: 'Trim was redesigned for one-handed interaction.',
-        paragraphs: [
-          'Large gesture trimming. Clear Confirm and Undo. Stage-based flow.',
-        ],
+        content: 'Trim was redesigned for one-handed interaction.\n\nLarge gesture trimming. Clear Confirm and Undo. Stage-based flow.',
         image: '',
       },
       // Chapter: MULTI-SCAN WORKFLOWS
@@ -653,13 +512,10 @@ export const defaultCaseStudies = {
       },
       // Slide 20 — Multi-Scan Solution
       {
-        type: 'text',
+        type: 'context',
         label: 'The Solution',
         title: 'Structuring multiple scans as one session',
-        content: 'Multi-scan support was introduced with a clear structure.',
-        paragraphs: [
-          'Tab-based structure. Clear scan labeling. Safe switching.',
-        ],
+        content: 'Multi-scan support was introduced with a clear structure.\n\nTab-based structure. Clear scan labeling. Safe switching.',
         image: '',
       },
       // Chapter: REVIEW PANEL
@@ -683,13 +539,10 @@ export const defaultCaseStudies = {
       },
       // Slide 22 — Review Solution
       {
-        type: 'text',
+        type: 'context',
         label: 'The Solution',
         title: 'A dedicated review panel for control',
-        content: 'A structured View panel allows clinicians to review with confidence.',
-        paragraphs: [
-          'Show and hide layers. Adjust opacity. Compare safely.',
-        ],
+        content: 'A structured View panel allows clinicians to review with confidence.\n\nShow and hide layers. Adjust opacity. Compare safely.',
         image: '',
       },
       // Chapter: OUTCOME
@@ -713,10 +566,10 @@ export const defaultCaseStudies = {
       },
       // Slide 24 — Key Takeaway
       {
-        type: 'insight',
+        type: 'testimonial',
         label: 'Key Takeaway',
-        insight: 'Designing for clarity under pressure',
-        supporting: 'In live clinical environments, structure reduces cognitive load, visible state builds confidence, and predictability drives adoption. Redesigning the system — not just the interface — made the difference.',
+        quote: 'Designing for clarity under pressure',
+        context: 'In live clinical environments, structure reduces cognitive load, visible state builds confidence, and predictability drives adoption. Redesigning the system — not just the interface — made the difference.',
       },
       // End
       {
@@ -727,7 +580,596 @@ export const defaultCaseStudies = {
       },
     ],
   },
+  'itero-scan-workflow': {
+    dataVersion: 3,
+    title: 'iTero\nScan Experience',
+    subtitle: 'Redesigning the clinical scanning workflow to improve speed, clarity, and decision-making in real treatment conditions.',
+    category: 'Clinical Workflow Redesign',
+    year: '2024',
+    color: '#E8847C',
+    slides: [
+      {
+        type: 'intro',
+        title: 'iTero\nScan Experience',
+        description: 'Redesigning the clinical scanning workflow to improve speed, clarity, and decision-making in real treatment conditions.',
+        clientLabel: 'Client',
+        client: 'Align Technology',
+        focusLabel: 'Focus',
+        focus: 'Clinical UX',
+        image: [
+          { src: '', caption: 'iTero scanner interface during a live scan session' },
+        ],
+      },
+      {
+        type: 'info',
+        title: 'Project Overview',
+        items: [
+          { label: 'Role', value: 'UX/UI Designer' },
+          { label: 'Product', value: 'iTero Scanner' },
+          { label: 'Duration', value: 'Ongoing' },
+          { label: 'Scope', value: 'End-to-end redesign' },
+        ],
+        bulletsTitle: 'Focus Areas',
+        bullets: [
+          'Scanning workflow redesign',
+          'Clinical decision tools',
+          'Toolbar system',
+          'RX to View experience',
+          'Design system alignment',
+        ],
+      },
+      {
+        type: 'textAndImage',
+        label: 'Context',
+        title: 'Designing inside a clinical workflow',
+        content: 'The scanning process happens in a time-critical environment where dentists must divide attention between the patient, the scanner, and the screen. Every interaction must be fast, clear, and reliable.',
+        issuesTitle: 'Constraints',
+        issues: [
+          'Time-critical actions',
+          'Split attention',
+          'High precision needed',
+          'Low error tolerance',
+        ],
+        image: [
+          { src: '', caption: 'Dentist scanning a patient using iTero scanner' },
+        ],
+      },
+      {
+        type: 'issuesBreakdown',
+        label: 'Problem',
+        title: 'What started to break',
+        issues: [
+          { number: '1', title: 'Overloaded interface', description: 'Too many tools visible at once' },
+          { number: '2', title: 'Weak hierarchy', description: 'No clear prioritization of actions' },
+          { number: '3', title: 'Fragmented flow', description: 'RX, Scan, and View disconnected' },
+          { number: '4', title: 'Decision friction', description: 'Hard to validate clinical results' },
+        ],
+      },
+      {
+        type: 'textAndImage',
+        label: 'Old Experience',
+        title: 'From scanning to hesitation',
+        content: 'As more features were added, the interface became harder to navigate. The system exposed functionality but didn\'t align with how clinicians think and act during a scan.',
+        issuesTitle: 'Pain points',
+        issues: [
+          'Visual noise',
+          'Slow access to tools',
+          'High cognitive load',
+          'Frequent hesitation',
+        ],
+        image: [
+          { src: '', caption: 'Old scanning interface with crowded UI and toolbar' },
+        ],
+      },
+      {
+        type: 'quotes',
+        label: 'Research',
+        title: 'What clinicians said',
+        content: 'Feedback collected from usability sessions and real workflows.',
+        quotes: [
+          { text: 'I don\'t have time to think about the UI while scanning.', author: 'Dr. Amir Cohen' },
+          { text: 'Sometimes I\'m not sure if the prep is actually correct.', author: 'Dr. Yael Levi' },
+          { text: 'There\'s too much happening on the screen at once.', author: 'Dr. Daniel Katz' },
+        ],
+      },
+      {
+        type: 'goals',
+        label: 'Goals',
+        title: 'What we wanted to achieve',
+        goals: [
+          { number: '1', title: 'Reduce cognitive load', description: 'Simplify what users see and process' },
+          { number: '2', title: 'Increase speed', description: 'Enable faster interactions' },
+          { number: '3', title: 'Support decisions', description: 'Improve clinical confidence' },
+        ],
+        kpis: [
+          'Task completion time',
+          'Error rate reduction',
+          'Tool usage efficiency',
+          'User confidence',
+        ],
+      },
+      {
+        type: 'process',
+        label: 'Process',
+        title: 'How we approached it',
+        steps: [
+          { number: '01', title: 'Audit', description: 'Mapped tools and flows across system' },
+          { number: '02', title: 'Reframing', description: 'Separated navigation vs decisions' },
+          { number: '03', title: 'Redesign', description: 'Built unified system experience' },
+          { number: '04', title: 'Testing', description: 'Validated with interactive prototypes' },
+        ],
+      },
+      {
+        type: 'comparison',
+        label: 'Workflow',
+        title: 'From fragmented to structured',
+        beforeImage: '',
+        afterImage: '',
+        beforeLabel: 'Before',
+        afterLabel: 'After',
+        beforeDescription: 'Disconnected experience across RX, scan, and view phases.',
+        afterDescription: 'Clear, structured workflow with predictable transitions.',
+        beforeBullets: [
+          'Disconnected phases',
+          'No clear flow',
+          'Hard transitions',
+        ],
+        afterBullets: [
+          'Structured phases',
+          'Clear progression',
+          'Consistent experience',
+        ],
+      },
+      {
+        type: 'textAndImage',
+        label: 'System',
+        title: 'Connecting RX, Scan, and View',
+        content: 'The redesign unified the entire experience\u2014from case setup to scanning to review\u2014into a continuous flow. Each phase now supports the next instead of feeling like separate tools.',
+        issuesTitle: 'Improvements',
+        issues: [
+          'Clear phase transitions',
+          'Consistent interaction patterns',
+          'Better context awareness',
+        ],
+        image: [
+          { src: '', caption: 'Flow diagram of RX to Scan to View experience' },
+        ],
+      },
+      {
+        type: 'textAndImage',
+        label: 'Toolbar',
+        title: 'Reducing noise, improving speed',
+        content: 'The toolbar was simplified to reduce overload and improve access speed. Instead of showing everything, it focuses on what is relevant in the moment.',
+        issuesTitle: 'Design changes',
+        issues: [
+          'Unified icon system',
+          'Cleaner visual hierarchy',
+          'Reduced visible tools',
+        ],
+        bullets2Title: 'Adaptive behavior',
+        bullets2: [
+          'Expand for clarity',
+          'Collapse for speed',
+        ],
+        image: [
+          { src: '', caption: 'Toolbar showing collapsed and expanded states' },
+        ],
+      },
+      {
+        type: 'textAndImage',
+        label: 'Clinical Decisions',
+        title: 'From tools to outcomes',
+        content: 'After stabilizing navigation, the focus shifted to clinical tools. The goal was to help dentists validate their work quickly instead of manually adjusting it.',
+        issuesTitle: 'Approach',
+        issues: [
+          'Simplified interactions',
+          'Clear visual feedback',
+          'Reduced manual corrections',
+        ],
+        image: [
+          { src: '', caption: 'Prep QC, margin line, and trim tool redesigns' },
+        ],
+      },
+      {
+        type: 'comparison',
+        label: 'Interaction',
+        title: 'From adjustment to validation',
+        beforeImage: '',
+        afterImage: '',
+        beforeLabel: 'Before',
+        afterLabel: 'After',
+        beforeDescription: 'Clinicians manually adjusted results with uncertainty.',
+        afterDescription: 'System guides validation with clear feedback.',
+        beforeBullets: [
+          'Manual corrections',
+          'Unclear results',
+          'High effort',
+        ],
+        afterBullets: [
+          'Guided workflow',
+          'Clear validation',
+          'Faster decisions',
+        ],
+      },
+      {
+        type: 'media',
+        label: 'Final Design',
+        title: 'The redesigned scan experience',
+        image: [
+          { src: '', caption: 'Full scan interface showing new system, toolbar, and tools' },
+        ],
+      },
+      {
+        type: 'outcomes',
+        label: 'Results',
+        title: 'What this improved',
+        outcomes: [
+          { title: 'Clearer workflows', description: 'More predictable and structured scanning experience' },
+          { title: 'Faster interaction', description: 'Reduced hesitation and navigation time' },
+          { title: 'Better decisions', description: 'Higher confidence during clinical evaluation' },
+        ],
+      },
+      {
+        type: 'tools',
+        label: 'Tools & Methods',
+        title: 'Built With',
+        tools: [
+          { name: 'Figma', description: 'Design and prototyping' },
+          { name: 'Cursor', description: 'Interactive prototypes' },
+          { name: 'User Testing', description: 'Clinician validation' },
+          { name: 'Design System', description: 'Consistency and scalability' },
+        ],
+      },
+      {
+        type: 'end',
+        title: 'Thank You',
+        subtitle: 'Let\'s build better clinical systems',
+        cta: 'Get in touch',
+      },
+    ],
+  },
+  'template-demo': {
+    dataVersion: 3,
+    title: 'Template\nDemo',
+    subtitle: 'All slide templates in one place',
+    category: 'Template Reference',
+    year: '2025',
+    color: '#4A90E2',
+    slides: [
+      // ─── 1. intro ───
+      {
+        type: 'intro',
+        title: 'Template\nDemo',
+        description: 'A showcase of every available slide template. Browse through to see what each one looks like and how it works.',
+        clientLabel: 'Type',
+        client: 'Demo',
+        focusLabel: 'Purpose',
+        focus: 'Template Reference',
+        introHeaderMode: 'both',
+        splitRatio: 50,
+      },
+      // ─── 2. info ───
+      {
+        type: 'info',
+        label: 'info',
+        title: 'Project Overview',
+        items: [
+          { label: 'Client', value: 'Company Name' },
+          { label: 'Role', value: 'Lead Product Designer' },
+          { label: 'Duration', value: '3 months' },
+          { label: 'Deliverables', value: 'Design system, Prototypes, Specs' },
+        ],
+        bullets: ['Optional bullet point below the info grid', 'Another supporting detail'],
+        bulletsTitle: 'Additional notes',
+      },
+      // ─── 3. context ───
+      {
+        type: 'context',
+        label: 'context',
+        title: 'Context Slide',
+        content: 'The context slide uses a split layout — text on the left, image on the right. It supports a label, title, body text, bullets, and optional conclusion.',
+        bullets: ['Split layout with adjustable ratio', 'Supports Simple, Before/After, and Tabs modes', 'Optional highlight note'],
+        bulletsTitle: 'Features',
+        image: '',
+        splitRatio: 50,
+      },
+      // ─── 8. problem ───
+      {
+        type: 'problem',
+        label: 'problem',
+        title: 'Problem Slide',
+        content: 'The problem slide shares the same unified component as context, feature, testing, and comparison. It maps "issues" as bullets and supports a conclusion.',
+        issues: ['First pain point or finding', 'Second issue discovered', 'Third problem identified'],
+        issuesTitle: 'Key issues',
+        bullets2: ['Additional context point', 'Supporting detail'],
+        bullets2Title: 'Additional notes',
+        conclusion: 'The conclusion appears at the bottom of the text column.',
+        image: '',
+        splitRatio: 50,
+      },
+      // ─── 9. feature ───
+      {
+        type: 'feature',
+        label: 'feature',
+        title: 'Feature Slide',
+        description: 'The feature slide uses the same split layout. Its body text field is called "description" and bullets are generic. Perfect for showcasing individual features.',
+        bullets: ['Shared component with problem/context/testing', 'Same three style modes available', 'Image on the right side'],
+        bulletsTitle: 'Capabilities',
+        image: '',
+        splitRatio: 50,
+      },
+      // ─── 10. testing ───
+      {
+        type: 'testing',
+        label: 'testing',
+        title: 'Testing Slide',
+        content: 'The testing slide uses "layouts" as its bullet field name. It includes a conclusion section and shares the same unified component.',
+        layouts: ['Layout variation A tested', 'Layout variation B tested', 'Layout variation C tested'],
+        layoutsTitle: 'Tested layouts',
+        conclusion: 'Testing revealed that option B performed best across all user segments.',
+        image: '',
+        splitRatio: 50,
+      },
+      {
+        type: 'chapter',
+        number: '01',
+        title: 'Visual & Media',
+        subtitle: 'Media, image, and showcase slides',
+      },
+      // ─── media ───
+      {
+        type: 'media',
+        label: 'media',
+        title: 'Media Slide',
+        image: [{ src: '', caption: 'Supports images, Figma embeds, video URLs, and GIFs.', position: 'center center', size: 'large', fit: 'cover', embedUrl: '' }],
+      },
+      // ─── textAndImage ───
+      {
+        type: 'textAndImage',
+        label: 'textAndImage',
+        title: 'Text & Image Split',
+        content: 'This split layout pairs text on the left with an image on the right. It supports body text, bullets, conclusion, and a highlight note.',
+        bullets: ['Split layout with adjustable ratio', 'Supports multiple bullet groups', 'Optional conclusion section'],
+        bulletsTitle: 'Features',
+        image: '',
+        splitRatio: 50,
+      },
+      // ─── projectShowcase ───
+      {
+        type: 'projectShowcase',
+        label: 'projectShowcase',
+        slideNumber: '01',
+        title: 'Project Showcase',
+        subtitle: 'Feature highlight template',
+        description: 'Two-column layout with large number, title, description, and tag chips on the left. Full image on the right.',
+        tags: ['UX Design', 'Interaction', 'MedTech'],
+        projectShowcaseHeader: 'both',
+        image: '',
+        splitRatio: 50,
+      },
+      // ─── imageMosaic ───
+      {
+        type: 'imageMosaic',
+        label: 'imageMosaic',
+        title: 'Image Mosaic',
+        images: [],
+      },
+      {
+        type: 'chapter',
+        number: '02',
+        title: 'Research',
+        subtitle: 'Discovery and analysis slides',
+      },
+      // ─── issuesBreakdown ───
+      {
+        type: 'issuesBreakdown',
+        label: 'issuesBreakdown',
+        title: 'Issues Breakdown Grid',
+        subtitle: 'Numbered cards showing specific problems',
+        description: 'Displays issues in a configurable grid (1-4 columns). Each card has a number, title, and description.',
+        cardsTitle: 'What broke',
+        issues: [
+          { number: '1', title: 'Slow workflows', description: 'Too many steps to complete basic tasks' },
+          { number: '2', title: 'Hidden tools', description: 'Critical features buried in menus' },
+          { number: '3', title: 'No context', description: 'Same UI regardless of current task' },
+          { number: '4', title: 'Error-prone', description: 'Easy to select wrong options' },
+        ],
+        gridColumns: 2,
+        highlight: 'This highlight note appears below the issue cards.',
+      },
+      // ─── quotes ───
+      {
+        type: 'quotes',
+        label: 'quotes',
+        title: 'Research Quotes Grid',
+        content: 'User quotes in a card grid. Grid columns are configurable (1-4).',
+        quotes: [
+          { text: 'I spend more time looking for tools than actually working.', author: 'User A' },
+          { text: 'The interface feels like it was designed by engineers, not for us.', author: 'User B' },
+          { text: 'I wish I could just focus on my task without all the clutter.', author: 'User C' },
+        ],
+        gridColumns: 3,
+        bullets: ['Collected from 15 interviews', 'Consistent theme across all user segments'],
+        bulletsTitle: 'Research context',
+      },
+      // ─── 21. testimonial ───
+      {
+        type: 'testimonial',
+        label: 'testimonial',
+        quote: 'The new design feels like it reads my mind. I barely have to think about the interface anymore.',
+        author: 'Dr. Sarah Mitchell',
+        role: 'Lead Clinician, Demo Hospital',
+        context: 'Feedback received during the final round of usability testing.',
+      },
+      {
+        type: 'chapter',
+        number: '03',
+        title: 'Process & Goals',
+        subtitle: 'Planning and process slides',
+      },
+      // ─── 22. goals ───
+      {
+        type: 'goals',
+        label: 'goals',
+        title: 'Goals & KPIs',
+        description: ['Presents goals as numbered cards with an optional KPI section below.'],
+        goalsCardsTitle: 'Design Goals',
+        goals: [
+          { number: '1', title: 'Simplify Navigation', description: 'Reduce cognitive load and make core actions intuitive' },
+          { number: '2', title: 'Clear Data Visibility', description: 'Make information easy to scan at a glance' },
+          { number: '3', title: 'Support All Users', description: 'Design for both novice and expert workflows' },
+        ],
+        gridColumns: 3,
+        kpis: ['Task completion rate', 'Time on task', 'Error rate', 'User satisfaction'],
+        kpisGridColumns: 4,
+      },
+      // ─── 23. achieveGoals ───
+      {
+        type: 'achieveGoals',
+        label: 'achieveGoals',
+        title: 'Two-Column Goals',
+        description: 'Separates goals into two columns — KPIs vs metrics, or qualitative vs quantitative.',
+        leftColumn: {
+          title: 'KPIs',
+          goals: [
+            { number: '1', text: 'Reduce task completion time by 30%' },
+            { number: '2', text: 'Improve first-try success rate to 90%' },
+            { number: '3', text: 'Decrease support tickets by 50%' },
+          ],
+        },
+        rightColumn: {
+          title: 'Key Metrics',
+          goals: [
+            { number: '1', text: 'Average session duration' },
+            { number: '2', text: 'Feature adoption rate' },
+            { number: '3', text: 'Net promoter score (NPS)' },
+          ],
+        },
+      },
+      // ─── 24. process ───
+      {
+        type: 'process',
+        label: 'process',
+        title: 'Process Steps',
+        steps: [
+          { number: '01', title: 'Research', description: 'User interviews and field observations' },
+          { number: '02', title: 'Define', description: 'Problem framing and opportunity mapping' },
+          { number: '03', title: 'Design', description: 'Wireframes, prototypes, and iteration' },
+          { number: '04', title: 'Test', description: 'Usability testing with target users' },
+          { number: '05', title: 'Ship', description: 'Handoff, QA, and launch support' },
+        ],
+        highlight: 'Each phase included stakeholder reviews and user validation checkpoints.',
+      },
+      // ─── 25. timeline ───
+      {
+        type: 'timeline',
+        label: 'timeline',
+        title: 'Project Timeline',
+        events: [
+          { date: 'Week 1-2', title: 'Discovery', description: 'Stakeholder interviews, competitive analysis' },
+          { date: 'Week 3-4', title: 'Define', description: 'Problem definition, persona refinement' },
+          { date: 'Week 5-8', title: 'Design', description: 'Wireframes, prototypes, design system' },
+          { date: 'Week 9-10', title: 'Test', description: 'Usability testing with 12 participants' },
+          { date: 'Week 11-12', title: 'Ship', description: 'Final iteration, specs, handoff' },
+        ],
+      },
+      {
+        type: 'chapter',
+        number: '04',
+        title: 'Features & Comparison',
+        subtitle: 'Comparison, tools, and feature slides',
+      },
+      // ─── 26. comparison (before-after mode) ───
+      {
+        type: 'comparison',
+        label: 'comparison',
+        slideMode: 'before-after',
+        title: 'Before / After Comparison',
+        description: 'Side-by-side comparison with pill or flat switcher. Each side supports its own image, description, and bullets.',
+        beforeImage: '',
+        afterImage: '',
+        beforeLabel: 'Before',
+        afterLabel: 'After',
+        beforeDescription: 'The old interface had a static toolbar with 40+ tools visible at all times.',
+        afterDescription: 'The redesigned toolbar uses phase-aware filtering, showing only relevant tools.',
+        beforeBullets: ['All tools visible at once', 'No contextual awareness', 'High cognitive load'],
+        beforeBulletsTitle: 'Issues',
+        afterBullets: ['Phase-aware filtering', 'Contextual grouping', '70% fewer visible tools'],
+        afterBulletsTitle: 'Improvements',
+        highlight: 'Supports Simple, Before/After, and Tabs modes — switchable in edit mode.',
+      },
+      // ─── 27. comparison (tabs mode) ───
+      {
+        type: 'comparison',
+        label: 'comparison (tabs)',
+        slideMode: 'tabs',
+        title: 'Tabbed Comparison',
+        psTabs: [
+          { label: 'Problem', columnLabel: 'The Problem:', image: '', embedUrl: '', bullets: ['Complex workflows with too many steps', 'Users struggled to find core actions'], bulletsTitle: '' },
+          { label: 'Solution', columnLabel: 'The Solution:', image: '', embedUrl: '', bullets: ['Streamlined 5-step workflow into 2 steps', 'Contextual actions always visible'], bulletsTitle: '' },
+          { label: 'Result', columnLabel: 'The Result:', image: '', embedUrl: '', bullets: ['40% faster task completion', '60% fewer support tickets'], bulletsTitle: '' },
+        ],
+        highlight: 'Tabs mode supports 2-6 tabs, each with its own label, bullets, and image.',
+      },
+      // ─── 28. tools ───
+      {
+        type: 'tools',
+        label: 'tools',
+        title: 'Tools & Methods',
+        tools: [
+          { name: 'Figma', description: 'Design & Prototyping' },
+          { name: 'Maze', description: 'Usability Testing' },
+          { name: 'Miro', description: 'Workshops & Mapping' },
+          { name: 'Jira', description: 'Project Management' },
+          { name: 'Hotjar', description: 'Analytics & Heatmaps' },
+          { name: 'Notion', description: 'Documentation' },
+        ],
+        highlight: 'Tools are displayed in a responsive horizontal grid.',
+      },
+      {
+        type: 'chapter',
+        number: '05',
+        title: 'Results',
+        subtitle: 'Outcomes and closing slides',
+      },
+      // ─── 29. stats ───
+      {
+        type: 'stats',
+        label: 'stats',
+        title: 'Statistics',
+        stats: [
+          { value: '40%', label: 'Faster task completion' },
+          { value: '60%', label: 'Fewer errors' },
+          { value: '92%', label: 'User satisfaction' },
+          { value: '3x', label: 'Feature adoption increase' },
+        ],
+        description: ['Stats are displayed as large values with labels. Use the optional suffix field for units.'],
+        highlight: 'These metrics were measured 3 months after launch.',
+      },
+      // ─── 30. outcomes ───
+      {
+        type: 'outcomes',
+        label: 'outcomes',
+        title: 'Outcomes',
+        outcomes: [
+          { title: 'Faster Workflows', description: 'Users complete core tasks 40% faster with the redesigned interface.' },
+          { title: 'Higher Confidence', description: 'Reduced error rate indicates better first-try accuracy.' },
+          { title: 'Better Adoption', description: 'Advanced features saw 3x higher usage.' },
+          { title: 'Scalable System', description: 'New architecture supports adding features without complexity creep.' },
+        ],
+        highlight: 'Outcomes are shown as cards with title and description.',
+      },
+      // ─── 31. end ───
+      {
+        type: 'end',
+        title: 'Thank You',
+        subtitle: 'This is the closing slide template',
+        cta: 'Get in touch',
+      },
+    ],
+  },
   'wizecare': {
+    dataVersion: 1,
     title: 'WizeCare',
     subtitle: 'Digitizing Home Physical Therapy',
     category: 'MedTech / Tele-Health',
@@ -788,14 +1230,10 @@ export const defaultCaseStudies = {
       },
       // Slide 6: Research & Discovery
       {
-        type: 'text',
+        type: 'context',
         label: 'Research & Discovery',
         title: 'Understanding real friction',
-        paragraphs: [
-          'To understand where clinicians struggled, I visited physiotherapy clinics, conducted user interviews, and reviewed support tickets and recurring issues.',
-          'This revealed a clear friction funnel across three critical workflows: patient management, care plan editing, and protocol creation.',
-          'These flows became the foundation for the redesign.',
-        ],
+        content: 'To understand where clinicians struggled, I visited physiotherapy clinics, conducted user interviews, and reviewed support tickets and recurring issues.\n\nThis revealed a clear friction funnel across three critical workflows: patient management, care plan editing, and protocol creation.\n\nThese flows became the foundation for the redesign.',
       },
       // Slide 7: Goals & KPIs
       {
@@ -816,13 +1254,10 @@ export const defaultCaseStudies = {
       },
       // Slide 8: Redesign Strategy
       {
-        type: 'text',
+        type: 'context',
         label: 'Redesign Strategy',
         title: 'Rebuilding around real workflows',
-        paragraphs: [
-          'Rather than making isolated UI improvements, the redesign focused on restructuring the product around the three workflows that mattered most.',
-          'Each flow was addressed independently, while maintaining consistency across the system.',
-        ],
+        content: 'Rather than making isolated UI improvements, the redesign focused on restructuring the product around the three workflows that mattered most.\n\nEach flow was addressed independently, while maintaining consistency across the system.',
       },
       // Slide 9: Flow 01 - Patient Management Title
       {
@@ -835,19 +1270,13 @@ export const defaultCaseStudies = {
       },
       // Slide 10: Flow 01 - Before/After
       {
-        type: 'solutionShowcase',
+        type: 'comparison',
+        slideMode: 'tabs',
         label: 'Flow 01',
         title: 'Patient Management',
-        problemImages: [{ src: '', caption: 'Old patient page' }],
-        solutionImages: [{ src: '', caption: 'New patient page' }],
-        problemLabel: 'The Problem:',
-        problemText: 'Clinicians struggled to understand where patient details, care plans, and adherence metrics lived. Oversized tabs and unclear hierarchy made it hard to move from insight to action.',
-        solutionLabel: 'The Solution:',
-        solutionPoints: [
-          'A dedicated patient page centralized all patient-related information',
-          'Clear separation between patient info, plans, and progress',
-          'Adherence metrics made prominent',
-          'Predictable navigation between views',
+        psTabs: [
+          { label: 'The Problem', columnLabel: 'The Problem:', image: '', embedUrl: '', bullets: ['Clinicians struggled to understand where patient details, care plans, and adherence metrics lived. Oversized tabs and unclear hierarchy made it hard to move from insight to action.'], bulletsTitle: '' },
+          { label: 'The Solution', columnLabel: 'The Solution:', image: '', embedUrl: '', bullets: ['A dedicated patient page centralized all patient-related information', 'Clear separation between patient info, plans, and progress', 'Adherence metrics made prominent', 'Predictable navigation between views'], bulletsTitle: '' },
         ],
       },
       // Slide 11: Flow 02 - Care Plan Editing Title
@@ -861,19 +1290,13 @@ export const defaultCaseStudies = {
       },
       // Slide 12: Flow 02 - Before/After
       {
-        type: 'solutionShowcase',
+        type: 'comparison',
+        slideMode: 'tabs',
         label: 'Flow 02',
         title: 'Care Plan Editing',
-        problemImages: [{ src: '', caption: 'Old care plan flow' }],
-        solutionImages: [{ src: '', caption: 'New care plan editor' }],
-        problemLabel: 'The Problem:',
-        problemText: 'Editing a care plan required navigating through 4–5 different screens, causing loss of context and cognitive fatigue. Exercises were displayed in cluttered lists, making errors more likely.',
-        solutionLabel: 'The Solution:',
-        solutionPoints: [
-          'Care plan editor redesigned into a single focused screen',
-          'Exercises displayed as modular cards',
-          'Inline editing without modals or page changes',
-          'Patient health data pinned as a constant reference',
+        psTabs: [
+          { label: 'The Problem', columnLabel: 'The Problem:', image: '', embedUrl: '', bullets: ['Editing a care plan required navigating through 4–5 different screens, causing loss of context and cognitive fatigue. Exercises were displayed in cluttered lists, making errors more likely.'], bulletsTitle: '' },
+          { label: 'The Solution', columnLabel: 'The Solution:', image: '', embedUrl: '', bullets: ['Care plan editor redesigned into a single focused screen', 'Exercises displayed as modular cards', 'Inline editing without modals or page changes', 'Patient health data pinned as a constant reference'], bulletsTitle: '' },
         ],
       },
       // Slide 13: Flow 03 - Protocol Builder Title
@@ -887,25 +1310,20 @@ export const defaultCaseStudies = {
       },
       // Slide 14: Flow 03 - Insight
       {
-        type: 'insight',
+        type: 'testimonial',
         label: 'Key Insight',
-        insight: 'Research showed that experienced physiotherapists prefer building their own protocols to tailor treatment to complex cases.',
-        supporting: 'The old system lacked a clear protocol creation flow and forced reliance on rigid templates.',
+        quote: 'Research showed that experienced physiotherapists prefer building their own protocols to tailor treatment to complex cases.',
+        context: 'The old system lacked a clear protocol creation flow and forced reliance on rigid templates.',
       },
       // Slide 15: Flow 03 - Before/After
       {
-        type: 'solutionShowcase',
+        type: 'comparison',
+        slideMode: 'tabs',
         label: 'Flow 03',
         title: 'Protocol Builder',
-        problemImages: [{ src: '', caption: 'Old protocol flow' }],
-        solutionImages: [{ src: '', caption: 'New protocol builder' }],
-        problemLabel: 'The Problem:',
-        problemText: 'The old system lacked a clear protocol creation flow and forced reliance on rigid templates.',
-        solutionLabel: 'The Solution:',
-        solutionPoints: [
-          'New protocol builder using Kanban-style drag-and-drop model',
-          'Exercise library on the left, treatment plan board on the right',
-          'Reused the same card system as care plan editor for familiarity',
+        psTabs: [
+          { label: 'The Problem', columnLabel: 'The Problem:', image: '', embedUrl: '', bullets: ['The old system lacked a clear protocol creation flow and forced reliance on rigid templates.'], bulletsTitle: '' },
+          { label: 'The Solution', columnLabel: 'The Solution:', image: '', embedUrl: '', bullets: ['New protocol builder using Kanban-style drag-and-drop model', 'Exercise library on the left, treatment plan board on the right', 'Reused the same card system as care plan editor for familiarity'], bulletsTitle: '' },
         ],
       },
       // Slide 16: Outcomes - Stats
@@ -954,6 +1372,11 @@ export const defaultCaseStudies = {
     ],
   }
 };
+
+// Merge: saved JSON files override hardcoded defaults
+for (const [id, data] of Object.entries(savedCaseStudies)) {
+  defaultCaseStudies[id] = data;
+}
 
 
 // Helper functions for localStorage
@@ -1044,32 +1467,59 @@ const deleteFromIndexedDB = (projectId) => deleteCaseStudy(projectId);
 
 // ========== Public API ==========
 export const getCaseStudyData = (projectId) => {
+  const defaults = defaultCaseStudies[projectId] || defaultCaseStudies['align-technology'];
   // First try localStorage (for backward compatibility and sync access)
   try {
     const saved = localStorage.getItem(`caseStudy_${projectId}`);
     if (saved) {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      // Auto-reset if saved version is older than default
+      if (defaults.dataVersion && (!parsed.dataVersion || parsed.dataVersion < defaults.dataVersion)) {
+        console.log(`[getCaseStudyData] Saved data for ${projectId} is outdated (v${parsed.dataVersion || 0} < v${defaults.dataVersion}), resetting to defaults`);
+        localStorage.removeItem(`caseStudy_${projectId}`);
+        localStorage.removeItem(`caseStudy_${projectId}_minimal`);
+        localStorage.removeItem(`caseStudy_${projectId}_idb`);
+        deleteFromIndexedDB(projectId);
+        return defaults;
+      }
+      return parsed;
     }
     // Check for minimal version (structure without images)
     const minimal = localStorage.getItem(`caseStudy_${projectId}_minimal`);
     if (minimal) {
+      const parsed = JSON.parse(minimal);
+      if (defaults.dataVersion && (!parsed.dataVersion || parsed.dataVersion < defaults.dataVersion)) {
+        localStorage.removeItem(`caseStudy_${projectId}_minimal`);
+        deleteFromIndexedDB(projectId);
+        return defaults;
+      }
       // Return minimal version - images will be loaded from IndexedDB via async
-      return JSON.parse(minimal);
+      return parsed;
     }
   } catch (e) {
     console.warn('Error reading from localStorage:', e);
   }
-  return defaultCaseStudies[projectId] || defaultCaseStudies['align-technology'];
+  return defaults;
 };
 
 // Async version that checks IndexedDB first (for larger data)
 export const getCaseStudyDataAsync = async (projectId) => {
   console.log(`[getCaseStudyDataAsync] Loading data for projectId: ${projectId}`);
-  
+  const defaults = defaultCaseStudies[projectId] || defaultCaseStudies['align-technology'];
+
   // Try IndexedDB first (larger storage)
   try {
     const idbData = await getFromIndexedDB(projectId);
     if (idbData) {
+      // Auto-reset if saved version is older than default
+      if (defaults.dataVersion && (!idbData.dataVersion || idbData.dataVersion < defaults.dataVersion)) {
+        console.log(`[getCaseStudyDataAsync] IndexedDB data for ${projectId} is outdated (v${idbData.dataVersion || 0} < v${defaults.dataVersion}), resetting to defaults`);
+        await deleteFromIndexedDB(projectId);
+        localStorage.removeItem(`caseStudy_${projectId}`);
+        localStorage.removeItem(`caseStudy_${projectId}_minimal`);
+        localStorage.removeItem(`caseStudy_${projectId}_idb`);
+        return defaults;
+      }
       console.log('[getCaseStudyDataAsync] Found data in IndexedDB');
       // Also sync to localStorage if we got data from IndexedDB
       // This ensures localStorage is up to date for future sync loads
@@ -1097,7 +1547,7 @@ export const getCaseStudyDataAsync = async (projectId) => {
   } catch (e) {
     console.warn('[getCaseStudyDataAsync] IndexedDB read failed, trying localStorage:', e);
   }
-  
+
   // Fall back to localStorage (or minimal version)
   const fallbackData = getCaseStudyData(projectId);
   console.log('[getCaseStudyDataAsync] Using fallback data from localStorage/defaults');
@@ -1140,23 +1590,23 @@ export const saveCaseStudyData = async (projectId, data) => {
           try {
             // Create a minimal structure copy (without images) for quick loading
             const minimalCopy = JSON.parse(JSON.stringify(compressedData));
-            const removeImages = (obj) => {
-              if (typeof obj === 'string' && obj.startsWith('data:image')) {
+            const removeMedia = (obj) => {
+              if (typeof obj === 'string' && (obj.startsWith('data:image') || obj.startsWith('data:video') || obj.startsWith('data:application'))) {
                 return '';
               }
               if (Array.isArray(obj)) {
-                return obj.map(item => removeImages(item));
+                return obj.map(item => removeMedia(item));
               }
               if (obj && typeof obj === 'object') {
                 const result = {};
                 for (const key in obj) {
-                  result[key] = removeImages(obj[key]);
+                  result[key] = removeMedia(obj[key]);
                 }
                 return result;
               }
               return obj;
             };
-            const minimal = removeImages(minimalCopy);
+            const minimal = removeMedia(minimalCopy);
             const minimalJson = JSON.stringify(minimal);
             const minimalSize = new Blob([minimalJson]).size / (1024 * 1024);
             if (minimalSize < 2) {
