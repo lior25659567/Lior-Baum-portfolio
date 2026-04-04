@@ -1,0 +1,402 @@
+{
+  "dataVersion": 3,
+  "title": "iTero\nScan Experience",
+  "subtitle": "Redesigning the clinical scanning workflow to improve speed, clarity, and decision-making in real treatment conditions.",
+  "category": "Clinical Workflow Redesign",
+  "year": "2024",
+  "color": "#E8847C",
+  "slides": [
+    {
+      "type": "intro",
+      "title": "iTero\nScan Experience",
+      "description": "Redesigning a fragmented clinical workflow to improve speed, clarity, and confidence during real-time scanning.",
+      "clientLabel": "Client",
+      "client": "Align Technology",
+      "focusLabel": "Focus",
+      "focus": "Clinical Workflow UX",
+      "image": [
+        {
+          "src": "",
+          "caption": "iTero scanner during live clinical use"
+        }
+      ]
+    },
+    {
+      "type": "info",
+      "title": "Project Overview",
+      "items": [
+        {
+          "label": "Role",
+          "value": "UX/UI Designer"
+        },
+        {
+          "label": "Scope",
+          "value": "RX, Scan, View redesign"
+        },
+        {
+          "label": "Platform",
+          "value": "iTero Scanner"
+        },
+        {
+          "label": "Environment",
+          "value": "Real-time clinical workflow"
+        }
+      ]
+    },
+    {
+      "type": "textAndImage",
+      "label": "Context",
+      "title": "A continuous clinical flow",
+      "content": "The iTero experience spans setup, scanning, and validation. Each phase serves a different purpose but must work as one system under time pressure.",
+      "issues": [
+        "RX — case setup",
+        "Scan — live capture",
+        "View — validation"
+      ],
+      "image": [
+        {
+          "src": "",
+          "caption": "Full RX → Scan → View workflow overview"
+        }
+      ]
+    },
+    {
+      "type": "issuesBreakdown",
+      "label": "Core Problems",
+      "title": "Where the system breaks",
+      "description": "Each phase evolved independently, creating friction during critical clinical moments.",
+      "issues": [
+        {
+          "number": "1",
+          "title": "Rigid RX flow",
+          "description": "Users must complete everything before starting"
+        },
+        {
+          "number": "2",
+          "title": "Scan instability",
+          "description": "Tools scattered during real-time work"
+        },
+        {
+          "number": "3",
+          "title": "Tool ambiguity",
+          "description": "Outputs unclear, require interpretation"
+        },
+        {
+          "number": "4",
+          "title": "Validation uncertainty",
+          "description": "No clear completion state"
+        }
+      ]
+    },
+    {
+      "type": "quotes",
+      "label": "User Research",
+      "title": "What actually happens",
+      "content": "Real clinical behavior revealed breakdowns in confidence, speed, and clarity across the workflow.",
+      "quotes": [
+        {
+          "text": "When I open a case, I’m not always sure which procedure to choose. I go back and forth before starting.",
+          "author": "Dr. Yael Levi"
+        },
+        {
+          "text": "I double-check everything before I scan. If something feels off, I stop.",
+          "author": "Dr. Amir Cohen"
+        },
+        {
+          "text": "If I need to look for tools during scanning, I lose the flow immediately.",
+          "author": "Dr. Noa Ben-David"
+        },
+        {
+          "text": "Some tools don’t clearly tell me if it’s good or not. I just try again to be safe.",
+          "author": "Dr. Eyal Mizrahi"
+        },
+        {
+          "text": "I finish scanning but still rotate and check again. I’m not always sure I’m done.",
+          "author": "Dr. Daniel Katz"
+        },
+        {
+          "text": "Sometimes I adjust things even if they look fine, just because I don’t fully trust the result.",
+          "author": "Dr. Lior Haddad"
+        }
+      ]
+    },
+    {
+      "type": "goals",
+      "label": "Goals & KPIs",
+      "title": "What success looks like",
+      "goals": [
+        {
+          "number": "1",
+          "title": "Reduce cognitive load",
+          "description": "Minimize decision-making during scanning"
+        },
+        {
+          "number": "2",
+          "title": "Increase workflow speed",
+          "description": "Shorten time from RX to completed scan"
+        },
+        {
+          "number": "3",
+          "title": "Improve clarity",
+          "description": "Make system states immediately understandable"
+        },
+        {
+          "number": "4",
+          "title": "Increase user confidence",
+          "description": "Reduce need for re-checking and validation loops"
+        }
+      ],
+      "kpis": [
+        {
+          "text": "Scan completion time",
+          "description": "Target reduction of total scan duration"
+        },
+        {
+          "text": "Error rate per session",
+          "description": "Reduce incorrect actions and tool misuse"
+        },
+        {
+          "text": "Rescan frequency",
+          "description": "Decrease need to rescan areas"
+        },
+        {
+          "text": "Time to first scan action",
+          "description": "Faster transition from RX to scanning"
+        },
+        {
+          "text": "User confidence score",
+          "description": "Measured via post-session feedback"
+        }
+      ]
+    },
+    {
+      "type": "process",
+      "label": "Process",
+      "title": "Understanding the system",
+      "steps": [
+        {
+          "number": "01",
+          "title": "Mapping",
+          "description": "End-to-end workflow breakdown"
+        },
+        {
+          "number": "02",
+          "title": "Audit",
+          "description": "Tools and interaction analysis"
+        },
+        {
+          "number": "03",
+          "title": "Clustering",
+          "description": "Identify friction patterns"
+        },
+        {
+          "number": "04",
+          "title": "Insight",
+          "description": "No shared system logic"
+        }
+      ]
+    },
+    {
+      "type": "comparison",
+      "label": "RX",
+      "title": "From rigid setup to flexible entry",
+      "beforeImage": "",
+      "afterImage": "",
+      "beforeDescription": "Form-heavy setup requiring full completion before scanning.",
+      "afterDescription": "Simplified setup allowing faster and flexible entry.",
+      "beforeBullets": [
+        "Heavy text",
+        "Rigid flow",
+        "Slow start",
+        "High hesitation"
+      ],
+      "afterBullets": [
+        "Simplified inputs",
+        "Flexible flow",
+        "Clear hierarchy",
+        "Faster start"
+      ],
+      "highlight": "Users begin scanning faster with less hesitation."
+    },
+    {
+      "type": "comparison",
+      "label": "Icons",
+      "title": "From inconsistency to clarity",
+      "beforeImage": "",
+      "afterImage": "",
+      "beforeDescription": "Inconsistent icons slowed recognition and increased errors.",
+      "afterDescription": "Unified icon system improved speed and usability.",
+      "beforeBullets": [
+        "Inconsistent styles",
+        "Low recognition",
+        "Visual noise"
+      ],
+      "afterBullets": [
+        "Consistent system",
+        "Clear hierarchy",
+        "Fast recognition"
+      ],
+      "highlight": "Reduced hesitation during interaction."
+    },
+    {
+      "type": "comparison",
+      "label": "Scan",
+      "title": "Stabilizing interaction",
+      "beforeImage": "",
+      "afterImage": "",
+      "beforeDescription": "Tools scattered across interface during scanning.",
+      "afterDescription": "Unified toolbar enabling consistent interaction.",
+      "beforeBullets": [
+        "Scattered tools",
+        "Hard to find",
+        "Interruptions"
+      ],
+      "afterBullets": [
+        "Centralized tools",
+        "Predictable layout",
+        "Continuous flow"
+      ],
+      "highlight": "Scanning became smoother and uninterrupted."
+    },
+    {
+      "type": "textAndImage",
+      "label": "Scan",
+      "title": "Tabs for flexibility",
+      "content": "Tabs allow switching between scan contexts without breaking flow, supporting more flexible workflows.",
+      "issues": [
+        "Switch contexts",
+        "Flexible workflow",
+        "Better control"
+      ],
+      "image": [
+        {
+          "src": "",
+          "caption": "Tabs-based scan interaction"
+        }
+      ]
+    },
+    {
+      "type": "comparison",
+      "label": "Tools",
+      "title": "From manual control to guided actions",
+      "beforeImage": "",
+      "afterImage": "",
+      "beforeDescription": "Tools required interpretation and repeated adjustments.",
+      "afterDescription": "Tools provide clearer feedback and simplified usage.",
+      "beforeBullets": [
+        "Manual control",
+        "Trial and error",
+        "Unclear output"
+      ],
+      "afterBullets": [
+        "Clear feedback",
+        "Simplified actions",
+        "Guided results"
+      ],
+      "highlight": "Users trust tool outputs faster."
+    },
+    {
+      "type": "comparison",
+      "label": "View",
+      "title": "Clear validation state",
+      "beforeImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "embedUrl": "",
+          "src": "",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "embedUrl": "",
+          "src": "",
+          "caption": ""
+        }
+      ],
+      "afterImage": "",
+      "beforeDescription": "No clear end state, causing repeated checks.",
+      "afterDescription": "Clear validation phase with structured feedback.",
+      "beforeBullets": [
+        "Unclear completion",
+        "Mixed flows",
+        "Low confidence"
+      ],
+      "afterBullets": [
+        "Clear state",
+        "Separated review",
+        "Higher confidence"
+      ],
+      "highlight": "Users know when they are done."
+    },
+    {
+      "type": "textAndImage",
+      "label": "View",
+      "title": "Multi-layer comparison",
+      "content": "Multi-layer panel enables comparison between scans using opacity control, improving clarity.",
+      "issues": [
+        "Layer toggle",
+        "Opacity control",
+        "Clear comparison"
+      ],
+      "image": [
+        {
+          "src": "",
+          "caption": "Multi-layer comparison panel"
+        }
+      ]
+    },
+    {
+      "type": "textAndImage",
+      "label": "Prototyping",
+      "title": "Built with Cursor",
+      "content": "All concepts were prototyped and tested using Cursor, enabling fast iteration and realistic simulations.",
+      "issues": [
+        "Interactive prototypes",
+        "Fast iteration",
+        "Real scenarios",
+        "User testing loops"
+      ],
+      "image": [
+        {
+          "src": "",
+          "caption": "Cursor-based prototyping environment"
+        }
+      ]
+    },
+    {
+      "type": "outcomes",
+      "label": "Impact",
+      "title": "What changed",
+      "outcomes": [
+        {
+          "title": "Faster workflows",
+          "description": "Reduced time across the full flow"
+        },
+        {
+          "title": "Less hesitation",
+          "description": "Users act without stopping"
+        },
+        {
+          "title": "Clear decisions",
+          "description": "Better validation clarity"
+        },
+        {
+          "title": "Higher confidence",
+          "description": "Users trust results"
+        }
+      ]
+    },
+    {
+      "type": "end",
+      "title": "Thank You",
+      "subtitle": "Designing systems for real-time decisions",
+      "cta": "Get in touch"
+    }
+  ]
+}
