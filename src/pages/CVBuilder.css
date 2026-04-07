@@ -47,6 +47,46 @@
   flex-wrap: wrap;
 }
 
+.cv-layout-controls {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.cv-layout-control {
+  flex: 1;
+}
+
+.cv-layout-control label {
+  display: block;
+  font-size: 0.6rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cv-layout-slider {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cv-layout-slider input[type="range"] {
+  flex: 1;
+  height: 4px;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.cv-layout-slider span {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  min-width: 35px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 .cv-editor-actions button {
   padding: 0.45rem 0.85rem;
   border-radius: var(--radius-lg);
@@ -357,22 +397,47 @@
 }
 
 .cv-preview {
-  width: 100%;
-  max-width: 900px;
+  --cv-font-size: 9pt;
+  --cv-content-width: 180mm;
+  width: 210mm;
+  min-height: 297mm;
   background: var(--color-bg);
   color: var(--color-text);
-  padding: 3rem 2.5rem 2.5rem;
+  padding: calc((210mm - var(--cv-content-width)) / 2) calc((210mm - var(--cv-content-width)) / 2);
+  padding-top: 12mm;
+  padding-bottom: 10mm;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: 2px;
   font-family: var(--font-body);
-  font-size: 0.82rem;
-  line-height: 1.6;
-  height: fit-content;
+  font-size: var(--cv-font-size);
+  line-height: 1.55;
   overflow: hidden;
   word-wrap: break-word;
   overflow-wrap: break-word;
   box-sizing: border-box;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
 }
+
+/* Scale all text relative to base font size */
+.cv-doc-name { font-size: calc(var(--cv-font-size) * 2.4); }
+.cv-doc-title { font-size: calc(var(--cv-font-size) * 1.1); }
+.cv-doc-contact-item { font-size: calc(var(--cv-font-size) * 0.82); }
+.cv-doc-summary p { font-size: var(--cv-font-size); }
+.cv-doc-section h2 { font-size: calc(var(--cv-font-size) * 0.78); }
+.cv-doc-exp-company { font-size: calc(var(--cv-font-size) * 1.02); }
+.cv-doc-exp-role { font-size: calc(var(--cv-font-size) * 0.95); }
+.cv-doc-period-badge { font-size: calc(var(--cv-font-size) * 0.72); }
+.cv-doc-bullets li { font-size: calc(var(--cv-font-size) * 0.95); }
+.cv-doc-edu-card strong { font-size: calc(var(--cv-font-size) * 1.02); }
+.cv-doc-edu-degree { font-size: calc(var(--cv-font-size) * 0.95); }
+.cv-doc-skill-list li { font-size: calc(var(--cv-font-size) * 0.95); }
+.cv-doc-badge { font-size: calc(var(--cv-font-size) * 0.85); }
+.cv-doc-cert { font-size: calc(var(--cv-font-size) * 0.95); }
+.cv-doc-lang-pill { font-size: calc(var(--cv-font-size) * 0.82); }
+.cv-doc-project strong { font-size: calc(var(--cv-font-size) * 1.02); }
+.cv-doc-project p { font-size: calc(var(--cv-font-size) * 0.95); }
+.cv-doc-body-text { font-size: calc(var(--cv-font-size) * 0.95); }
+.cv-doc-impact { font-size: calc(var(--cv-font-size) * 0.88); }
 
 /* ── Header: name left, contact right ── */
 .cv-doc-header {
@@ -597,6 +662,13 @@
   margin-bottom: 0.15rem;
 }
 
+.cv-doc-edu-period {
+  font-size: calc(var(--cv-font-size, 9pt) * 0.82);
+  color: var(--color-text-muted);
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
 .cv-doc-edu-degree {
   font-size: 0.78rem;
   color: var(--color-text-muted);
@@ -758,7 +830,7 @@
   }
 
   .cv-preview-wrapper { padding: 1.5rem 1rem; }
-  .cv-preview { padding: 2rem 1.5rem; }
+  .cv-preview { width: 100%; min-height: auto; padding: 2rem 1.5rem; }
   .cv-doc-body { grid-template-columns: 1fr; gap: 1.5rem; }
   .cv-doc-header { flex-direction: column; gap: 1rem; }
   .cv-doc-header-right { align-items: flex-start; }
@@ -772,17 +844,12 @@
 
 /* ========== Print / PDF ========== */
 @media print {
-  /* Hide everything except the CV preview */
-  *:not(.cv-builder):not(.cv-builder *):not(html):not(body) {
+  .cv-editor, .no-print, nav, .navigation, footer, .footer,
+  .edit-mode-bar, .slide-sorter, .slide-sorter-toggle {
     display: none !important;
   }
 
-  .no-print,
-  .cv-editor {
-    display: none !important;
-  }
-
-  html, body {
+  html, body, .app, #root {
     background: #fff !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -792,115 +859,56 @@
     display: block !important;
     background: #fff !important;
     padding: 0 !important;
-    margin: 0 !important;
-    min-height: auto !important;
   }
 
   .cv-preview-wrapper {
     padding: 0 !important;
-    min-height: auto !important;
     background: #fff !important;
     display: block !important;
   }
 
-  /* Force light colors but keep layout identical */
+  /* The preview IS the PDF — only override colors for light mode */
   .cv-preview {
     --color-text: #1a1a1a;
     --color-text-muted: #555;
     --color-border: #ddd;
     --color-bg: #fff;
-    --color-bg-secondary: #f5f5f5;
+    --color-bg-secondary: #f7f7f5;
     --color-accent: #ff584a;
-
-    max-width: none !important;
-    width: 100% !important;
     box-shadow: none !important;
-    border-radius: 0 !important;
     border: none !important;
-    padding: 0.4in 0.55in !important;
+    border-radius: 0 !important;
     background: #fff !important;
-    color: #1a1a1a !important;
-    box-sizing: border-box !important;
-    font-size: 9pt;
+    /* font-size and padding inherited from CSS variables — identical to preview */
   }
 
-  /* Keep two-column layout */
-  .cv-doc-body {
-    display: grid !important;
-    grid-template-columns: 1.15fr 0.85fr !important;
-    gap: 1.5rem !important;
+  /* Keep layouts */
+  .cv-doc-header { display: flex !important; flex-direction: row !important; }
+  .cv-doc-header-right { align-items: flex-end !important; }
+  .cv-doc-body { display: grid !important; grid-template-columns: 1.15fr 0.85fr !important; }
+
+  /* Timeline positioning */
+  .cv-doc-timeline { position: relative; }
+  .cv-doc-timeline::before { content: '' !important; position: absolute !important; left: 4px !important; top: 6px !important; bottom: 0 !important; width: 1.5px !important; background: #ddd !important; }
+  .cv-doc-timeline-dot { position: absolute !important; left: -1.5rem !important; top: 6px !important; width: 9px !important; height: 9px !important; border-radius: 50% !important; background: var(--color-accent) !important; }
+  .cv-doc-timeline-dot::after { content: '' !important; position: absolute !important; inset: -3px !important; border-radius: 50% !important; border: 1.5px solid rgba(255, 88, 74, 0.2) !important; }
+
+  /* Force all backgrounds/colors to print */
+  .cv-doc-summary, .cv-doc-period-badge, .cv-doc-lang-pill, .cv-doc-badge,
+  .cv-doc-timeline-dot, .cv-doc-timeline-dot::after, .cv-doc-timeline::before,
+  .cv-doc-skill-list li::before, .cv-doc-edu-card, .cv-doc-section h2,
+  .cv-doc-bullets li::marker {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
   }
 
-  /* Keep header side by side */
-  .cv-doc-header {
-    display: flex !important;
-    flex-direction: row !important;
-    border-bottom-color: #ccc;
-  }
-
-  .cv-doc-header-right {
-    align-items: flex-end !important;
-  }
-
-  /* Scale text for A4 */
-  .cv-doc-name { font-size: 22pt; }
-  .cv-doc-title { font-size: 10pt; }
-  .cv-doc-contact-item { font-size: 7.5pt; }
-  .cv-doc-contact-item svg { width: 10px; height: 10px; }
-
-  .cv-doc-summary { background: #f5f5f5; border-color: #e0e0e0; }
-  .cv-doc-summary p { font-size: 8.5pt; }
-
-  .cv-doc-section h2 { font-size: 7.5pt; }
-  .cv-doc-exp-company { font-size: 9pt; }
-  .cv-doc-exp-role { font-size: 8.5pt; }
-  .cv-doc-period-badge { font-size: 6.5pt; background: #f0f0f0; border-color: #ddd; color: var(--color-accent); }
-  .cv-doc-bullets li { font-size: 8.5pt; }
-
-  /* Keep timeline visible */
-  .cv-doc-timeline { padding-left: 1.25rem; }
-  .cv-doc-timeline::before { background: #ddd; }
-  .cv-doc-timeline-dot { background: var(--color-accent); print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-  .cv-doc-timeline-dot::after { border-color: rgba(255, 88, 74, 0.2); }
-
-  .cv-doc-edu-card { border-color: #e0e0e0; }
-  .cv-doc-edu-card strong { font-size: 9pt; }
-  .cv-doc-edu-degree { font-size: 8.5pt; }
-
-  .cv-doc-skill-list li { font-size: 8.5pt; border-bottom-color: #eee; }
-  .cv-doc-skill-list li::before { background: var(--color-accent); print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-
-  .cv-doc-badge { font-size: 7.5pt; border-color: #ddd; }
-  .cv-doc-impact { font-size: 8pt; }
-  .cv-doc-cert { font-size: 8.5pt; border-bottom-color: #eee; }
-  .cv-doc-lang-pill { font-size: 7.5pt; border-color: #ddd; background: #f5f5f5; }
-
-  .cv-doc-project strong { font-size: 9pt; }
-  .cv-doc-project p { font-size: 8.5pt; }
-  .cv-doc-body-text { font-size: 8.5pt; }
-
-  /* Force backgrounds to print */
-  .cv-doc-summary,
-  .cv-doc-period-badge,
-  .cv-doc-lang-pill,
-  .cv-doc-timeline-dot,
-  .cv-doc-skill-list li::before {
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-
-  /* Prevent page breaks inside entries */
-  .cv-doc-timeline-item,
-  .cv-doc-edu-card,
-  .cv-doc-project,
-  .cv-doc-cert,
-  .cv-doc-section {
+  .cv-doc-timeline-item, .cv-doc-edu-card, .cv-doc-project, .cv-doc-cert, .cv-doc-section {
     break-inside: avoid;
     page-break-inside: avoid;
   }
 
   @page {
-    margin: 0.3in;
+    margin: 0.25in;
     size: A4;
   }
 }

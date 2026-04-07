@@ -3109,8 +3109,6 @@ My instructions: `;
       { label: '↘', value: 'right bottom', title: 'Bottom Right' },
     ];
     
-    if (images.length === 0 && !editMode) return null;
-
     const imageCount = images.length;
     const gridCols = slide.gridCols || (imageCount >= 3 ? 3 : imageCount >= 2 ? 2 : 1);
     const imageDisplayMode = slide.imageDisplayMode || 'grid';
@@ -3132,6 +3130,8 @@ My instructions: `;
     useEffect(() => {
       if (imageDisplayMode !== 'carousel' || carouselIdx >= imageCount) setCarouselIdx(0);
     }, [imageCount, imageDisplayMode]);
+
+    if (images.length === 0 && !editMode) return null;
 
     return (
       <div className={`dynamic-images images-count-${imageCount} ${className}`}>
@@ -3657,10 +3657,18 @@ My instructions: `;
     if (!editMode) return null;
     const variant = slide.cardVariant || 'default';
     const showNumbers = slide.showNumbers !== false;
+    const cardHeight = slide.cardHeight || 'auto';
     const options = [
       { label: 'Default', value: 'default' },
       { label: 'Minimal', value: 'minimal' },
       { label: 'Clean', value: 'clean' },
+    ];
+    const heightOptions = [
+      { label: 'Auto', value: 'auto' },
+      { label: '100%', value: '100' },
+      { label: '75%', value: '75' },
+      { label: '50%', value: '50' },
+      { label: '25%', value: '25' },
     ];
     return (
       <div className="card-variant-control">
@@ -3683,6 +3691,18 @@ My instructions: `;
         >
           {showNumbers ? '#' : 'No #'}
         </button>
+        <span className="spacing-label">Height:</span>
+        <div className="spacing-presets">
+          {heightOptions.map(opt => (
+            <button
+              key={opt.value}
+              className={`spacing-preset ${cardHeight === opt.value ? 'active' : ''}`}
+              onClick={() => updateSlide(slideIndex, { cardHeight: opt.value })}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
     );
   }, [editMode, updateSlide]);
@@ -3690,10 +3710,10 @@ My instructions: `;
   // Helper to get title spacing CSS variable
   const getTitleSpacingStyle = (slide) => {
     const spacingMap = {
-      tight: '0.75rem',
-      default: '1.5rem',
-      relaxed: '2.5rem',
-      loose: '3.5rem',
+      tight: '0.5rem',
+      default: '1rem',
+      relaxed: '1.75rem',
+      loose: '2.75rem',
     };
     const value = spacingMap[slide.titleSpacing] || spacingMap.default;
     return { '--slide-title-gap': value };
@@ -4410,7 +4430,7 @@ My instructions: `;
 
       case 'quotes':
         return (
-          <div className="slide slide-quotes" key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'}>
+          <div className="slide slide-quotes" key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'} data-card-height={slide.cardHeight || 'auto'}>
             {slideControls}
             {titleSpacingControl}
             <CardVariantControl slide={slide} slideIndex={index} />
@@ -4491,7 +4511,7 @@ My instructions: `;
 
       case 'goals':
         return (
-          <div className="slide slide-goals" key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'}>
+          <div className={`slide slide-goals ${(slide.showGoalsSection === false || slide.showKpisSection === false || !slide.goals?.length || !slide.kpis?.length) ? 'goals-single-section' : ''}`} key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'} data-card-height={slide.cardHeight || 'auto'}>
             {slideControls}
             {titleSpacingControl}
             <CardVariantControl slide={slide} slideIndex={index} />
@@ -4693,7 +4713,7 @@ My instructions: `;
 
       case 'outcomes':
         return (
-          <div className="slide slide-outcomes" key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'}>
+          <div className="slide slide-outcomes" key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'} data-card-height={slide.cardHeight || 'auto'}>
             {slideControls}
             {titleSpacingControl}
             <CardVariantControl slide={slide} slideIndex={index} />
@@ -4816,7 +4836,7 @@ My instructions: `;
 
       case 'process':
         return (
-          <div className="slide slide-process" key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'}>
+          <div className="slide slide-process" key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'} data-card-height={slide.cardHeight || 'auto'}>
             {slideControls}
             {titleSpacingControl}
             <CardVariantControl slide={slide} slideIndex={index} />
@@ -4962,7 +4982,7 @@ My instructions: `;
       // === ISSUES BREAKDOWN - "what started to break" style ===
       case 'issuesBreakdown':
         return (
-          <div className="slide slide-issues-breakdown" key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'}>
+          <div className="slide slide-issues-breakdown" key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'} data-card-height={slide.cardHeight || 'auto'}>
             {slideControls}
             {titleSpacingControl}
             <CardVariantControl slide={slide} slideIndex={index} />

@@ -249,9 +249,9 @@ body.case-study-active .footer {
 @media (min-width: 1440px) {
   .case-study {
     --slide-pad-x: 100px;
-    --slide-pad-top: 196px;
-    --slide-pad-bottom: 196px;
-    --slide-gap: 160px;
+    --slide-pad-top: 144px;
+    --slide-pad-bottom: 144px;
+    --slide-gap: 144px;
   }
 }
 
@@ -275,7 +275,7 @@ body.case-study-active .footer {
   justify-content: center;
   padding: var(--slide-pad-top) var(--slide-pad-x) var(--slide-pad-bottom);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Error Slide */
@@ -348,7 +348,8 @@ body.case-study-active .footer {
 .slide-text .slide-inner {
   justify-content: center;
   align-items: center;
-  gap: var(--slide-title-gap, 1.5rem);
+  gap: var(--slide-title-gap, 1rem);
+  overflow: visible;
 }
 
 /* Grid/flex containers need full width inside centered parent */
@@ -407,7 +408,7 @@ body.case-study-active .footer {
 .split-content {
   display: flex;
   flex-direction: column;
-  gap: var(--slide-title-gap, 1.5rem);
+  gap: var(--slide-title-gap, 1rem);
   height: 100%;
   justify-content: center;
 }
@@ -612,7 +613,7 @@ body.case-study-active .footer {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.1rem;
   padding-right: clamp(0.75rem, 1.5vw, 1.5rem);
   min-width: 0;
 }
@@ -683,7 +684,7 @@ body.case-study-active .footer {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.1rem;
   margin-bottom: 1rem;
 }
 
@@ -921,7 +922,7 @@ body.case-study-active .footer {
   font-size: var(--text-h1);
   font-weight: 500;
   font-style: normal;
-  margin-bottom: var(--slide-title-gap, 1.5rem);
+  margin-bottom: var(--slide-title-gap, 1rem);
   color: var(--color-accent);
   flex-shrink: 0;
 }
@@ -935,7 +936,7 @@ body.case-study-active .footer {
 .info-item {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--color-border);
 }
@@ -1374,25 +1375,31 @@ body.case-study-active .footer {
   font-size: var(--text-h2);
   font-weight: 500;
   line-height: var(--lh-heading);
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   flex-shrink: 0;
-  text-align: center;
+  text-align: left;
+  width: 100%;
 }
 
 .slide-quotes .slide-label {
-  text-align: center;
+  text-align: left;
 }
 
 .quotes-intro {
   font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-muted);
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   max-width: 700px;
   flex-shrink: 0;
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
+  text-align: left;
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+}
+
+.slide-quotes .slide-inner {
+  align-items: flex-start;
 }
 
 .quotes-grid {
@@ -1402,6 +1409,7 @@ body.case-study-active .footer {
   gap: 1.5rem;
   align-items: stretch;
   align-content: start;
+  width: 100%;
 }
 
 .slide-quotes .quotes-bullets {
@@ -1465,11 +1473,54 @@ body.case-study-active .footer {
 .goals-content {
   display: flex;
   flex-direction: column;
-  gap: var(--slide-title-gap, 1.5rem);
-  justify-content: center;
+  gap: var(--slide-title-gap, 1rem);
+  justify-content: flex-start;
   width: 100%;
   height: 100%;
-  min-height: 0;
+  overflow: visible;
+}
+
+/* When only goals or only KPIs — center content vertically, keep titles left */
+.slide-goals.goals-single-section .goals-content {
+  justify-content: center;
+}
+
+.slide-goals.goals-single-section .goals-content .goals-title,
+.slide-goals.goals-single-section .goals-content .slide-label {
+  text-align: left;
+}
+
+/* Left-align badge labels in single section mode */
+.slide-goals.goals-single-section .kpis-label,
+.slide-goals.goals-single-section .goals-cards-label {
+  align-self: flex-start;
+}
+
+/* Left-align grids in single section mode */
+.slide-goals.goals-single-section .goals-grid,
+.slide-goals.goals-single-section .kpis-grid {
+  justify-items: start;
+}
+
+/* In single-section mode: prevent wrappers from expanding so justify-content: center works
+   and the "+ Add section" buttons stay visible within the slide */
+.slide-goals.goals-single-section .goals-cards-section-wrapper,
+.slide-goals.goals-single-section .kpis-section-wrapper {
+  flex: 0 1 auto;
+}
+
+/* When both sections: keep top alignment */
+.slide-goals:not(.goals-single-section) .goals-content {
+  justify-content: flex-start;
+}
+
+/* Goals section gaps */
+.goals-cards-section {
+  gap: 0.75rem;
+}
+
+.kpis-section {
+  gap: 0.75rem;
 }
 
 .goals-title {
@@ -1477,7 +1528,7 @@ body.case-study-active .footer {
   font-size: var(--text-h2);
   font-weight: 500;
   line-height: var(--lh-heading);
-  margin-bottom: 0;
+  margin-bottom: 0.5rem;
   color: var(--color-text);
   flex-shrink: 0;
 }
@@ -1502,7 +1553,7 @@ body.case-study-active .footer {
 
 .grid-control-buttons {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.1rem;
 }
 
 .grid-col-btn {
@@ -1535,9 +1586,9 @@ body.case-study-active .footer {
 .goals-grid {
   display: grid;
   gap: 2rem;
-  grid-auto-rows: minmax(0, 1fr);
+  grid-auto-rows: 1fr;
   flex: 1;
-  min-height: 0;
+  overflow: visible;
   overflow: hidden;
 }
 
@@ -1579,7 +1630,7 @@ body.case-study-active .footer {
 .goal-content {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.1rem;
   text-align: left;
   align-items: flex-start;
 }
@@ -1613,14 +1664,14 @@ body.case-study-active .footer {
   position: relative;
   width: 100%;
   flex: 1;
-  min-height: 0;
   display: flex;
   flex-direction: column;
+  overflow: visible;
   overflow: auto;
 }
 
 .slide-goals .goals-cards-section-wrapper {
-  margin-bottom: 0;
+  margin-bottom: 1.5rem;
 }
 
 .slide-goals .remove-section-btn {
@@ -1651,7 +1702,7 @@ body.case-study-active .footer {
 .goals-cards-section {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.1rem;
   flex-shrink: 0;
   width: 100%;
   margin-top: 0;
@@ -1659,8 +1710,7 @@ body.case-study-active .footer {
 
 .slide-goals .goals-cards-section {
   flex: 1;
-  min-height: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .slide-goals .add-section-btn {
@@ -1683,15 +1733,14 @@ body.case-study-active .footer {
 .kpis-section {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.1rem;
   flex-shrink: 0;
   width: 100%;
 }
 
 .slide-goals .kpis-section {
   flex: 1;
-  min-height: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .kpis-label {
@@ -1707,6 +1756,7 @@ body.case-study-active .footer {
   border: 1px solid rgba(255, 88, 74, 0.2);
   border-radius: 100px;
   width: fit-content;
+  margin-bottom: 0.85rem;
 }
 
 .kpis-grid {
@@ -1734,7 +1784,7 @@ body.case-study-active .footer {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.1rem;
   align-items: center;
   justify-content: center;
   min-height: 0;
@@ -1912,7 +1962,7 @@ body.case-study-active .footer {
 .slide-end .slide-inner {
   justify-content: center;
   align-items: center;
-  gap: var(--slide-title-gap, 1.5rem);
+  gap: var(--slide-title-gap, 1rem);
 }
 
 .end-title {
@@ -2309,7 +2359,7 @@ body.case-study-active .footer {
 .twi-image-bullets-title-wrapper {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.1rem;
   margin-bottom: 0.35rem;
   position: relative;
 }
@@ -2538,7 +2588,7 @@ body.case-study-active .footer {
 .add-image-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.1rem;
   padding: 0.5rem 1rem;
   margin-top: 0.75rem;
   border: 2px dashed var(--color-border);
@@ -2856,7 +2906,7 @@ body.case-study-active .footer {
 
 .dynamic-grid-buttons {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.1rem;
 }
 
 .dynamic-grid-btn {
@@ -3237,7 +3287,7 @@ body.case-study-active .footer {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 0.25rem;
+  gap: 0.1rem;
   z-index: 10;
   padding: 0.25rem;
   border-radius: 8px;
@@ -3373,7 +3423,7 @@ body.case-study-active .footer {
 .add-dynamic-image-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.1rem;
   padding: 0.5rem 1rem;
   margin: 0;
   border: 2px dashed var(--color-border);
@@ -3436,7 +3486,7 @@ body.case-study-active .footer {
 .slide-context .context-text-wrapper.dynamic-content,
 .slide-feature .feature-description-wrapper.dynamic-content,
 .slide-testing .problem-text-wrapper.dynamic-content {
-  gap: 0.4rem;
+  gap: 0.1rem;
 }
 
 .text-content-wrapper .dynamic-text,
@@ -3582,7 +3632,7 @@ body.case-study-active .footer {
 
 .ratio-presets {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.1rem;
 }
 
 .ratio-preset {
@@ -3689,7 +3739,7 @@ body.case-study-active .footer {
 
 .spacing-presets {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.1rem;
 }
 
 .spacing-preset {
@@ -4978,7 +5028,7 @@ body.case-study-active .footer {
 
 .slide-sorter-actions {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.1rem;
 }
 
 .slide-sorter-actions button {
@@ -5515,6 +5565,123 @@ body.case-study-active .footer {
     left: auto;
     right: 5rem;
   }
+}
+
+/* ── Card Height Control ── */
+
+/* Shared selectors for all card grids */
+[data-card-height] .issues-breakdown-grid,
+[data-card-height] .quotes-grid,
+[data-card-height] .goals-grid,
+[data-card-height] .outcomes-grid,
+[data-card-height] .stats-grid,
+[data-card-height] .process-steps {
+  align-content: start;
+}
+
+/* All card grids selector */
+.cv-card-grids {
+  --card-grids: .issues-breakdown-grid, .quotes-grid, .goals-grid, .outcomes-grid, .stats-grid, .process-steps, .kpis-grid;
+}
+
+/* Auto: cards size to content */
+[data-card-height="auto"] .issues-breakdown-grid,
+[data-card-height="auto"] .quotes-grid,
+[data-card-height="auto"] .goals-grid,
+[data-card-height="auto"] .outcomes-grid,
+[data-card-height="auto"] .stats-grid,
+[data-card-height="auto"] .process-steps,
+[data-card-height="auto"] .kpis-grid {
+  grid-auto-rows: auto;
+  align-items: center;
+}
+
+/* 100%: stretch to equal rows */
+[data-card-height="100"] .issues-breakdown-grid,
+[data-card-height="100"] .quotes-grid,
+[data-card-height="100"] .goals-grid,
+[data-card-height="100"] .outcomes-grid,
+[data-card-height="100"] .stats-grid,
+[data-card-height="100"] .process-steps,
+[data-card-height="100"] .kpis-grid {
+  grid-auto-rows: 1fr;
+  align-items: stretch;
+}
+
+[data-card-height="100"] .issue-breakdown-card,
+[data-card-height="100"] .quote-card,
+[data-card-height="100"] .goals-grid .goal-item,
+[data-card-height="100"] .outcome-item,
+[data-card-height="100"] .stat-item,
+[data-card-height="100"] .process-step,
+[data-card-height="100"] .kpi-card {
+  height: 100%;
+}
+
+/* 75% */
+[data-card-height="75"] .issues-breakdown-grid,
+[data-card-height="75"] .quotes-grid,
+[data-card-height="75"] .goals-grid,
+[data-card-height="75"] .outcomes-grid,
+[data-card-height="75"] .stats-grid,
+[data-card-height="75"] .process-steps,
+[data-card-height="75"] .kpis-grid {
+  grid-auto-rows: 1fr;
+  align-items: center;
+}
+
+[data-card-height="75"] .issue-breakdown-card,
+[data-card-height="75"] .quote-card,
+[data-card-height="75"] .goals-grid .goal-item,
+[data-card-height="75"] .outcome-item,
+[data-card-height="75"] .stat-item,
+[data-card-height="75"] .process-step,
+[data-card-height="75"] .kpi-card {
+  height: 75%;
+}
+
+/* 50% */
+[data-card-height="50"] .issues-breakdown-grid,
+[data-card-height="50"] .quotes-grid,
+[data-card-height="50"] .goals-grid,
+[data-card-height="50"] .outcomes-grid,
+[data-card-height="50"] .stats-grid,
+[data-card-height="50"] .process-steps,
+[data-card-height="50"] .kpis-grid {
+  grid-auto-rows: 1fr;
+  align-items: center;
+}
+
+[data-card-height="50"] .issue-breakdown-card,
+[data-card-height="50"] .quote-card,
+[data-card-height="50"] .goals-grid .goal-item,
+[data-card-height="50"] .outcome-item,
+[data-card-height="50"] .stat-item,
+[data-card-height="50"] .process-step,
+[data-card-height="50"] .kpi-card {
+  height: 50%;
+}
+
+/* 25% */
+[data-card-height="25"] .issues-breakdown-grid,
+[data-card-height="25"] .quotes-grid,
+[data-card-height="25"] .goals-grid,
+[data-card-height="25"] .outcomes-grid,
+[data-card-height="25"] .stats-grid,
+[data-card-height="25"] .process-steps,
+[data-card-height="25"] .kpis-grid {
+  grid-auto-rows: 1fr;
+  align-items: center;
+}
+
+[data-card-height="25"] .issue-breakdown-card,
+[data-card-height="25"] .quote-card,
+[data-card-height="25"] .goals-grid .goal-item,
+[data-card-height="25"] .outcome-item,
+[data-card-height="25"] .stat-item,
+[data-card-height="25"] .process-step,
+[data-card-height="25"] .kpi-card {
+  height: 25%;
 }
 
 /* ========== End Card Style System ========== */
@@ -6266,7 +6433,7 @@ textarea.editable-field {
   padding: 0.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.1rem;
   justify-content: center;
 }
 
@@ -6326,7 +6493,7 @@ textarea.editable-field {
   padding: 0.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.1rem;
   justify-content: center;
 }
 
@@ -6355,7 +6522,7 @@ textarea.editable-field {
 .mockup-gs-goal {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.1rem;
   padding: 0.15rem 0.2rem;
   background: rgba(255, 88, 74, 0.05);
   border-radius: 3px;
@@ -6458,7 +6625,7 @@ textarea.editable-field {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
+  gap: 0.1rem;
 }
 
 .mockup-quote-card .quote-mark {
@@ -6597,7 +6764,7 @@ textarea.editable-field {
 .mockup-comparison {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.1rem;
   width: 100%;
 }
 
@@ -6744,7 +6911,7 @@ textarea.editable-field {
   justify-content: center;
   height: 100%;
   padding: 0.75rem;
-  gap: 0.4rem;
+  gap: 0.1rem;
 }
 
 .mockup-insight .insight-icon {
@@ -6894,7 +7061,7 @@ textarea.editable-field {
 .add-field-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.1rem;
   padding: 0.5rem 1rem;
   margin-top: 0.75rem;
   border: 2px dashed var(--color-border);
@@ -7514,7 +7681,7 @@ textarea.editable-field {
   .builder-preview-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.25rem;
+    gap: 0.1rem;
   }
 
   .builder-actions-group {
@@ -7588,13 +7755,13 @@ textarea.editable-field {
 .mockup-challenge-solution {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.1rem;
   width: 100%;
 }
 
 .mockup-cs-row {
   display: flex;
-  gap: 0.4rem;
+  gap: 0.1rem;
   align-items: center;
 }
 
@@ -7783,7 +7950,7 @@ textarea.editable-field {
 .mockup-event {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.1rem;
   height: auto;
   padding: 0.25rem 0.4rem;
 }
@@ -7853,7 +8020,7 @@ textarea.editable-field {
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.1rem;
 }
 
 .mockup-video-player {
@@ -7894,7 +8061,7 @@ textarea.editable-field {
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.1rem;
   padding: 0.3rem;
 }
 
@@ -7968,7 +8135,7 @@ textarea.editable-field {
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.1rem;
   padding: 0.3rem;
 }
 
@@ -7999,7 +8166,7 @@ textarea.editable-field {
 .mockup-goal-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.25rem;
+  gap: 0.1rem;
 }
 
 .mockup-goal-item .goal-num {
@@ -8036,7 +8203,7 @@ textarea.editable-field {
 .mockup-intro-content {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.1rem;
 }
 
 .mockup-intro-content .mockup-title {
@@ -8262,6 +8429,7 @@ textarea.editable-field {
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1rem;
   align-content: start;
+  overflow: visible;
 }
 
 .process-step {
@@ -8718,7 +8886,7 @@ textarea.editable-field {
 .issues-breakdown-content {
   display: flex;
   flex-direction: column;
-  gap: var(--slide-title-gap, 1.5rem);
+  gap: var(--slide-title-gap, 1rem);
   justify-content: center;
   width: 100%;
   height: 100%;
@@ -8787,6 +8955,7 @@ textarea.editable-field {
   line-height: 1.2;
   color: var(--color-text);
   flex-shrink: 0;
+  margin-bottom: 0.5rem;
 }
 
 .issues-breakdown-description-wrapper {
@@ -8825,7 +8994,7 @@ textarea.editable-field {
 
 .issues-breakdown-grid-control .grid-control-buttons {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.1rem;
 }
 
 .issues-breakdown-grid-control .grid-col-btn {
@@ -9675,7 +9844,7 @@ textarea.editable-field {
 .project-showcase-tag {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.1rem;
   position: relative;
 }
 
@@ -9741,7 +9910,7 @@ textarea.editable-field {
 
 .project-showcase-header-mode-btns {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.1rem;
   flex-wrap: wrap;
 }
 
@@ -10613,7 +10782,7 @@ textarea.editable-field {
 /* Grid column buttons */
 .dynamic-block-image .dynamic-grid-buttons {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.1rem;
   margin-bottom: 0.5rem;
 }
 
@@ -10643,7 +10812,7 @@ textarea.editable-field {
 .dynamic-add-block-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.1rem;
   padding-top: 1rem;
   border-top: 1px dashed var(--color-border);
   width: 100%;
@@ -11059,13 +11228,14 @@ textarea.editable-field {
 
 /* Centered title overlay */
 .mosaic-overlay {
-  position: absolute;
-  inset: 0;
+  position: absolute !important;
+  inset: 0 !important;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
   z-index: 5;
+  padding-right: 0 !important;
 }
 
 .mosaic-title-badge {
@@ -11283,7 +11453,7 @@ textarea.editable-field {
 
 .ps-tab-count-btns {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.1rem;
 }
 
 .ps-tab-count-btn {
@@ -11330,7 +11500,7 @@ textarea.editable-field {
 .ps-tab-edit-label {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.1rem;
   font-size: 0.75rem;
   color: var(--color-text-muted);
 }
@@ -11532,7 +11702,7 @@ textarea.editable-field {
 
 .ps-fit-toggle {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.1rem;
 }
 
 .ps-fit-btn {
@@ -11622,7 +11792,7 @@ textarea.editable-field {
 .mockup-ps-columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.4rem;
+  gap: 0.1rem;
   margin-top: 0.15rem;
 }
 
@@ -11864,10 +12034,10 @@ textarea.editable-field {
 
 .saved-case-studies-bar {
   position: fixed;
-  top: 4.5rem;
+  top: 8.5rem;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 100;
+  z-index: 200;
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -11991,7 +12161,7 @@ textarea.editable-field {
   right: 8px;
   z-index: 5;
   display: flex;
-  gap: 0.4rem;
+  gap: 0.1rem;
 }
 
 .embed-remove-btn {
@@ -12067,7 +12237,7 @@ textarea.editable-field {
 .figma-embed-input {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.1rem;
   width: 100%;
   padding: 0.75rem;
 }

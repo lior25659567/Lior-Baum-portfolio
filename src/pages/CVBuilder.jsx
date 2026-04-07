@@ -29,33 +29,81 @@ const IconLocation = () => (
 );
 
 const DEFAULT_CV = {
-  fullName: '',
-  title: 'UX Designer',
-  email: '',
-  phone: '',
+  fullName: 'LIOR BAUM',
+  title: 'Product & UX Designer',
+  email: 'Lior2565967@gmail.com',
+  phone: '050-555-0409',
   location: '',
-  portfolio: '',
-  linkedin: '',
-  summary: '',
-  experience: [{ company: '', role: '', period: '', location: '', bullets: ['', ''] }],
-  education: [{ institution: '', degree: '', period: '', details: '' }],
+  portfolio: 'https://www.baumlior.com/',
+  linkedin: 'linkedin.com/in/liorbaum',
+  summary: 'Product & UX Designer with hands-on experience in B2B SaaS and MedTech, specializing in complex clinical workflows, design systems, and data-driven interfaces. Passionate about bridging user needs with business goals through research-backed design decisions and rapid prototyping. Currently exploring the intersection of design and AI-assisted development.',
+  experience: [
+    {
+      company: 'Align Technology',
+      role: 'UX/UI Designer',
+      period: 'Dec 2024 – Present',
+      location: '',
+      bullets: [
+        'Improved key parts of the iTero\u2122 scanner experience, focusing on how doctors and patients move through the system.',
+        'Redesigned navigation and content structure within the iTero\u2122 Store to enhance discoverability and usability of scanner options and accessories.',
+        'Designed the full UX experience around scanning \u2013 from patient onboarding and scan setup to post-scan insights and next steps.',
+      ],
+    },
+    {
+      company: 'Shenkar College',
+      role: 'Teaching Assistant \u2013 Vibe Coding Course',
+      period: 'Mar 2025 – Present',
+      location: '',
+      bullets: [
+        'Assisting in a new interdisciplinary course that teaches designers to build functional products using AI-assisted coding tools.',
+        'Supporting students in translating design concepts into working prototypes using Cursor, Claude, and modern web frameworks.',
+        'Providing one-on-one mentorship and code reviews, bridging the gap between design thinking and technical implementation.',
+      ],
+    },
+    {
+      company: 'BigIdea',
+      role: 'UX/UI Designer',
+      period: 'Jul 2024 – Oct 2024',
+      location: '',
+      bullets: [
+        'Led the redesign of the asset management panel within a complex privacy system.',
+        'Designed flows that supported automated risk detection in sensitive data environments.',
+        'Partnered with privacy officers and PMs to refine logic and improve system trust and usability.',
+      ],
+    },
+    {
+      company: 'WizeCare',
+      role: 'UX/UI Design Intern',
+      period: 'Jul 2023 – Nov 2023',
+      location: '',
+      bullets: [
+        'Reimagined clinician dashboard to reduce friction in digital physical therapy sessions.',
+        'Conducted interviews with stakeholders and therapists to identify pain points and deliver improved task flows.',
+        'Created onboarding flows and visual guidance assets to support product adoption.',
+      ],
+    },
+  ],
+  education: [
+    { institution: 'Shenkar College of Engineering, Design and Art', degree: 'BA in Visual Communication', period: 'Graduated: 2025', details: '' },
+    { institution: 'Ort Shapira High School', degree: 'Advertising and Communication', period: '2014 – 2017', details: '' },
+  ],
   skillCategories: [
-    { name: 'Design Tools', skills: 'Figma, Sketch, Adobe XD, Framer, Principle', display: 'badges' },
-    { name: 'Research Methods', skills: 'User Interviews, Usability Testing, A/B Testing, Surveys, Journey Mapping', display: 'list' },
-    { name: 'Design Skills', skills: 'Interaction Design, Visual Design, Design Systems, Wireframing, Prototyping', display: 'list' },
-    { name: 'Collaboration', skills: 'Agile/Scrum, Stakeholder Management, Cross-functional Teams, Design Critique', display: 'list' },
+    { name: 'Tools', skills: 'Figma, After Effects, Illustrator, Photoshop, Webflow, Vibe Coding\u2122, HTML/CSS', display: 'badges' },
+    { name: 'Skills', skills: 'UX Strategy & Design Thinking, Product Discovery & User Research, Wireframing & Prototyping, Interaction Design & Microinteractions, UI Systems & Component Libraries, Site Building in Webflow & Cursor', display: 'list' },
   ],
   projects: [{ name: '', description: '', impact: '' }],
   certifications: [{ name: '', issuer: '', year: '' }],
   languages: [{ language: '', level: '' }],
   awards: [{ title: '', issuer: '', year: '' }],
   volunteer: '',
-  // Section visibility
+  // Layout settings
+  fontSize: 9,         // pt — base font size
+  contentWidth: 180,   // mm — content area width inside A4
   showSummary: true,
   showExperience: true,
   showEducation: true,
   showSkills: true,
-  showProjects: true,
+  showProjects: false,
   showCertifications: false,
   showLanguages: false,
   showAwards: false,
@@ -208,6 +256,22 @@ const CVBuilder = () => {
             <button onClick={handleExportJSON}>Save JSON</button>
             <button onClick={handleImportJSON}>Load JSON</button>
             <button onClick={handleReset} className="cv-reset-btn">Reset</button>
+          </div>
+          <div className="cv-layout-controls">
+            <div className="cv-layout-control">
+              <label>Font Size</label>
+              <div className="cv-layout-slider">
+                <input type="range" min="7" max="13" step="0.5" value={cv.fontSize || 9} onChange={e => update('fontSize', parseFloat(e.target.value))} />
+                <span>{cv.fontSize || 9}pt</span>
+              </div>
+            </div>
+            <div className="cv-layout-control">
+              <label>Content Width</label>
+              <div className="cv-layout-slider">
+                <input type="range" min="140" max="200" step="5" value={cv.contentWidth || 180} onChange={e => update('contentWidth', parseInt(e.target.value))} />
+                <span>{cv.contentWidth || 180}mm</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -491,7 +555,7 @@ const CVBuilder = () => {
 
       {/* CV Preview / Print Target */}
       <div className="cv-preview-wrapper">
-        <div className="cv-preview" ref={printRef}>
+        <div className="cv-preview" ref={printRef} style={{ '--cv-font-size': `${cv.fontSize || 9}pt`, '--cv-content-width': `${cv.contentWidth || 180}mm` }}>
           {/* Header */}
           <header className="cv-doc-header">
             <div className="cv-doc-header-left">
@@ -572,7 +636,7 @@ const CVBuilder = () => {
                   {cv.education.filter(e => e.institution || e.degree).map((edu, i) => (
                     <div key={i} className="cv-doc-edu-card">
                       <strong>{edu.institution}</strong>
-                      {edu.period && <span className="cv-doc-period-badge">{edu.period}</span>}
+                      {edu.period && <span className="cv-doc-edu-period">{edu.period}</span>}
                       {edu.degree && <p className="cv-doc-edu-degree">{edu.degree}</p>}
                       {edu.details && <p className="cv-doc-edu-details">{edu.details}</p>}
                     </div>
