@@ -5051,6 +5051,29 @@ body.case-study-active .footer {
   color: #fff;
 }
 
+.slide-sorter-git-push {
+  width: auto !important;
+  padding: 0 0.6rem !important;
+  font-size: 0.7rem !important;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.slide-sorter-git-push.git-push-pushing {
+  color: rgba(255, 255, 255, 0.4) !important;
+  cursor: default;
+}
+
+.slide-sorter-git-push.git-push-pushed {
+  background: rgba(34, 197, 94, 0.25) !important;
+  color: #4ade80 !important;
+}
+
+.slide-sorter-git-push.git-push-error {
+  background: rgba(239, 68, 68, 0.25) !important;
+  color: #f87171 !important;
+}
+
 .slide-sorter-track {
   display: flex;
   gap: 0.5rem;

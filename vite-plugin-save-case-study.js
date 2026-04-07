@@ -3,6 +3,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { exec } from 'child_process';
 
 export function saveCaseStudyPlugin() {
   return {
@@ -79,6 +80,43 @@ export function saveCaseStudyPlugin() {
             res.end(JSON.stringify({ error: err.message }));
           }
         });
+      });
+
+      // Git commit + push
+      server.middlewares.use('/api/git-push', (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405;
+          res.end(JSON.stringify({ error: 'Method not allowed' }));
+          return;
+        }
+
+        const run = (cmd) => new Promise((resolve, reject) => {
+          exec(cmd, { cwd: path.resolve('.') }, (err, stdout, stderr) => {
+            if (err) reject(new Error(stderr || err.message));
+            else resolve(stdout.trim());
+          });
+        });
+
+        (async () => {
+          try {
+            await run('git add src/data/case-studies/');
+
+            // Check if there's anything staged to commit
+            const staged = await run('git diff --cached --name-only').catch(() => '');
+            if (staged) {
+              const date = new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' });
+              await run(`git commit -m "Update case studies (${date})"`);
+            }
+
+            await run('git push');
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ ok: true, committed: !!staged }));
+          } catch (err) {
+            console.error('[git-push] Error:', err.message);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: err.message }));
+          }
+        })();
       });
 
       // List saved case studies

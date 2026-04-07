@@ -899,6 +899,7 @@ const CaseStudy = () => {
   const [savedCaseStudiesList, setSavedCaseStudiesList] = useState([]);
   const [showSavedList, setShowSavedList] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null); // 'saving', 'saved', 'error'
+  const [gitPushStatus, setGitPushStatus] = useState(null); // null | 'pushing' | 'pushed' | 'error'
   const [showImportJSON, setShowImportJSON] = useState(false);
   const [importJSONText, setImportJSONText] = useState('');
   const [importError, setImportError] = useState('');
@@ -1574,6 +1575,25 @@ const CaseStudy = () => {
       setTimeout(() => setSaveStatus(null), 3000);
     }
   }, [project, projectId]);
+
+  // ── Git push ──────────────────────────────────────────────────
+  const handleGitPush = useCallback(async () => {
+    setGitPushStatus('pushing');
+    try {
+      const res = await fetch('/api/git-push', { method: 'POST' });
+      const data = await res.json();
+      if (data.ok) {
+        setGitPushStatus('pushed');
+        setTimeout(() => setGitPushStatus(null), 3000);
+      } else {
+        setGitPushStatus('error');
+        setTimeout(() => setGitPushStatus(null), 4000);
+      }
+    } catch {
+      setGitPushStatus('error');
+      setTimeout(() => setGitPushStatus(null), 4000);
+    }
+  }, []);
 
   // ── Copy JSON for ChatGPT ──────────────────────────────────────
   const handleCopyJSON = useCallback(() => {
@@ -6085,6 +6105,14 @@ My instructions: `;
             <div className="slide-sorter-header">
               <span className="slide-sorter-title">Slides ({totalSlides})</span>
               <div className="slide-sorter-actions">
+                <button
+                  className={`slide-sorter-git-push${gitPushStatus ? ` git-push-${gitPushStatus}` : ''}`}
+                  onClick={handleGitPush}
+                  disabled={gitPushStatus === 'pushing'}
+                  title="Commit & push to git"
+                >
+                  {gitPushStatus === 'pushing' ? '⟳ Pushing...' : gitPushStatus === 'pushed' ? '✓ Pushed' : gitPushStatus === 'error' ? '⚠ Error' : '↑ Push to git'}
+                </button>
                 <button
                   className="slide-sorter-add"
                   onClick={() => setShowTemplates(true)}
