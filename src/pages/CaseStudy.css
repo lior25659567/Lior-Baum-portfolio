@@ -8460,18 +8460,16 @@ textarea.editable-field {
 
 /* Edit-mode: Simple / Before-After mode toggle */
 .comparison-mode-control {
-  position: absolute;
-  top: 1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  padding: 0.5rem 0.75rem;
-  z-index: 20;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.comparison-mode-control-right {
+  margin-bottom: 0;
+  margin-top: 0.5rem;
 }
 
 .comparison-mode-label {
@@ -8483,7 +8481,7 @@ textarea.editable-field {
 }
 
 .comparison-mode-btn {
-  padding: 0.3rem 0.9rem;
+  padding: 0.2rem 0.6rem;
   border-radius: 6px;
   border: 1px solid var(--color-border);
   background: transparent;
