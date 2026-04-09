@@ -6155,6 +6155,11 @@ textarea.editable-field {
   border-color: rgba(255,255,255,0.3);
 }
 
+.carousel-fit-inline {
+  font-size: 0.65rem !important;
+  padding: 0.15rem 0.4rem !important;
+}
+
 .carousel-speed-slider {
   flex: 1;
   height: 3px;

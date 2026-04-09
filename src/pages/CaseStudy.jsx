@@ -3284,11 +3284,6 @@ My instructions: `;
             {editMode && (
               <div className="dynamic-carousel-settings">
                 <div className="carousel-settings-row">
-                  <span className="carousel-settings-label">Fit</span>
-                  <button type="button" className={`carousel-fit-btn${(slide[`${field}CarouselFit`] || 'cover') === 'cover' ? ' active' : ''}`} onClick={() => updateSlide(slideIndex, { [`${field}CarouselFit`]: 'cover' })}>Fill</button>
-                  <button type="button" className={`carousel-fit-btn${slide[`${field}CarouselFit`] === 'contain' ? ' active' : ''}`} onClick={() => updateSlide(slideIndex, { [`${field}CarouselFit`]: 'contain' })}>Fit</button>
-                </div>
-                <div className="carousel-settings-row">
                   <span className="carousel-settings-label">Speed</span>
                   <input
                     type="range" min="1000" max="8000" step="500"
@@ -3305,17 +3300,19 @@ My instructions: `;
             <div className="dynamic-carousel" ref={carouselRef} onClick={(e) => e.stopPropagation()} data-no-slide-advance="true">
               <div className="dynamic-carousel-track" style={{ transform: `translateX(-${carouselIdx * 100}%)` }}>
                 {images.map((imgData, imgIndex) => {
-                  const carouselFit = slide[`${field}CarouselFit`] || 'cover';
-                  const isContainCarousel = carouselFit === 'contain';
+                  const imgFit = imgData.fit || 'cover';
+                  const isContain = imgFit === 'contain';
                   return (
-                    <div key={imgIndex} className={`dynamic-carousel-slide${isContainCarousel ? ' carousel-fit-contain' : ''}`}>
+                    <div key={imgIndex} className={`dynamic-carousel-slide${isContain ? ' carousel-fit-contain' : ''}`}>
                       {imgData.src ? (
                         <>
-                          <img src={imgData.src} alt={`Image ${imgIndex + 1}`} style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }} onClick={() => !editMode && setLightboxImage && setLightboxImage(imgData.src)} />
+                          <img src={imgData.src} alt={`Image ${imgIndex + 1}`} style={{ objectFit: imgFit, objectPosition: imgData.position || 'center center' }} onClick={() => !editMode && setLightboxImage && setLightboxImage(imgData.src)} />
                           {editMode && (
                             <div className="carousel-slide-edit-controls">
+                              <button type="button" className={`carousel-fit-btn carousel-fit-inline${imgFit === 'cover' ? ' active' : ''}`} onClick={(e) => { e.stopPropagation(); updateImage(imgIndex, 'fit', 'cover'); }} title="Fill">Fill</button>
+                              <button type="button" className={`carousel-fit-btn carousel-fit-inline${imgFit === 'contain' ? ' active' : ''}`} onClick={(e) => { e.stopPropagation(); updateImage(imgIndex, 'fit', 'contain'); }} title="Fit">Fit</button>
                               <button type="button" className="carousel-slide-replace" onClick={(e) => { e.stopPropagation(); handleDynamicImageUpload(imgIndex); }}>Replace</button>
-                              {imageCount > 2 && <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); removeImage(imgIndex); }}>Remove</button>}
+                              <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); imageCount > 2 ? removeImage(imgIndex) : updateImage(imgIndex, 'src', ''); }}>Remove</button>
                             </div>
                           )}
                         </>
@@ -3324,7 +3321,7 @@ My instructions: `;
                           <iframe src={imgData.embedUrl} title={`Embed ${imgIndex + 1}`} allowFullScreen className={imgData.embedType === 'site' ? 'site-embed-iframe' : 'figma-embed-iframe'} />
                           {editMode && (
                             <div className="carousel-slide-edit-controls">
-                              <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); updateImage(imgIndex, { embedUrl: '' }); }}>× Remove</button>
+                              <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); updateImage(imgIndex, { embedUrl: '' }); }}>Remove</button>
                             </div>
                           )}
                         </>
