@@ -4,6 +4,9 @@
 import fs from 'fs';
 import path from 'path';
 import { exec } from 'child_process';
+import https from 'https';
+
+const NETLIFY_BUILD_HOOK = 'https://api.netlify.com/build_hooks/69d7cb8c2578b11512ef44a2';
 
 export function saveCaseStudyPlugin() {
   return {
@@ -147,6 +150,19 @@ export function saveCaseStudyPlugin() {
             }
 
             await run('git push');
+
+            // Trigger Netlify deploy automatically
+            await new Promise((resolve) => {
+              const url = new URL(NETLIFY_BUILD_HOOK);
+              const req = https.request({ hostname: url.hostname, path: url.pathname, method: 'POST' }, (r) => {
+                r.resume();
+                resolve();
+              });
+              req.on('error', (e) => { console.warn('[git-push] Netlify hook failed:', e.message); resolve(); });
+              req.end();
+            });
+            console.log('[git-push] Netlify deploy triggered');
+
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify({ ok: true, committed: !!staged }));
           } catch (err) {
