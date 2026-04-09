@@ -1468,6 +1468,8 @@ const deleteFromIndexedDB = (projectId) => deleteCaseStudy(projectId);
 // ========== Public API ==========
 export const getCaseStudyData = (projectId) => {
   const defaults = defaultCaseStudies[projectId] || defaultCaseStudies['align-technology'];
+  // In production, always use source JSON — never stale browser cache
+  if (!import.meta.env.DEV) return defaults;
   // First try localStorage (for backward compatibility and sync access)
   try {
     const saved = localStorage.getItem(`caseStudy_${projectId}`);
@@ -1506,6 +1508,9 @@ export const getCaseStudyData = (projectId) => {
 export const getCaseStudyDataAsync = async (projectId) => {
   console.log(`[getCaseStudyDataAsync] Loading data for projectId: ${projectId}`);
   const defaults = defaultCaseStudies[projectId] || defaultCaseStudies['align-technology'];
+
+  // In production, always use source JSON — never stale browser cache
+  if (!import.meta.env.DEV) return defaults;
 
   // Try IndexedDB first (larger storage)
   try {
