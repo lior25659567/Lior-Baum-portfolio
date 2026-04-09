@@ -6105,6 +6105,71 @@ textarea.editable-field {
   white-space: nowrap;
 }
 
+/* Carousel fit: contain mode */
+.dynamic-carousel-slide.carousel-fit-contain {
+  background: transparent;
+}
+
+.dynamic-carousel-slide.carousel-fit-contain img {
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+/* Carousel settings bar (edit mode) */
+.dynamic-carousel-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.carousel-settings-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.carousel-settings-label {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.45);
+  width: 2.5rem;
+  flex-shrink: 0;
+}
+
+.carousel-fit-btn {
+  padding: 0.2rem 0.55rem;
+  font-size: 0.7rem;
+  border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+}
+
+.carousel-fit-btn.active {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border-color: rgba(255,255,255,0.3);
+}
+
+.carousel-speed-slider {
+  flex: 1;
+  height: 3px;
+  accent-color: var(--color-accent, #ff6b5a);
+  cursor: pointer;
+}
+
+.carousel-speed-value {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.5);
+  width: 2.5rem;
+  text-align: right;
+  flex-shrink: 0;
+}
+
 /* Image Edit Overlay */
 .image-edit-overlay {
   position: absolute;

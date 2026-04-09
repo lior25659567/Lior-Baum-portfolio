@@ -3225,13 +3225,14 @@ My instructions: `;
     const carouselRef = useRef(null);
 
     // Auto-advance carousel
+    const carouselInterval = slide[`${field}CarouselInterval`] || 4000;
     useEffect(() => {
       if (imageDisplayMode !== 'carousel' || imageCount <= 1 || editMode) return;
       const timer = setInterval(() => {
         setCarouselIdx(prev => (prev + 1) % imageCount);
-      }, 4000);
+      }, carouselInterval);
       return () => clearInterval(timer);
-    }, [imageDisplayMode, imageCount, editMode]);
+    }, [imageDisplayMode, imageCount, editMode, carouselInterval]);
 
     // Reset index if images change or mode switches away
     useEffect(() => {
@@ -3279,56 +3280,83 @@ My instructions: `;
           </div>
         )}
         {imageDisplayMode === 'carousel' && imageCount >= 2 ? (
-          <div className="dynamic-carousel" ref={carouselRef} onClick={(e) => e.stopPropagation()} data-no-slide-advance="true">
-            <div className="dynamic-carousel-track" style={{ transform: `translateX(-${carouselIdx * 100}%)` }}>
-              {images.map((imgData, imgIndex) => (
-                <div key={imgIndex} className="dynamic-carousel-slide">
-                  {imgData.src ? (
-                    <>
-                      <img src={imgData.src} alt={`Image ${imgIndex + 1}`} style={{ objectFit: imgData.fit || 'cover', objectPosition: imgData.position || 'center center' }} onClick={() => !editMode && setLightboxImage && setLightboxImage(imgData.src)} />
-                      {editMode && (
-                        <div className="carousel-slide-edit-controls">
-                          <button type="button" className="carousel-slide-replace" onClick={(e) => { e.stopPropagation(); handleDynamicImageUpload(imgIndex); }}>Replace</button>
-                          {imageCount > 2 && <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); removeImage(imgIndex); }}>Remove</button>}
-                        </div>
-                      )}
-                    </>
-                  ) : imgData.embedUrl ? (
-                    <>
-                      <iframe src={imgData.embedUrl} title={`Embed ${imgIndex + 1}`} allowFullScreen className={imgData.embedType === 'site' ? 'site-embed-iframe' : 'figma-embed-iframe'} />
-                      {editMode && (
-                        <div className="carousel-slide-edit-controls">
-                          <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); updateImage(imgIndex, { embedUrl: '' }); }}>× Remove</button>
-                        </div>
-                      )}
-                    </>
-                  ) : editMode ? (
-                    <div className="carousel-placeholder" onClick={() => handleDynamicImageUpload(imgIndex)}>Click to add image</div>
-                  ) : null}
+          <>
+            {editMode && (
+              <div className="dynamic-carousel-settings">
+                <div className="carousel-settings-row">
+                  <span className="carousel-settings-label">Fit</span>
+                  <button type="button" className={`carousel-fit-btn${(slide[`${field}CarouselFit`] || 'cover') === 'cover' ? ' active' : ''}`} onClick={() => updateSlide(slideIndex, { [`${field}CarouselFit`]: 'cover' })}>Fill</button>
+                  <button type="button" className={`carousel-fit-btn${slide[`${field}CarouselFit`] === 'contain' ? ' active' : ''}`} onClick={() => updateSlide(slideIndex, { [`${field}CarouselFit`]: 'contain' })}>Fit</button>
                 </div>
-              ))}
+                <div className="carousel-settings-row">
+                  <span className="carousel-settings-label">Speed</span>
+                  <input
+                    type="range" min="1000" max="8000" step="500"
+                    value={slide[`${field}CarouselInterval`] || 4000}
+                    onChange={(e) => updateSlide(slideIndex, { [`${field}CarouselInterval`]: Number(e.target.value) })}
+                    className="carousel-speed-slider"
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <span className="carousel-speed-value">{((slide[`${field}CarouselInterval`] || 4000) / 1000).toFixed(1)}s</span>
+                </div>
+              </div>
+            )}
+            <div className="dynamic-carousel" ref={carouselRef} onClick={(e) => e.stopPropagation()} data-no-slide-advance="true">
+              <div className="dynamic-carousel-track" style={{ transform: `translateX(-${carouselIdx * 100}%)` }}>
+                {images.map((imgData, imgIndex) => {
+                  const carouselFit = slide[`${field}CarouselFit`] || 'cover';
+                  const isContainCarousel = carouselFit === 'contain';
+                  return (
+                    <div key={imgIndex} className={`dynamic-carousel-slide${isContainCarousel ? ' carousel-fit-contain' : ''}`}>
+                      {imgData.src ? (
+                        <>
+                          <img src={imgData.src} alt={`Image ${imgIndex + 1}`} style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }} onClick={() => !editMode && setLightboxImage && setLightboxImage(imgData.src)} />
+                          {editMode && (
+                            <div className="carousel-slide-edit-controls">
+                              <button type="button" className="carousel-slide-replace" onClick={(e) => { e.stopPropagation(); handleDynamicImageUpload(imgIndex); }}>Replace</button>
+                              {imageCount > 2 && <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); removeImage(imgIndex); }}>Remove</button>}
+                            </div>
+                          )}
+                        </>
+                      ) : imgData.embedUrl ? (
+                        <>
+                          <iframe src={imgData.embedUrl} title={`Embed ${imgIndex + 1}`} allowFullScreen className={imgData.embedType === 'site' ? 'site-embed-iframe' : 'figma-embed-iframe'} />
+                          {editMode && (
+                            <div className="carousel-slide-edit-controls">
+                              <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); updateImage(imgIndex, { embedUrl: '' }); }}>× Remove</button>
+                            </div>
+                          )}
+                        </>
+                      ) : editMode ? (
+                        <div className="carousel-placeholder" onClick={() => handleDynamicImageUpload(imgIndex)}>Click to add image</div>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+              {imageCount > 1 && (
+                <>
+                  <div className="carousel-dots">
+                    {images.map((_, ci) => (
+                      <button key={ci} className={`carousel-dot ${carouselIdx === ci ? 'active' : ''}`} onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(ci); }} data-no-slide-advance="true" />
+                    ))}
+                  </div>
+                  <button className="carousel-arrow carousel-prev" onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(prev => (prev - 1 + imageCount) % imageCount); }} data-no-slide-advance="true">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 4L8 10L12 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </button>
+                  <button className="carousel-arrow carousel-next" onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(prev => (prev + 1) % imageCount); }} data-no-slide-advance="true">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M8 4L12 10L8 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </button>
+                </>
+              )}
+              {editMode && imageCount < effectiveMaxImages && (
+                <button className="add-dynamic-image-btn carousel-add-btn" onClick={addImage}>
+                  + Add Image ({imageCount}/{effectiveMaxImages})
+                </button>
+              )}
             </div>
-            {imageCount > 1 && (
-              <>
-                <div className="carousel-dots">
-                  {images.map((_, ci) => (
-                    <button key={ci} className={`carousel-dot ${carouselIdx === ci ? 'active' : ''}`} onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(ci); }} data-no-slide-advance="true" />
-                  ))}
-                </div>
-                <button className="carousel-arrow carousel-prev" onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(prev => (prev - 1 + imageCount) % imageCount); }} data-no-slide-advance="true">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 4L8 10L12 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </button>
-                <button className="carousel-arrow carousel-next" onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(prev => (prev + 1) % imageCount); }} data-no-slide-advance="true">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M8 4L12 10L8 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </button>
-              </>
-            )}
-            {editMode && imageCount < effectiveMaxImages && (
-              <button className="add-dynamic-image-btn carousel-add-btn" onClick={addImage}>
-                + Add Image ({imageCount}/{effectiveMaxImages})
-              </button>
-            )}
-          </div>
+          </>
         ) : (
         <div className="dynamic-images-grid" style={imageCount >= 2 ? { gridTemplateColumns: `repeat(${gridCols}, 1fr)` } : undefined}>
           {images.map((imgData, imgIndex) => {
