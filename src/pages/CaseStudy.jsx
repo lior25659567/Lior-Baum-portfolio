@@ -565,14 +565,6 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
           {/* ══ SIMPLE ══ */}
           {slideMode === 'simple' && (
             <>
-              {editMode && (t === 'comparison' || t === 'problemSolution') && (
-                <div className="comparison-mode-control">
-                  <button type="button" className={`comparison-mode-btn${slideMode === 'simple' ? ' active' : ''}`} onClick={() => setMode('simple')}>Simple</button>
-                  <button type="button" className={`comparison-mode-btn${slideMode === 'before-after' ? ' active' : ''}`} onClick={() => setMode('before-after')}>Before / After</button>
-                  <button type="button" className={`comparison-mode-btn${slideMode === 'tabs' ? ' active' : ''}`} onClick={() => setMode('tabs')}>Tabs</button>
-                  <button type="button" className={`comparison-mode-btn${slideMode === 'carousel' ? ' active' : ''}`} onClick={() => setMode('carousel')}>Carousel</button>
-                </div>
-              )}
               <DynamicContent slide={slide} slideIndex={index} field={contentField} className="problem-text-wrapper" />
               <DynamicBullets slide={slide} slideIndex={index} field={bulletsField} titleField={bulletsTitleField} className="problem-issues-wrapper" label={bulletsLabel} />
               <DynamicBullets slide={slide} slideIndex={index} field="bullets2" titleField="bullets2Title" className="problem-issues-wrapper problem-bullets-second" label="Bullet" />
@@ -590,20 +582,16 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
           {slideMode === 'before-after' && (
             <>
               <DynamicContent slide={slide} slideIndex={index} field="description" className="comparison-description-wrapper" maxParagraphs={2} optional />
-              {editMode && (t === 'comparison' || t === 'problemSolution') && (
+              {editMode && t === 'comparison' && (
                 <div className="comparison-mode-control">
-                  <button type="button" className={`comparison-mode-btn${slideMode === 'simple' ? ' active' : ''}`} onClick={() => setMode('simple')}>Simple</button>
-                  <button type="button" className={`comparison-mode-btn${slideMode === 'before-after' ? ' active' : ''}`} onClick={() => setMode('before-after')}>Before / After</button>
-                  <button type="button" className={`comparison-mode-btn${slideMode === 'tabs' ? ' active' : ''}`} onClick={() => setMode('tabs')}>Tabs</button>
-                  <button type="button" className={`comparison-mode-btn${slideMode === 'carousel' ? ' active' : ''}`} onClick={() => setMode('carousel')}>Carousel</button>
-                  <span className="comparison-mode-divider" />
-                  <button type="button" className={`comparison-mode-btn${switcherStyle === 'pill' ? ' active' : ''}`} onClick={() => updateSlide(index, { switcherStyle: 'pill' })}>Pill</button>
+                  <span className="comparison-mode-label">Style</span>
+                  <button type="button" className={`comparison-mode-btn${switcherStyle !== 'flat' ? ' active' : ''}`} onClick={() => updateSlide(index, { switcherStyle: 'pill' })}>Pill</button>
                   <button type="button" className={`comparison-mode-btn${switcherStyle === 'flat' ? ' active' : ''}`} onClick={() => updateSlide(index, { switcherStyle: 'flat' })}>Flat</button>
                 </div>
               )}
-              <div className={switcherStyle === 'flat' ? 'ps-view-tabs' : 'comparison-switcher'}>
-                <button type="button" className={`${switcherStyle === 'flat' ? 'ps-tab' : 'comparison-tab'}${baActiveTab === 'before' ? ' active' : ''}`} onClick={() => setBaActiveTab('before')}>{beforeLabel}</button>
-                <button type="button" className={`${switcherStyle === 'flat' ? 'ps-tab' : 'comparison-tab'}${baActiveTab === 'after' ? ' active' : ''}`} onClick={() => setBaActiveTab('after')}>{afterLabel}</button>
+              <div className={switcherStyle === 'flat' ? 'comparison-switcher-flat' : 'comparison-switcher'}>
+                <button type="button" className={`${switcherStyle === 'flat' ? 'comparison-tab-flat' : 'comparison-tab'}${baActiveTab === 'before' ? ' active' : ''}`} onClick={() => setBaActiveTab('before')}>{beforeLabel}</button>
+                <button type="button" className={`${switcherStyle === 'flat' ? 'comparison-tab-flat' : 'comparison-tab'}${baActiveTab === 'after' ? ' active' : ''}`} onClick={() => setBaActiveTab('after')}>{afterLabel}</button>
               </div>
               {editMode && (
                 <div className="comparison-label-edit">
@@ -664,17 +652,6 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
                 <button type="button" className="add-field-btn add-field-btn-sm" onClick={() => updateSlide(index, { psParagraph2: 'Add second paragraph...' })}>+ Add paragraph 2</button>
               )}
 
-              {editMode && (t === 'comparison' || t === 'problemSolution') && (
-                <div className="comparison-mode-control">
-                  <button type="button" className={`comparison-mode-btn${slideMode === 'simple' ? ' active' : ''}`} onClick={() => setMode('simple')}>Simple</button>
-                  <button type="button" className={`comparison-mode-btn${slideMode === 'before-after' ? ' active' : ''}`} onClick={() => setMode('before-after')}>Before / After</button>
-                  <button type="button" className={`comparison-mode-btn${slideMode === 'tabs' ? ' active' : ''}`} onClick={() => setMode('tabs')}>Tabs</button>
-                  <button type="button" className={`comparison-mode-btn${slideMode === 'carousel' ? ' active' : ''}`} onClick={() => setMode('carousel')}>Carousel</button>
-                  <span className="comparison-mode-divider" />
-                  <button type="button" className={`comparison-mode-btn${switcherStyle === 'pill' ? ' active' : ''}`} onClick={() => updateSlide(index, { switcherStyle: 'pill' })}>Pill</button>
-                  <button type="button" className={`comparison-mode-btn${switcherStyle === 'flat' ? ' active' : ''}`} onClick={() => updateSlide(index, { switcherStyle: 'flat' })}>Flat</button>
-                </div>
-              )}
               {/* Tabs row */}
               <div className="ps-tabs-and-bullets">
                 <div className="ps-view-tabs-row">
@@ -807,14 +784,6 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
                 </div>
               );
             })}
-          </div>
-        )}
-        {slideMode === 'carousel' && editMode && (t === 'comparison' || t === 'problemSolution') && (
-          <div className="comparison-mode-control comparison-mode-control-right">
-            <button type="button" className={`comparison-mode-btn${slideMode === 'simple' ? ' active' : ''}`} onClick={() => setMode('simple')}>Simple</button>
-            <button type="button" className={`comparison-mode-btn${slideMode === 'before-after' ? ' active' : ''}`} onClick={() => setMode('before-after')}>Before / After</button>
-            <button type="button" className={`comparison-mode-btn${slideMode === 'tabs' ? ' active' : ''}`} onClick={() => setMode('tabs')}>Tabs</button>
-            <button type="button" className={`comparison-mode-btn${slideMode === 'carousel' ? ' active' : ''}`} onClick={() => setMode('carousel')}>Carousel</button>
           </div>
         )}
         {slideMode === 'carousel' && (

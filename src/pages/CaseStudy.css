@@ -8529,6 +8529,36 @@ textarea.editable-field {
   border-color: var(--color-accent);
 }
 
+/* Flat style switcher — same sizing as pill, underline indicator */
+.comparison-switcher-flat {
+  display: flex;
+  align-self: flex-start;
+  gap: 0;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.comparison-tab-flat {
+  padding: 0.4rem 1.4rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.comparison-tab-flat:hover {
+  color: var(--color-text);
+}
+
+.comparison-tab-flat.active {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
 .comparison-switcher {
   display: flex;
   align-self: flex-start;
