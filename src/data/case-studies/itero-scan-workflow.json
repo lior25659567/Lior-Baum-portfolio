@@ -199,8 +199,19 @@
     {
       "type": "comparison",
       "label": "RX Entry Flow",
-      "title": "From blocking setup to continuous entry",
-      "beforeImage": "",
+      "title": "From \nblocking setup to continuous entry",
+      "beforeImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-9gb9xiaoyc.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
       "afterImage": "",
       "beforeDescription": "The system forced users into a rigid sequence before allowing them to start scanning.",
       "afterDescription": "The redesigned flow removes blocking steps and enables immediate action.",
@@ -215,7 +226,10 @@
         "Persistent patient visibility",
         "Flexible start without full setup",
         "Seamless transition into scan"
-      ]
+      ],
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
+      "splitRatio": 30
     },
     {
       "type": "comparison",
