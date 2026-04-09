@@ -3318,6 +3318,11 @@ body.case-study-active .footer {
   color: white;
 }
 
+/* Image fit styles - cover (fill) mode: no background wrapper visible */
+.dynamic-image-item.img-fit-cover .dynamic-image-wrapper {
+  background: transparent;
+}
+
 /* Image fit styles - contain mode: natural sizing so img box = visible content */
 .dynamic-image-item.img-fit-contain .dynamic-image-wrapper {
   background: transparent;
