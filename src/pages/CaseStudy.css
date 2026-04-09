@@ -6059,6 +6059,52 @@ textarea.editable-field {
   cursor: pointer;
 }
 
+.carousel-slide-edit-controls {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.4rem;
+  z-index: 10;
+}
+
+.carousel-slide-replace,
+.carousel-slide-remove {
+  padding: 0.25rem 0.65rem;
+  font-size: 0.7rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.carousel-slide-replace {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+
+.carousel-slide-replace:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+.carousel-slide-remove {
+  background: rgba(239,68,68,0.3);
+  color: #fca5a5;
+}
+
+.carousel-slide-remove:hover {
+  background: rgba(239,68,68,0.5);
+}
+
+.carousel-add-btn {
+  position: absolute;
+  bottom: -2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
 /* Image Edit Overlay */
 .image-edit-overlay {
   position: absolute;

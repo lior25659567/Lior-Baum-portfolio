@@ -3284,9 +3284,26 @@ My instructions: `;
               {images.map((imgData, imgIndex) => (
                 <div key={imgIndex} className="dynamic-carousel-slide">
                   {imgData.src ? (
-                    <img src={imgData.src} alt={`Image ${imgIndex + 1}`} style={{ objectFit: imgData.fit || 'cover', objectPosition: imgData.position || 'center center' }} onClick={() => !editMode && setLightboxImage && setLightboxImage(imgData.src)} />
+                    <>
+                      <img src={imgData.src} alt={`Image ${imgIndex + 1}`} style={{ objectFit: imgData.fit || 'cover', objectPosition: imgData.position || 'center center' }} onClick={() => !editMode && setLightboxImage && setLightboxImage(imgData.src)} />
+                      {editMode && (
+                        <div className="carousel-slide-edit-controls">
+                          <button type="button" className="carousel-slide-replace" onClick={(e) => { e.stopPropagation(); handleDynamicImageUpload(imgIndex); }}>Replace</button>
+                          {imageCount > 2 && <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); removeImage(imgIndex); }}>Remove</button>}
+                        </div>
+                      )}
+                    </>
+                  ) : imgData.embedUrl ? (
+                    <>
+                      <iframe src={imgData.embedUrl} title={`Embed ${imgIndex + 1}`} allowFullScreen className={imgData.embedType === 'site' ? 'site-embed-iframe' : 'figma-embed-iframe'} />
+                      {editMode && (
+                        <div className="carousel-slide-edit-controls">
+                          <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); updateImage(imgIndex, { embedUrl: '' }); }}>× Remove</button>
+                        </div>
+                      )}
+                    </>
                   ) : editMode ? (
-                    <div className="carousel-placeholder" onClick={() => { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*,video/*'; input.onchange = (ev) => { const file = ev.target.files?.[0]; if (!file) return; const reader = new FileReader(); reader.onload = (r) => updateImage(imgIndex, 'src', r.target.result); reader.readAsDataURL(file); }; input.click(); }}>Click to add image</div>
+                    <div className="carousel-placeholder" onClick={() => handleDynamicImageUpload(imgIndex)}>Click to add image</div>
                   ) : null}
                 </div>
               ))}
@@ -3305,6 +3322,11 @@ My instructions: `;
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M8 4L12 10L8 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </button>
               </>
+            )}
+            {editMode && imageCount < effectiveMaxImages && (
+              <button className="add-dynamic-image-btn carousel-add-btn" onClick={addImage}>
+                + Add Image ({imageCount}/{effectiveMaxImages})
+              </button>
             )}
           </div>
         ) : (
