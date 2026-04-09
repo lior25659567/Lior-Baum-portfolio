@@ -1549,8 +1549,13 @@ const CaseStudy = () => {
           const [, mimeType, base64data] = match;
           const rawExt = mimeType.split('/')[1] || 'bin';
           const ext = rawExt === 'svg+xml' ? 'svg' : rawExt === 'jpeg' ? 'jpg' : rawExt === 'quicktime' ? 'mov' : rawExt;
-          // Use first 12 chars of base64 as a stable content-based ID
-          const hashId = base64data.replace(/[^a-zA-Z0-9]/g, '').substring(0, 12);
+          // Hash across the full base64 string (sample every ~200 chars + include length)
+          let h = 5381;
+          const step = Math.max(1, Math.floor(base64data.length / 200));
+          for (let i = 0; i < base64data.length; i += step) {
+            h = Math.imul(h ^ base64data.charCodeAt(i), 0x9e3779b9);
+          }
+          const hashId = ((h >>> 0) * base64data.length).toString(36).replace(/[^a-zA-Z0-9]/g, '').substring(0, 12).padStart(8, '0');
           const filename = `img-${hashId}.${ext}`;
           imageJobs.push({ filename, base64data, mimeType });
           return `/case-studies/${pid}/${filename}`;
