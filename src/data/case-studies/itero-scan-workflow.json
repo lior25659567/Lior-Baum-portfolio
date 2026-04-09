@@ -20,7 +20,7 @@
           "size": "large",
           "fit": "contain",
           "embedUrl": "",
-          "src": "",
+          "src": "/case-studies/itero-scan-workflow/img-PHN2ZyB3aWR0.svg+xml",
           "caption": "",
           "isVideo": false,
           "isGif": false,
@@ -49,7 +49,7 @@
           "size": "large",
           "fit": "cover",
           "embedUrl": "",
-          "src": "",
+          "src": "/case-studies/itero-scan-workflow/img-iVBORw0KGgoA.png",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -77,7 +77,7 @@
           "size": "large",
           "fit": "contain",
           "embedUrl": "",
-          "src": "",
+          "src": "/case-studies/itero-scan-workflow/img-iVBORw0KGgoA.png",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -89,7 +89,7 @@
       "type": "quotes",
       "label": "Research",
       "title": "From system issues to real behavior",
-      "content": "To understand the problem , we observed clinicians during live sessions and conducted interviews. ",
+      "content": "To understand the problem , we observed clinicians during live sessions \nand conducted interviews. ",
       "quotes": [
         {
           "text": "The patient popup interrupts me before I even start.",
