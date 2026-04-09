@@ -721,7 +721,7 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
           <DynamicImages slide={slide} slideIndex={index} field="image" className="split-images-wrapper" />
         )}
         {slideMode === 'before-after' && (
-          <DynamicImages slide={slide} slideIndex={index} field={baImageField} maxImages={1} className="split-images-wrapper" />
+          <DynamicImages slide={slide} slideIndex={index} field={baImageField} className="split-images-wrapper" />
         )}
         {slideMode === 'tabs' && (
           <div className="split-images-wrapper ps-split-image-wrap">
