@@ -4015,7 +4015,20 @@ My instructions: `;
       <div className="slide-edit-controls">
         <button onClick={() => moveSlide(index, -1)} disabled={index === 0}>↑</button>
         <button onClick={() => moveSlide(index, 1)} disabled={index === totalSlides - 1}>↓</button>
-        <button onClick={() => setEditSlideJSON({ index, text: JSON.stringify(slide, null, 2), error: '' })} className="json-edit" title="Edit slide JSON">
+        <button onClick={() => {
+          // Strip base64 media for readability, keep a placeholder
+          const stripForEdit = (obj) => {
+            if (typeof obj === 'string' && obj.startsWith('data:')) return '[[MEDIA]]';
+            if (Array.isArray(obj)) return obj.map(item => stripForEdit(item));
+            if (obj && typeof obj === 'object') {
+              const r = {};
+              for (const k in obj) r[k] = stripForEdit(obj[k]);
+              return r;
+            }
+            return obj;
+          };
+          setEditSlideJSON({ index, text: JSON.stringify(stripForEdit(slide), null, 2), originalSlide: slide, error: '' });
+        }} className="json-edit" title="Edit slide JSON">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M8 3H7a2 2 0 00-2 2v5a2 2 0 01-2 2 2 2 0 012 2v5a2 2 0 002 2h1" />
             <path d="M16 3h1a2 2 0 012 2v5a2 2 0 002 2 2 2 0 00-2 2v5a2 2 0 01-2 2h-1" />
@@ -6337,7 +6350,7 @@ My instructions: `;
             >
               <div className="import-json-header">
                 <h2>Edit Slide {editSlideJSON.index + 1} JSON</h2>
-                <p>Edit the raw JSON for this slide. Changes apply when you click Apply.</p>
+                <p>Images are shown as [[MEDIA]] — they are preserved when you apply. Edit text fields freely.</p>
                 <button className="import-json-close" onClick={() => setEditSlideJSON(null)}>×</button>
               </div>
               <div className="import-json-body">
@@ -6361,9 +6374,22 @@ My instructions: `;
                         setEditSlideJSON(prev => ({ ...prev, error: 'Slide must have a "type" field.' }));
                         return;
                       }
+                      // Restore [[MEDIA]] placeholders from original slide data
+                      const original = editSlideJSON.originalSlide;
+                      const restoreMedia = (edited, orig) => {
+                        if (edited === '[[MEDIA]]') return orig;
+                        if (Array.isArray(edited)) return edited.map((item, i) => restoreMedia(item, Array.isArray(orig) ? orig[i] : undefined));
+                        if (edited && typeof edited === 'object' && orig && typeof orig === 'object') {
+                          const r = {};
+                          for (const k in edited) r[k] = restoreMedia(edited[k], orig[k]);
+                          return r;
+                        }
+                        return edited;
+                      };
+                      const restored = restoreMedia(parsed, original);
                       setProject(prev => ({
                         ...prev,
-                        slides: prev.slides.map((s, i) => i === editSlideJSON.index ? parsed : s)
+                        slides: prev.slides.map((s, i) => i === editSlideJSON.index ? restored : s)
                       }));
                       setEditSlideJSON(null);
                     } catch (e) {
