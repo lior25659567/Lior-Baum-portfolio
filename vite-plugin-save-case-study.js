@@ -82,6 +82,39 @@ export function saveCaseStudyPlugin() {
         });
       });
 
+      // Save a single image file to public/case-studies/{projectId}/
+      server.middlewares.use('/api/save-image', (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405;
+          res.end(JSON.stringify({ error: 'Method not allowed' }));
+          return;
+        }
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+          try {
+            const { projectId, filename, base64data } = JSON.parse(body);
+            if (!projectId || !filename || !base64data) {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: 'Missing projectId, filename, or base64data' }));
+              return;
+            }
+            const dir = path.resolve('public', 'case-studies', projectId);
+            if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+            const filePath = path.join(dir, filename);
+            const buffer = Buffer.from(base64data, 'base64');
+            fs.writeFileSync(filePath, buffer);
+            console.log(`[save-image] Saved ${projectId}/${filename} (${buffer.length} bytes)`);
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ ok: true, path: `/case-studies/${projectId}/${filename}` }));
+          } catch (err) {
+            console.error('[save-image] Error:', err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: err.message }));
+          }
+        });
+      });
+
       // Git commit + push
       server.middlewares.use('/api/git-push', (req, res) => {
         if (req.method !== 'POST') {
@@ -100,6 +133,11 @@ export function saveCaseStudyPlugin() {
         (async () => {
           try {
             await run('git add src/data/case-studies/');
+            // Also stage any saved image files
+            const publicDir = path.resolve('public', 'case-studies');
+            if (fs.existsSync(publicDir)) {
+              await run('git add public/case-studies/');
+            }
 
             // Check if there's anything staged to commit
             const staged = await run('git diff --cached --name-only').catch(() => '');

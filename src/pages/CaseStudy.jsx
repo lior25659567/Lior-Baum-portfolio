@@ -1537,24 +1537,60 @@ const CaseStudy = () => {
     }
   }, [projectId]);
 
-  // ── Save to Code (writes to source files via dev API) ──────────
-  const handleSaveToCode = useCallback(async () => {
-    // Strip base64 media to keep JSON files lean
-    const stripMedia = (obj) => {
-      if (typeof obj === 'string' && (obj.startsWith('data:image') || obj.startsWith('data:video') || obj.startsWith('data:application'))) return '';
-      if (Array.isArray(obj)) return obj.map(item => stripMedia(item));
+  // ── Save to Code helpers ────────────────────────────────────────
+  // Extract base64 media, save as files, replace with public paths
+  const extractAndSaveMedia = useCallback(async (pid, projectData) => {
+    const imageJobs = [];
+
+    const extractMedia = (obj) => {
+      if (typeof obj === 'string' && obj.startsWith('data:')) {
+        const match = obj.match(/^data:([^;]+);base64,(.+)$/s);
+        if (match) {
+          const [, mimeType, base64data] = match;
+          const rawExt = mimeType.split('/')[1] || 'bin';
+          const ext = rawExt === 'svg+xml' ? 'svg' : rawExt === 'jpeg' ? 'jpg' : rawExt === 'quicktime' ? 'mov' : rawExt;
+          // Use first 12 chars of base64 as a stable content-based ID
+          const hashId = base64data.replace(/[^a-zA-Z0-9]/g, '').substring(0, 12);
+          const filename = `img-${hashId}.${ext}`;
+          imageJobs.push({ filename, base64data, mimeType });
+          return `/case-studies/${pid}/${filename}`;
+        }
+      }
+      if (Array.isArray(obj)) return obj.map(item => extractMedia(item));
       if (obj && typeof obj === 'object') {
         const result = {};
-        for (const key in obj) result[key] = stripMedia(obj[key]);
+        for (const key in obj) result[key] = extractMedia(obj[key]);
         return result;
       }
       return obj;
     };
 
-    const cleanData = stripMedia(JSON.parse(JSON.stringify(project)));
+    const cleanData = extractMedia(JSON.parse(JSON.stringify(projectData)));
 
+    // Save all images in parallel (skip duplicates by filename)
+    const seen = new Set();
+    const uniqueJobs = imageJobs.filter(j => {
+      if (seen.has(j.filename)) return false;
+      seen.add(j.filename);
+      return true;
+    });
+
+    await Promise.all(uniqueJobs.map(({ filename, base64data }) =>
+      fetch('/api/save-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectId: pid, filename, base64data }),
+      }).catch(err => console.warn('[save-image] Failed for', filename, err))
+    ));
+
+    return cleanData;
+  }, []);
+
+  // ── Save to Code (writes to source files via dev API) ──────────
+  const handleSaveToCode = useCallback(async () => {
     try {
       setSaveStatus('saving-code');
+      const cleanData = await extractAndSaveMedia(projectId, project);
       const res = await fetch('/api/save-case-study', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1574,7 +1610,53 @@ const CaseStudy = () => {
       console.error('Save to code failed:', err);
       setTimeout(() => setSaveStatus(null), 3000);
     }
-  }, [project, projectId]);
+  }, [project, projectId, extractAndSaveMedia]);
+
+  // ── Save All to Code (saves every case study in one go) ────────
+  const [saveAllStatus, setSaveAllStatus] = useState(null); // null | 'saving' | 'saved' | 'error'
+  const handleSaveAllToCode = useCallback(async () => {
+    setSaveAllStatus('saving');
+    try {
+      // Get all saved case study IDs from IndexedDB/localStorage
+      const list = await listSavedCaseStudies();
+      const ids = list.map(item => item.projectId);
+      // Always include the current project even if not in list
+      if (!ids.includes(projectId)) ids.push(projectId);
+
+      let failed = 0;
+      for (const pid of ids) {
+        try {
+          // Load full data (with images) for each project
+          const data = pid === projectId ? project : await getCaseStudyDataAsync(pid);
+          if (!data) continue;
+          const cleanData = await extractAndSaveMedia(pid, data);
+          const res = await fetch('/api/save-case-study', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ projectId: pid, data: cleanData }),
+          });
+          const result = await res.json();
+          if (!result.ok) {
+            console.error(`[save-all] Failed for ${pid}:`, result.error);
+            failed++;
+          }
+        } catch (err) {
+          console.error(`[save-all] Error for ${pid}:`, err);
+          failed++;
+        }
+      }
+      if (failed === 0) {
+        setSaveAllStatus('saved');
+      } else {
+        setSaveAllStatus('error');
+      }
+      setTimeout(() => setSaveAllStatus(null), 3000);
+    } catch (err) {
+      console.error('[save-all] Fatal error:', err);
+      setSaveAllStatus('error');
+      setTimeout(() => setSaveAllStatus(null), 3000);
+    }
+  }, [project, projectId, extractAndSaveMedia]);
 
   // ── Git push ──────────────────────────────────────────────────
   const handleGitPush = useCallback(async () => {
@@ -6105,6 +6187,14 @@ My instructions: `;
             <div className="slide-sorter-header">
               <span className="slide-sorter-title">Slides ({totalSlides})</span>
               <div className="slide-sorter-actions">
+                <button
+                  className={`slide-sorter-save-all${saveAllStatus ? ` save-all-${saveAllStatus}` : ''}`}
+                  onClick={handleSaveAllToCode}
+                  disabled={saveAllStatus === 'saving'}
+                  title="Save all case studies to code"
+                >
+                  {saveAllStatus === 'saving' ? '⟳ Saving...' : saveAllStatus === 'saved' ? '✓ All Saved' : saveAllStatus === 'error' ? '⚠ Error' : '💾 Save All'}
+                </button>
                 <button
                   className={`slide-sorter-git-push${gitPushStatus ? ` git-push-${gitPushStatus}` : ''}`}
                   onClick={handleGitPush}
