@@ -2894,6 +2894,20 @@ body.case-study-active .footer {
   padding: 0;
   margin: 0;
   flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.dynamic-grid-divider {
+  width: 1px;
+  height: 18px;
+  background: rgba(128,128,128,0.3);
+  flex-shrink: 0;
+}
+
+.carousel-fit-global-btn {
+  width: auto !important;
+  padding: 0 0.55rem !important;
+  font-size: 0.72rem !important;
 }
 
 .dynamic-grid-label {

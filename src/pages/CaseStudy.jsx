@@ -3253,7 +3253,6 @@ My instructions: `;
                   className={`dynamic-grid-btn ${imageDisplayMode === 'grid' && gridCols === cols ? 'active' : ''}`}
                   onClick={() => {
                     const updates = { gridCols: cols, imageDisplayMode: 'grid' };
-                    // Reset images array to exactly match selected count
                     const emptyImg = { src: '', caption: '', position: 'center center', size: 'large', fit: 'cover', embedUrl: '' };
                     const newImages = Array.from({ length: cols }, (_, i) => images[i] ? { ...images[i] } : { ...emptyImg });
                     updates[field] = newImages;
@@ -3268,7 +3267,6 @@ My instructions: `;
                 className={`dynamic-grid-btn ${imageDisplayMode === 'carousel' ? 'active' : ''}`}
                 onClick={() => {
                   const emptyImg = { src: '', caption: '', position: 'center center', size: 'large', fit: 'cover', embedUrl: '' };
-                  // Ensure at least 2 images for carousel
                   const newImages = images.length >= 2 ? [...images] : [...images, ...Array.from({ length: 2 - images.length }, () => ({ ...emptyImg }))];
                   updateSlide(slideIndex, { imageDisplayMode: 'carousel', [field]: newImages });
                 }}
@@ -3277,17 +3275,32 @@ My instructions: `;
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 4L4 12l4 8M16 4l4 8-4 8" /><rect x="8" y="6" width="8" height="12" rx="1" /></svg>
               </button>
             </div>
+            {imageDisplayMode === 'carousel' && (
+              <>
+                <div className="dynamic-grid-divider" />
+                <span className="dynamic-grid-label">Fill</span>
+                <div className="dynamic-grid-buttons">
+                  <button
+                    type="button"
+                    className={`dynamic-grid-btn carousel-fit-global-btn${(slide[`${field}CarouselFit`] || 'cover') === 'cover' ? ' active' : ''}`}
+                    onClick={() => updateSlide(slideIndex, { [`${field}CarouselFit`]: 'cover' })}
+                    title="Fill — image crops to fill area"
+                  >Fill</button>
+                  <button
+                    type="button"
+                    className={`dynamic-grid-btn carousel-fit-global-btn${slide[`${field}CarouselFit`] === 'contain' ? ' active' : ''}`}
+                    onClick={() => updateSlide(slideIndex, { [`${field}CarouselFit`]: 'contain' })}
+                    title="Fit — show full image"
+                  >Fit</button>
+                </div>
+              </>
+            )}
           </div>
         )}
         {imageDisplayMode === 'carousel' && imageCount >= 2 ? (
           <>
             {editMode && (
               <div className="dynamic-carousel-settings">
-                <div className="carousel-settings-row">
-                  <span className="carousel-settings-label">Fit</span>
-                  <button type="button" className={`carousel-fit-btn${(slide[`${field}CarouselFit`] || 'cover') === 'cover' ? ' active' : ''}`} onClick={() => updateSlide(slideIndex, { [`${field}CarouselFit`]: 'cover' })}>Fill</button>
-                  <button type="button" className={`carousel-fit-btn${slide[`${field}CarouselFit`] === 'contain' ? ' active' : ''}`} onClick={() => updateSlide(slideIndex, { [`${field}CarouselFit`]: 'contain' })}>Fit</button>
-                </div>
                 <div className="carousel-settings-row">
                   <span className="carousel-settings-label">Speed</span>
                   <input
