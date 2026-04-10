@@ -1867,6 +1867,7 @@ body.case-study-active .footer {
 .outcomes-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 1fr;
   gap: 2rem;
   align-content: center;
 }
