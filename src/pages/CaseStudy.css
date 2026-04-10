@@ -258,7 +258,7 @@ body.case-study-active .footer {
 @media (min-width: 1920px) {
   .case-study {
     --slide-max-w: 1600px;
-    --slide-pad-x: 56px;
+    --slide-pad-x: 80px;
     --slide-pad-top: 200px;
     --slide-pad-bottom: 200px;
     --slide-gap: 160px;
