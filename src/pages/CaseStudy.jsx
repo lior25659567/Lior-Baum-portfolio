@@ -3067,8 +3067,8 @@ My instructions: `;
     if (isArray) {
       images = slide[field].map((img, i) => 
         typeof img === 'object' 
-          ? { position: 'center center', size: 'large', fit: 'cover', embedUrl: '', ...img } 
-          : { src: img, caption: slide.captions?.[i] || '', position: 'center center', size: 'large', fit: 'cover', embedUrl: '' }
+          ? { position: 'center center', size: 'large', fit: 'cover', wrapperBg: true, embedUrl: '', ...img }
+          : { src: img, caption: slide.captions?.[i] || '', position: 'center center', size: 'large', fit: 'cover', wrapperBg: true, embedUrl: '' }
       );
     } else if (slide[field] || slide[`${field}EmbedUrl`]) {
       const isVideoVal = slide[`${field}IsVideo`] || false;
@@ -3081,6 +3081,7 @@ My instructions: `;
         position: slide.imagePosition || 'center center',
         size: slide.imageSize || 'large',
         fit: slide.imageFit || 'cover',
+        wrapperBg: slide.imageWrapperBg !== undefined ? slide.imageWrapperBg : true,
         embedUrl: slide[`${field}EmbedUrl`] || '',
       }];
     }
@@ -3117,6 +3118,8 @@ My instructions: `;
             slideUpdates.imageSize = val;
           } else if (key === 'fit') {
             slideUpdates.imageFit = val;
+          } else if (key === 'wrapperBg') {
+            slideUpdates.imageWrapperBg = val;
           } else if (key === 'isVideo') {
             slideUpdates[`${field}IsVideo`] = val;
           } else if (key === 'isGif') {
@@ -3385,6 +3388,7 @@ My instructions: `;
             const position = imgData.position || 'center center';
             const imgSize = imgData.size || 'large';
             const imgFit = imgData.fit || 'cover';
+            const wrapperBg = imgData.wrapperBg !== undefined ? imgData.wrapperBg : true;
             
             // Size presets
             const sizePresets = [
@@ -3402,7 +3406,6 @@ My instructions: `;
             const isContain = imgFit === 'contain';
             // Inline styles for contain mode to guarantee no dark background/radius
             const wrapperContainStyle = isContain ? {
-              background: 'transparent',
               borderRadius: 0,
               overflow: 'visible',
               display: 'flex',
@@ -3425,7 +3428,7 @@ My instructions: `;
             return (
               <div 
                 key={imgIndex} 
-                className={`dynamic-image-item img-size-${imgSize} img-fit-${imgFit}`}
+                className={`dynamic-image-item img-size-${imgSize} img-fit-${imgFit}${!wrapperBg ? ' no-wrapper-bg' : ''}`}
               >
                 <div 
                   className={`dynamic-image-wrapper ${!editMode && (imgData.src || imgData.embedUrl) ? 'clickable' : ''} ${imgData.embedUrl ? 'has-embed' : ''}`}
@@ -3496,6 +3499,15 @@ My instructions: `;
                             title="Fit - shows entire media (may have gaps)"
                           >
                             Fit
+                          </button>
+                          <span className="fit-inline-divider" />
+                          <button
+                            type="button"
+                            className={`fit-inline-btn ${wrapperBg ? 'active' : ''}`}
+                            onClick={() => updateImage(imgIndex, 'wrapperBg', !wrapperBg)}
+                            title={wrapperBg ? 'Background on — click to remove' : 'Background off — click to add'}
+                          >
+                            BG
                           </button>
                         </div>
                       )}
@@ -3576,8 +3588,8 @@ My instructions: `;
                                 ))}
                               </div>
                             </div>
-                            
-                            <button 
+
+                            <button
                               className="settings-done-btn"
                               onClick={() => setActivePositionControl(null)}
                             >

@@ -2053,6 +2053,8 @@ body.case-study-active .footer {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  margin-top: auto;
+  padding-bottom: 1rem;
   margin-top: 2rem;
 }
 
@@ -3156,6 +3158,7 @@ body.case-study-active .footer {
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
+  border-radius: 16px;
 }
 
 .dynamic-image-wrapper {
@@ -3494,33 +3497,62 @@ body.case-study-active .footer {
   color: white;
 }
 
-/* Image fit styles - cover (fill) mode: no background wrapper visible */
-.dynamic-image-item.img-fit-cover .dynamic-image-wrapper {
+.fit-inline-divider {
+  width: 1px;
+  height: 1.2rem;
+  background: rgba(255, 255, 255, 0.25);
+  margin: 0 0.15rem;
+  align-self: center;
+}
+
+/* Wrapper background ON — add padding, radius, and center media */
+.dynamic-image-item:not(.no-wrapper-bg) .dynamic-image-wrapper {
+  border-radius: 16px;
+}
+
+.dynamic-image-item:not(.no-wrapper-bg) .dynamic-image-wrapper > img,
+.dynamic-image-item:not(.no-wrapper-bg) .dynamic-image-wrapper > video {
+  inset: 1.25rem 1.75rem;
+  width: calc(100% - 3.5rem);
+  height: calc(100% - 2.5rem);
+  object-fit: contain;
+  object-position: center;
+  border-radius: 16px;
+}
+
+/* No wrapper background — user toggled BG off */
+.dynamic-image-item.no-wrapper-bg .dynamic-image-wrapper {
   background: transparent;
 }
 
 /* Image fit styles - contain mode: natural sizing so img box = visible content */
 .dynamic-image-item.img-fit-contain .dynamic-image-wrapper {
-  background: transparent;
-  border-radius: 0;
-  overflow: visible;
+  border-radius: 16px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  padding: 1.25rem 1.75rem;
 }
 
 .dynamic-image-item.img-fit-contain .dynamic-image-wrapper img,
 .dynamic-image-item.img-fit-contain .dynamic-image-wrapper video {
   position: relative;
-  top: auto;
-  left: auto;
+  inset: unset;
   width: auto;
   height: auto;
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  border-radius: 12px;
+  border-radius: 8px;
+}
+
+/* Contain mode WITHOUT wrapper bg — no padding, no bg radius */
+.dynamic-image-item.img-fit-contain.no-wrapper-bg .dynamic-image-wrapper {
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+  padding: 0;
 }
 
 /* Global image fit styles for all slides - natural sizing, radius on image itself */
