@@ -29,8 +29,8 @@
 
 .animated-btn.outline:hover,
 .animated-btn.secondary:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  border-color: var(--color-text);
+  color: var(--color-text);
 }
 
 .btn-inner {
