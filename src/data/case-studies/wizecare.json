@@ -1,0 +1,256 @@
+{
+  "dataVersion": 1,
+  "title": "WizeCare",
+  "subtitle": "Digitizing Home Physical Therapy",
+  "category": "MedTech / Tele-Health",
+  "year": "2023",
+  "color": "#6B5CE7",
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Home Physical\nTherapy Platform",
+      "description": "WizeCare lets physiotherapists deliver treatment remotely. The clinical tools were there — but the platform was too complex to use under real clinical pressure.",
+      "clientLabel": "Client",
+      "client": "WizeCare",
+      "focusLabel": "Platform",
+      "focus": "Desktop Dashboard (B2B SaaS)",
+      "image": ""
+    },
+    {
+      "type": "info",
+      "title": "Project Overview",
+      "items": [
+        {
+          "label": "Client",
+          "value": "WizeCare"
+        },
+        {
+          "label": "Platform",
+          "value": "Desktop Dashboard (B2B SaaS)"
+        },
+        {
+          "label": "Industry",
+          "value": "MedTech / Tele-Health"
+        },
+        {
+          "label": "Role",
+          "value": "UX/UI Designer — Research, Workflow Design, Interaction Design, Prototyping"
+        }
+      ]
+    },
+    {
+      "type": "problem",
+      "label": "The Context",
+      "title": "Built for clinicians who don't have time to learn software",
+      "content": "WizeCare is used by physiotherapists managing patients remotely — under time pressure, with low tolerance for tools that slow them down.",
+      "highlight": "For WizeCare to succeed, the system needed to feel like a time-saver — not an extra task.",
+      "image": ""
+    },
+    {
+      "type": "issuesBreakdown",
+      "label": "The Problem",
+      "title": "The platform had the right tools. The experience let them down.",
+      "description": "Despite strong clinical functionality, adoption was low. The same three friction points came up across every user we spoke to.",
+      "issues": [
+        {
+          "number": "1",
+          "title": "Technology hesitation",
+          "description": "Digital workflows felt unfamiliar compared to manual routines"
+        },
+        {
+          "number": "2",
+          "title": "Too much at once",
+          "description": "Dense screens with no hierarchy left clinicians unsure where to start"
+        },
+        {
+          "number": "3",
+          "title": "Fragmented workflows",
+          "description": "Core tasks spread across multiple screens with no clear thread"
+        }
+      ]
+    },
+    {
+      "type": "quotes",
+      "label": "User Research",
+      "title": "What clinicians told us",
+      "content": "We visited clinics, ran interviews, and reviewed support tickets. The same frustrations came up again and again.",
+      "quotes": [
+        {
+          "text": "I spend more time navigating than managing my patients.",
+          "author": "Physiotherapist, Clinic A"
+        },
+        {
+          "text": "I never know which screen has what I need.",
+          "author": "Physiotherapist, Clinic B"
+        },
+        {
+          "text": "Editing a care plan takes so many steps — I avoid it when I can.",
+          "author": "Physiotherapist, Clinic C"
+        },
+        {
+          "text": "I still use paper notes because they're faster.",
+          "author": "Physiotherapist, Clinic D"
+        }
+      ],
+      "bullets": [],
+      "cardHeight": "100"
+    },
+    {
+      "type": "goals",
+      "label": "Design Goals",
+      "title": "Three workflows. One clear brief.",
+      "goals": [
+        {
+          "number": "1",
+          "title": "Cut the cognitive load",
+          "description": "Show only what clinicians need — nothing more."
+        },
+        {
+          "number": "2",
+          "title": "Make core actions obvious",
+          "description": "No hunting, no guessing — common tasks immediately reachable."
+        },
+        {
+          "number": "3",
+          "title": "Design for both ends of expertise",
+          "description": "New users need guidance. Experienced users need speed."
+        },
+        {
+          "number": "4",
+          "title": "Reduce reliance on support",
+          "description": "Self-explanatory enough that clinicians don't need to ask for help."
+        }
+      ],
+      "kpis": [
+        "Time to complete core tasks",
+        "Reduction in support requests",
+        "Daily active usage rate",
+        "Self-reported confidence score"
+      ],
+      "goalsCardsTitle": "Goals",
+      "gridColumns": 2,
+      "cardHeight": "100",
+      "kpisGridColumns": 4,
+      "showKpisSection": true
+    },
+    {
+      "type": "chapter",
+      "number": "01",
+      "title": "Patient Management",
+      "subtitle": "The first place clinicians land — and where they spent most of their time feeling lost."
+    },
+    {
+      "type": "comparison",
+      "slideMode": "before-after",
+      "switcherStyle": "pill",
+      "label": "Patient Management",
+      "title": "Finding patient information shouldn't be a search task",
+      "beforeImage": "",
+      "afterImage": "",
+      "beforeDescription": "Patient details, care plans, and adherence metrics were scattered with no clear structure.",
+      "afterDescription": "A single patient page brings everything together with a clear, predictable hierarchy.",
+      "beforeBullets": [
+        "Data split across multiple screens with no clear ownership",
+        "Unclear hierarchy made navigation unpredictable",
+        "Adherence metrics buried — hardest to find, most clinically useful"
+      ],
+      "afterBullets": [
+        "All patient information centralised in one view",
+        "Clear separation between info, plans, and progress",
+        "Adherence metrics surfaced as the primary clinical signal"
+      ],
+      "highlight": "Clinicians went from navigating between screens to finding everything in one place.",
+      "bulletStyle": "accent"
+    },
+    {
+      "type": "chapter",
+      "number": "02",
+      "title": "Care Plan Editing",
+      "subtitle": "The most frequent task in the platform — and the one with the most unnecessary steps."
+    },
+    {
+      "type": "comparison",
+      "slideMode": "before-after",
+      "switcherStyle": "pill",
+      "label": "Care Plan Editing",
+      "title": "Editing a plan shouldn't feel like a multi-screen journey",
+      "beforeImage": "",
+      "afterImage": "",
+      "beforeDescription": "Editing a care plan meant navigating 4–5 screens, losing context at every step.",
+      "afterDescription": "The entire editing flow now lives in one focused screen — inline, contextual, and fast.",
+      "beforeBullets": [
+        "4–5 screens to complete a single edit",
+        "Context lost every time a new screen loaded",
+        "Exercises in dense lists — easy to misread, hard to reorder"
+      ],
+      "afterBullets": [
+        "Single screen for the full editing flow",
+        "Exercises as modular, scannable cards",
+        "Inline editing — no modals, no page changes"
+      ],
+      "highlight": "Patient health data pinned throughout — always visible while editing."
+    },
+    {
+      "type": "chapter",
+      "number": "03",
+      "title": "Protocol Builder",
+      "subtitle": "Experienced physiotherapists build their own protocols — the old system gave them no way to do that."
+    },
+    {
+      "type": "comparison",
+      "slideMode": "before-after",
+      "switcherStyle": "pill",
+      "label": "Protocol Builder",
+      "title": "Expert users need a system that keeps up with them",
+      "beforeImage": "",
+      "afterImage": "",
+      "beforeDescription": "No real protocol creation flow. Expert clinicians were forced into rigid templates that didn't match how they work.",
+      "afterDescription": "A Kanban-style builder gives expert users full control — structured the way physiotherapists naturally think.",
+      "beforeBullets": [
+        "No dedicated protocol creation flow",
+        "Rigid templates didn't fit complex cases",
+        "No way to reorder or group exercises"
+      ],
+      "afterBullets": [
+        "Drag-and-drop Kanban builder",
+        "Exercise library left, treatment board right",
+        "Same card system as care plan editor — familiar from day one"
+      ],
+      "highlight": "Reusing the card system across flows meant zero learning curve for the new builder."
+    },
+    {
+      "type": "outcomes",
+      "label": "Outcomes",
+      "title": "Less friction. More time for patients.",
+      "outcomes": [
+        {
+          "title": "10–15 min saved per patient",
+          "description": "Streamlined workflows meant less time navigating, more time on clinical decisions."
+        },
+        {
+          "title": "Fewer errors",
+          "description": "Clearer layouts and inline editing reduced misclicks \nand prescription mistakes."
+        },
+        {
+          "title": "Daily usage increased",
+          "description": "Clinicians who avoided the platform started using it as their primary tool."
+        },
+        {
+          "title": "Support requests dropped",
+          "description": "A self-explanatory system meant less dependence on training."
+        }
+      ],
+      "showNumbers": true,
+      "cardVariant": "default"
+    },
+    {
+      "type": "end",
+      "title": "Thank You",
+      "subtitle": "Designing systems that respect the people who use them.",
+      "cta": "Get in touch",
+      "linkedinUrl": "ijiji",
+      "phone": "sdsdsd",
+      "email": "sdsdsdsd"
+    }
+  ]
+}

@@ -19,6 +19,7 @@
           "position": "center center",
           "size": "medium",
           "fit": "contain",
+          "wrapperBg": false,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-PHN2ZyB3aWR0.svg",
           "caption": "",
@@ -49,6 +50,7 @@
           "position": "center center",
           "size": "large",
           "fit": "cover",
+          "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-wvhziz51co.png",
           "caption": "",
@@ -80,8 +82,9 @@
           "position": "center center",
           "size": "large",
           "fit": "contain",
+          "wrapperBg": false,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-js52z59i8w.png",
+          "src": "/case-studies/itero-scan-workflow/img-ojnudsaui8.png",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -124,7 +127,8 @@
         }
       ],
       "bullets": [],
-      "cardHeight": "100"
+      "cardHeight": "100",
+      "cardVariant": "default"
     },
     {
       "type": "goals",
@@ -162,7 +166,8 @@
       "gridColumns": 2,
       "cardHeight": "100",
       "kpisGridColumns": 4,
-      "showKpisSection": true
+      "showKpisSection": true,
+      "cardVariant": "default"
     },
     {
       "type": "textAndImage",
@@ -179,12 +184,22 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "contain",
+          "fit": "cover",
+          "wrapperBg": false,
           "embedUrl": "",
-          "src": "",
+          "src": "/case-studies/itero-scan-workflow/img-d49102m1c.webp",
           "caption": "Interactive prototype built with Claude Code",
           "isVideo": false,
           "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "",
+          "caption": ""
         }
       ],
       "splitRatio": 40,
@@ -207,28 +222,9 @@
           "position": "center center",
           "size": "large",
           "fit": "cover",
+          "wrapperBg": false,
           "embedUrl": "",
-          "src": "",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "embedUrl": "",
-          "src": "[[MEDIA]]",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "embedUrl": "",
-          "src": "[[MEDIA]]",
+          "src": "/case-studies/itero-scan-workflow/img-uykask3eo.png",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -238,39 +234,30 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "cover",
+          "fit": "contain",
+          "wrapperBg": true,
           "embedUrl": "",
-          "src": "[[MEDIA]]",
+          "src": "/case-studies/itero-scan-workflow/img-xetn5q6zls.mp4",
           "caption": "",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "embedUrl": "",
-          "src": "[[MEDIA]]",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
+          "isVideo": true,
+          "embedType": "",
+          "isGif": false
         }
       ],
-      "beforeDescription": "Before scanning could even begin, users had to work through a rigid setup sequence — no shortcuts, no flexibility.",
-      "afterDescription": "The redesigned flow lets users start immediately and fill in context as they go.",
+      "beforeDescription": "A rigid setup sequence blocked users before scanning could even begin.",
+      "afterDescription": "Users start immediately and fill in context as they go.",
       "beforeBullets": [
-        "Selecting a patient required a multi-step modal — search, select, confirm",
-        "The procedure had to be defined before anything else could happen",
-        "Procedure selection was a dropdown with no connection to the dental chart — users had to recall terminology, not recognise it"
+        "Patient selection required a multi-step modal",
+        "Procedure had to be defined upfront — no flexibility",
+        "Dropdown selection disconnected from the dental chart"
       ],
       "afterBullets": [
-        "Patient selection is inline — no modal, no interruption",
-        "Patient context stays visible throughout the flow",
-        "Procedure selection is visual and tied to teeth structure — the right choice is obvious at a glance",
-        "Users can start scanning without completing full setup first"
+        "Inline patient selection — no modal, no interruption",
+        "Patient context stays visible throughout",
+        "Procedure selection visual and tied to teeth structure"
       ],
-      "gridCols": 3,
-      "imageDisplayMode": "carousel",
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
       "splitRatio": 30,
       "beforeImageCarouselInterval": 2000,
       "slideMode": "before-after",
@@ -287,30 +274,11 @@
           "size": "large",
           "fit": "contain",
           "embedUrl": "",
-          "src": "",
-          "caption": "Old tooth diagram — no color coding, no multi-select",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "embedUrl": "",
-          "src": "[[MEDIA]]",
-          "caption": "Clicking a tooth triggers a blocking modal for every single tooth",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "embedUrl": "",
-          "src": "[[MEDIA]]",
-          "caption": "Procedure assigned via dropdown with no visual connection to the chart",
-          "isVideo": false,
-          "embedType": ""
+          "src": "/case-studies/itero-scan-workflow/img-xetn5q6zls.mp4",
+          "caption": "",
+          "isVideo": true,
+          "embedType": "",
+          "isGif": false
         }
       ],
       "afterImage": [
@@ -319,51 +287,29 @@
           "size": "large",
           "fit": "contain",
           "embedUrl": "",
-          "src": "[[MEDIA]]",
-          "caption": "New visual chart — select one or many teeth, assign procedure inline",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "embedUrl": "",
-          "src": "[[MEDIA]]",
-          "caption": "Color-coded procedures visible directly on the chart",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "embedUrl": "",
-          "src": "[[MEDIA]]",
-          "caption": "Multiple procedure groups managed in a single view",
-          "isVideo": false,
-          "embedType": ""
+          "src": "/case-studies/itero-scan-workflow/img-xetn5q6zls.mp4",
+          "caption": "",
+          "isVideo": true,
+          "embedType": "",
+          "isGif": false
         }
       ],
-      "beforeDescription": "Every tooth required its own modal interaction — click, confirm, close, repeat. There was no way to see the full picture or assign procedures to multiple teeth at once.",
-      "afterDescription": "Teeth are selected directly on the chart — individually or in groups — and procedures are assigned inline with color coding that makes the full treatment plan visible at a glance.",
+      "beforeDescription": "Every tooth required its own modal — click, confirm, close, repeat. No overview, no multi-select.",
+      "afterDescription": "Teeth selected directly on the chart, individually or in groups, with procedures assigned inline.",
       "beforeBullets": [
-        "Clicking any tooth triggered a blocking modal — one tooth at a time",
-        "No multi-select — every tooth required a separate interaction",
-        "No color coding — the chart gave no clinical overview",
-        "Complex treatment plans required many repetitive steps"
+        "One modal per tooth — no multi-select",
+        "No color coding — no clinical overview",
+        "Complex cases required many repetitive steps"
       ],
       "afterBullets": [
-        "Select one tooth or many — the chart responds instantly",
-        "Procedures assigned inline with color-coded pills per type",
-        "Full treatment plan visible on the chart without opening anything",
-        "Multiple procedure groups managed in a single organised view",
-        "Far fewer steps to set up even the most complex cases"
+        "Select one tooth or many in a single interaction",
+        "Color-coded procedures visible directly on the chart",
+        "Multiple procedure groups managed in one view"
       ],
       "slideMode": "before-after",
       "switcherStyle": "pill",
-      "gridCols": 3,
-      "imageDisplayMode": "carousel",
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
       "splitRatio": 30
     },
     {
@@ -376,8 +322,41 @@
       "type": "comparison",
       "label": "Scan Icons",
       "title": "If users can't read the tools, they can't trust them",
-      "beforeImage": "",
-      "afterImage": "",
+      "beforeImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-4tciq01xc0.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "afterImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-t3sgtn400.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "",
+          "caption": ""
+        }
+      ],
       "beforeDescription": "Icons had accumulated over time from different sources with no shared style or logic — each one a one-off decision, none of them part of a system.",
       "afterDescription": "A unified icon set where every tool speaks the same visual language — designed to be recognised instantly, not memorised.",
       "beforeBullets": [
@@ -391,13 +370,28 @@
         "Each icon maps clearly to its action — no guessing required",
         "Visual consistency lets users scan the toolbar without thinking",
         "Scalable system — new icons follow the same rules automatically"
-      ]
+      ],
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
+      "splitRatio": 40
     },
     {
       "type": "comparison",
       "label": "Scan Toolbar",
       "title": "Clear icons needed a consistent place to live",
-      "beforeImage": "",
+      "beforeImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-c1djiu0kh0.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
       "afterImage": "",
       "beforeDescription": "Even with better icons, tools had no permanent home. As features grew, they scattered — leaving users with no pattern to rely on mid-scan.",
       "afterDescription": "A single collapsible toolbar gives every tool a fixed, predictable location — compact when focused, labelled when needed.",
@@ -412,7 +406,10 @@
         "Toolbar collapses to stay out of the way during active scanning",
         "Expanding reveals tool names, so nothing requires memorisation",
         "Scalable by design — new tools slot in without disrupting the layout"
-      ]
+      ],
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
+      "splitRatio": 40
     },
     {
       "type": "textAndImage",
@@ -470,7 +467,8 @@
       "outcomes": [
         {
           "title": "Faster to start",
-          "description": "Removing setup gates meant clinicians could begin scanning the moment they were ready — no sequence to complete first."
+          "description": "Removing setup gates meant clinicians could begin scanning the moment they were ready — no sequence to complete first.",
+          "metric": ""
         },
         {
           "title": "Scanning stayed unbroken",
