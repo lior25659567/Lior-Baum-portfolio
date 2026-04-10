@@ -86,8 +86,8 @@ export const slideTemplates = {
     label: 'Outcomes',
     title: 'Results & Learnings',
     outcomes: [
-      { title: 'Outcome 1', description: 'Description of this outcome.' },
-      { title: 'Outcome 2', description: 'Description of this outcome.' },
+      { title: 'Outcome 1', description: 'Description of this outcome.', metric: '' },
+      { title: 'Outcome 2', description: 'Description of this outcome.', metric: '' },
     ],
   },
   end: {

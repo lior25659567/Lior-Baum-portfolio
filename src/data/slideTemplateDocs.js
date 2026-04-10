@@ -625,22 +625,23 @@ export const slideTemplateDocs = {
   },
 
   outcomes: {
-    shortDescription: 'Results grid with numbered outcome cards, accent circles, and card variant support.',
-    purpose: 'Present qualitative outcomes and learnings in a structured card grid.',
-    whenToUse: 'When summarizing project outcomes, results, or key learnings that are more qualitative than quantitative.',
-    layoutDescription: 'Label and title at top, then a 2-column grid of outcome cards. Each card has an auto-numbered accent circle (01, 02...), title, and description. Cards use accent border with hover lift. Supports card variants and show/hide numbers.',
+    shortDescription: 'Results grid with numbered outcome cards, optional metrics, accent circles, and card variant support.',
+    purpose: 'Present outcomes and learnings with optional quantitative metrics in a structured card grid.',
+    whenToUse: 'When summarizing project outcomes, results, or key learnings — supports both qualitative descriptions and quantitative metrics (e.g. "40%", "3x", "10min").',
+    layoutDescription: 'Label and title at top, then a 2-column grid of outcome cards. Each card has an auto-numbered accent circle (01, 02...), an optional large metric number in accent color, title, and description. Cards use accent border with hover lift. Supports card variants and show/hide numbers.',
     mediaFields: [],
     requiredFields: ['outcomes'],
     optionalFields: ['label', 'title', 'highlight', 'cardVariant', 'showNumbers'],
     contentLimits: {
-      outcomes: { max: 6, recommended: '2-4 outcomes', note: 'Each outcome is { title, description }' },
+      outcomes: { max: 6, recommended: '2-4 outcomes', note: 'Each outcome is { title, description, metric? }. metric is optional — a short value like "40%", "3x", "↑60%", "10min".' },
     },
     aiSelectionHints: {
-      signals: ['outcomes', 'results', 'learnings', 'what we achieved', 'qualitative results'],
+      signals: ['outcomes', 'results', 'learnings', 'what we achieved', 'qualitative results', 'metrics', 'impact numbers'],
       priority: 4,
     },
     specialBehaviors: [
       'Outcome cards auto-numbered with accent-filled circles (01, 02, etc.)',
+      'Optional metric field renders as a large accent-colored number above the title (e.g. "40%", "3x")',
       'Cards match service card style: accent border, hover lift, title turns accent on hover',
       'cardVariant: "default", "minimal", or "clean"',
       'showNumbers: set to false to hide number circles',
@@ -650,8 +651,8 @@ export const slideTemplateDocs = {
       label: 'Outcomes',
       title: 'Results & Learnings',
       outcomes: [
-        { title: 'Faster workflows', description: 'Clinicians complete scans 40% faster with the new toolbar.' },
-        { title: 'Higher confidence', description: 'Reduced rescan rate indicates better first-try accuracy.' },
+        { title: 'Faster workflows', description: 'Clinicians complete scans 40% faster with the new toolbar.', metric: '40%' },
+        { title: 'Higher confidence', description: 'Reduced rescan rate indicates better first-try accuracy.', metric: '3x' },
       ],
     },
   },

@@ -4914,6 +4914,15 @@ My instructions: `;
                 {slide.outcomes.map((outcome, i) => (
                   <div key={i} className="outcome-item">
                       {slide.showNumbers !== false && <div className="outcome-number">{String(i + 1).padStart(2, '0')}</div>}
+                      {(outcome.metric || editMode) && (
+                        <div className="outcome-metric">
+                          <EditableField
+                            value={outcome.metric || ''}
+                            onChange={(v) => updateSlideItem(index, 'outcomes', i, { ...outcome, metric: v })}
+                            placeholder="e.g. 40% or 3x"
+                          />
+                        </div>
+                      )}
                       <h3 className="outcome-title">
                         <EditableField
                           value={outcome.title}

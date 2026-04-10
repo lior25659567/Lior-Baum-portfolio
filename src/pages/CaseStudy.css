@@ -1930,6 +1930,20 @@ body.case-study-active .footer {
   }
 }
 
+.outcome-metric {
+  font-family: var(--font-body);
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-accent);
+  margin: 0 0 var(--spacing-sm);
+  transition: transform var(--transition-medium);
+}
+
+.outcome-item:hover .outcome-metric {
+  transform: scale(1.05);
+}
+
 .outcome-title {
   font-family: var(--font-body);
   font-size: clamp(1.1rem, 2.2vw, 1.4rem);
