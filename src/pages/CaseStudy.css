@@ -6090,7 +6090,8 @@ textarea.editable-field {
   justify-content: center;
 }
 
-.dynamic-carousel-slide img {
+.dynamic-carousel-slide img,
+.dynamic-carousel-slide video {
   width: 100%;
   height: 100%;
   object-fit: cover;

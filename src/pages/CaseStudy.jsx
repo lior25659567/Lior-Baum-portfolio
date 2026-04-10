@@ -3315,7 +3315,11 @@ My instructions: `;
                     <div key={imgIndex} className={`dynamic-carousel-slide${isContain ? ' carousel-fit-contain' : ''}`}>
                       {imgData.src ? (
                         <>
-                          <img src={imgData.src} alt={`Image ${imgIndex + 1}`} style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }} onClick={() => !editMode && setLightboxImage && setLightboxImage(imgData.src)} />
+                          {imgData.isVideo ? (
+                            <video src={imgData.src} autoPlay loop muted playsInline style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }} />
+                          ) : (
+                            <img src={imgData.src} alt={`Image ${imgIndex + 1}`} style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }} onClick={() => !editMode && setLightboxImage && setLightboxImage(imgData.src)} />
+                          )}
                           {editMode && (
                             <div className="carousel-slide-edit-controls">
                               <button type="button" className="carousel-slide-replace" onClick={(e) => { e.stopPropagation(); handleDynamicImageUpload(imgIndex); }}>Replace</button>
