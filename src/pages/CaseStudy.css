@@ -2871,25 +2871,27 @@ body.case-study-active .footer {
   color: var(--color-text-muted);
 }
 
-/* Accent dot style (default) */
+/* Accent square style (default) */
 .dynamic-bullets .bullet-list li::before {
   content: '';
   position: absolute;
   left: 0;
   top: 0.55em;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
   background: var(--color-accent);
 }
 
-/* Minimal square style */
+/* Minimal gray square style */
 .dynamic-bullets[data-bullet-style="minimal"] .bullet-list li::before {
-  border-radius: 1px;
   background: var(--color-text-muted);
   opacity: 0.35;
-  width: 5px;
-  height: 5px;
+}
+
+/* Dark square style */
+.dynamic-bullets[data-bullet-style="dark"] .bullet-list li::before {
+  background: var(--color-text);
 }
 
 /* Bullet style toggle control */
@@ -2921,9 +2923,9 @@ body.case-study-active .footer {
 }
 
 .accent-preview {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
   background: var(--color-accent);
 }
 
@@ -2933,6 +2935,13 @@ body.case-study-active .footer {
   border-radius: 1px;
   background: var(--color-text-muted);
   opacity: 0.4;
+}
+
+.dark-preview {
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: var(--color-text);
 }
 
 /* Edit controls */
