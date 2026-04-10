@@ -1,6 +1,6 @@
 {
   "dataVersion": 4,
-  "title": "iTero\nScan Experience",
+  "title": "Clinical Scanning\nWorkflow",
   "subtitle": "Redesigning the clinical scanning workflow to improve speed, clarity, and decision-making in real treatment conditions.",
   "category": "Clinical Workflow Redesign",
   "year": "2024",
@@ -8,8 +8,8 @@
   "slides": [
     {
       "type": "intro",
-      "title": "iTero Clinical Workflow",
-      "description": "Redesigning the experience from RX to Scan to View into a continuous system that supports real-time decision making during patient treatment.",
+      "title": "Clinical Scanning\nWorkflow",
+      "description": "Align Technology powers digital dentistry chair-side. Their scanning workflow — RX, Scan, and View — had friction at every phase. We redesigned all three into one continuous system.",
       "clientLabel": "Client",
       "client": "Align Technology",
       "focusLabel": "Focus",
@@ -17,7 +17,7 @@
       "image": [
         {
           "position": "center center",
-          "size": "large",
+          "size": "medium",
           "fit": "contain",
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-PHN2ZyB3aWR0.svg",
@@ -33,14 +33,15 @@
     },
     {
       "type": "textAndImage",
-      "label": "Context",
+      "label": "The System",
       "title": "A system used during live treatment",
       "content": "iTero is used while the patient is in the chair. The workflow moves through three connected phases — RX (setup), Scan (capture), and View (validation). Decisions in each phase directly affect the next.",
+      "issuesTitle": "The three phases",
       "issues": [
         "RX → define patient and procedure",
         "Scan → capture data in real-time",
         "View → validate and confirm results",
-        "Breakdowns impact the full workflow"
+        "Breakdowns in any phase impact the full workflow"
       ],
       "bullets2": [],
       "image": [
@@ -55,21 +56,24 @@
           "embedType": ""
         }
       ],
-      "splitRatio": 30
+      "splitRatio": 30,
+      "slideMode": "simple",
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
     },
     {
       "type": "textAndImage",
-      "label": "Problem",
-      "title": "When system growth breaks flow",
-      "content": "Over time, the system evolved feature by feature without a unified interaction logic. RX, Scan, and View became disconnected, creating friction across the workflow.",
-      "issuesTitle": "Core problems",
+      "label": "The Problem",
+      "title": "The system grew. The experience didn't.",
+      "content": "RX, Scan, and View were built up over time — each piece added without a shared logic connecting them. What should feel like one continuous workflow became three separate systems stitched together.",
+      "issuesTitle": "Where it broke down",
       "issues": [
-        "RX blocks users before they can start scanning",
-        "Procedure and tooth selection require mental effort",
-        "Scanning is interrupted by tool interaction",
-        "Tool feedback is unclear and requires interpretation",
-        "Validation is not explicit, leading to repeated checks",
-        "Users lose flow and confidence during the process"
+        "Setup blocks users before they can start scanning",
+        "Procedure and tooth selection require too much mental effort",
+        "Scanning stops every time a tool needs adjusting",
+        "Tool feedback is unclear — users can't tell if it worked",
+        "Nothing signals when a scan is actually complete",
+        "Users lose confidence and fall out of flow"
       ],
       "image": [
         {
@@ -83,36 +87,39 @@
           "embedType": ""
         }
       ],
-      "splitRatio": 30
+      "splitRatio": 30,
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
+      "imageCarouselInterval": 1500
     },
     {
       "type": "quotes",
-      "label": "Research",
-      "title": "From system issues to real behavior",
-      "content": "To understand the problem , we observed clinicians during live sessions \nand conducted interviews. ",
+      "label": "User Research",
+      "title": "What we heard in the room",
+      "content": "We observed clinicians during live scanning sessions and followed up with interviews. The same frustrations came up again and again — not as complaints about the software, but as accepted parts of the workflow.",
       "quotes": [
         {
           "text": "The patient popup interrupts me before I even start.",
           "author": "Dr. Yael Levi"
         },
         {
-          "text": "I change the procedure multiple times before scanning.",
+          "text": "I change the procedure multiple times before I even begin scanning.",
           "author": "Dr. Amir Cohen"
         },
         {
-          "text": "If I look for tools, I lose my rhythm completely.",
+          "text": "The moment I go looking for a tool, I lose my rhythm completely.",
           "author": "Dr. Noa Ben-David"
         },
         {
-          "text": "I don’t trust the result immediately.",
+          "text": "I never fully trust the result the first time I see it.",
           "author": "Dr. Efrat Mizrahi"
         },
         {
-          "text": "I keep checking even after finishing.",
+          "text": "Even when I'm done, I keep going back to check.",
           "author": "Dr. Daniel Katz"
         },
         {
-          "text": "Tooth selection is confusing to map.",
+          "text": "I never know if I'm selecting the right tooth.",
           "author": "Dr. Lior Haddad"
         }
       ],
@@ -121,35 +128,35 @@
     },
     {
       "type": "goals",
-      "label": "Goals",
-      "title": "Translating friction into measurable improvements",
+      "label": "Design Goals",
+      "title": "Four problems. Four things to get right.",
       "goals": [
         {
           "number": "1",
-          "title": "Enable immediate case start",
-          "description": "Remove blocking steps in RX and reduce setup time"
+          "title": "Let clinicians start without friction",
+          "description": "Remove the setup gates that block users before a scan can even begin."
         },
         {
           "number": "2",
-          "title": "Support continuous scanning flow",
-          "description": "Minimize interruptions and tool-related friction during scan"
+          "title": "Keep the scanning motion unbroken",
+          "description": "Stop the interface from interrupting the physical act of scanning."
         },
         {
           "number": "3",
-          "title": "Improve clarity of tools and states",
-          "description": "Make actions and outcomes instantly understandable"
+          "title": "Make every tool and state self-explanatory",
+          "description": "Clarity should be built in — not something users figure out over time."
         },
         {
           "number": "4",
-          "title": "Strengthen validation confidence",
-          "description": "Reduce need for repeated checks in View"
+          "title": "Make results feel trustworthy on first view",
+          "description": "Give users a clear signal that the scan is done, so they don't have to keep checking."
         }
       ],
       "kpis": [
-        "Time to first scan action (RX → Scan start)",
-        "Scan completion time per case",
-        "Rescan rate / repeated scan actions",
-        "User-reported confidence in scan completion"
+        "Time from RX entry to first scan action",
+        "Number of tool interactions mid-scan",
+        "Rescan rate per case",
+        "Self-reported confidence in scan result"
       ],
       "goalsCardsTitle": "Goals",
       "gridColumns": 2,
@@ -158,249 +165,324 @@
       "showKpisSection": true
     },
     {
-      "type": "process",
-      "label": "Process",
-      "title": "From system analysis to real-world validation",
-      "steps": [
+      "type": "textAndImage",
+      "label": "Interactive Prototype",
+      "title": "Testing decisions before they became real",
+      "content": "We built a fully interactive prototype using Claude Code to simulate the real scanning workflow — testing design decisions under realistic clinical conditions before anything went to development.",
+      "bullets2Title": "What this enabled",
+      "bullets2": [
+        "Real workflow simulation, not just static screens",
+        "Friction points caught before development began",
+        "Changes tested the same day they were made"
+      ],
+      "image": [
         {
-          "number": "01",
-          "title": "Map the system",
-          "description": "Analyzed the full journey (RX → Scan → View) to understand how flows, tools, and decisions are connected"
-        },
-        {
-          "number": "02",
-          "title": "Audit real friction",
-          "description": "Identified where users hesitate, stop, or repeat actions by observing real clinical behavior"
-        },
-        {
-          "number": "03",
-          "title": "Redefine interaction logic",
-          "description": "Restructured the experience from isolated screens into a continuous, state-driven system"
-        },
-        {
-          "number": "04",
-          "title": "Prototype with Cursor",
-          "description": "Built interactive prototypes to simulate real scanning workflows and test behavior, not just UI"
-        },
-        {
-          "number": "05",
-          "title": "Test & iterate",
-          "description": "Validated decisions with clinicians and refined flows based on real usage patterns"
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "",
+          "caption": "Interactive prototype built with Claude Code",
+          "isVideo": false,
+          "embedType": ""
         }
       ],
-      "cardHeight": "100"
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
+      "imageCarouselInterval": 1500
     },
     {
       "type": "chapter",
       "number": "01",
       "title": "RX",
-      "subtitle": "Fixing the first breakdown"
+      "subtitle": "The prescription step where clinicians define the patient, procedure, and case details before scanning begins."
     },
     {
       "type": "comparison",
-      "label": "RX Entry Flow",
-      "title": "From \nblocking setup to continuous entry",
+      "label": "RX Setup",
+      "title": "Getting started shouldn't feel like a form",
+      "beforeImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "embedUrl": "",
+          "src": "",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "afterImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "beforeDescription": "Before scanning could even begin, users had to work through a rigid setup sequence — no shortcuts, no flexibility.",
+      "afterDescription": "The redesigned flow lets users start immediately and fill in context as they go.",
+      "beforeBullets": [
+        "Selecting a patient required a multi-step modal — search, select, confirm",
+        "The procedure had to be defined before anything else could happen",
+        "Procedure selection was a dropdown with no connection to the dental chart — users had to recall terminology, not recognise it"
+      ],
+      "afterBullets": [
+        "Patient selection is inline — no modal, no interruption",
+        "Patient context stays visible throughout the flow",
+        "Procedure selection is visual and tied to teeth structure — the right choice is obvious at a glance",
+        "Users can start scanning without completing full setup first"
+      ],
+      "gridCols": 3,
+      "imageDisplayMode": "carousel",
+      "splitRatio": 30,
+      "beforeImageCarouselInterval": 2000,
+      "slideMode": "before-after",
+      "switcherStyle": "pill",
+      "beforeImageCarouselFit": "contain"
+    },
+    {
+      "type": "comparison",
+      "label": "RX Tooth Selection",
+      "title": "Selecting teeth should be as fast as pointing at them",
       "beforeImage": [
         {
           "position": "center center",
           "size": "large",
           "fit": "contain",
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-9gb9xiaoyc.png",
+          "src": "",
+          "caption": "Old tooth diagram — no color coding, no multi-select",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Clicking a tooth triggers a blocking modal for every single tooth",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Procedure assigned via dropdown with no visual connection to the chart",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "afterImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "New visual chart — select one or many teeth, assign procedure inline",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Color-coded procedures visible directly on the chart",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Multiple procedure groups managed in a single view",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "beforeDescription": "Every tooth required its own modal interaction — click, confirm, close, repeat. There was no way to see the full picture or assign procedures to multiple teeth at once.",
+      "afterDescription": "Teeth are selected directly on the chart — individually or in groups — and procedures are assigned inline with color coding that makes the full treatment plan visible at a glance.",
+      "beforeBullets": [
+        "Clicking any tooth triggered a blocking modal — one tooth at a time",
+        "No multi-select — every tooth required a separate interaction",
+        "No color coding — the chart gave no clinical overview",
+        "Complex treatment plans required many repetitive steps"
+      ],
+      "afterBullets": [
+        "Select one tooth or many — the chart responds instantly",
+        "Procedures assigned inline with color-coded pills per type",
+        "Full treatment plan visible on the chart without opening anything",
+        "Multiple procedure groups managed in a single organised view",
+        "Far fewer steps to set up even the most complex cases"
+      ],
+      "slideMode": "before-after",
+      "switcherStyle": "pill",
+      "gridCols": 3,
+      "imageDisplayMode": "carousel",
+      "splitRatio": 30
+    },
+    {
+      "type": "chapter",
+      "number": "02",
+      "title": "Scan & View",
+      "subtitle": "The active phase where clinicians capture a 3D model in real time — then step back to analyse, validate, and make decisions before anything reaches the lab."
+    },
+    {
+      "type": "comparison",
+      "label": "Scan Icons",
+      "title": "If users can't read the tools, they can't trust them",
+      "beforeImage": "",
+      "afterImage": "",
+      "beforeDescription": "Icons had accumulated over time from different sources with no shared style or logic — each one a one-off decision, none of them part of a system.",
+      "afterDescription": "A unified icon set where every tool speaks the same visual language — designed to be recognised instantly, not memorised.",
+      "beforeBullets": [
+        "Icons sourced from different styles with no shared visual language",
+        "No design guidelines — every new icon was an isolated decision",
+        "Similar actions looked different, breaking user expectations",
+        "Users had to learn each icon individually rather than read them intuitively"
+      ],
+      "afterBullets": [
+        "Unified icon set built on a single consistent style",
+        "Each icon maps clearly to its action — no guessing required",
+        "Visual consistency lets users scan the toolbar without thinking",
+        "Scalable system — new icons follow the same rules automatically"
+      ]
+    },
+    {
+      "type": "comparison",
+      "label": "Scan Toolbar",
+      "title": "Clear icons needed a consistent place to live",
+      "beforeImage": "",
+      "afterImage": "",
+      "beforeDescription": "Even with better icons, tools had no permanent home. As features grew, they scattered — leaving users with no pattern to rely on mid-scan.",
+      "afterDescription": "A single collapsible toolbar gives every tool a fixed, predictable location — compact when focused, labelled when needed.",
+      "beforeBullets": [
+        "No dedicated place for tools — each lived somewhere different",
+        "Every new feature added more scatter with no system behind it",
+        "Users had no pattern to rely on, so every scan required relearning",
+        "Searching mid-action broke physical rhythm and focus"
+      ],
+      "afterBullets": [
+        "All tools live in one centralised toolbar — always in the same place",
+        "Toolbar collapses to stay out of the way during active scanning",
+        "Expanding reveals tool names, so nothing requires memorisation",
+        "Scalable by design — new tools slot in without disrupting the layout"
+      ]
+    },
+    {
+      "type": "textAndImage",
+      "label": "Multi-scan & Compare",
+      "title": "Managing multiple scans — and comparing them",
+      "content": "Clinicians capture pre-treatment, post-treatment, and additional references — then need to compare them. Tabs let them switch between scans without losing context. The multi-layer panel lets them overlay those scans and adjust opacity to see differences instantly.",
+      "bullets2Title": "What this unlocked",
+      "bullets2": [
+        "Add and switch between scans within one session",
+        "Full context preserved across every tab",
+        "Overlay scans and adjust opacity in real time",
+        "Comparison becomes visual, not mental"
+      ],
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
           "caption": "",
           "isVideo": false,
           "embedType": ""
         }
       ],
-      "afterImage": "",
-      "beforeDescription": "The system forced users into a rigid sequence before allowing them to start scanning.",
-      "afterDescription": "The redesigned flow removes blocking steps and enables immediate action.",
-      "beforeBullets": [
-        "Patient selection requires modal interaction",
-        "Search → select → confirm interrupts flow",
-        "Procedure must be defined upfront",
-        "No persistent context after selection"
-      ],
-      "afterBullets": [
-        "Inline patient selection",
-        "Persistent patient visibility",
-        "Flexible start without full setup",
-        "Seamless transition into scan"
-      ],
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid",
-      "splitRatio": 30
+      "imageCarouselInterval": 1500
     },
     {
       "type": "comparison",
-      "label": "Procedure Selection",
-      "title": "From abstract selection to clear decisions",
+      "label": "View Tools",
+      "title": "From icon bars to clinical decision panels",
       "beforeImage": "",
       "afterImage": "",
-      "beforeDescription": "Users relied on dropdowns disconnected from the clinical context.",
-      "afterDescription": "Visual selection reduces cognitive effort and speeds decisions.",
+      "beforeDescription": "Tools were small icon clusters with no labels, no hierarchy, and no clinical context. Every tool looked and behaved differently — there was no pattern to learn and no clear primary action.",
+      "afterDescription": "Each tool became a named panel with one clear primary action and secondary options below it. Consistent structure across all tools means doctors build muscle memory fast.",
       "beforeBullets": [
-        "Dropdown-based procedure selection",
-        "No relation to teeth structure",
-        "Requires remembering terminology",
-        "Frequent switching between options"
+        "Small unlabelled icons — meaning had to be memorised",
+        "No visual hierarchy — all actions carried equal weight",
+        "Destructive actions sat alongside primary ones with no separation"
       ],
       "afterBullets": [
-        "Visual procedure cards",
-        "Clear grouping of options",
-        "Immediate understanding",
-        "Reduced back-and-forth"
-      ]
-    },
-    {
-      "type": "chapter",
-      "number": "02",
-      "title": "Scan",
-      "subtitle": "Supporting real-time interaction"
-    },
-    {
-      "type": "comparison",
-      "label": "Scan Flow",
-      "title": "From interruption to continuity",
-      "beforeImage": "",
-      "afterImage": "",
-      "beforeDescription": "Users needed to stop scanning to interact with UI elements.",
-      "afterDescription": "The system now supports continuous scanning without interruption.",
-      "beforeBullets": [
-        "Tools spread across interface",
-        "Users search mid-action",
-        "Breaks physical motion",
-        "High cognitive load"
-      ],
-      "afterBullets": [
-        "Centralized toolbar",
-        "Predictable layout",
-        "Minimal interaction needed",
-        "Continuous motion supported"
-      ]
-    },
-    {
-      "type": "comparison",
-      "label": "Tools",
-      "title": "From manual control to guided interaction",
-      "beforeImage": "",
-      "afterImage": "",
-      "beforeDescription": "Tools required manual adjustments and interpretation.",
-      "afterDescription": "Tools now guide decisions with clear feedback.",
-      "beforeBullets": [
-        "Trial-and-error usage",
-        "Manual adjustments required",
-        "Unclear output",
-        "Slows workflow"
-      ],
-      "afterBullets": [
-        "Guided interactions",
-        "Clear feedback states",
-        "Reduced repeated actions",
-        "Faster decision making"
-      ]
-    },
-    {
-      "type": "textAndImage",
-      "label": "Scan Flexibility",
-      "title": "Adding flexibility without breaking flow",
-      "content": "Tabs were introduced to allow switching between scan contexts without leaving the main interaction. This provides flexibility while maintaining continuity.",
-      "issues": [
-        "Switch scan contexts",
-        "Maintain workflow continuity",
-        "Avoid screen transitions",
-        "Keep context visible"
-      ],
-      "image": [
-        {
-          "src": "",
-          "caption": "Tabs-based scan interaction"
-        }
-      ]
-    },
-    {
-      "type": "chapter",
-      "number": "03",
-      "title": "View",
-      "subtitle": "Enabling confident decisions"
-    },
-    {
-      "type": "comparison",
-      "label": "Validation",
-      "title": "From uncertainty to confidence",
-      "beforeImage": "",
-      "afterImage": "",
-      "beforeDescription": "Users relied on repeated checks to validate results.",
-      "afterDescription": "The system now clearly communicates completion and quality.",
-      "beforeBullets": [
-        "No clear completion signal",
-        "Static visualization",
-        "Hard to compare scans",
-        "Users re-check repeatedly"
-      ],
-      "afterBullets": [
-        "Clear validation structure",
-        "Improved visual feedback",
-        "Better comparison tools",
-        "Higher confidence"
-      ]
-    },
-    {
-      "type": "textAndImage",
-      "label": "Multi-layer",
-      "title": "Making differences visible",
-      "content": "The multi-layer panel allows users to overlay scans and adjust opacity, turning comparison into a visual, immediate action instead of a mental task.",
-      "issues": [
-        "Toggle between layers",
-        "Adjust opacity",
-        "Compare treatment vs reference",
-        "Understand differences instantly"
-      ],
-      "image": [
-        {
-          "src": "",
-          "caption": "Multi-layer comparison panel"
-        }
-      ]
-    },
-    {
-      "type": "textAndImage",
-      "label": "Prototyping",
-      "title": "Testing real behavior, not just UI",
-      "content": "We built interactive prototypes using Cursor to simulate real workflows. This allowed us to test decisions under realistic conditions and iterate quickly.",
-      "issues": [
-        "Simulated real scanning scenarios",
-        "Enabled fast iteration",
-        "Tested behavior, not visuals",
-        "Validated with clinicians"
-      ],
-      "image": [
-        {
-          "src": "",
-          "caption": "Cursor-based prototype"
-        }
+        "Named panels with a single bold primary CTA per tool",
+        "AI detect is the default action — doctors review, not draw",
+        "Destructive actions visually separated and clearly secondary",
+        "Consistent card structure across all tools builds muscle memory"
       ]
     },
     {
       "type": "outcomes",
-      "label": "Impact",
-      "title": "Aligning the system with behavior",
+      "label": "Outcomes",
+      "title": "Four friction points. Four things that got better.",
       "outcomes": [
         {
-          "title": "Faster setup",
-          "description": "Reduced time to start scanning"
+          "title": "Faster to start",
+          "description": "Removing setup gates meant clinicians could begin scanning the moment they were ready — no sequence to complete first."
         },
         {
-          "title": "Continuous flow",
-          "description": "Less interruption during scanning"
+          "title": "Scanning stayed unbroken",
+          "description": "A consistent toolbar with a clear home for every tool meant doctors stopped searching mid-scan and stayed in physical flow."
         },
         {
-          "title": "Better clarity",
-          "description": "Improved understanding of tools and states"
+          "title": "Tools became readable",
+          "description": "Named panels with a single primary action replaced icon clusters — clinicians understood what to do without having to memorise anything."
         },
         {
-          "title": "Higher confidence",
-          "description": "Reduced need for repeated validation"
+          "title": "Results felt trustworthy",
+          "description": "Clear completion signals and visual scan comparison meant doctors stopped re-checking and started trusting what they saw the first time."
         }
       ],
       "showNumbers": true,
