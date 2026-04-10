@@ -4895,6 +4895,14 @@ My instructions: `;
             {slideControls}
             {titleSpacingControl}
             <CardVariantControl slide={slide} slideIndex={index} />
+            {editMode && (
+              <div className="outcomes-toggle-row">
+                <label className="outcomes-toggle-label">
+                  <input type="checkbox" checked={slide.showNumbers !== false} onChange={(e) => updateSlide(index, { showNumbers: e.target.checked })} />
+                  Show numbers
+                </label>
+              </div>
+            )}
             <div className="slide-inner">
               <span className="slide-label">
                 <EditableField
