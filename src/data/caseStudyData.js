@@ -95,6 +95,9 @@ export const slideTemplates = {
     title: 'Thank You',
     subtitle: 'Want to work together?',
     cta: 'Get in touch',
+    email: '',
+    phone: '',
+    linkedinUrl: '',
   },
 
   // === NEW TEMPLATES ===

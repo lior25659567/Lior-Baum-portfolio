@@ -664,11 +664,14 @@ export const slideTemplateDocs = {
     layoutDescription: 'Centered title, subtitle, and animated CTA buttons.',
     mediaFields: [],
     requiredFields: ['title'],
-    optionalFields: ['subtitle', 'cta', 'buttons'],
+    optionalFields: ['subtitle', 'cta', 'buttons', 'email', 'phone', 'linkedinUrl'],
     contentLimits: {
       title: { recommended: '1-3 words (e.g., "Thank You")' },
       subtitle: { recommended: '1 sentence' },
       buttons: { max: 3, note: 'Array of { text, link }' },
+      email: { note: 'Email address — renders as mailto link with envelope icon' },
+      phone: { note: 'Phone number — renders as tel link with phone icon' },
+      linkedinUrl: { note: 'Full LinkedIn URL — renders as clickable link with LinkedIn icon' },
     },
     aiSelectionHints: {
       signals: ['ending', 'thank you', 'conclusion', 'closing slide', 'contact'],
@@ -678,12 +681,17 @@ export const slideTemplateDocs = {
     specialBehaviors: [
       'Buttons render as animated CTA buttons',
       'Should always be the last slide',
+      'Contact info (email, phone, LinkedIn) shown below CTA buttons with icons',
+      'Each contact field is a clickable link (mailto, tel, external URL)',
     ],
     exampleUsage: {
       type: 'end',
       title: 'Thank You',
       subtitle: 'Want to work together?',
       cta: 'Get in touch',
+      email: 'lior@example.com',
+      phone: '+972 123 456 789',
+      linkedinUrl: 'https://linkedin.com/in/liorbaum',
     },
   },
 

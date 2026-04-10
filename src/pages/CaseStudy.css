@@ -2046,6 +2046,46 @@ body.case-study-active .footer {
   justify-content: center;
 }
 
+.end-contact-info {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.end-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: var(--text-body-sm);
+  transition: color 0.2s;
+}
+
+.end-contact-item:hover {
+  color: var(--color-accent);
+}
+
+.end-contact-item svg {
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.end-contact-item:hover svg {
+  opacity: 1;
+}
+
+.end-contact-linkedin svg {
+  opacity: 0.7;
+}
+
+.end-contact-value {
+  min-width: 60px;
+}
+
 /* Slide navigation: visible on hover at bottom, matches design system */
 .case-study-slides-wrapper {
   position: relative;
