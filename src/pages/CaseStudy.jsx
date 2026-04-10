@@ -896,6 +896,7 @@ const CaseStudy = () => {
   const [showSlideSorter, setShowSlideSorter] = useState(true); // slide sorter panel in edit mode
   const [dragState, setDragState] = useState({ dragging: null, over: null });
   const [editSlideJSON, setEditSlideJSON] = useState(null); // { index, text, error }
+  const [editFullJSON, setEditFullJSON] = useState(null); // { text, originalProject, error }
   const [cardStyle, setCardStyle] = useState(() => {
     try { return localStorage.getItem(`caseStudy_${projectId}_cardStyle`) || 'outlined'; } catch { return 'outlined'; }
   });
@@ -5625,6 +5626,19 @@ My instructions: `;
               <button className="builder-trigger" onClick={() => setShowBuilder(true)}>🚀 Build from Scratch</button>
               <button onClick={handleCopyJSON}>{saveStatus === 'copied' ? '✓ Copied!' : '📋 Copy JSON for ChatGPT'}</button>
               <button onClick={() => { setShowImportJSON(true); setImportJSONText(''); setImportError(''); }}>📥 Import JSON</button>
+              <button onClick={() => {
+                const stripForEdit = (obj) => {
+                  if (typeof obj === 'string' && obj.startsWith('data:')) return '[[MEDIA]]';
+                  if (Array.isArray(obj)) return obj.map(item => stripForEdit(item));
+                  if (obj && typeof obj === 'object') {
+                    const r = {};
+                    for (const k in obj) r[k] = stripForEdit(obj[k]);
+                    return r;
+                  }
+                  return obj;
+                };
+                setEditFullJSON({ text: JSON.stringify(stripForEdit(project), null, 2), originalProject: project, error: '' });
+              }}>{'{}'} Edit Full JSON</button>
               <select
                 className="card-style-select"
                 value={cardStyle}
@@ -6394,6 +6408,76 @@ My instructions: `;
                       setEditSlideJSON(null);
                     } catch (e) {
                       setEditSlideJSON(prev => ({ ...prev, error: `JSON parse error: ${e.message}` }));
+                    }
+                  }}
+                >
+                  Apply
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Full Project JSON Editor Modal */}
+      <AnimatePresence>
+        {editFullJSON && (
+          <motion.div
+            className="import-json-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setEditFullJSON(null)}
+          >
+            <motion.div
+              className="import-json-modal import-json-modal-full"
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="import-json-header">
+                <h2>Edit Full Case Study JSON</h2>
+                <p>Images are shown as [[MEDIA]] — they are preserved when you apply. Edit all slides at once.</p>
+                <button className="import-json-close" onClick={() => setEditFullJSON(null)}>×</button>
+              </div>
+              <div className="import-json-body">
+                <textarea
+                  className="import-json-textarea"
+                  value={editFullJSON.text}
+                  onChange={(e) => setEditFullJSON(prev => ({ ...prev, text: e.target.value, error: '' }))}
+                  rows={30}
+                  spellCheck={false}
+                />
+                {editFullJSON.error && <div className="import-json-error">{editFullJSON.error}</div>}
+              </div>
+              <div className="import-json-actions">
+                <button className="builder-btn secondary" onClick={() => setEditFullJSON(null)}>Cancel</button>
+                <button
+                  className="builder-btn primary"
+                  onClick={() => {
+                    try {
+                      const parsed = JSON.parse(editFullJSON.text);
+                      if (!parsed.slides || !Array.isArray(parsed.slides)) {
+                        setEditFullJSON(prev => ({ ...prev, error: 'JSON must have a "slides" array.' }));
+                        return;
+                      }
+                      const original = editFullJSON.originalProject;
+                      const restoreMedia = (edited, orig) => {
+                        if (edited === '[[MEDIA]]') return orig;
+                        if (Array.isArray(edited)) return edited.map((item, i) => restoreMedia(item, Array.isArray(orig) ? orig[i] : undefined));
+                        if (edited && typeof edited === 'object' && orig && typeof orig === 'object') {
+                          const r = {};
+                          for (const k in edited) r[k] = restoreMedia(edited[k], orig[k]);
+                          return r;
+                        }
+                        return edited;
+                      };
+                      const restored = restoreMedia(parsed, original);
+                      setProject(restored);
+                      setEditFullJSON(null);
+                    } catch (e) {
+                      setEditFullJSON(prev => ({ ...prev, error: `JSON parse error: ${e.message}` }));
                     }
                   }}
                 >

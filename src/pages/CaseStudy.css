@@ -4948,6 +4948,11 @@ body.case-study-active .footer {
   overflow: hidden;
 }
 
+.import-json-modal-full {
+  max-width: 900px;
+  max-height: 90vh;
+}
+
 .import-json-header {
   padding: 1.5rem 1.5rem 1rem;
   position: relative;
