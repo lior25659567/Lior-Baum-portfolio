@@ -2964,9 +2964,20 @@ My instructions: `;
     }
     
     const canAddMore = maxBullets === 0 || rawBullets.length < maxBullets;
-    
+    const bulletStyle = slide.bulletStyle || 'accent';
+
     return (
-      <div className={`dynamic-bullets ${className}`}>
+      <div className={`dynamic-bullets ${className}`} data-bullet-style={bulletStyle}>
+        {editMode && rawBullets.length > 0 && (
+          <div className="bullet-style-control">
+            <button type="button" className={`bullet-style-btn${bulletStyle === 'accent' ? ' active' : ''}`} onClick={() => doUpdate(slideIndex, { bulletStyle: 'accent' })} title="Accent dot">
+              <span className="bullet-style-preview accent-preview"></span>
+            </button>
+            <button type="button" className={`bullet-style-btn${bulletStyle === 'minimal' ? ' active' : ''}`} onClick={() => doUpdate(slideIndex, { bulletStyle: 'minimal' })} title="Minimal square">
+              <span className="bullet-style-preview minimal-preview"></span>
+            </button>
+          </div>
+        )}
         {/* Section Title - optional header for all bullets */}
         {hasSectionTitle && (
           <div className="bullets-section-title">

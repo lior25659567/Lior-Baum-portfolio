@@ -2871,13 +2871,68 @@ body.case-study-active .footer {
   color: var(--color-text-muted);
 }
 
+/* Accent dot style (default) */
 .dynamic-bullets .bullet-list li::before {
-  content: '•';
+  content: '';
   position: absolute;
   left: 0;
-  color: var(--color-accent);
-  font-weight: 500;
-  font-size: 1.2em;
+  top: 0.55em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+/* Minimal square style */
+.dynamic-bullets[data-bullet-style="minimal"] .bullet-list li::before {
+  border-radius: 1px;
+  background: var(--color-text-muted);
+  opacity: 0.35;
+  width: 5px;
+  height: 5px;
+}
+
+/* Bullet style toggle control */
+.bullet-style-control {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.4rem;
+}
+
+.bullet-style-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s;
+}
+
+.bullet-style-btn.active {
+  border-color: var(--color-accent);
+}
+
+.bullet-style-preview {
+  display: block;
+}
+
+.accent-preview {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.minimal-preview {
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: var(--color-text-muted);
+  opacity: 0.4;
 }
 
 /* Edit controls */
