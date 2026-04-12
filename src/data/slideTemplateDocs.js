@@ -12,7 +12,7 @@ export const slideTemplateDocs = {
     whenToUse: 'Always the first slide of every case study. Every presentation should begin with one.',
     layoutDescription: 'Split layout: left side shows title, description, and metadata (client/focus or dynamic metaItems); right side displays a large square image area. Split ratio is adjustable.',
     mediaFields: [
-      { field: 'image', type: 'image gallery (up to 3)', description: 'Right side of the split layout. Supports multiple images, Figma embeds, website embeds (iframe), videos (MP4/WebM), and GIFs. Configurable object-fit and position.' },
+      { field: 'image', type: 'image gallery (up to 3 grid / 5 carousel)', description: 'Right side of the split layout. Supports images, Figma embeds, website embeds, YouTube embeds (auto-plays muted), videos (MP4/WebM), and GIFs. Configurable object-fit, position, and wrapper background. Grid or carousel display mode.' },
       { field: 'logo', type: 'logo image', description: 'Optional project/company logo. introHeaderMode controls placement: "both" shows title + logo, "logo" replaces title with logo.' },
     ],
     requiredFields: ['title', 'description'],
@@ -31,7 +31,9 @@ export const slideTemplateDocs = {
       'introHeaderMode: "both" shows title + logo at bottom; "logo" places logo in the title position',
       'splitRatio controls left/right column widths (default 50/50)',
       'metaItems array overrides the legacy client/focus fields when present',
-      'Image area supports up to 3 media items: images, Figma embeds, website embeds, videos, GIFs',
+      'Image area supports grid mode (up to 3 items) or carousel mode (up to 5 items)',
+      'Accepted media: images, Figma embeds, website embeds, YouTube embeds, videos (MP4/WebM), GIFs',
+      'Per-image controls: Fill/Fit, wrapper background toggle, position, size',
     ],
     exampleUsage: {
       type: 'intro',
@@ -111,12 +113,12 @@ export const slideTemplateDocs = {
   // ─── VISUAL ─────────────────────────────────────────────────────
 
   media: {
-    shortDescription: 'Full media slide supporting images, videos, GIFs, Figma embeds, and video URL embeds with optional label, title, caption, description, and bullets.',
-    purpose: 'Display any media type prominently — images, videos, GIFs, or embedded Figma prototypes.',
-    whenToUse: 'When a screenshot, diagram, photo, video walkthrough, or Figma prototype needs to be the star of the slide.',
-    layoutDescription: 'Section label and title at top, full-width media gallery area (up to 3 items), optional caption, description, and bullets below.',
+    shortDescription: 'Full media slide supporting images, videos, GIFs, Figma embeds, YouTube embeds, and website embeds with optional label, title, caption, description, and bullets.',
+    purpose: 'Display any media type prominently — images, videos, GIFs, embedded Figma prototypes, or YouTube videos.',
+    whenToUse: 'When a screenshot, diagram, photo, video walkthrough, Figma prototype, or YouTube video needs to be the star of the slide.',
+    layoutDescription: 'Section label and title at top, full-width media gallery area (up to 3 items in grid mode, or up to 5 in carousel mode), optional caption, description, and bullets below.',
     mediaFields: [
-      { field: 'image', type: 'media gallery (up to 3)', description: 'Full-width media area. Supports images, videos (MP4/WebM), GIFs, Figma embeds (interactive iframe), website embeds (iframe), and video URL embeds (YouTube, Vimeo, Loom, etc.). Each item has configurable object-fit, position, and optional caption.' },
+      { field: 'image', type: 'media gallery (up to 3 grid / 5 carousel)', description: 'Full-width media area. Supports images, videos (MP4/WebM), GIFs, Figma embeds (interactive iframe), website embeds (iframe), and YouTube embeds (auto-plays muted and loops). Each item has configurable object-fit, position, wrapper background toggle, and optional caption. Gallery can display as grid (1-3 columns) or carousel (auto-advancing slideshow).' },
     ],
     requiredFields: ['image'],
     optionalFields: ['label', 'title', 'caption', 'description', 'bullets', 'bulletsTitle', 'highlight'],
@@ -130,12 +132,15 @@ export const slideTemplateDocs = {
       priority: 5,
     },
     specialBehaviors: [
-      'Supports up to 3 media items via DynamicImages gallery',
-      'Accepted media types: images, videos (MP4/WebM), GIFs, Figma embeds, website embeds, video URL embeds (YouTube, Vimeo, Loom)',
+      'Two display modes: grid (up to 3 items, 1-3 columns) and carousel (up to 5 items, auto-advancing slideshow with dots, arrows, and speed control)',
+      'Accepted media types: images, videos (MP4/WebM), GIFs, Figma embeds, website embeds, YouTube embeds',
+      'YouTube embeds: paste any YouTube URL or <iframe> code — auto-plays muted, loops, with minimal branding',
       'Image compression: 10MB max for images, 100MB for video, 40MB for GIFs',
       'Figma embeds: paste Figma prototype URL, rendered as interactive iframe',
-      'Video URL embeds: paste YouTube/Vimeo/Loom URL, rendered in an iframe',
-      'Object-fit (cover/contain/fill) and position (center/top/bottom) are configurable per item',
+      'Object-fit (Fill/Fit) and position (center/top/bottom) are configurable per item',
+      'Wrapper background toggle (BG): adds a secondary background with padding and 16px border-radius behind each media item',
+      'Carousel mode has global Fill/Fit and BG toggles that apply to all slides',
+      'Single images show both Replace and Remove buttons on hover',
     ],
     exampleUsage: {
       type: 'media',
@@ -152,7 +157,7 @@ export const slideTemplateDocs = {
     whenToUse: 'When introducing a specific project or feature within a larger case study. Shows project identity with a prominent visual.',
     layoutDescription: 'Two-column split: left has slide number, title, subtitle, description paragraph, tag chips, and optional logo. Right has an image/media gallery (up to 3). Split ratio adjustable.',
     mediaFields: [
-      { field: 'image', type: 'image gallery (up to 3)', description: 'Right side of the split layout. Supports multiple images, Figma embeds, website embeds (iframe), videos (MP4/WebM), and GIFs. Configurable object-fit and position.' },
+      { field: 'image', type: 'image gallery (up to 3 grid / 5 carousel)', description: 'Right side of the split layout. Supports images, Figma embeds, website embeds, YouTube embeds (auto-plays muted), videos (MP4/WebM), and GIFs. Configurable object-fit, position, and wrapper background. Grid or carousel display mode.' },
       { field: 'logo', type: 'logo image', description: 'Optional project/company logo in the left panel. projectShowcaseHeader controls display: "title", "logo", or "both".' },
     ],
     requiredFields: ['title'],
@@ -169,7 +174,9 @@ export const slideTemplateDocs = {
       'projectShowcaseHeader: "both" shows title + logo, "title" shows title only, "logo" shows logo only',
       'Tags render as pill-shaped chips',
       'slideNumber renders as a large decorative number',
-      'Image area supports up to 3 media items: images, Figma embeds, website embeds, videos (MP4/WebM), GIFs',
+      'Image area supports grid mode (up to 3 items) or carousel mode (up to 5 items)',
+      'Accepted media: images, Figma embeds, website embeds, YouTube embeds, videos (MP4/WebM), GIFs',
+      'Per-image controls: Fill/Fit, wrapper background toggle, position, size',
     ],
     exampleUsage: {
       type: 'projectShowcase',
@@ -216,11 +223,11 @@ export const slideTemplateDocs = {
 
   textAndImage: {
     shortDescription: 'The most versatile slide — split layout with text on the left and image/media on the right. Fits almost any content type.',
-    purpose: 'The go-to slide template for most case study content. Pairs text (label, title, paragraphs, two bullet lists, conclusion, highlight) with media (images, videos, Figma embeds). Works for problem statements, context, features, testing results, and more — use it whenever content doesn\'t fit a more specialized template.',
+    purpose: 'The go-to slide template for most case study content. Pairs text (label, title, paragraphs, two bullet lists, conclusion, highlight) with media (images, videos, Figma embeds, YouTube embeds). Works for problem statements, context, features, testing results, and more — use it whenever content doesn\'t fit a more specialized template.',
     whenToUse: 'Your default choice for most slides. Use for background context, problem statements, feature explanations, testing results, design rationale, research findings, or any content that benefits from a text + image layout. If unsure which template to use, start here.',
     layoutDescription: 'Split layout: left side has section label, title, body text, up to two bullet lists, optional conclusion and highlight. Right side has an image/media gallery (up to 3). Split ratio adjustable.',
     mediaFields: [
-      { field: 'image', type: 'image gallery (up to 3)', description: 'Right side of the split layout. Supports multiple images, Figma embeds, website embeds (iframe), videos (MP4/WebM), and GIFs. Configurable object-fit and position. Split ratio adjustable (20-80%).' },
+      { field: 'image', type: 'image gallery (up to 3 grid / 5 carousel)', description: 'Right side of the split layout. Supports multiple images, Figma embeds, website embeds (iframe), YouTube embeds (auto-plays muted and loops), videos (MP4/WebM), and GIFs. Configurable object-fit, position, and wrapper background. Gallery can display as grid or carousel. Split ratio adjustable (20-80%).' },
     ],
     requiredFields: ['title'],
     optionalFields: ['label', 'content', 'issues', 'issuesTitle', 'bullets2', 'bullets2Title', 'conclusion', 'highlight', 'image', 'splitRatio'],
@@ -239,7 +246,9 @@ export const slideTemplateDocs = {
       'Also handles types: context, testing, feature (same template, different field aliases)',
       'Supports two independent bullet lists with separate titles',
       'Split ratio adjustable (20-80%)',
-      'Image area supports up to 3 media items: images, Figma embeds, website embeds, videos (MP4/WebM), GIFs',
+      'Image area supports grid mode (up to 3 items) or carousel mode (up to 5 items with auto-advance)',
+      'Accepted media: images, Figma embeds, website embeds, YouTube embeds, videos (MP4/WebM), GIFs',
+      'Per-image controls: Fill/Fit, wrapper background toggle, position, size',
     ],
     exampleUsage: {
       type: 'problem',
@@ -533,7 +542,7 @@ export const slideTemplateDocs = {
       'Simple mode: two image areas side by side with customizable labels, each with independent description and bullet list',
       'Before-after mode: a toggle switcher lets the viewer flip between two states, each with its own image, description, and bullets',
       'Tabs mode: 2–6 named tabs, each with its own image, title, and bullet list — great for multi-step solutions or feature comparisons',
-      'All modes support DynamicImages — image upload, Figma embeds, website embeds (iframe), videos (MP4/WebM), and GIFs',
+      'All modes support DynamicImages — image upload, Figma embeds, website embeds (iframe), YouTube embeds (auto-plays muted), videos (MP4/WebM), and GIFs',
       'Split ratio adjustable in simple mode (20-80%)',
       'Can replace challenge/solution or problem/solution layouts',
     ],
@@ -721,14 +730,14 @@ export const sharedComponentsDocs = [
   },
   {
     name: 'DynamicImages',
-    purpose: 'Image gallery with upload, compression, embed support.',
+    purpose: 'Image gallery with upload, compression, embed support, carousel mode, and per-image controls.',
     props: ['slide', 'slideIndex', 'field', 'captionField', 'className', 'maxImages'],
-    behavior: 'Handles single image or array of images. Supports file upload with automatic compression (10MB images, 100MB video, 40MB GIF). Supports Figma embeds and website embeds. Configurable object-fit and position.',
+    behavior: 'Handles single image or array of images. Supports file upload with automatic compression (10MB images, 100MB video, 40MB GIF). Supports Figma embeds, website embeds, and YouTube embeds (auto-plays muted and loops). Two display modes: grid (1-3 columns) and carousel (auto-advancing slideshow with dots, arrows, speed control). Per-image controls: Fill/Fit toggle, wrapper background toggle (BG on/off with padding and border-radius), image position, and image size. Carousel mode has global Fill/Fit and BG toggles. Single images show a Remove button on hover in addition to Replace.',
     mediaSupport: {
       images: 'JPG, PNG, SVG, WebP (compressed if > 10MB)',
       videos: 'MP4, WebM (up to 100MB)',
       gifs: 'Up to 40MB',
-      embeds: 'Figma prototypes, website embeds (iframe)',
+      embeds: 'Figma prototypes, website embeds (iframe), YouTube videos (auto-plays muted and loops)',
     },
   },
   {

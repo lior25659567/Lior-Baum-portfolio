@@ -1880,6 +1880,8 @@ body.case-study-active .footer {
   border-radius: var(--radius-lg);
   border: 1px solid rgba(255, 88, 74, 0.35);
   transition: transform var(--transition-medium), border-color var(--transition-medium);
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .outcome-item:hover {
@@ -1956,7 +1958,7 @@ body.case-study-active .footer {
 
 .outcome-metric {
   font-family: var(--font-body);
-  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-size: clamp(1.3rem, 2.5vw, 2rem);
   font-weight: 600;
   line-height: 1;
   color: var(--color-accent);
@@ -6319,6 +6321,19 @@ textarea.editable-field {
   white-space: nowrap;
 }
 
+/* Carousel background wrapper */
+.dynamic-carousel-slide.carousel-has-bg {
+  background: var(--color-bg-secondary);
+  border-radius: 16px;
+  padding: 1.25rem 1.75rem;
+}
+
+.dynamic-carousel-slide.carousel-has-bg img,
+.dynamic-carousel-slide.carousel-has-bg video {
+  border-radius: 16px;
+  object-fit: contain;
+}
+
 /* Carousel fit: contain mode */
 .dynamic-carousel-slide.carousel-fit-contain {
   background: transparent;
@@ -6327,6 +6342,17 @@ textarea.editable-field {
 .dynamic-carousel-slide.carousel-fit-contain img {
   object-fit: contain;
   border-radius: 12px;
+}
+
+/* Carousel contain + bg combined */
+.dynamic-carousel-slide.carousel-fit-contain.carousel-has-bg {
+  background: var(--color-bg-secondary);
+  border-radius: 16px;
+  padding: 1.25rem 1.75rem;
+}
+
+.dynamic-carousel-slide.carousel-fit-contain.carousel-has-bg img {
+  border-radius: 16px;
 }
 
 /* Carousel settings bar (edit mode) */
@@ -6425,6 +6451,22 @@ textarea.editable-field {
   border-radius: 6px;
   font-size: 0.65rem;
   backdrop-filter: blur(4px);
+  gap: 0.35rem;
+}
+
+.image-edit-overlay-remove {
+  background: rgba(239, 68, 68, 0.5);
+  color: #fff;
+  border: none;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+
+.image-edit-overlay-remove:hover {
+  background: rgba(239, 68, 68, 0.8);
 }
 
 .edit-mode .image-visual {
@@ -12518,7 +12560,8 @@ textarea.editable-field {
 /* ========== FIGMA / EMBED SUPPORT ========== */
 
 .figma-embed-iframe,
-.site-embed-iframe {
+.site-embed-iframe,
+.youtube-embed-iframe {
   display: block;
   width: 100%;
   height: 100%;
@@ -12543,7 +12586,8 @@ textarea.editable-field {
 
 /* Iframe always fits full width of its container */
 .dynamic-image-wrapper.has-embed .figma-embed-iframe,
-.dynamic-image-wrapper.has-embed .site-embed-iframe {
+.dynamic-image-wrapper.has-embed .site-embed-iframe,
+.dynamic-image-wrapper.has-embed .youtube-embed-iframe {
   width: 100%;
   height: 100%;
   border: none;
@@ -12642,6 +12686,11 @@ textarea.editable-field {
   font-size: 1.2rem;
 }
 
+.media-type-youtube .media-type-icon {
+  font-size: 1.2rem;
+  color: #ff0000;
+}
+
 /* Figma embed URL input row */
 .figma-embed-input {
   display: flex;
@@ -12708,7 +12757,8 @@ textarea.editable-field {
 }
 
 .ps-embed-inner .figma-embed-iframe,
-.ps-embed-inner .site-embed-iframe {
+.ps-embed-inner .site-embed-iframe,
+.ps-embed-inner .youtube-embed-iframe {
   width: 100%;
   height: 100%;
 }

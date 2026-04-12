@@ -118,6 +118,38 @@ export function saveCaseStudyPlugin() {
         });
       });
 
+      // Save home page content + styles
+      server.middlewares.use('/api/save-home-content', (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405;
+          res.end(JSON.stringify({ error: 'Method not allowed' }));
+          return;
+        }
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+          try {
+            const { content, styles } = JSON.parse(body);
+            if (!content && !styles) {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: 'Missing content or styles' }));
+              return;
+            }
+            const dir = path.resolve('src/data');
+            if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+            const filePath = path.join(dir, 'home-content.json');
+            fs.writeFileSync(filePath, JSON.stringify({ content, styles }, null, 2), 'utf-8');
+            console.log(`[save-home-content] Saved → ${filePath}`);
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ ok: true, path: filePath }));
+          } catch (err) {
+            console.error('[save-home-content] Error:', err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: err.message }));
+          }
+        });
+      });
+
       // Git commit + push
       server.middlewares.use('/api/git-push', (req, res) => {
         if (req.method !== 'POST') {
@@ -140,6 +172,11 @@ export function saveCaseStudyPlugin() {
             const publicDir = path.resolve('public', 'case-studies');
             if (fs.existsSync(publicDir)) {
               await run('git add public/case-studies/');
+            }
+            // Stage home content if it exists
+            const homeContentPath = path.resolve('src/data/home-content.json');
+            if (fs.existsSync(homeContentPath)) {
+              await run('git add src/data/home-content.json');
             }
 
             // Check if there's anything staged to commit

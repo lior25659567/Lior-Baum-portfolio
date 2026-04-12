@@ -1,0 +1,57 @@
+.home-publish-bar {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(20, 20, 20, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  z-index: 9999;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.home-publish-btn {
+  padding: 0.45rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.home-publish-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.home-publish-btn.save-btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.home-publish-btn.save-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.home-publish-btn.push-btn {
+  background: var(--color-accent, #ff584a);
+  color: #fff;
+}
+
+.home-publish-btn.push-btn:hover:not(:disabled) {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.home-publish-error {
+  color: #fca5a5;
+  font-size: 0.72rem;
+  padding-left: 0.25rem;
+}

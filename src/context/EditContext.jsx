@@ -1,6 +1,13 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { saveData, getData, deleteData } from '../storage/devStore';
 
+let savedHomeData = null;
+try {
+  const mod = import.meta.glob('../data/home-content.json', { eager: true });
+  const key = Object.keys(mod)[0];
+  if (key) savedHomeData = mod[key].default || mod[key];
+} catch { /* file doesn't exist yet */ }
+
 const EditContext = createContext();
 
 // Default site content
@@ -79,15 +86,31 @@ const defaultStyles = {
   },
 };
 
+// Override defaults with saved home-content.json if present
+const effectiveDefaultContent = savedHomeData?.content
+  ? {
+      ...defaultContent,
+      ...savedHomeData.content,
+      hero: { ...defaultContent.hero, ...savedHomeData.content.hero },
+      footer: { ...defaultContent.footer, ...savedHomeData.content.footer },
+      about: { ...defaultContent.about, ...savedHomeData.content.about },
+      projects: { ...defaultContent.projects, ...savedHomeData.content.projects },
+    }
+  : defaultContent;
+
+const effectiveDefaultStyles = savedHomeData?.styles
+  ? { ...defaultStyles, ...savedHomeData.styles }
+  : defaultStyles;
+
 function mergeContent(saved) {
-  if (!saved) return defaultContent;
+  if (!saved) return effectiveDefaultContent;
   return {
-    ...defaultContent,
+    ...effectiveDefaultContent,
     ...saved,
-    hero: { ...defaultContent.hero, ...saved.hero },
-    footer: { ...defaultContent.footer, ...saved.footer },
-    about: { ...defaultContent.about, ...saved.about },
-    projects: { ...defaultContent.projects, ...saved.projects },
+    hero: { ...effectiveDefaultContent.hero, ...saved.hero },
+    footer: { ...effectiveDefaultContent.footer, ...saved.footer },
+    about: { ...effectiveDefaultContent.about, ...saved.about },
+    projects: { ...effectiveDefaultContent.projects, ...saved.projects },
   };
 }
 
@@ -102,15 +125,15 @@ export const EditProvider = ({ children }) => {
   const [content, setContent] = useState(() => {
     try {
       const saved = localStorage.getItem('siteContent');
-      return saved ? mergeContent(JSON.parse(saved)) : defaultContent;
-    } catch { return defaultContent; }
+      return saved ? mergeContent(JSON.parse(saved)) : effectiveDefaultContent;
+    } catch { return effectiveDefaultContent; }
   });
 
   const [styles, setStyles] = useState(() => {
     try {
       const saved = localStorage.getItem('siteStyles');
-      return saved ? { ...defaultStyles, ...JSON.parse(saved) } : defaultStyles;
-    } catch { return defaultStyles; }
+      return saved ? { ...effectiveDefaultStyles, ...JSON.parse(saved) } : effectiveDefaultStyles;
+    } catch { return effectiveDefaultStyles; }
   });
 
   useEffect(() => {
@@ -245,6 +268,24 @@ export const EditProvider = ({ children }) => {
     deleteData('siteStyles');
   };
 
+  const saveHomeToCode = async () => {
+    const res = await fetch('/api/save-home-content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content, styles }),
+    });
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error || 'Save failed');
+    return json;
+  };
+
+  const gitPush = async () => {
+    const res = await fetch('/api/git-push', { method: 'POST' });
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error || 'Push failed');
+    return json;
+  };
+
   return (
     <EditContext.Provider value={{
       editMode,
@@ -261,6 +302,8 @@ export const EditProvider = ({ children }) => {
       setStyles,
       updateStyles,
       resetToDefaults,
+      saveHomeToCode,
+      gitPush,
       defaultContent,
       defaultStyles,
     }}>

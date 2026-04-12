@@ -421,6 +421,24 @@ const toFigmaEmbedUrlModule = (input) => {
   return `https://www.figma.com/embed?embed_host=share&scaling=scale-down-width&url=${encodeURIComponent(trimmed)}`;
 };
 
+// Module-level YouTube URL helper
+const toYouTubeEmbedUrl = (input) => {
+  if (!input || typeof input !== 'string') return null;
+  let trimmed = input.trim();
+  const iframeMatch = trimmed.match(/<iframe[^>]+src=["']([^"']+)["']/i);
+  if (iframeMatch) trimmed = iframeMatch[1];
+  let videoId = null;
+  const patterns = [
+    /(?:youtube\.com\/watch\?.*v=|youtube\.com\/embed\/|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
+  ];
+  for (const p of patterns) {
+    const m = trimmed.match(p);
+    if (m) { videoId = m[1]; break; }
+  }
+  if (!videoId) return null;
+  return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&rel=0&modestbranding=1&playsinline=1`;
+};
+
 // Shared helper — used by ComparisonSlide and CaseStudy's getSplitStyle
 const getSplitStyleModule = (slide) => {
   const ratio = slide.splitRatio || 50;
@@ -3058,7 +3076,7 @@ My instructions: `;
     const [activePositionControl, setActivePositionControl] = useState(null);
     const [embedInputIndex, setEmbedInputIndex] = useState(null);
     const [embedDraft, setEmbedDraft] = useState('');
-    const [embedInputType, setEmbedInputType] = useState('figma'); // 'figma' or 'site'
+    const [embedInputType, setEmbedInputType] = useState('figma'); // 'figma', 'site', or 'youtube'
     
     // Check if it's an array or single string
     const isArray = Array.isArray(slide[field]);
@@ -3301,6 +3319,13 @@ My instructions: `;
                     title="Fit — show full image"
                   >Fit</button>
                 </div>
+                <div className="dynamic-grid-divider" />
+                <button
+                  type="button"
+                  className={`dynamic-grid-btn carousel-fit-global-btn${slide[`${field}CarouselBg`] !== false ? ' active' : ''}`}
+                  onClick={() => updateSlide(slideIndex, { [`${field}CarouselBg`]: slide[`${field}CarouselBg`] !== false ? false : true })}
+                  title={slide[`${field}CarouselBg`] !== false ? 'Background on — click to remove' : 'Background off — click to add'}
+                >BG</button>
               </>
             )}
           </div>
@@ -3328,8 +3353,9 @@ My instructions: `;
                 {images.map((imgData, imgIndex) => {
                   const carouselFit = slide[`${field}CarouselFit`] || 'cover';
                   const isContain = carouselFit === 'contain';
+                  const carouselBg = slide[`${field}CarouselBg`] !== false;
                   return (
-                    <div key={imgIndex} className={`dynamic-carousel-slide${isContain ? ' carousel-fit-contain' : ''}`}>
+                    <div key={imgIndex} className={`dynamic-carousel-slide${isContain ? ' carousel-fit-contain' : ''}${carouselBg ? ' carousel-has-bg' : ''}`}>
                       {imgData.src ? (
                         <>
                           {imgData.isVideo ? (
@@ -3346,7 +3372,7 @@ My instructions: `;
                         </>
                       ) : imgData.embedUrl ? (
                         <>
-                          <iframe src={imgData.embedUrl} title={`Embed ${imgIndex + 1}`} allowFullScreen className={imgData.embedType === 'site' ? 'site-embed-iframe' : 'figma-embed-iframe'} />
+                          <iframe src={imgData.embedUrl} title={imgData.embedType === 'youtube' ? 'YouTube Video' : `Embed ${imgIndex + 1}`} allowFullScreen allow={imgData.embedType === 'youtube' ? 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' : undefined} loading={imgData.embedType === 'youtube' ? 'lazy' : undefined} className={imgData.embedType === 'youtube' ? 'youtube-embed-iframe' : imgData.embedType === 'site' ? 'site-embed-iframe' : 'figma-embed-iframe'} />
                           {editMode && (
                             <div className="carousel-slide-edit-controls">
                               <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); updateImage(imgIndex, { embedUrl: '' }); }}>Remove</button>
@@ -3446,9 +3472,11 @@ My instructions: `;
                     <>
                       <iframe
                         src={imgData.embedUrl}
-                        title={imgData.embedType === 'site' ? 'Site Embed' : 'Figma Embed'}
+                        title={imgData.embedType === 'youtube' ? 'YouTube Video' : imgData.embedType === 'site' ? 'Site Embed' : 'Figma Embed'}
                         allowFullScreen
-                        className={imgData.embedType === 'site' ? 'site-embed-iframe' : 'figma-embed-iframe'}
+                        allow={imgData.embedType === 'youtube' ? 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' : undefined}
+                        loading={imgData.embedType === 'youtube' ? 'lazy' : undefined}
+                        className={imgData.embedType === 'youtube' ? 'youtube-embed-iframe' : imgData.embedType === 'site' ? 'site-embed-iframe' : 'figma-embed-iframe'}
                       />
                       {editMode && (
                         <div className="embed-edit-controls" onClick={(e) => e.stopPropagation()}>
@@ -3476,7 +3504,10 @@ My instructions: `;
                       )}
                       {editMode && (
                         <div className="image-edit-overlay" onClick={(e) => { e.stopPropagation(); handleDynamicImageUpload(imgIndex); }}>
-                          Replace Image
+                          Replace
+                          {images.length === 1 && (
+                            <button type="button" className="image-edit-overlay-remove" onClick={(e) => { e.stopPropagation(); updateImage(imgIndex, 'src', ''); }}>Remove</button>
+                          )}
                         </div>
                       )}
                       {!editMode && !imgData.isVideo && !imgData.isGif && <div className="image-zoom-hint">🔍</div>}
@@ -3606,7 +3637,7 @@ My instructions: `;
                           <input
                             type="text"
                             className="editable-field figma-url-input"
-                            placeholder={embedInputType === 'figma' ? "Paste Figma URL or <iframe> embed code..." : "Paste website URL to embed..."}
+                            placeholder={embedInputType === 'figma' ? "Paste Figma URL or <iframe> embed code..." : embedInputType === 'youtube' ? "Paste YouTube URL or <iframe> embed code..." : "Paste website URL to embed..."}
                             value={embedDraft}
                             onChange={(e) => setEmbedDraft(e.target.value)}
                             onKeyDown={(e) => {
@@ -3619,6 +3650,15 @@ My instructions: `;
                                     setEmbedInputIndex(null);
                                   } else {
                                     alert('Please enter a valid Figma URL or <iframe> embed code');
+                                  }
+                                } else if (embedInputType === 'youtube') {
+                                  const converted = toYouTubeEmbedUrl(embedDraft);
+                                  if (converted) {
+                                    updateImage(imgIndex, { embedUrl: converted, embedType: 'youtube' });
+                                    setEmbedDraft('');
+                                    setEmbedInputIndex(null);
+                                  } else {
+                                    alert('Please enter a valid YouTube URL or <iframe> embed code');
                                   }
                                 } else {
                                   const url = embedDraft.trim();
@@ -3643,6 +3683,15 @@ My instructions: `;
                                 setEmbedInputIndex(null);
                               } else {
                                 alert('Please enter a valid Figma URL or <iframe> embed code');
+                              }
+                            } else if (embedInputType === 'youtube') {
+                              const converted = toYouTubeEmbedUrl(embedDraft);
+                              if (converted) {
+                                updateImage(imgIndex, { embedUrl: converted, embedType: 'youtube' });
+                                setEmbedDraft('');
+                                setEmbedInputIndex(null);
+                              } else {
+                                alert('Please enter a valid YouTube URL or <iframe> embed code');
                               }
                             } else {
                               const url = embedDraft.trim();
@@ -3670,6 +3719,10 @@ My instructions: `;
                           <button type="button" className="media-type-btn media-type-site" onClick={(e) => { e.stopPropagation(); setEmbedInputType('site'); setEmbedInputIndex(imgIndex); setEmbedDraft(''); }}>
                             <span className="media-type-icon">⧉</span>
                             <span>Embed Site</span>
+                          </button>
+                          <button type="button" className="media-type-btn media-type-youtube" onClick={(e) => { e.stopPropagation(); setEmbedInputType('youtube'); setEmbedInputIndex(imgIndex); setEmbedDraft(''); }}>
+                            <span className="media-type-icon">▶</span>
+                            <span>YouTube</span>
                           </button>
                         </div>
                       )}
