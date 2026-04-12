@@ -223,7 +223,8 @@
       "beforeImageCarouselInterval": 1500,
       "gridCols": 2,
       "afterImageCarouselFit": "contain",
-      "afterImageCarouselInterval": 1500
+      "afterImageCarouselInterval": 1500,
+      "bulletStyle": "minimal"
     },
     {
       "type": "chapter",
@@ -360,7 +361,8 @@
       "beforeImageCarouselInterval": 1500,
       "afterImageCarouselFit": "contain",
       "afterImageCarouselInterval": 1500,
-      "splitRatio": 40
+      "splitRatio": 40,
+      "bulletStyle": "minimal"
     },
     {
       "type": "chapter",
@@ -460,7 +462,8 @@
       "splitRatio": 40,
       "afterImageCarouselInterval": 1500,
       "afterImageCarouselFit": "contain",
-      "gridCols": 1
+      "gridCols": 1,
+      "bulletStyle": "minimal"
     },
     {
       "type": "outcomes",
@@ -468,23 +471,27 @@
       "title": "Less friction. More time for patients.",
       "outcomes": [
         {
-          "title": "10–15 min saved per patient",
+          "metric": "10–15 min",
+          "title": "Saved per patient session",
           "description": "Streamlined workflows meant less time navigating, more time on clinical decisions."
         },
         {
-          "title": "Fewer errors",
-          "description": "Clearer layouts and inline editing reduced misclicks and prescription mistakes."
+          "metric": "Fewer",
+          "title": "Misclicks and prescription errors",
+          "description": "Clearer layouts and inline editing reduced mistakes during care plan editing."
         },
         {
-          "title": "Daily usage increased",
+          "metric": "Higher",
+          "title": "Daily active usage",
           "description": "Clinicians who had avoided the platform started using it as their primary tool."
         },
         {
-          "title": "Support requests dropped",
-          "description": "A self-explanatory system meant less dependence on onboarding and training."
+          "metric": "Less",
+          "title": "Dependence on support and training",
+          "description": "A self-explanatory system meant clinicians could onboard and work independently."
         }
       ],
-      "showNumbers": true,
+      "showNumbers": false,
       "cardVariant": "default"
     },
     {

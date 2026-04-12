@@ -205,7 +205,8 @@
       "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid",
-      "imageCarouselInterval": 1500
+      "imageCarouselInterval": 1500,
+      "bulletStyle": "minimal"
     },
     {
       "type": "chapter",
@@ -262,7 +263,8 @@
       "beforeImageCarouselInterval": 2000,
       "slideMode": "before-after",
       "switcherStyle": "pill",
-      "beforeImageCarouselFit": "contain"
+      "beforeImageCarouselFit": "contain",
+      "bulletStyle": "minimal"
     },
     {
       "type": "comparison",
@@ -312,7 +314,8 @@
       "switcherStyle": "pill",
       "gridCols": 1,
       "imageDisplayMode": "grid",
-      "splitRatio": 30
+      "splitRatio": 30,
+      "bulletStyle": "minimal"
     },
     {
       "type": "chapter",
@@ -376,7 +379,8 @@
       ],
       "gridCols": 1,
       "imageDisplayMode": "grid",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "bulletStyle": "minimal"
     },
     {
       "type": "textAndImage",
@@ -407,7 +411,8 @@
       "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid",
-      "imageCarouselInterval": 1500
+      "imageCarouselInterval": 1500,
+      "bulletStyle": "minimal"
     },
     {
       "type": "comparison",
@@ -463,7 +468,31 @@
       ],
       "gridCols": 1,
       "imageDisplayMode": "grid",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "bulletStyle": "minimal"
+    },
+    {
+      "type": "problem",
+      "label": "The impact",
+      "title": "The work became the system",
+      "content": "The patterns created throughout the redesign were formalised into a design system — published in Figma for the team and built in Claude Code to give developers a living reference they could work from directly.",
+      "highlight": "The design influenced the system built after it — and became a permanent part of it.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-5pdk4g6ngg.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
     },
     {
       "type": "outcomes",
@@ -471,24 +500,27 @@
       "title": "Four friction points. Four things that got better.",
       "outcomes": [
         {
-          "title": "Faster to start",
-          "description": "Removing setup gates meant clinicians could begin scanning the moment they were ready — no sequence to complete first.",
-          "metric": ""
+          "metric": "Faster",
+          "title": "Time to start scanning",
+          "description": "Removing setup gates meant clinicians could begin the moment they were ready — no sequence to complete first."
         },
         {
-          "title": "Scanning stayed unbroken",
-          "description": "A consistent toolbar with a clear home for every tool meant doctors stopped searching mid-scan and stayed in physical flow."
+          "metric": "Fewer",
+          "title": "Interruptions mid-scan",
+          "description": "A consistent toolbar with a clear home for every tool meant doctors stopped searching and stayed in physical flow."
         },
         {
-          "title": "Tools became readable",
-          "description": "Named panels with a single primary action replaced icon clusters — clinicians understood what to do without having to memorise anything."
+          "metric": "Clearer",
+          "title": "Tools and states",
+          "description": "Named panels with a single primary action replaced icon clusters — clinicians understood what to do without memorising anything."
         },
         {
-          "title": "Results felt trustworthy",
-          "description": "Clear completion signals and visual scan comparison meant doctors stopped re-checking and started trusting what they saw the first time."
+          "metric": "Higher",
+          "title": "Confidence in scan results",
+          "description": "Clear completion signals and visual comparison meant doctors stopped re-checking and trusted what they saw the first time."
         }
       ],
-      "showNumbers": true,
+      "showNumbers": false,
       "cardVariant": "default"
     },
     {
