@@ -35,7 +35,7 @@
       "type": "problem",
       "label": "The Context",
       "title": "Clinicians who don't have time to learn new software",
-      "content": "Physiotherapists using WizeCare are already managing packed clinic days. They rely on manual routines built over years — and are quick to abandon tools that add steps instead of removing them.",
+      "content": "Physiotherapists using WizeCare manage packed clinic days and rely on manual routines built over years. They're quick to abandon tools that add steps instead of removing them.",
       "highlight": "For WizeCare to succeed, the system needed to feel like a time-saver — not an extra task.",
       "image": [
         {
@@ -58,22 +58,22 @@
       "type": "issuesBreakdown",
       "label": "The Problem",
       "title": "Three places the experience broke down",
-      "description": "We visited physiotherapy clinics, ran user interviews, and reviewed support tickets. The friction consistently appeared in the same three places.",
+      "description": "We visited clinics, ran interviews, and reviewed support tickets. The same friction appeared in the same three places every time.",
       "issues": [
         {
           "number": "1",
           "title": "Patient screen unclear",
-          "description": "Clinicians couldn't tell where to find care plans or patient details — oversized tabs and no clear hierarchy made navigation unpredictable"
+          "description": "Clinicians couldn't find care plans or patient details — no hierarchy, no predictable navigation"
         },
         {
           "number": "2",
           "title": "Care plan editing too complex",
-          "description": "Creating or editing a care plan required navigating multiple screens, causing confusion and context loss along the way"
+          "description": "Editing required navigating multiple screens — context lost at every step"
         },
         {
           "number": "3",
           "title": "No protocol creation flow",
-          "description": "Physiotherapists couldn't build protocols from scratch — the system forced them into rigid predefined templates that didn't fit complex cases"
+          "description": "No way to build from scratch — rigid templates didn't fit complex cases"
         }
       ],
       "gridColumns": 3
@@ -84,9 +84,6 @@
       "title": "What clinicians told us",
       "content": "Across every clinic we visited, the same frustrations came up — not as complaints, but as things clinicians had simply accepted.",
       "highlight": "These weren't edge cases — they were accepted parts of the daily routine.",
-      "issues": [],
-      "issuesTitle": "",
-      "conclusion": null,
       "image": [
         {
           "position": "center center",
@@ -95,14 +92,12 @@
           "wrapperBg": false,
           "embedUrl": "",
           "src": "/case-studies/wizecare/img-9ev1haqlc4.png",
-          "caption": "",
+          "caption": "Field research — clinic visits and user interviews",
           "isVideo": false,
           "embedType": ""
         }
       ],
       "splitRatio": 40,
-      "bullets2": [],
-      "bullets2Title": "",
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },
@@ -164,7 +159,7 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/wizecare/img-xu92y5bwo.png",
-          "caption": "",
+          "caption": "Old — cluttered tabs, buried adherence data",
           "isVideo": false,
           "embedType": ""
         },
@@ -188,7 +183,7 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/wizecare/img-4chmer0xr4.png",
-          "caption": "",
+          "caption": "New — dedicated patient page, clear hierarchy",
           "isVideo": false,
           "embedType": ""
         },
@@ -204,17 +199,17 @@
           "embedType": ""
         }
       ],
-      "beforeDescription": "The patient page was cluttered and unclear — oversized tabs, no visual hierarchy, and adherence metrics buried where no one could find them.",
-      "afterDescription": "A dedicated patient page with clear separation between info, plans, and progress — and adherence metrics surfaced as the primary clinical signal.",
+      "beforeDescription": "Cluttered tabs, no clear hierarchy, and adherence metrics buried where no one could find them.",
+      "afterDescription": "One dedicated page — patient info, active plans, and progress clearly separated.",
       "beforeBullets": [
-        "Oversized tabs dominated the screen with no clear hierarchy",
-        "No dedicated patient page — clinicians unsure how to view plans",
-        "Adherence metrics buried — hardest to find, most clinically useful"
+        "Oversized tabs with no clear hierarchy",
+        "No dedicated patient page — plans hard to locate",
+        "Adherence metrics buried — most useful, hardest to find"
       ],
       "afterBullets": [
-        "Dedicated patient page centralises all information",
-        "Clear separation between patient info, active plans, and progress",
-        "Adherence metrics prominent — visible without navigating away"
+        "All patient information in one predictable place",
+        "Clear separation between info, plans, and progress",
+        "Adherence metrics surfaced as the primary clinical signal"
       ],
       "highlight": "Clinicians went from searching across screens to finding everything in one predictable place.",
       "imageDisplayMode": "carousel",
@@ -223,8 +218,7 @@
       "beforeImageCarouselInterval": 1500,
       "gridCols": 2,
       "afterImageCarouselFit": "contain",
-      "afterImageCarouselInterval": 1500,
-      "bulletStyle": "minimal"
+      "afterImageCarouselInterval": 1500
     },
     {
       "type": "chapter",
@@ -246,7 +240,7 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/wizecare/img-7qfmd98x00.png",
-          "caption": "",
+          "caption": "Old — multi-screen flow, dense exercise lists",
           "isVideo": false,
           "embedType": ""
         },
@@ -292,10 +286,9 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/wizecare/img-3e9ywkzxfk.png",
-          "caption": "",
-          "embedType": "",
+          "caption": "New — single screen, exercise cards, inline editing",
           "isVideo": false,
-          "isGif": false
+          "embedType": ""
         },
         {
           "position": "center center",
@@ -342,17 +335,17 @@
           "embedType": ""
         }
       ],
-      "beforeDescription": "The old flow was spread across multiple screens with no clear separation between exercises — lengthy, cluttered, and easy to get lost in.",
-      "afterDescription": "Everything consolidated onto one screen. Each exercise on its own card. Inline editing throughout.",
+      "beforeDescription": "Multiple screens to complete a single edit — exercises in dense lists, no patient data in view.",
+      "afterDescription": "Everything on one screen. Each exercise as its own card. Patient data pinned throughout.",
       "beforeBullets": [
-        "Multiple screens to complete a single edit — context lost every step",
-        "Exercises in dense, unseparated lists — hard to manage at scale",
+        "4–5 screens per edit — context lost every step",
+        "Dense exercise lists — easy to misread at scale",
         "No patient health data visible while editing"
       ],
       "afterBullets": [
-        "Single focused screen for the full editing flow",
-        "Each exercise displayed as its own card — easy to compare and reorder",
-        "Patient health data pinned throughout for constant clinical context"
+        "Single screen for the full editing flow",
+        "Each exercise on its own card — easy to compare and reorder",
+        "Patient data pinned for constant clinical context"
       ],
       "highlight": "Irrelevant information removed entirely — the screen shows only what clinicians need to act.",
       "gridCols": 1,
@@ -361,8 +354,7 @@
       "beforeImageCarouselInterval": 1500,
       "afterImageCarouselFit": "contain",
       "afterImageCarouselInterval": 1500,
-      "splitRatio": 40,
-      "bulletStyle": "minimal"
+      "splitRatio": 40
     },
     {
       "type": "chapter",
@@ -391,7 +383,7 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/wizecare/img-db2ae7syo.png",
-          "caption": "",
+          "caption": "Old — no creation flow, rigid templates only",
           "isVideo": false,
           "embedType": ""
         },
@@ -437,23 +429,22 @@
           "wrapperBg": true,
           "embedUrl": "https://www.youtube.com/embed/JVQ3GlbPI0A?autoplay=1&mute=1&loop=1&playlist=JVQ3GlbPI0A&rel=0&modestbranding=1&playsinline=1",
           "src": "",
-          "caption": "",
+          "caption": "New — drag-and-drop Kanban builder",
           "isVideo": false,
           "embedType": "youtube",
           "isGif": false
         }
       ],
-      "beforeDescription": "No defined protocol creation workflow. Expert clinicians were forced into multi-step navigation with no way to build from scratch.",
-      "afterDescription": "A drag-and-drop Kanban builder modelled on the care plan editor — familiar from day one, powerful enough for complex cases.",
+      "beforeDescription": "No protocol creation flow — experts navigated a multi-step system with no way to build from scratch.",
+      "afterDescription": "A Kanban builder with drag-and-drop gives clinicians full control — built on the same card system as the care plan editor.",
       "beforeBullets": [
-        "No protocol creation flow — experts had no real starting point",
-        "Multi-step navigation with no clear thread",
+        "No dedicated creation flow — no starting point for experts",
         "Rigid templates didn't fit complex or custom cases"
       ],
       "afterBullets": [
-        "Dedicated protocol builder with drag-and-drop Kanban layout",
-        "Exercise library on the left, treatment board on the right",
-        "Same card system as care plan editor — zero additional learning"
+        "Drag-and-drop Kanban — exercise library left, board right",
+        "Same card system as care plan editor — zero additional learning",
+        "Full control over structure, order, and grouping"
       ],
       "highlight": "Reusing the card system across both flows meant the new builder felt immediately familiar.",
       "imageDisplayMode": "carousel",
@@ -462,8 +453,7 @@
       "splitRatio": 40,
       "afterImageCarouselInterval": 1500,
       "afterImageCarouselFit": "contain",
-      "gridCols": 1,
-      "bulletStyle": "minimal"
+      "gridCols": 1
     },
     {
       "type": "outcomes",
@@ -473,7 +463,7 @@
         {
           "metric": "10–15 min",
           "title": "Saved per patient session",
-          "description": "Streamlined workflows meant less time navigating, more time on clinical decisions."
+          "description": "Less time navigating — more time on clinical decisions."
         },
         {
           "metric": "Fewer",
