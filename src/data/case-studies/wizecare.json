@@ -14,7 +14,21 @@
       "client": "WizeCare",
       "focusLabel": "Platform",
       "focus": "Desktop Dashboard (B2B SaaS)",
-      "image": ""
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-1nl1prxhoc.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
     },
     {
       "type": "problem",
@@ -22,7 +36,22 @@
       "title": "Clinicians who don't have time to learn new software",
       "content": "Physiotherapists using WizeCare are already managing packed clinic days. They rely on manual routines built over years — and are quick to abandon tools that add steps instead of removing them.",
       "highlight": "For WizeCare to succeed, the system needed to feel like a time-saver — not an extra task.",
-      "image": ""
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-39wooi4v0w.jpg",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
+      "splitRatio": 40
     },
     {
       "type": "issuesBreakdown",
@@ -45,33 +74,36 @@
           "title": "No protocol creation flow",
           "description": "Physiotherapists couldn't build protocols from scratch — the system forced them into rigid predefined templates that didn't fit complex cases"
         }
-      ]
+      ],
+      "gridColumns": 3
     },
     {
-      "type": "quotes",
-      "label": "User Research",
+      "type": "problem",
+      "label": "Section",
       "title": "What clinicians told us",
       "content": "We visited several physiotherapy clinics to understand the challenges firsthand. The same frustrations surfaced everywhere.",
-      "quotes": [
+      "highlight": "These weren't edge cases — they were accepted parts of the daily routine.",
+      "issues": [],
+      "issuesTitle": "",
+      "conclusion": null,
+      "image": [
         {
-          "text": "I spend more time navigating than actually managing my patients.",
-          "author": "Physiotherapist, Clinic A"
-        },
-        {
-          "text": "I never know which screen has what I need.",
-          "author": "Physiotherapist, Clinic B"
-        },
-        {
-          "text": "Editing a care plan takes so many steps — I avoid it when I can.",
-          "author": "Physiotherapist, Clinic C"
-        },
-        {
-          "text": "I still use paper notes because they're faster.",
-          "author": "Physiotherapist, Clinic D"
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-9ev1haqlc4.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
         }
       ],
-      "bullets": [],
-      "cardHeight": "100"
+      "splitRatio": 40,
+      "bullets2": [],
+      "bullets2Title": "",
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
     },
     {
       "type": "goals",
@@ -81,22 +113,22 @@
         {
           "number": "1",
           "title": "Simplify navigation",
-          "description": "Make patient data, care plans, and key actions reachable without hunting."
+          "description": "Patient data and key actions reachable without hunting."
         },
         {
           "number": "2",
           "title": "Streamline care plan editing",
-          "description": "Consolidate a multi-screen process into one focused, coherent flow."
+          "description": "One focused flow instead of multiple disconnected screens."
         },
         {
           "number": "3",
-          "title": "Enable protocol creation from scratch",
-          "description": "Give experienced clinicians the flexibility to build and customise their own protocols."
+          "title": "Enable protocol creation",
+          "description": "Let experienced clinicians build and customise from scratch."
         },
         {
           "number": "4",
           "title": "Reduce the learning curve",
-          "description": "Design should be self-explanatory — for both new and experienced users."
+          "description": "Self-explanatory for new and experienced users alike."
         }
       ],
       "kpis": [
@@ -123,8 +155,54 @@
       "switcherStyle": "pill",
       "label": "Patient Screen",
       "title": "Everything a clinician needs — in one place",
-      "beforeImage": "",
-      "afterImage": "",
+      "beforeImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-xu92y5bwo.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-7qfmd98x00.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "afterImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-4chmer0xr4.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-3e9ywkzxfk.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
       "beforeDescription": "The patient page was cluttered and unclear — oversized tabs, no visual hierarchy, and adherence metrics buried where no one could find them.",
       "afterDescription": "A dedicated patient page with clear separation between info, plans, and progress — and adherence metrics surfaced as the primary clinical signal.",
       "beforeBullets": [
@@ -137,7 +215,13 @@
         "Clear separation between patient info, active plans, and progress",
         "Adherence metrics prominent — visible without navigating away"
       ],
-      "highlight": "Clinicians went from searching across screens to finding everything in one predictable place."
+      "highlight": "Clinicians went from searching across screens to finding everything in one predictable place.",
+      "imageDisplayMode": "carousel",
+      "beforeImageCarouselFit": "contain",
+      "splitRatio": 40,
+      "beforeImageCarouselInterval": 1500,
+      "gridCols": 2,
+      "afterImageCarouselFit": "contain"
     },
     {
       "type": "chapter",
@@ -151,8 +235,109 @@
       "switcherStyle": "pill",
       "label": "Care Plan Editing",
       "title": "Editing a plan shouldn't require a map",
-      "beforeImage": "",
-      "afterImage": "",
+      "beforeImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-7qfmd98x00.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-3icuntqcc0.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-fu77sazv3c.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-4k0tnag9eo.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "afterImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-3e9ywkzxfk.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-4gqtt2o900.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-4t0xrhcg8w.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-20olxb6bo8.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-6yoff99cec.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
       "beforeDescription": "The old flow was spread across multiple screens with no clear separation between exercises — lengthy, cluttered, and easy to get lost in.",
       "afterDescription": "Everything consolidated onto one screen. Each exercise on its own card. Inline editing throughout.",
       "beforeBullets": [
@@ -165,7 +350,13 @@
         "Each exercise displayed as its own card — easy to compare and reorder",
         "Patient health data pinned throughout for constant clinical context"
       ],
-      "highlight": "Irrelevant information removed entirely — the screen shows only what clinicians need to act."
+      "highlight": "Irrelevant information removed entirely — the screen shows only what clinicians need to act.",
+      "gridCols": 3,
+      "imageDisplayMode": "carousel",
+      "beforeImageCarouselFit": "contain",
+      "beforeImageCarouselInterval": 1500,
+      "afterImageCarouselFit": "contain",
+      "afterImageCarouselInterval": 1500
     },
     {
       "type": "chapter",
@@ -186,7 +377,57 @@
       "switcherStyle": "pill",
       "label": "Protocol Builder",
       "title": "From rigid templates to full clinical control",
-      "beforeImage": "",
+      "beforeImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-db2ae7syo.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-hxjw766x2s.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "",
+          "caption": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "",
+          "caption": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "",
+          "caption": ""
+        }
+      ],
       "afterImage": "",
       "beforeDescription": "No defined protocol creation workflow. Expert clinicians were forced into multi-step navigation with no way to build from scratch.",
       "afterDescription": "A drag-and-drop Kanban builder modelled on the care plan editor — familiar from day one, powerful enough for complex cases.",
@@ -200,7 +441,8 @@
         "Exercise library on the left, treatment board on the right",
         "Same card system as care plan editor — zero additional learning"
       ],
-      "highlight": "Reusing the card system across both flows meant the new builder felt immediately familiar."
+      "highlight": "Reusing the card system across both flows meant the new builder felt immediately familiar.",
+      "imageDisplayMode": "carousel"
     },
     {
       "type": "outcomes",
