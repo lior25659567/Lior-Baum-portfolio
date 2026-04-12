@@ -33,23 +33,22 @@
       "splitRatio": 50
     },
     {
-      "type": "textAndImage",
+      "type": "problem",
       "label": "The System",
-      "title": "A system used during live treatment",
-      "content": "iTero is used while the patient is in the chair. The workflow moves through three connected phases — RX (setup), Scan (capture), and View (validation). Decisions in each phase directly affect the next.",
+      "title": "A system used during live patient treatment",
+      "content": "iTero is used chair-side while the patient is in the room. Three phases — RX, Scan, and View — feed directly into each other. A breakdown in any one affects the entire appointment.",
       "issuesTitle": "The three phases",
       "issues": [
-        "RX → define patient and procedure",
-        "Scan → capture data in real-time",
-        "View → validate and confirm results",
-        "Breakdowns in any phase impact the full workflow"
+        "RX → define patient, procedure, and case details",
+        "Scan → capture a real-time 3D model",
+        "View → validate results before lab submission"
       ],
-      "bullets2": [],
+      "highlight": "Every decision happens under time pressure — with the patient in the chair.",
       "image": [
         {
           "position": "center center",
           "size": "large",
-          "fit": "cover",
+          "fit": "contain",
           "wrapperBg": false,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-wvhziz51co.png",
@@ -58,24 +57,21 @@
           "embedType": ""
         }
       ],
-      "splitRatio": 30,
-      "slideMode": "simple",
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },
     {
-      "type": "textAndImage",
+      "type": "problem",
       "label": "The Problem",
       "title": "The system grew. The experience didn't.",
-      "content": "RX, Scan, and View were built up over time — each piece added without a shared logic connecting them. What should feel like one continuous workflow became three separate systems stitched together.",
+      "content": "RX, Scan, and View were built up over time with no shared logic. What should feel like one workflow became three disconnected systems.",
       "issuesTitle": "Where it broke down",
       "issues": [
-        "Setup blocks users before they can start scanning",
-        "Procedure and tooth selection require too much mental effort",
-        "Scanning stops every time a tool needs adjusting",
-        "Tool feedback is unclear — users can't tell if it worked",
-        "Nothing signals when a scan is actually complete",
-        "Users lose confidence and fall out of flow"
+        "Setup blocked users before they could start scanning",
+        "Procedure and tooth selection required too much mental effort",
+        "Scanning stopped every time a tool needed adjusting",
+        "Nothing signalled when a scan was actually complete"
       ],
       "image": [
         {
@@ -90,7 +86,7 @@
           "embedType": ""
         }
       ],
-      "splitRatio": 30,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid",
       "imageCarouselInterval": 1500
@@ -99,7 +95,7 @@
       "type": "quotes",
       "label": "User Research",
       "title": "What we heard in the room",
-      "content": "We observed clinicians during live scanning sessions and followed up with interviews. The same frustrations came up again and again — not as complaints about the software, but as accepted parts of the workflow.",
+      "content": "We observed clinicians during live sessions and followed up with interviews. The same frustrations surfaced everywhere — accepted as part of the job, not reported as problems.",
       "quotes": [
         {
           "text": "The patient popup interrupts me before I even start.",
@@ -147,13 +143,13 @@
         },
         {
           "number": "3",
-          "title": "Make every tool and state self-explanatory",
-          "description": "Clarity should be built in — not something users figure out over time."
+          "title": "Make every tool self-explanatory",
+          "description": "Clarity built in — not something users figure out over time."
         },
         {
           "number": "4",
-          "title": "Make results feel trustworthy on first view",
-          "description": "Give users a clear signal that the scan is done, so they don't have to keep checking."
+          "title": "Make results trustworthy on first view",
+          "description": "A clear signal that the scan is done — no need to keep checking."
         }
       ],
       "kpis": [
@@ -170,16 +166,17 @@
       "cardVariant": "default"
     },
     {
-      "type": "textAndImage",
+      "type": "problem",
       "label": "Interactive Prototype",
       "title": "Testing decisions before they became real",
-      "content": "We built a fully interactive prototype using Claude Code to simulate the real scanning workflow — testing design decisions under realistic clinical conditions before anything went to development.",
+      "content": "We built an interactive prototype using Claude Code to simulate the real scanning workflow — testing decisions under clinical conditions before anything reached development.",
       "bullets2Title": "What this enabled",
       "bullets2": [
-        "Real workflow simulation, not just static screens",
-        "Friction points caught before development began",
+        "Real workflow simulation — not static screens",
+        "Friction caught before development began",
         "Changes tested the same day they were made"
       ],
+      "highlight": "Prototyping in code let us test things a Figma prototype simply can't — continuous motion, real-time feedback, and tool sequencing.",
       "image": [
         {
           "position": "center center",
@@ -191,22 +188,11 @@
           "caption": "Interactive prototype built with Claude Code",
           "isVideo": false,
           "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "",
-          "caption": ""
         }
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid",
-      "imageCarouselInterval": 1500,
-      "bulletStyle": "minimal"
+      "imageDisplayMode": "grid"
     },
     {
       "type": "chapter",
@@ -226,7 +212,7 @@
           "wrapperBg": false,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-uykask3eo.png",
-          "caption": "",
+          "caption": "Old — rigid multi-step setup sequence",
           "isVideo": false,
           "embedType": ""
         }
@@ -239,18 +225,18 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-aouv40ns6o0.mp4",
-          "caption": "",
+          "caption": "New — inline setup, immediate scan access",
           "isVideo": true,
           "embedType": "",
           "isGif": false
         }
       ],
-      "beforeDescription": "A rigid setup sequence blocked users before scanning could even begin.",
+      "beforeDescription": "A rigid setup sequence blocked users before scanning could begin — no shortcuts, no flexibility.",
       "afterDescription": "Users start immediately and fill in context as they go.",
       "beforeBullets": [
         "Patient selection required a multi-step modal",
         "Procedure had to be defined upfront — no flexibility",
-        "Dropdown selection disconnected from the dental chart"
+        "Dropdown disconnected from the dental chart"
       ],
       "afterBullets": [
         "Inline patient selection — no modal, no interruption",
@@ -260,11 +246,8 @@
       "gridCols": 1,
       "imageDisplayMode": "grid",
       "splitRatio": 30,
-      "beforeImageCarouselInterval": 2000,
       "slideMode": "before-after",
-      "switcherStyle": "pill",
-      "beforeImageCarouselFit": "contain",
-      "bulletStyle": "minimal"
+      "switcherStyle": "pill"
     },
     {
       "type": "comparison",
@@ -278,10 +261,9 @@
           "wrapperBg": false,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-c18bmcovzg.png",
-          "caption": "",
+          "caption": "Old — one modal per tooth, no overview",
           "isVideo": false,
-          "embedType": "",
-          "isGif": false
+          "embedType": ""
         }
       ],
       "afterImage": [
@@ -292,36 +274,35 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-1caqsxcaibk.mp4",
-          "caption": "",
+          "caption": "New — visual chart, multi-select, color-coded procedures",
           "isVideo": true,
           "embedType": "",
           "isGif": false
         }
       ],
-      "beforeDescription": "Every tooth required its own modal — click, confirm, close, repeat. No overview, no multi-select.",
-      "afterDescription": "Teeth selected directly on the chart, individually or in groups, with procedures assigned inline.",
+      "beforeDescription": "Every tooth required its own modal — click, confirm, close, repeat. No overview, no way to see the full treatment plan.",
+      "afterDescription": "Teeth selected directly on the chart — individually or in groups — with procedures assigned inline.",
       "beforeBullets": [
-        "One modal per tooth — no multi-select",
+        "One blocking modal per tooth — no multi-select",
         "No color coding — no clinical overview",
         "Complex cases required many repetitive steps"
       ],
       "afterBullets": [
-        "Select one tooth or many in a single interaction",
-        "Color-coded procedures visible directly on the chart",
-        "Multiple procedure groups managed in one view"
+        "Select one or many teeth in a single interaction",
+        "Color-coded procedures visible on the chart",
+        "Full treatment plan visible without opening anything"
       ],
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "gridCols": 1,
       "imageDisplayMode": "grid",
-      "splitRatio": 30,
-      "bulletStyle": "minimal"
+      "splitRatio": 30
     },
     {
       "type": "chapter",
       "number": "02",
       "title": "Scan & View",
-      "subtitle": "The active phase where clinicians capture a 3D model in real time — then step back to analyse, validate, and make decisions before anything reaches the lab."
+      "subtitle": "The active phase where clinicians capture a 3D model in real time — then analyse, validate, and decide before anything reaches the lab."
     },
     {
       "type": "comparison",
@@ -335,7 +316,7 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-c1djiu0kh0.png",
-          "caption": "",
+          "caption": "Old — mixed styles, no consistent location",
           "isVideo": false,
           "embedType": ""
         }
@@ -348,52 +329,42 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-g2r58c0dp9s.mp4",
-          "caption": "",
+          "caption": "New — unified icons in a single collapsible toolbar",
           "isVideo": true,
           "isGif": false,
           "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "",
-          "caption": ""
         }
       ],
-      "beforeDescription": "Icons accumulated from different sources with no shared style, and tools had no permanent home. As features grew, both the language and the layout fell apart.",
-      "afterDescription": "A unified icon set and a single collapsible toolbar — every tool now speaks the same visual language and always lives in the same place.",
+      "beforeDescription": "Icons accumulated from different sources with no shared style — and tools had no permanent home. Users had no pattern to rely on mid-scan.",
+      "afterDescription": "A unified icon set and a collapsible toolbar — consistent language, fixed location, labelled on demand.",
       "beforeBullets": [
-        "Icons sourced from different styles — no shared visual language",
-        "Similar actions looked different, breaking user expectations",
+        "No shared visual language across icons",
         "No dedicated place for tools — each lived somewhere different",
-        "Every new feature added more scatter with no system behind it"
+        "Every new feature added more scatter"
       ],
       "afterBullets": [
-        "Unified icon set — each icon maps clearly to its action",
-        "All tools live in one centralised collapsible toolbar",
-        "Expanding reveals tool names — nothing requires memorisation",
-        "Scalable system — new icons and tools slot in without disruption"
+        "Unified icon set — each maps clearly to its action",
+        "One collapsible toolbar, always in the same place",
+        "Scalable — new tools slot in without disruption"
       ],
       "gridCols": 1,
       "imageDisplayMode": "grid",
       "splitRatio": 40,
-      "bulletStyle": "minimal"
+      "slideMode": "before-after",
+      "switcherStyle": "pill"
     },
     {
-      "type": "textAndImage",
+      "type": "problem",
       "label": "Multi-scan & Compare",
       "title": "Managing multiple scans — and comparing them",
-      "content": "Clinicians capture pre-treatment, post-treatment, and additional references — then need to compare them. Tabs let them switch between scans without losing context. The multi-layer panel lets them overlay those scans and adjust opacity to see differences instantly.",
+      "content": "Clinicians capture pre-treatment, post-treatment, and additional references — then need to compare them. Tabs handle the organisation; the multi-layer panel handles the comparison.",
       "bullets2Title": "What this unlocked",
       "bullets2": [
         "Add and switch between scans within one session",
-        "Full context preserved across every tab",
         "Overlay scans and adjust opacity in real time",
         "Comparison becomes visual, not mental"
       ],
+      "highlight": "What used to be a mental task became a visual action you can do in seconds.",
       "image": [
         {
           "position": "center center",
@@ -410,9 +381,7 @@
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid",
-      "imageCarouselInterval": 1500,
-      "bulletStyle": "minimal"
+      "imageDisplayMode": "grid"
     },
     {
       "type": "comparison",
@@ -426,7 +395,7 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-aeiguj0sno.png",
-          "caption": "",
+          "caption": "Old — unlabelled icon clusters, no hierarchy",
           "isVideo": false,
           "embedType": ""
         }
@@ -439,43 +408,34 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-2x1frtk9p0.png",
-          "caption": "",
+          "caption": "New — named panels with one primary CTA per tool",
           "isVideo": false,
           "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "",
-          "caption": ""
         }
       ],
-      "beforeDescription": "Tools were small icon clusters with no labels, no hierarchy, and no clinical context. Every tool looked and behaved differently — there was no pattern to learn and no clear primary action.",
-      "afterDescription": "Each tool became a named panel with one clear primary action and secondary options below it. Consistent structure across all tools means doctors build muscle memory fast.",
+      "beforeDescription": "Unlabelled icon clusters with no hierarchy — doctors memorised what every icon did and figured out the sequence themselves.",
+      "afterDescription": "Named panels with one clear primary action. Same structure across all tools — doctors build muscle memory fast.",
       "beforeBullets": [
-        "Small unlabelled icons — meaning had to be memorised",
-        "No visual hierarchy — all actions carried equal weight",
-        "Destructive actions sat alongside primary ones with no separation"
+        "Unlabelled icons — meaning had to be memorised",
+        "No hierarchy — all actions carried equal weight",
+        "Destructive actions mixed with primary ones"
       ],
       "afterBullets": [
-        "Named panels with a single bold primary CTA per tool",
-        "AI detect is the default action — doctors review, not draw",
-        "Destructive actions visually separated and clearly secondary",
-        "Consistent card structure across all tools builds muscle memory"
+        "Named panels with a single primary CTA per tool",
+        "AI detect is the default — doctors review, not draw",
+        "Destructive actions clearly separated"
       ],
       "gridCols": 1,
       "imageDisplayMode": "grid",
       "splitRatio": 40,
-      "bulletStyle": "minimal"
+      "slideMode": "before-after",
+      "switcherStyle": "pill"
     },
     {
       "type": "problem",
-      "label": "The impact",
+      "label": "Design System",
       "title": "The work became the system",
-      "content": "The patterns created throughout the redesign were formalised into a design system — published in Figma for the team and built in Claude Code to give developers a living reference they could work from directly.",
+      "content": "The patterns created throughout the redesign were formalised into a design system — published in Figma and built in Claude Code as a living developer reference.",
       "highlight": "The design influenced the system built after it — and became a permanent part of it.",
       "image": [
         {
@@ -485,7 +445,7 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-5pdk4g6ngg.png",
-          "caption": "",
+          "caption": "Design system components formalised from the redesign",
           "isVideo": false,
           "embedType": ""
         }
@@ -502,22 +462,22 @@
         {
           "metric": "Faster",
           "title": "Time to start scanning",
-          "description": "Removing setup gates meant clinicians could begin the moment they were ready — no sequence to complete first."
+          "description": "No setup gates — clinicians start the moment they're ready."
         },
         {
           "metric": "Fewer",
           "title": "Interruptions mid-scan",
-          "description": "A consistent toolbar with a clear home for every tool meant doctors stopped searching and stayed in physical flow."
+          "description": "A consistent toolbar meant doctors stopped searching and stayed in flow."
         },
         {
           "metric": "Clearer",
           "title": "Tools and states",
-          "description": "Named panels with a single primary action replaced icon clusters — clinicians understood what to do without memorising anything."
+          "description": "Named panels replaced icon clusters — no memorisation required."
         },
         {
           "metric": "Higher",
           "title": "Confidence in scan results",
-          "description": "Clear completion signals and visual comparison meant doctors stopped re-checking and trusted what they saw the first time."
+          "description": "Clear completion signals meant doctors trusted results on first view."
         }
       ],
       "showNumbers": false,
