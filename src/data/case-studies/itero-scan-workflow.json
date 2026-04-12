@@ -273,10 +273,11 @@
           "position": "center center",
           "size": "large",
           "fit": "contain",
+          "wrapperBg": false,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-xetn5q6zls.mp4",
+          "src": "/case-studies/itero-scan-workflow/img-c18bmcovzg.png",
           "caption": "",
-          "isVideo": true,
+          "isVideo": false,
           "embedType": "",
           "isGif": false
         }
