@@ -1,0 +1,455 @@
+{
+  "dataVersion": 4,
+  "title": "Patient Report\nRedesign",
+  "subtitle": "Redesigning the clinical patient report from a blank page into a structured, shareable communication tool.",
+  "category": "Clinical UX",
+  "year": "2024",
+  "color": "#0097A7",
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Patient Report\nRedesign",
+      "description": "Align Technology's patient report was a blank page doctors had to fill from scratch after every scan. We redesigned it into a structured, template-driven tool that produces professional, shareable reports in minutes.",
+      "clientLabel": "Client",
+      "client": "Align Technology",
+      "focusLabel": "Focus",
+      "focus": "Clinical Reporting UX",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "New patient report UI",
+          "isVideo": false,
+          "isGif": false,
+          "embedType": ""
+        }
+      ],
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
+      "splitRatio": 50
+    },
+    {
+      "type": "info",
+      "title": "Project Overview",
+      "items": [
+        {
+          "label": "Client",
+          "value": "Align Technology"
+        },
+        {
+          "label": "Product",
+          "value": "iTero Patient Report"
+        },
+        {
+          "label": "Focus",
+          "value": "Clinical Reporting UX"
+        },
+        {
+          "label": "Deliverables",
+          "value": "UX Design, Interaction Design, Component System"
+        }
+      ]
+    },
+    {
+      "type": "problem",
+      "label": "The Context",
+      "title": "A report doctors had to build from nothing, every time",
+      "content": "After completing a scan, doctors needed to generate a patient report — a document the patient would receive explaining their oral health status and treatment plan. The existing tool gave them a blank page, a text field, and raw scan images.",
+      "highlight": "The report was supposed to build patient trust and communicate clinical findings. Instead it added 15+ minutes of manual work after every appointment.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Old patient report — blank page, no structure",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 45,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "issuesBreakdown",
+      "label": "The Problem",
+      "title": "Four ways the old report failed doctors and patients",
+      "issues": [
+        {
+          "number": "1",
+          "title": "No structure or starting point",
+          "description": "Every report started from a blank page — no templates, no sections, no guidance on what to include"
+        },
+        {
+          "number": "2",
+          "title": "Raw scans, no clinical context",
+          "description": "Images were dumped into the report as-is — no annotation, no tooth reference, no explanation for the patient"
+        },
+        {
+          "number": "3",
+          "title": "No comparison or progression",
+          "description": "No way to show before/after — patients couldn't see the change and doctors couldn't document progress"
+        },
+        {
+          "number": "4",
+          "title": "Output not fit for patients",
+          "description": "The final PDF was a plain image grid with a text block — not designed to be read, understood, or trusted"
+        }
+      ]
+    },
+    {
+      "type": "quotes",
+      "label": "User Research",
+      "title": "What doctors told us",
+      "content": "We interviewed clinicians across multiple practices. The same problems surfaced everywhere — not as complaints, but as workarounds they'd learned to live with.",
+      "quotes": [
+        {
+          "text": "I just skip the report most of the time. It takes too long to set up.",
+          "author": "Dr. A, General Practice"
+        },
+        {
+          "text": "Patients ask me to explain things the report doesn't show them.",
+          "author": "Dr. B, Restorative"
+        },
+        {
+          "text": "I have no way to circle what I'm talking about on the image.",
+          "author": "Dr. C, Orthodontics"
+        },
+        {
+          "text": "Every report looks different because there's no standard starting point.",
+          "author": "Dr. D, Implantology"
+        }
+      ],
+      "bullets": [],
+      "cardHeight": "100"
+    },
+    {
+      "type": "goals",
+      "label": "Design Goals",
+      "title": "What we set out to fix.",
+      "goals": [
+        {
+          "number": "1",
+          "title": "Give doctors a starting point",
+          "description": "Templates tailored to common procedures so reports start pre-structured, not blank."
+        },
+        {
+          "number": "2",
+          "title": "Make findings visible and specific",
+          "description": "Annotation tools and tooth-level tagging so doctors can show exactly what they mean."
+        },
+        {
+          "number": "3",
+          "title": "Support clinical storytelling",
+          "description": "Before/after comparison, clinical details, and cost summary built into the structure."
+        },
+        {
+          "number": "4",
+          "title": "Make sharing frictionless",
+          "description": "A report patients can receive, open, and understand — on any device, with optional PIN protection."
+        }
+      ],
+      "kpis": [
+        "Time to create a complete report",
+        "Report completion rate",
+        "Doctor-reported confidence in output",
+        "Patient engagement with shared report"
+      ],
+      "goalsCardsTitle": "Goals",
+      "gridColumns": 2,
+      "cardHeight": "100",
+      "kpisGridColumns": 4,
+      "showKpisSection": true
+    },
+    {
+      "type": "chapter",
+      "number": "01",
+      "title": "Structure",
+      "subtitle": "Replacing the blank page with a system doctors can start from."
+    },
+    {
+      "type": "comparison",
+      "label": "Report Templates",
+      "title": "From blank page to procedure-ready in one click",
+      "beforeImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Old — blank page with no starting point",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "afterImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "New — template picker with procedure-specific presets",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "beforeDescription": "Every report started from scratch — no structure, no guidance, no consistency between doctors.",
+      "afterDescription": "Five templates cover the most common procedures. Each one seeds the right sections and placeholder content so doctors can start immediately.",
+      "beforeBullets": [
+        "Blank page every time — no template or structure",
+        "No guidance on what sections to include",
+        "Every doctor's report looked completely different"
+      ],
+      "afterBullets": [
+        "General Scan, Implant Planning, Crown Prep and Follow-up templates",
+        "Each template pre-seeds relevant sections for the procedure",
+        "Switch templates without losing edits — previous content restored"
+      ],
+      "slideMode": "before-after",
+      "switcherStyle": "pill",
+      "splitRatio": 50
+    },
+    {
+      "type": "problem",
+      "label": "Multi-Section Builder",
+      "title": "A report built from blocks, not a single text field",
+      "content": "The new report is composed from modular sections — Image, Before/After, Cost Summary, Clinical Details — each with its own dedicated editor. Sections can be reordered, duplicated, or removed.",
+      "bullets2Title": "Section types",
+      "bullets2": [
+        "Image — clinical photo with title, notes, and tooth tags",
+        "Before / After — side-by-side comparison with custom labels",
+        "Summary — itemized cost table with live totals",
+        "Clinical details — diagnosis, treatment, estimated cost, date"
+      ],
+      "highlight": "Drag handles let doctors reorder sections to match the narrative they want to tell.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Multi-section builder with add section panel",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 45,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "chapter",
+      "number": "02",
+      "title": "Findings",
+      "subtitle": "Giving doctors the tools to show patients exactly what they're looking at."
+    },
+    {
+      "type": "comparison",
+      "label": "Image Annotation",
+      "title": "Doctors need to show, not just describe",
+      "beforeImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Old — plain image with no annotation capability",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "afterImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "New — annotation canvas with pen, text, color picker",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "beforeDescription": "Doctors had no way to mark up images — findings had to be described in text, disconnected from the visual.",
+      "afterDescription": "A full annotation canvas lets doctors draw directly on images with pen, text, and color tools — then save back to the report.",
+      "beforeBullets": [
+        "No annotation — doctors described findings in a separate text field",
+        "No visual connection between the explanation and the image",
+        "Patients couldn't tell what they were supposed to look at"
+      ],
+      "afterBullets": [
+        "Pen, arrow, and text tools with adjustable size and color",
+        "Lightbox view for full-size annotation before saving",
+        "Annotations saved with the image — no separate layer to manage"
+      ],
+      "slideMode": "before-after",
+      "switcherStyle": "pill",
+      "splitRatio": 50
+    },
+    {
+      "type": "comparison",
+      "label": "Tooth Chart",
+      "title": "Tagging findings to specific teeth, not just descriptions",
+      "beforeImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Old — no tooth-level context in report",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "afterImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "New — interactive FDI tooth chart with multi-select",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "beforeDescription": "There was no way to associate a finding with a specific tooth — everything was implied or written out in text.",
+      "afterDescription": "An interactive full-mouth FDI chart lets doctors tag each section to the exact teeth involved. Selected teeth appear as visible tags in the report preview.",
+      "beforeBullets": [
+        "No tooth-level context — findings referenced teeth by description only",
+        "Patients had no visual reference for which teeth were affected"
+      ],
+      "afterBullets": [
+        "Full-mouth FDI chart with both arches in a single view",
+        "Click to select, hover preview, multiple selections per section",
+        "Selected teeth flow into the report as visible numbered tags"
+      ],
+      "slideMode": "before-after",
+      "switcherStyle": "pill",
+      "splitRatio": 50
+    },
+    {
+      "type": "chapter",
+      "number": "03",
+      "title": "Output",
+      "subtitle": "A report patients can actually read, understand, and trust."
+    },
+    {
+      "type": "comparison",
+      "label": "Before / After",
+      "title": "Showing patients what changed",
+      "beforeImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Old — no comparison capability",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "afterImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "New — before/after block with custom labels and comparison notes",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "beforeDescription": "No way to show treatment progression — patients couldn't see the difference between visits.",
+      "afterDescription": "A dedicated before/after section lets doctors place two images side by side with custom labels and comparison notes.",
+      "beforeBullets": [
+        "No before/after support — progress had to be described in text",
+        "Patients left appointments without visible evidence of change"
+      ],
+      "afterBullets": [
+        "Side-by-side comparison with Before / After labels",
+        "Rename labels to anything — 'Initial', 'Week 6', 'Post-Treatment'",
+        "Optional notes field explains what changed between the two images"
+      ],
+      "slideMode": "before-after",
+      "switcherStyle": "pill",
+      "splitRatio": 50
+    },
+    {
+      "type": "problem",
+      "label": "Share & Export",
+      "title": "A report patients can open on any device",
+      "content": "The old report output was a PDF that doctors had to print or email manually. The new system generates a shareable link instantly — with QR code, WhatsApp, SMS, and email options built in. An optional PIN ensures only the patient can open it.",
+      "bullets2Title": "Share options",
+      "bullets2": [
+        "Auto-generated shareable URL with copy-to-clipboard",
+        "QR code for in-chair handoff without contact exchange",
+        "WhatsApp, SMS, and email native pickers",
+        "Optional 4–6 digit PIN — shown in share modal for verbal handover"
+      ],
+      "highlight": "PDF export captures the full preview with consistent typography — no layout shifts, no raw images.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Share modal with QR code and multi-channel options",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 45,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "outcomes",
+      "label": "Outcomes",
+      "title": "A report doctors actually use.",
+      "outcomes": [
+        {
+          "metric": "Faster",
+          "title": "Report creation",
+          "description": "Templates and pre-seeded sections replaced blank-page setup — reports that took 15+ minutes now start in seconds."
+        },
+        {
+          "metric": "Clearer",
+          "title": "Clinical communication",
+          "description": "Annotation and tooth tagging gave doctors visual tools to explain findings — patients left with a document they could actually read."
+        },
+        {
+          "metric": "Higher",
+          "title": "Report completion rate",
+          "description": "With structure provided upfront, doctors stopped skipping the report step entirely."
+        },
+        {
+          "metric": "Wider",
+          "title": "Reach per report",
+          "description": "Multi-channel sharing meant reports reached patients via their preferred channel — not just a printed handout."
+        }
+      ],
+      "showNumbers": false,
+      "cardVariant": "default"
+    },
+    {
+      "type": "end",
+      "title": "Thank You",
+      "subtitle": "Designing clinical tools that work at the speed of care.",
+      "cta": "Get in touch"
+    }
+  ]
+}
