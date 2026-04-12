@@ -8,8 +8,8 @@
   "slides": [
     {
       "type": "intro",
-      "title": "Home Physical\nTherapy Platform",
-      "description": "WizeCare brings physical therapy into the patient's home. The clinical tools were solid — but the platform was too complex for busy clinicians to adopt in real practice.",
+      "title": "Simplifying Remote\nPhysical Therapy",
+      "description": "WizeCare brings physical therapy into the patient's home. We redesigned the core clinical workflows — patient management, care plan editing, and protocol creation — to reduce friction and drive adoption.",
       "clientLabel": "Client",
       "client": "WizeCare",
       "focusLabel": "Platform",
@@ -28,7 +28,8 @@
         }
       ],
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "splitRatio": 60
     },
     {
       "type": "problem",
