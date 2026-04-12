@@ -50,7 +50,7 @@
           "position": "center center",
           "size": "large",
           "fit": "cover",
-          "wrapperBg": true,
+          "wrapperBg": false,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-wvhziz51co.png",
           "caption": "",
@@ -221,7 +221,7 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "cover",
+          "fit": "contain",
           "wrapperBg": false,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-uykask3eo.png",
@@ -237,7 +237,7 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-xetn5q6zls.mp4",
+          "src": "/case-studies/itero-scan-workflow/img-aouv40ns6o0.mp4",
           "caption": "",
           "isVideo": true,
           "embedType": "",
@@ -286,8 +286,9 @@
           "position": "center center",
           "size": "large",
           "fit": "contain",
+          "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-xetn5q6zls.mp4",
+          "src": "/case-studies/itero-scan-workflow/img-1caqsxcaibk.mp4",
           "caption": "",
           "isVideo": true,
           "embedType": "",
@@ -392,7 +393,29 @@
           "embedType": ""
         }
       ],
-      "afterImage": "",
+      "afterImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-g2r58c0dp9s.mp4",
+          "caption": "",
+          "isVideo": true,
+          "isGif": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "",
+          "caption": ""
+        }
+      ],
       "beforeDescription": "Even with better icons, tools had no permanent home. As features grew, they scattered — leaving users with no pattern to rely on mid-scan.",
       "afterDescription": "A single collapsible toolbar gives every tool a fixed, predictable location — compact when focused, labelled when needed.",
       "beforeBullets": [
@@ -428,11 +451,13 @@
           "position": "center center",
           "size": "large",
           "fit": "contain",
+          "wrapperBg": true,
           "embedUrl": "",
-          "src": "[[MEDIA]]",
+          "src": "/case-studies/itero-scan-workflow/img-539c9v0rkkc.mp4",
           "caption": "",
-          "isVideo": false,
-          "embedType": ""
+          "isVideo": true,
+          "embedType": "",
+          "isGif": false
         }
       ],
       "splitRatio": 40,
