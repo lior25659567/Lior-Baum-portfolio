@@ -322,71 +322,14 @@
     },
     {
       "type": "comparison",
-      "label": "Scan Icons",
-      "title": "If users can't read the tools, they can't trust them",
-      "beforeImage": [
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "wrapperBg": false,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-4tciq01xc0.png",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
-        }
-      ],
-      "afterImage": [
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "wrapperBg": false,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-t3sgtn400.png",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "",
-          "caption": ""
-        }
-      ],
-      "beforeDescription": "Icons had accumulated over time from different sources with no shared style or logic — each one a one-off decision, none of them part of a system.",
-      "afterDescription": "A unified icon set where every tool speaks the same visual language — designed to be recognised instantly, not memorised.",
-      "beforeBullets": [
-        "Icons sourced from different styles with no shared visual language",
-        "No design guidelines — every new icon was an isolated decision",
-        "Similar actions looked different, breaking user expectations",
-        "Users had to learn each icon individually rather than read them intuitively"
-      ],
-      "afterBullets": [
-        "Unified icon set built on a single consistent style",
-        "Each icon maps clearly to its action — no guessing required",
-        "Visual consistency lets users scan the toolbar without thinking",
-        "Scalable system — new icons follow the same rules automatically"
-      ],
-      "gridCols": 1,
-      "imageDisplayMode": "grid",
-      "splitRatio": 40
-    },
-    {
-      "type": "comparison",
       "label": "Scan Toolbar",
-      "title": "Clear icons needed a consistent place to live",
+      "title": "From scattered icons to a system users can learn once",
       "beforeImage": [
         {
           "position": "center center",
           "size": "large",
           "fit": "contain",
-          "wrapperBg": false,
+          "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-c1djiu0kh0.png",
           "caption": "",
@@ -417,19 +360,19 @@
           "caption": ""
         }
       ],
-      "beforeDescription": "Even with better icons, tools had no permanent home. As features grew, they scattered — leaving users with no pattern to rely on mid-scan.",
-      "afterDescription": "A single collapsible toolbar gives every tool a fixed, predictable location — compact when focused, labelled when needed.",
+      "beforeDescription": "Icons accumulated from different sources with no shared style, and tools had no permanent home. As features grew, both the language and the layout fell apart.",
+      "afterDescription": "A unified icon set and a single collapsible toolbar — every tool now speaks the same visual language and always lives in the same place.",
       "beforeBullets": [
+        "Icons sourced from different styles — no shared visual language",
+        "Similar actions looked different, breaking user expectations",
         "No dedicated place for tools — each lived somewhere different",
-        "Every new feature added more scatter with no system behind it",
-        "Users had no pattern to rely on, so every scan required relearning",
-        "Searching mid-action broke physical rhythm and focus"
+        "Every new feature added more scatter with no system behind it"
       ],
       "afterBullets": [
-        "All tools live in one centralised toolbar — always in the same place",
-        "Toolbar collapses to stay out of the way during active scanning",
-        "Expanding reveals tool names, so nothing requires memorisation",
-        "Scalable by design — new tools slot in without disrupting the layout"
+        "Unified icon set — each icon maps clearly to its action",
+        "All tools live in one centralised collapsible toolbar",
+        "Expanding reveals tool names — nothing requires memorisation",
+        "Scalable system — new icons and tools slot in without disruption"
       ],
       "gridCols": 1,
       "imageDisplayMode": "grid",
@@ -470,8 +413,41 @@
       "type": "comparison",
       "label": "View Tools",
       "title": "From icon bars to clinical decision panels",
-      "beforeImage": "",
-      "afterImage": "",
+      "beforeImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-aeiguj0sno.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "afterImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-2x1frtk9p0.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "",
+          "caption": ""
+        }
+      ],
       "beforeDescription": "Tools were small icon clusters with no labels, no hierarchy, and no clinical context. Every tool looked and behaved differently — there was no pattern to learn and no clear primary action.",
       "afterDescription": "Each tool became a named panel with one clear primary action and secondary options below it. Consistent structure across all tools means doctors build muscle memory fast.",
       "beforeBullets": [
@@ -484,7 +460,10 @@
         "AI detect is the default action — doctors review, not draw",
         "Destructive actions visually separated and clearly secondary",
         "Consistent card structure across all tools builds muscle memory"
-      ]
+      ],
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
+      "splitRatio": 40
     },
     {
       "type": "outcomes",
