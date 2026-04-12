@@ -80,9 +80,9 @@
     },
     {
       "type": "problem",
-      "label": "Section",
+      "label": "User Research",
       "title": "What clinicians told us",
-      "content": "We visited several physiotherapy clinics to understand the challenges firsthand. The same frustrations surfaced everywhere.",
+      "content": "Across every clinic we visited, the same frustrations came up — not as complaints, but as things clinicians had simply accepted.",
       "highlight": "These weren't edge cases — they were accepted parts of the daily routine.",
       "issues": [],
       "issuesTitle": "",
@@ -109,7 +109,7 @@
     {
       "type": "goals",
       "label": "Design Goals",
-      "title": "Three friction points. Three things to fix.",
+      "title": "What we set out to fix.",
       "goals": [
         {
           "number": "1",
@@ -292,8 +292,9 @@
           "embedUrl": "",
           "src": "/case-studies/wizecare/img-3e9ywkzxfk.png",
           "caption": "",
+          "embedType": "",
           "isVideo": false,
-          "embedType": ""
+          "isGif": false
         },
         {
           "position": "center center",
@@ -353,7 +354,7 @@
         "Patient health data pinned throughout for constant clinical context"
       ],
       "highlight": "Irrelevant information removed entirely — the screen shows only what clinicians need to act.",
-      "gridCols": 3,
+      "gridCols": 1,
       "imageDisplayMode": "carousel",
       "beforeImageCarouselFit": "contain",
       "beforeImageCarouselInterval": 1500,
@@ -432,55 +433,12 @@
           "size": "large",
           "fit": "cover",
           "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/wizecare/img-37kzmdvu90.png",
+          "embedUrl": "https://www.youtube.com/embed/JVQ3GlbPI0A?autoplay=1&mute=1&loop=1&playlist=JVQ3GlbPI0A&rel=0&modestbranding=1&playsinline=1",
+          "src": "",
           "caption": "",
           "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/wizecare/img-4o6qmqxmc0.png",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/wizecare/img-4oykmxaws0.png",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/wizecare/img-c7dg1tygjs.png",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/wizecare/img-ehylbk97xs.png",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
+          "embedType": "youtube",
+          "isGif": false
         }
       ],
       "beforeDescription": "No defined protocol creation workflow. Expert clinicians were forced into multi-step navigation with no way to build from scratch.",
@@ -502,7 +460,7 @@
       "splitRatio": 40,
       "afterImageCarouselInterval": 1500,
       "afterImageCarouselFit": "contain",
-      "gridCols": 3
+      "gridCols": 1
     },
     {
       "type": "outcomes",
