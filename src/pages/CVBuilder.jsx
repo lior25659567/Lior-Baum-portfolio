@@ -121,6 +121,8 @@ const CVBuilder = () => {
     return DEFAULT_CV;
   });
   const [activeSection, setActiveSection] = useState('personal');
+  const [jsonDraft, setJsonDraft] = useState('');
+  const [jsonStatus, setJsonStatus] = useState('');
   const printRef = useRef(null);
 
   useEffect(() => {
@@ -242,6 +244,7 @@ const CVBuilder = () => {
     { id: 'awards', label: 'Awards' },
     { id: 'volunteer', label: 'Volunteer' },
     { id: 'sections', label: 'Sections' },
+    { id: 'json', label: 'JSON' },
   ];
 
   return (
@@ -547,6 +550,132 @@ const CVBuilder = () => {
                 <SectionToggle label="Languages" field="showLanguages" />
                 <SectionToggle label="Awards" field="showAwards" />
                 <SectionToggle label="Volunteer & Side Projects" field="showVolunteer" />
+              </div>
+            </div>
+          )}
+
+          {activeSection === 'json' && (
+            <div className="cv-form-section cv-json-section">
+              <h3>Import from JSON</h3>
+              <p className="cv-hint">Paste a JSON object below to populate your CV. It will merge with the current data — only the fields you include will be overwritten.</p>
+              <textarea
+                className="cv-json-textarea"
+                value={jsonDraft}
+                onChange={e => { setJsonDraft(e.target.value); setJsonStatus(''); }}
+                placeholder="Paste your JSON here..."
+                spellCheck={false}
+              />
+              <div className="cv-json-actions">
+                <button
+                  className="cv-json-apply-btn"
+                  onClick={() => {
+                    try {
+                      const data = JSON.parse(jsonDraft);
+                      setCv(prev => ({ ...prev, ...data }));
+                      setJsonStatus('applied');
+                      setTimeout(() => setJsonStatus(''), 2500);
+                    } catch {
+                      setJsonStatus('error');
+                      setTimeout(() => setJsonStatus(''), 3000);
+                    }
+                  }}
+                  disabled={!jsonDraft.trim()}
+                >
+                  {jsonStatus === 'applied' ? '✓ Applied' : jsonStatus === 'error' ? 'Invalid JSON' : 'Apply JSON'}
+                </button>
+                <button
+                  className="cv-json-current-btn"
+                  onClick={() => { setJsonDraft(JSON.stringify(cv, null, 2)); setJsonStatus(''); }}
+                >
+                  Load Current CV
+                </button>
+              </div>
+
+              <div className="cv-json-reference">
+                <h4>JSON Structure Reference</h4>
+                <p className="cv-hint">Include only the fields you want to set. All fields are optional.</p>
+                <pre className="cv-json-example">{`{
+  "fullName": "Jane Doe",
+  "title": "Product Designer",
+  "email": "jane@example.com",
+  "phone": "050-123-4567",
+  "location": "Tel Aviv, Israel",
+  "portfolio": "https://janedoe.com",
+  "linkedin": "linkedin.com/in/janedoe",
+
+  "summary": "A short professional summary paragraph.",
+
+  "experience": [
+    {
+      "company": "Company Name",
+      "role": "Job Title",
+      "period": "Jan 2023 – Present",
+      "location": "Remote",
+      "bullets": [
+        "Achievement or responsibility",
+        "Another bullet point"
+      ]
+    }
+  ],
+
+  "education": [
+    {
+      "institution": "University Name",
+      "degree": "BA in Design",
+      "period": "2019 – 2023",
+      "details": "Honors, relevant coursework"
+    }
+  ],
+
+  "skillCategories": [
+    {
+      "name": "Tools",
+      "skills": "Figma, Sketch, Photoshop",
+      "display": "badges"
+    },
+    {
+      "name": "Skills",
+      "skills": "UX Research, Prototyping, Design Systems",
+      "display": "list"
+    }
+  ],
+
+  "projects": [
+    {
+      "name": "Project Name",
+      "description": "What you did",
+      "impact": "Measurable result"
+    }
+  ],
+
+  "certifications": [
+    { "name": "Cert Name", "issuer": "Organization", "year": "2024" }
+  ],
+
+  "languages": [
+    { "language": "English", "level": "Native" },
+    { "language": "Hebrew", "level": "Fluent" }
+  ],
+
+  "awards": [
+    { "title": "Award Name", "issuer": "Organization", "year": "2024" }
+  ],
+
+  "volunteer": "Description of volunteer work or side projects.",
+
+  "fontSize": 9,
+  "contentWidth": 180,
+
+  "showSummary": true,
+  "showExperience": true,
+  "showEducation": true,
+  "showSkills": true,
+  "showProjects": false,
+  "showCertifications": false,
+  "showLanguages": false,
+  "showAwards": false,
+  "showVolunteer": false
+}`}</pre>
               </div>
             </div>
           )}
