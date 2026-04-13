@@ -239,10 +239,10 @@ body.case-study-active .footer {
 
 @media (max-width: 767px) {
   .case-study {
-    --slide-pad-x: 20px;
-    --slide-pad-top: 32px;
-    --slide-pad-bottom: 32px;
-    --slide-gap: 32px;
+    --slide-pad-x: 24px;
+    --slide-pad-top: 24px;
+    --slide-pad-bottom: 24px;
+    --slide-gap: 24px;
   }
 }
 
@@ -4055,8 +4055,8 @@ body.case-study-active .footer {
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
-    min-height: 220px !important;
-    max-height: 400px !important;
+    min-height: 200px !important;
+    max-height: 50vh !important;
     aspect-ratio: 16/10 !important;
     flex: none !important;
     margin: 0 !important;
@@ -4096,10 +4096,9 @@ body.case-study-active .footer {
   .dynamic-image-item.img-size-medium .dynamic-image-wrapper,
   .dynamic-image-item.img-size-large .dynamic-image-wrapper {
     min-height: 180px !important;
-    max-height: 300px !important;
+    max-height: 45vh !important;
   }
 
-  /* Smaller text on mobile */
   .intro-title {
     font-size: clamp(1.75rem, 7vw, 2.5rem) !important;
   }
@@ -4109,7 +4108,7 @@ body.case-study-active .footer {
   .feature-title,
   .testing-title,
   .image-title {
-    font-size: clamp(1.25rem, 5vw, 1.75rem) !important;
+    font-size: clamp(1.3rem, 5.5vw, 1.85rem) !important;
   }
 
   .slide-image .image-gallery-wrapper .dynamic-images-grid {
@@ -4324,11 +4323,15 @@ body.case-study-active .footer {
 /* --- 0–767px — Tablet Portrait / Mobile --- */
 @media (max-width: 767px) {
   .case-nav {
-    height: 2.75rem;
+    height: 2.5rem;
   }
 
   .nav-slide-label {
-    display: none;
+    font-size: 0.65rem;
+    max-width: 40vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
 
@@ -4359,8 +4362,8 @@ body.case-study-active .footer {
   }
 
   .stats-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1.25rem;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem;
   }
 
   .stat-item .stat-label {
@@ -4410,10 +4413,10 @@ body.case-study-active .footer {
     grid-template-columns: 1fr;
   }
 
-  /* Outcomes: single column on mobile */
+  /* Outcomes: 2-column on mobile */
   .outcomes-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
   }
 
   /* Testimonial: smaller quote */
@@ -4500,8 +4503,8 @@ body.case-study-active .footer {
   }
 
   .outcomes-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
   }
 
   .image-caption {
@@ -4533,7 +4536,12 @@ body.case-study-active .footer {
 /* --- 480px — Small Mobile --- */
 @media (max-width: 480px) {
   .case-nav {
-    height: 2.5rem;
+    height: 2.25rem;
+  }
+
+  .nav-slide-label {
+    font-size: 0.6rem;
+    max-width: 35vw;
   }
 
   .back-icon {
@@ -4571,8 +4579,8 @@ body.case-study-active .footer {
   .intro-image-wrapper,
   .image-wrapper {
     height: auto;
-    min-height: 180px;
-    max-height: 40vh;
+    min-height: 160px;
+    max-height: 42vh;
     aspect-ratio: 16/10;
   }
 }
@@ -4588,8 +4596,8 @@ body.case-study-active .footer {
   .intro-image-wrapper,
   .image-wrapper {
     height: auto;
-    min-height: 150px;
-    max-height: 35vh;
+    min-height: 140px;
+    max-height: 38vh;
     aspect-ratio: 16/10;
   }
 }

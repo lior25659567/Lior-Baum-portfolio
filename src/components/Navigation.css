@@ -206,13 +206,13 @@
 }
 
 .mobile-link-number {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--text-body-sm);
   color: var(--color-accent);
 }
 
 .mobile-link-text {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: clamp(2rem, 8vw, 3.5rem);
   font-weight: var(--fw-heading);
   transition: color var(--transition-fast);
