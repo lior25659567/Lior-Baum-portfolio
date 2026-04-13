@@ -31,7 +31,7 @@ const EditPanel = () => {
 
   const fontOptions = [
     { value: "'Crimson Text', Georgia, serif", label: 'Crimson Text' },
-    { value: "'Syne', system-ui, sans-serif", label: 'Syne' },
+    { value: "'Mona Sans', system-ui, sans-serif", label: 'Mona Sans' },
     { value: "'Inter', system-ui, sans-serif", label: 'Inter' },
     { value: "'Poppins', system-ui, sans-serif", label: 'Poppins' },
     { value: "'Space Grotesk', system-ui, sans-serif", label: 'Space Grotesk' },

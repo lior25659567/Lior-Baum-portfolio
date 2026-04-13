@@ -920,7 +920,7 @@ body.case-study-active .footer {
 .info-title {
   font-family: var(--font-body);
   font-size: var(--text-h1);
-  font-weight: 500;
+  font-weight: 400;
   font-style: normal;
   margin-bottom: var(--slide-title-gap, 1rem);
   color: var(--color-accent);
@@ -1107,7 +1107,7 @@ body.case-study-active .footer {
 .stats-title {
   font-family: var(--font-body);
   font-size: var(--text-h2);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.2;
   flex-shrink: 0;
 }
@@ -1133,7 +1133,7 @@ body.case-study-active .footer {
 .stat-value {
   font-family: var(--font-body);
   font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-accent-contrast);
   line-height: 1;
   letter-spacing: -0.02em;
@@ -1217,7 +1217,7 @@ body.case-study-active .footer {
 .context-title {
   font-family: var(--font-body);
   font-size: var(--text-h2);
-  font-weight: 500;
+  font-weight: 400;
   line-height: var(--lh-heading);
 }
 
@@ -1314,7 +1314,7 @@ body.case-study-active .footer {
 .problem-title {
   font-family: var(--font-body);
   font-size: var(--text-h2);
-  font-weight: 500;
+  font-weight: 400;
   font-style: normal;
   line-height: var(--lh-heading);
 }
@@ -1373,7 +1373,7 @@ body.case-study-active .footer {
 .quotes-title {
   font-family: var(--font-body);
   font-size: var(--text-h2);
-  font-weight: 500;
+  font-weight: 400;
   line-height: var(--lh-heading);
   margin-bottom: 0.5rem;
   flex-shrink: 0;
@@ -1526,7 +1526,7 @@ body.case-study-active .footer {
 .goals-title {
   font-family: var(--font-body);
   font-size: var(--text-h2);
-  font-weight: 500;
+  font-weight: 400;
   line-height: var(--lh-heading);
   margin-bottom: 0.5rem;
   color: var(--color-text);
@@ -1828,7 +1828,7 @@ body.case-study-active .footer {
 .testing-title {
   font-family: var(--font-body);
   font-size: var(--text-h3);
-  font-weight: 500;
+  font-weight: 400;
   line-height: var(--lh-heading);
   margin-bottom: 1rem;
 }
@@ -1859,7 +1859,7 @@ body.case-study-active .footer {
 .outcomes-title {
   font-family: var(--font-body);
   font-size: var(--text-h2);
-  font-weight: 500;
+  font-weight: 400;
   font-style: normal;
   flex-shrink: 0;
 }
@@ -1959,7 +1959,7 @@ body.case-study-active .footer {
 .outcome-metric {
   font-family: var(--font-body);
   font-size: clamp(1.3rem, 2.5vw, 2rem);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1;
   color: var(--color-accent);
   margin: 0 0 var(--spacing-sm);
@@ -2028,7 +2028,7 @@ body.case-study-active .footer {
 .end-title {
   font-family: var(--font-body);
   font-size: var(--text-hero);
-  font-weight: 700;
+  font-weight: 600;
   font-style: normal;
   color: var(--color-accent);
   margin-bottom: 0.75rem;
@@ -2243,7 +2243,7 @@ body.case-study-active .footer {
 .twi-title {
   font-family: var(--font-body);
   font-size: var(--text-h3);
-  font-weight: 500;
+  font-weight: 400;
   line-height: var(--lh-heading);
   color: var(--color-text);
   margin: 0;
@@ -9358,7 +9358,7 @@ textarea.editable-field {
 .issues-breakdown-title {
   font-family: var(--font-body);
   font-size: var(--text-h2);
-  font-weight: 500;
+  font-weight: 400;
   font-style: normal;
   line-height: 1.2;
   color: var(--color-text);
@@ -9411,7 +9411,7 @@ textarea.editable-field {
 .goals-showcase-title {
   font-family: var(--font-body);
   font-size: var(--text-h2);
-  font-weight: 500;
+  font-weight: 400;
   font-style: normal;
   line-height: 1.2;
   color: var(--color-text);
@@ -9732,7 +9732,7 @@ textarea.editable-field {
 .achieve-goals-title {
   font-family: var(--font-body);
   font-size: var(--text-h2);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.2;
   color: var(--color-text);
   flex-shrink: 0;
@@ -12405,7 +12405,7 @@ textarea.editable-field {
 .chapter-title {
   font-family: var(--font-body);
   font-size: clamp(3.25rem, 7.5vw, 6.5rem);
-  font-weight: 400;
+  font-weight: 300;
   color: var(--color-text);
   line-height: 1.05;
   letter-spacing: -0.02em;

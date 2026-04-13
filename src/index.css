@@ -1,4 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Syne:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap');
+
+@font-face {
+  font-family: 'Mona Sans';
+  src: url('/fonts/MonaSans.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* Light Mode (Default) */
 :root {
@@ -12,7 +20,7 @@
   --color-image-contain-bg: #e8e8e8; /* Softer background for "fit" image gaps (light) */
   
   --font-display: 'Crimson Text', serif;
-  --font-body: 'Syne', sans-serif;
+  --font-body: 'Mona Sans', sans-serif;
   
   /* Type scale */
   --text-display: clamp(3rem, 5vw + 1rem, 5.5rem);
@@ -33,7 +41,7 @@
   --lh-body: 1.7;
   
   /* Font weights */
-  --fw-heading: 600;
+  --fw-heading: 500;
   --fw-body: 400;
   --fw-medium: 500;
   

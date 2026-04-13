@@ -58,7 +58,7 @@ const defaultContent = {
 const defaultStyles = {
   fonts: {
     display: "'Crimson Text', Georgia, serif",
-    body: "'Syne', system-ui, sans-serif",
+    body: "'Mona Sans', system-ui, sans-serif",
   },
   fontSizes: {
     heroName: 'clamp(3rem, 8vw, 6rem)',

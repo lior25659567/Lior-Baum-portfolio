@@ -58,7 +58,7 @@
   letter-spacing: var(--ls-heading);
 }
 
-/* Sans-serif (Syne) */
+/* Sans-serif (Mona Sans) */
 .cta-text.sans {
   font-family: var(--font-body);
   font-weight: var(--fw-body);
