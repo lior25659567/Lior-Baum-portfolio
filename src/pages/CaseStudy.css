@@ -4052,8 +4052,8 @@ body.case-study-active .footer {
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
-    min-height: 200px !important;
-    max-height: 50vh !important;
+    min-height: 160px !important;
+    max-height: 35vh !important;
     aspect-ratio: 16/10 !important;
     flex: none !important;
     margin: 0 !important;
@@ -4085,15 +4085,15 @@ body.case-study-active .footer {
 
   .slide-split,
   .slide-intro-layout {
-    gap: 1.5rem !important;
+    gap: 1rem !important;
   }
 
   .dynamic-image-wrapper,
   .dynamic-image-item.img-size-small .dynamic-image-wrapper,
   .dynamic-image-item.img-size-medium .dynamic-image-wrapper,
   .dynamic-image-item.img-size-large .dynamic-image-wrapper {
-    min-height: 180px !important;
-    max-height: 45vh !important;
+    min-height: 140px !important;
+    max-height: 30vh !important;
   }
 
   .intro-title {
@@ -4105,7 +4105,39 @@ body.case-study-active .footer {
   .feature-title,
   .testing-title,
   .image-title {
-    font-size: clamp(1.3rem, 5.5vw, 1.85rem) !important;
+    font-size: clamp(1.2rem, 5vw, 1.6rem) !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  /* Tighter text in split slides */
+  .problem-text,
+  .context-text,
+  .feature-text,
+  .testing-text {
+    font-size: 0.85rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .problem-issues,
+  .context-issues {
+    gap: 0.25rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .problem-issues li,
+  .context-issues li {
+    font-size: 0.8rem !important;
+    line-height: 1.4 !important;
+    padding-left: 1rem !important;
+  }
+
+  .problem-conclusion,
+  .context-highlight,
+  .problem-highlight {
+    font-size: 0.8rem !important;
+    padding: 0.6rem 0.75rem !important;
+    margin-top: 0.5rem !important;
   }
 
   .slide-image .image-gallery-wrapper .dynamic-images-grid {
@@ -4359,8 +4391,8 @@ body.case-study-active .footer {
   }
 
   .slide-label {
-    font-size: clamp(0.6rem, 1.5vw, 0.7rem);
-    margin-bottom: 0.5rem;
+    font-size: 0.7rem;
+    margin-bottom: 0.35rem;
   }
 
   .info-grid {
@@ -4513,11 +4545,11 @@ body.case-study-active .footer {
   }
 
   .goal-title-text {
-    font-size: 0.75rem !important;
+    font-size: 0.8rem !important;
   }
 
   .goal-description {
-    font-size: 0.65rem !important;
+    font-size: 0.75rem !important;
   }
 
   .kpis-grid {
@@ -4531,17 +4563,17 @@ body.case-study-active .footer {
   }
 
   .kpi-card-desc {
-    font-size: 0.65rem !important;
+    font-size: 0.75rem !important;
   }
 
   .kpis-label {
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     padding: 0.2rem 0.5rem;
     margin-bottom: 0.5rem;
   }
 
   .goals-cards-label {
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     padding: 0.2rem 0.5rem;
     margin-bottom: 0.5rem;
   }
@@ -4611,8 +4643,8 @@ body.case-study-active .footer {
   }
 
   .slide-label {
-    font-size: 0.6rem;
-    letter-spacing: 0.15em;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
   }
 
   .intro-subtitle {
@@ -4625,11 +4657,11 @@ body.case-study-active .footer {
   }
 
   .info-label {
-    font-size: 0.6rem;
+    font-size: 0.65rem;
   }
 
   .stats-grid {
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
   .end-cta-group {
@@ -4641,8 +4673,8 @@ body.case-study-active .footer {
   .intro-image-wrapper,
   .image-wrapper {
     height: auto;
-    min-height: 160px;
-    max-height: 42vh;
+    min-height: 140px;
+    max-height: 30vh;
     aspect-ratio: 16/10;
   }
 }
@@ -4658,8 +4690,8 @@ body.case-study-active .footer {
   .intro-image-wrapper,
   .image-wrapper {
     height: auto;
-    min-height: 140px;
-    max-height: 38vh;
+    min-height: 120px;
+    max-height: 28vh;
     aspect-ratio: 16/10;
   }
 }
