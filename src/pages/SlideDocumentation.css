@@ -520,7 +520,7 @@
 }
 
 /* Responsive */
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .docs-page {
     padding: var(--spacing-lg) var(--spacing-sm);
   }
@@ -671,8 +671,8 @@
 }
 
 .docs-preview-close {
-  width: 2rem;
-  height: 2rem;
+  width: 2.75rem;
+  height: 2.75rem;
   display: flex;
   align-items: center;
   justify-content: center;

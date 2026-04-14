@@ -4409,8 +4409,16 @@ body.case-study-active .footer {
     gap: 1rem;
   }
 
+  .stat-item {
+    min-width: 0;
+  }
+
   .stat-item .stat-label {
     max-width: 100%;
+  }
+
+  .end-title {
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
   }
 
   .end-cta-group {
@@ -4474,9 +4482,10 @@ body.case-study-active .footer {
 
   .comparison-image {
     width: 100%;
-    height: 25vh;
-    max-height: 25vh;
+    height: auto;
+    max-height: 40vh;
     min-height: auto;
+    aspect-ratio: 16/10;
   }
 
   .intro-content {
@@ -4567,15 +4576,31 @@ body.case-study-active .footer {
   }
 
   .kpis-label {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     padding: 0.2rem 0.5rem;
     margin-bottom: 0.5rem;
   }
 
   .goals-cards-label {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     padding: 0.2rem 0.5rem;
     margin-bottom: 0.5rem;
+  }
+
+  .outcome-number {
+    width: 2rem;
+    height: 2rem;
+    min-width: 2rem;
+    min-height: 2rem;
+    font-size: 0.7rem;
+  }
+
+  .step-number {
+    width: 2rem;
+    height: 2rem;
+    min-width: 2rem;
+    min-height: 2rem;
+    font-size: 0.7rem;
   }
 
   .slide-goals .goals-content {
@@ -4657,7 +4682,7 @@ body.case-study-active .footer {
   }
 
   .info-label {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
   }
 
   .stats-grid {
@@ -9649,7 +9674,7 @@ textarea.editable-field {
   overflow: visible;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 480px) {
   .issues-breakdown-grid {
     grid-template-columns: 1fr !important;
   }
