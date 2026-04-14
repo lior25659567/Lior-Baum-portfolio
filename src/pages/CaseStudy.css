@@ -4324,11 +4324,25 @@ body.case-study-active .footer {
   }
 
   .nav-slide-label {
-    font-size: 0.65rem;
+    font-size: 0.78rem;
     max-width: 40vw;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .progress-bar {
+    min-width: 60px;
+    max-width: 80px;
+  }
+
+  .progress-current,
+  .progress-total {
+    font-size: 0.75rem;
+  }
+
+  .nav-progress {
+    gap: 0.4rem;
   }
 
 
@@ -4474,29 +4488,80 @@ body.case-study-active .footer {
   }
 
   .goals-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem;
   }
 
   .issues-breakdown-grid {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem;
+  }
+
+  .goals-grid .goal-item {
+    padding: 0.6rem 0.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
   }
 
   .goals-grid .goal-number {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    min-height: 36px;
-    font-size: 0.9rem;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    font-size: 0.7rem;
+  }
+
+  .goal-title-text {
+    font-size: 0.75rem !important;
+  }
+
+  .goal-description {
+    font-size: 0.65rem !important;
   }
 
   .kpis-grid {
-    --kpis-cols: 1;
+    --kpis-cols: 2;
     gap: 0.5rem;
   }
 
   .kpi-card {
-    padding: 0.875rem 1rem;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .kpi-card-desc {
+    font-size: 0.65rem !important;
+  }
+
+  .kpis-label {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .goals-cards-label {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .slide-goals .goals-content {
+    gap: 0.5rem;
+  }
+
+  .slide-goals .goals-title {
+    font-size: clamp(1.1rem, 4.5vw, 1.5rem) !important;
+    margin-bottom: 0;
+  }
+
+  .slide-goals .goals-description-wrapper {
+    margin-bottom: 0.25rem;
+  }
+
+  .goals-cards-section-wrapper,
+  .kpis-section-wrapper {
+    gap: 0.25rem;
   }
 
   .outcomes-grid {
@@ -4537,7 +4602,7 @@ body.case-study-active .footer {
   }
 
   .nav-slide-label {
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     max-width: 35vw;
   }
 
