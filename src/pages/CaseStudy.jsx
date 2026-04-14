@@ -3906,6 +3906,9 @@ My instructions: `;
       { label: 'Default', value: 'default' },
       { label: 'Minimal', value: 'minimal' },
       { label: 'Clean', value: 'clean' },
+      { label: 'Filled', value: 'filled' },
+      { label: 'Soft', value: 'soft' },
+      { label: 'Glass', value: 'glass' },
     ];
     const heightOptions = [
       { label: 'Auto', value: 'auto' },
@@ -4771,7 +4774,6 @@ My instructions: `;
           <div className={`slide slide-goals ${(slide.showGoalsSection === false || slide.showKpisSection === false || !slide.goals?.length || !slide.kpis?.length) ? 'goals-single-section' : ''}`} key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'} data-card-height={slide.cardHeight || 'auto'}>
             {slideControls}
             {titleSpacingControl}
-            <CardVariantControl slide={slide} slideIndex={index} />
             <div className="slide-inner">
               <div className="goals-content">
                 <span className="slide-label">
@@ -4820,7 +4822,23 @@ My instructions: `;
                         ×
                       </button>
                     )}
-                    <div className="goals-cards-section">
+                    <div className="goals-cards-section" data-card-variant={slide.goalsCardVariant || slide.cardVariant || 'default'}>
+                      {editMode && (
+                        <div className="section-variant-control">
+                          <span className="grid-control-label">Goals style:</span>
+                          <div className="grid-control-buttons">
+                            {['default', 'minimal', 'clean', 'filled', 'soft', 'glass'].map(v => (
+                              <button
+                                key={v}
+                                className={`grid-col-btn ${(slide.goalsCardVariant || slide.cardVariant || 'default') === v ? 'active' : ''}`}
+                                onClick={() => updateSlide(index, { goalsCardVariant: v })}
+                              >
+                                {v.charAt(0).toUpperCase() + v.slice(1)}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                       {(editMode || (slide.goalsCardsTitle != null && String(slide.goalsCardsTitle).trim() !== '')) && (
                         <span className="kpis-label goals-cards-label">
                           <EditableField
@@ -4904,8 +4922,24 @@ My instructions: `;
                         </div>
                       </div>
                     )}
+                    {editMode && (
+                      <div className="section-variant-control">
+                        <span className="grid-control-label">KPIs style:</span>
+                        <div className="grid-control-buttons">
+                          {['default', 'minimal', 'clean', 'filled', 'soft', 'glass'].map(v => (
+                            <button
+                              key={v}
+                              className={`grid-col-btn ${(slide.kpisCardVariant || slide.cardVariant || 'default') === v ? 'active' : ''}`}
+                              onClick={() => updateSlide(index, { kpisCardVariant: v })}
+                            >
+                              {v.charAt(0).toUpperCase() + v.slice(1)}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     {slide.kpis?.length > 0 && (
-                      <div className="kpis-section">
+                      <div className="kpis-section" data-card-variant={slide.kpisCardVariant || slide.cardVariant || 'default'}>
                         <span className="kpis-label">KPIs</span>
                         <div
                           className="kpis-grid"
@@ -4996,8 +5030,24 @@ My instructions: `;
                   allowLineBreaks
                 />
               </h2>
+              {editMode && (
+                <div className="grid-layout-control">
+                  <span className="grid-control-label">Grid Columns:</span>
+                  <div className="grid-control-buttons">
+                    {[1, 2, 3, 4].map(cols => (
+                      <button
+                        key={cols}
+                        className={`grid-col-btn ${(slide.gridColumns || 2) === cols ? 'active' : ''}`}
+                        onClick={() => updateSlide(index, { gridColumns: cols })}
+                      >
+                        {cols}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               {slide.outcomes?.length > 0 && (
-              <div className="outcomes-grid">
+              <div className="outcomes-grid" style={{ gridTemplateColumns: `repeat(${slide.gridColumns || 2}, 1fr)` }}>
                 {slide.outcomes.map((outcome, i) => (
                   <div key={i} className="outcome-item">
                       {slide.showNumbers !== false && <div className="outcome-number">{String(i + 1).padStart(2, '0')}</div>}

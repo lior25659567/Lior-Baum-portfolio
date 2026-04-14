@@ -1534,7 +1534,8 @@ body.case-study-active .footer {
 }
 
 /* Grid Layout Control */
-.grid-layout-control {
+.grid-layout-control,
+.section-variant-control {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -3151,7 +3152,8 @@ body.case-study-active .footer {
 
 .dynamic-image-item {
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
   padding: 0;
   margin: 0;
   min-height: 0;
@@ -3159,13 +3161,14 @@ body.case-study-active .footer {
   height: 100%;
   width: 100%;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 16px;
 }
 
 .dynamic-image-wrapper {
   width: 100%;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   padding: 0;
   margin: 0;
   border-radius: 12px;
@@ -3214,24 +3217,18 @@ body.case-study-active .footer {
 .dynamic-image-caption-wrapper {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   width: 100%;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 0.75rem 0.75rem 0.5rem;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.15) 60%, transparent 100%);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  z-index: 2;
+  padding: 0.5rem 0.25rem 0;
 }
 
 .dynamic-image-caption {
   flex: 1;
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
   text-align: center;
+  line-height: 1.4;
 }
 
 .remove-caption-btn {
@@ -5821,6 +5818,128 @@ body.case-study-active .footer {
   transform: none;
   color: var(--color-accent);
   opacity: 1;
+}
+
+/* Card variant: Filled — accent background, white text */
+[data-card-variant="filled"] .outcome-item,
+[data-card-variant="filled"] .issue-breakdown-card,
+[data-card-variant="filled"] .process-step,
+[data-card-variant="filled"] .quote-card,
+[data-card-variant="filled"] .goals-grid .goal-item,
+[data-card-variant="filled"] .kpi-card,
+[data-card-variant="filled"] .stat-item {
+  background: var(--color-accent);
+  border-color: transparent;
+  color: #fff;
+}
+
+[data-card-variant="filled"] .outcome-item:hover,
+[data-card-variant="filled"] .issue-breakdown-card:hover,
+[data-card-variant="filled"] .process-step:hover,
+[data-card-variant="filled"] .quote-card:hover,
+[data-card-variant="filled"] .goals-grid .goal-item:hover,
+[data-card-variant="filled"] .kpi-card:hover,
+[data-card-variant="filled"] .stat-item:hover {
+  border-color: transparent;
+  filter: brightness(1.08);
+}
+
+[data-card-variant="filled"] .outcome-title,
+[data-card-variant="filled"] .outcome-description,
+[data-card-variant="filled"] .outcome-metric,
+[data-card-variant="filled"] .issue-breakdown-title-text,
+[data-card-variant="filled"] .issue-breakdown-desc,
+[data-card-variant="filled"] .step-title,
+[data-card-variant="filled"] .step-description,
+[data-card-variant="filled"] .quote-text,
+[data-card-variant="filled"] .quote-author,
+[data-card-variant="filled"] .goal-title-text,
+[data-card-variant="filled"] .goal-description,
+[data-card-variant="filled"] .kpi-text,
+[data-card-variant="filled"] .kpi-description,
+[data-card-variant="filled"] .stat-label {
+  color: #fff;
+}
+
+[data-card-variant="filled"] .outcome-number,
+[data-card-variant="filled"] .issue-breakdown-number,
+[data-card-variant="filled"] .step-number,
+[data-card-variant="filled"] .goal-number {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+[data-card-variant="filled"] .stat-value {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* Card variant: Soft — secondary background, no border, accent on hover */
+[data-card-variant="soft"] .outcome-item,
+[data-card-variant="soft"] .issue-breakdown-card,
+[data-card-variant="soft"] .process-step,
+[data-card-variant="soft"] .quote-card,
+[data-card-variant="soft"] .goals-grid .goal-item,
+[data-card-variant="soft"] .kpi-card,
+[data-card-variant="soft"] .stat-item {
+  background: var(--color-bg-secondary);
+  border-color: transparent;
+}
+
+[data-card-variant="soft"] .outcome-item:hover,
+[data-card-variant="soft"] .issue-breakdown-card:hover,
+[data-card-variant="soft"] .process-step:hover,
+[data-card-variant="soft"] .quote-card:hover,
+[data-card-variant="soft"] .goals-grid .goal-item:hover,
+[data-card-variant="soft"] .kpi-card:hover,
+[data-card-variant="soft"] .stat-item:hover {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--color-accent) 8%, var(--color-bg-secondary));
+}
+
+[data-card-variant="soft"] .outcome-number,
+[data-card-variant="soft"] .issue-breakdown-number,
+[data-card-variant="soft"] .step-number,
+[data-card-variant="soft"] .goal-number {
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-bg-secondary));
+  color: var(--color-accent);
+}
+
+/* Card variant: Glass — frosted glass, translucent with blur */
+[data-card-variant="glass"] .outcome-item,
+[data-card-variant="glass"] .issue-breakdown-card,
+[data-card-variant="glass"] .process-step,
+[data-card-variant="glass"] .quote-card,
+[data-card-variant="glass"] .goals-grid .goal-item,
+[data-card-variant="glass"] .kpi-card,
+[data-card-variant="glass"] .stat-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+[data-card-variant="glass"] .outcome-item:hover,
+[data-card-variant="glass"] .issue-breakdown-card:hover,
+[data-card-variant="glass"] .process-step:hover,
+[data-card-variant="glass"] .quote-card:hover,
+[data-card-variant="glass"] .goals-grid .goal-item:hover,
+[data-card-variant="glass"] .kpi-card:hover,
+[data-card-variant="glass"] .stat-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 88, 74, 0.3);
+}
+
+[data-card-variant="glass"] .outcome-number,
+[data-card-variant="glass"] .issue-breakdown-number,
+[data-card-variant="glass"] .step-number,
+[data-card-variant="glass"] .goal-number {
+  background: rgba(255, 88, 74, 0.15);
+  color: var(--color-accent);
+}
+
+[data-card-variant="glass"] .stat-value {
+  background: rgba(255, 88, 74, 0.12);
 }
 
 /* Card variant control positioning */
