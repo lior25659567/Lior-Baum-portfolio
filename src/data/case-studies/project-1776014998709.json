@@ -195,10 +195,11 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-mzkxfie3l8.png",
+          "src": "/case-studies/project-1776014998709/img-fay0vqurotc.mp4",
           "caption": "Template picker and modular section builder",
-          "isVideo": false,
-          "embedType": ""
+          "isVideo": true,
+          "embedType": "",
+          "isGif": false
         }
       ],
       "splitRatio": 40,
@@ -206,17 +207,49 @@
       "imageDisplayMode": "grid"
     },
     {
-      "type": "comparison",
+      "type": "problem",
       "label": "Annotation & Tooth Chart",
       "title": "From plain images to clinically annotated findings",
+      "content": "Doctors now annotate directly on scan images and tag findings to specific teeth via an interactive FDI chart — two tools that answer the same question: where exactly is the problem?",
+      "issuesTitle": "What this enabled",
+      "issues": [
+        "Pen, text, and color tools — annotate full-size before saving",
+        "Interactive FDI chart — click to tag teeth, shown as numbered pills in the report",
+        "Findings tied directly to anatomy — no more disconnected descriptions",
+        "Patients can see exactly which teeth are affected"
+      ],
+      "highlight": "Two tools that answered the same question: where exactly is the problem?",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-jl0tegce3qg.mp4",
+          "caption": "Annotation canvas and FDI tooth chart",
+          "isVideo": true,
+          "embedType": "",
+          "isGif": false
+        }
+      ],
+      "splitRatio": 45,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "comparison",
+      "label": "Share & Export",
+      "title": "From three basic buttons to a full sharing system",
       "beforeImage": [
         {
           "position": "center center",
           "size": "large",
           "fit": "contain",
+          "wrapperBg": false,
           "embedUrl": "",
-          "src": "[[MEDIA]]",
-          "caption": "Old — raw image, no context",
+          "src": "/case-studies/project-1776014998709/img-mpp2k7l6t4.png",
+          "caption": "Old — Preview, Download PDF, Share via QR",
           "isVideo": false,
           "embedType": ""
         }
@@ -226,56 +259,33 @@
           "position": "center center",
           "size": "large",
           "fit": "contain",
+          "wrapperBg": false,
           "embedUrl": "",
-          "src": "[[MEDIA]]",
-          "caption": "New — annotation canvas and FDI tooth chart",
-          "isVideo": false,
-          "embedType": ""
+          "src": "/case-studies/project-1776014998709/img-47ggf6tvc0.mp4",
+          "caption": "New — Share Report modal with access control and multi-channel delivery",
+          "isVideo": true,
+          "embedType": "",
+          "isGif": false
         }
       ],
-      "beforeDescription": "Images dropped in as-is — no way to mark findings or reference which teeth were involved.",
-      "afterDescription": "Doctors annotate directly on images and tag findings to specific teeth via an interactive FDI chart.",
+      "beforeDescription": "Three buttons stacked in the sidebar — Preview, Download PDF, and Share via QR. No access control, no recipient management, no delivery options beyond a QR code.",
+      "afterDescription": "A full Share Report modal with email invites, access permissions, PIN protection, and multi-channel delivery — WhatsApp, WeChat, QR, or copy link.",
       "beforeBullets": [
-        "No annotation — findings described in disconnected text",
-        "No tooth-level context — patients couldn't tell which teeth were affected"
+        "Three isolated actions with no shared logic",
+        "QR code was the only real sharing option",
+        "No access control — anyone with the link could open the report",
+        "No way to invite specific recipients"
       ],
       "afterBullets": [
-        "Pen, text, and color tools — annotate full-size before saving",
-        "Interactive FDI chart — click to tag teeth, shown as numbered pills in the report"
+        "Invite by email with clear ownership and access levels",
+        "PIN protection toggle for sensitive reports",
+        "Multi-channel delivery — WhatsApp, WeChat, QR, copy link",
+        "Privacy warning built into the flow"
       ],
-      "highlight": "Two tools that answered the same question: where exactly is the problem?",
+      "highlight": "Sharing stopped being an afterthought — it became a controlled, secure handoff.",
       "slideMode": "before-after",
       "switcherStyle": "pill",
-      "splitRatio": 50
-    },
-    {
-      "type": "problem",
-      "label": "Before/After & Share",
-      "title": "Showing change — and getting it to the patient",
-      "content": "A dedicated before/after section lets doctors place two images side by side with custom labels. Once the report is ready, it's shared via a generated link — QR code, WhatsApp, SMS, or email — with an optional PIN so only the patient can open it.",
-      "bullets2Title": "What this enabled",
-      "bullets2": [
-        "Before/After block — custom labels, optional comparison notes",
-        "Auto-generated shareable URL with copy-to-clipboard",
-        "QR code for in-chair handoff — no contact exchange needed",
-        "Optional 4–6 digit PIN shown in the share modal"
-      ],
-      "highlight": "PDF export captures the full preview — clean typography, no raw images.",
-      "image": [
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "embedUrl": "",
-          "src": "[[MEDIA]]",
-          "caption": "Before/After section and share modal",
-          "isVideo": false,
-          "embedType": ""
-        }
-      ],
-      "splitRatio": 45,
-      "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "splitRatio": 40
     },
     {
       "type": "outcomes",
