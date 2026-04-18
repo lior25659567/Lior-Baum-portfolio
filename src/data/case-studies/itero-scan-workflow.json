@@ -163,7 +163,9 @@
       "cardHeight": "100",
       "kpisGridColumns": 4,
       "showKpisSection": true,
-      "cardVariant": "default"
+      "cardVariant": "default",
+      "kpisCardVariant": "filled",
+      "goalsCardVariant": "minimal"
     },
     {
       "type": "problem",
@@ -296,7 +298,7 @@
       "switcherStyle": "pill",
       "gridCols": 1,
       "imageDisplayMode": "grid",
-      "splitRatio": 30
+      "splitRatio": 40
     },
     {
       "type": "chapter",
@@ -481,7 +483,8 @@
         }
       ],
       "showNumbers": false,
-      "cardVariant": "default"
+      "cardVariant": "default",
+      "gridColumns": 4
     },
     {
       "type": "end",

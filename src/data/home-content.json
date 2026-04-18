@@ -58,14 +58,14 @@
       "line2_2": "thing",
       "line3_1": "Or two,",
       "line4": "Together",
-      "email": "lior@example.com",
+      "email": "lior2565967@gmail.com",
       "copyright": "Lior Baum"
     }
   },
   "styles": {
     "fonts": {
       "display": "'Crimson Text', Georgia, serif",
-      "body": "'Mona Sans', system-ui, sans-serif"
+      "body": "'Syne', system-ui, sans-serif"
     },
     "fontSizes": {
       "heroName": "clamp(3rem, 8vw, 6rem)",
