@@ -1574,8 +1574,10 @@ const CaseStudy = () => {
             h = Math.imul(h ^ base64data.charCodeAt(i), 0x9e3779b9);
           }
           const hashId = ((h >>> 0) * base64data.length).toString(36).replace(/[^a-zA-Z0-9]/g, '').substring(0, 12).padStart(8, '0');
-          const filename = `img-${hashId}.${ext}`;
-          imageJobs.push({ filename, base64data, mimeType });
+          const isVideo = mimeType.startsWith('video/');
+          const prefix = isVideo ? 'vid' : 'img';
+          const filename = `${prefix}-${hashId}.${ext}`;
+          imageJobs.push({ filename, base64data, mimeType, isVideo });
           return `/case-studies/${pid}/${filename}`;
         }
       }
@@ -1590,7 +1592,7 @@ const CaseStudy = () => {
 
     const cleanData = extractMedia(JSON.parse(JSON.stringify(projectData)));
 
-    // Save all images in parallel (skip duplicates by filename)
+    // De-dupe by filename — content-hashed, so identical media maps to the same file
     const seen = new Set();
     const uniqueJobs = imageJobs.filter(j => {
       if (seen.has(j.filename)) return false;
@@ -1598,13 +1600,53 @@ const CaseStudy = () => {
       return true;
     });
 
-    await Promise.all(uniqueJobs.map(({ filename, base64data }) =>
-      fetch('/api/save-image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ projectId: pid, filename, base64data }),
-      }).catch(err => console.warn('[save-image] Failed for', filename, err))
-    ));
+    // base64 → Uint8Array (no Buffer in the browser)
+    const base64ToBytes = (b64) => {
+      const bin = atob(b64);
+      const len = bin.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) bytes[i] = bin.charCodeAt(i);
+      return bytes;
+    };
+
+    const runJob = async ({ filename, base64data, mimeType, isVideo }) => {
+      try {
+        if (isVideo) {
+          // Stream video as raw bytes — avoids the 50MB JSON cap and Node
+          // base64-decoding on the main thread.
+          const bytes = base64ToBytes(base64data);
+          const qs = `projectId=${encodeURIComponent(pid)}&filename=${encodeURIComponent(filename)}`;
+          const res = await fetch(`/api/save-video?${qs}`, {
+            method: 'POST',
+            headers: { 'Content-Type': mimeType || 'application/octet-stream' },
+            body: bytes,
+          });
+          if (!res.ok) console.warn('[save-video] Failed for', filename, await res.text().catch(() => ''));
+        } else {
+          const res = await fetch('/api/save-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ projectId: pid, filename, base64data }),
+          });
+          if (!res.ok) console.warn('[save-image] Failed for', filename, await res.text().catch(() => ''));
+        }
+      } catch (err) {
+        console.warn('[save-media] Failed for', filename, err);
+      }
+    };
+
+    // Bounded concurrency — N parallel 30MB base64 parses in one Node process
+    // was the #1 cause of Vite freezes. 3 is plenty for local disk I/O.
+    const CONCURRENCY = 3;
+    let cursor = 0;
+    await Promise.all(
+      Array.from({ length: Math.min(CONCURRENCY, uniqueJobs.length) }, async () => {
+        while (cursor < uniqueJobs.length) {
+          const i = cursor++;
+          await runJob(uniqueJobs[i]);
+        }
+      })
+    );
 
     return cleanData;
   }, []);
@@ -1640,6 +1682,19 @@ const CaseStudy = () => {
   const handleSaveAllToCode = useCallback(async () => {
     setSaveAllStatus('saving');
     try {
+      // Fail fast if the dev plugin is frozen — avoids queueing huge saves
+      // against an unresponsive server.
+      try {
+        const hc = await fetch('/api/health', { signal: AbortSignal.timeout(3000) });
+        if (!hc.ok) throw new Error(`health ${hc.status}`);
+      } catch (e) {
+        console.error('[save-all] Dev server health check failed:', e);
+        setSaveAllStatus('error');
+        window.alert('Dev server is not responding. Try restarting `npm run dev`.');
+        setTimeout(() => setSaveAllStatus(null), 3000);
+        return;
+      }
+
       // Get all saved case study IDs from IndexedDB/localStorage
       const list = await listSavedCaseStudies();
       const ids = list.map(item => item.projectId);
@@ -1684,20 +1739,29 @@ const CaseStudy = () => {
   // ── Git push ──────────────────────────────────────────────────
   const handleGitPush = useCallback(async () => {
     setGitPushStatus('pushing');
+    const ctrl = new AbortController();
+    // Client timeout slightly > server push timeout (180s) so server errors can surface
+    const timer = setTimeout(() => ctrl.abort(), 200_000);
     try {
-      const res = await fetch('/api/git-push', { method: 'POST' });
-      const data = await res.json();
+      const res = await fetch('/api/git-push', { method: 'POST', signal: ctrl.signal });
+      const data = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
       if (data.ok) {
         setGitPushStatus('pushed');
         setTimeout(() => setGitPushStatus(null), 3000);
       } else {
-        console.error('[git-push] Failed:', data.error);
+        console.error('[git-push] Failed:', data.error, data);
+        window.alert(`Push failed: ${data.error || 'unknown error'}`);
         setGitPushStatus('error');
         setTimeout(() => setGitPushStatus(null), 4000);
       }
-    } catch {
+    } catch (err) {
+      const msg = err.name === 'AbortError' ? 'timed out after 200s' : (err.message || 'network error');
+      console.error('[git-push] Network/abort:', err);
+      window.alert(`Push failed: ${msg}`);
       setGitPushStatus('error');
       setTimeout(() => setGitPushStatus(null), 4000);
+    } finally {
+      clearTimeout(timer);
     }
   }, []);
 

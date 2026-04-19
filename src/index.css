@@ -277,3 +277,25 @@ img {
   color: var(--color-text-muted);
   margin-bottom: var(--spacing-sm);
 }
+
+/* ── Button typography normalization ─────────────────────────────────────
+   All buttons render at medium weight (500) regardless of the
+   component-scoped rules scattered across the CSS files. Covers:
+     • native <button> elements (+ any descendant text nodes like .tab-label)
+     • [role="button"] (for keyboard-activated divs/spans)
+     • .animated-btn (used as both <button> and <a>)
+     • .nav-link (anchor that acts as a button)
+   Descendants are included so any inner <span> weight overrides are also
+   normalized. !important is used deliberately: many component CSS files
+   set their own button font-weight; centralizing here keeps typography
+   consistent without having to patch every component file. */
+button,
+button *,
+[role="button"],
+[role="button"] *,
+.animated-btn,
+.animated-btn *,
+.nav-link,
+.nav-link * {
+  font-weight: var(--fw-medium) !important;
+}

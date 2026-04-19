@@ -3,7 +3,7 @@
   align-items: center;
   padding: var(--spacing-sm) var(--spacing-md);
   font-size: var(--text-body-sm);
-  font-weight: 600;
+  font-weight: var(--fw-medium);
   border-radius: 100px;
   cursor: pointer;
   position: relative;

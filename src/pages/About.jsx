@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEdit } from '../context/EditContext';
 import AnimatedButton from '../components/AnimatedButton';
+import AboutRotator from '../components/AboutRotator';
 import Footer from '../components/Footer';
 import './About.css';
 import './HomePublishBar.css';
@@ -235,15 +236,16 @@ const About = () => {
   useEffect(() => {
     const el = skillsRef.current;
     if (!el) return;
-    const cards = el.querySelectorAll('.skill-card');
-    if (!cards.length) return;
-    gsap.set(cards, { y: 50, opacity: 0 });
+    // Edit mode → grid cards; view mode → rotator stage root.
+    const targets = el.querySelectorAll('.skill-card, .about-rotator-stage > *');
+    if (!targets.length) return;
+    gsap.set(targets, { y: 50, opacity: 0 });
     const st = ScrollTrigger.create({
       trigger: el, start: 'top 82%', once: true,
-      onEnter: () => { gsap.to(cards, { y: 0, opacity: 1, duration: 0.75, stagger: 0.1, ease: 'power3.out' }); },
+      onEnter: () => { gsap.to(targets, { y: 0, opacity: 1, duration: 0.75, stagger: 0.1, ease: 'power3.out' }); },
     });
     return () => st.kill();
-  }, []);
+  }, [editMode]);
 
   useEffect(() => {
     const el = experienceRef.current;
@@ -346,40 +348,44 @@ const About = () => {
           </motion.div>
         </div>
 
-        {/* Skills Section */}
+        {/* Skills Section — rotator in view mode, editable grid in edit mode.
+            The section heading lives above the rotator in both modes. */}
         <div className="skills-section">
           <Editable tag="h2" className="section-heading" value={about.skillsTitle || 'Skills & Expertise'} onChange={(v) => updateAbout('skillsTitle', v)} />
-          <div className="skills-grid" ref={skillsRef}>
-            {skills.map((skillGroup, gi) => (
-              <div key={gi} className="skill-card">
-                <div className="skill-card-header">
-                  <Editable tag="h3" className="skill-category" value={skillGroup.category} onChange={(v) => updateSkillCategory(gi, v)} />
-                  {editMode && (
-                    <button className="about-remove-btn small" onClick={() => removeSkillGroup(gi)} title="Remove category">&times;</button>
-                  )}
-                </div>
-                <ul className="skill-list">
-                  {skillGroup.items.map((skill, si) => (
-                    <li key={si} className="skill-item">
-                      <Editable value={skill} onChange={(v) => updateSkillItem(gi, si, v)} placeholder="Skill name" />
-                      {editMode && (
-                        <button className="about-remove-btn small inline" onClick={() => removeSkillItem(gi, si)} title="Remove skill">&times;</button>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-                {editMode && (
-                  <button className="about-add-btn small" onClick={() => addSkillItem(gi)}>+ Add Skill</button>
-                )}
+          {editMode ? (
+            <>
+              <div className="skills-grid" ref={skillsRef}>
+                {skills.map((skillGroup, gi) => (
+                  <div key={gi} className="skill-card">
+                    <div className="skill-card-header">
+                      <Editable tag="h3" className="skill-category" value={skillGroup.category} onChange={(v) => updateSkillCategory(gi, v)} />
+                      <button className="about-remove-btn small" onClick={() => removeSkillGroup(gi)} title="Remove category">&times;</button>
+                    </div>
+                    <ul className="skill-list">
+                      {skillGroup.items.map((skill, si) => (
+                        <li key={si} className="skill-item">
+                          <Editable value={skill} onChange={(v) => updateSkillItem(gi, si, v)} placeholder="Skill name" />
+                          <button className="about-remove-btn small inline" onClick={() => removeSkillItem(gi, si)} title="Remove skill">&times;</button>
+                        </li>
+                      ))}
+                    </ul>
+                    <button className="about-add-btn small" onClick={() => addSkillItem(gi)}>+ Add Skill</button>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          {editMode && (
-            <button className="about-add-btn" onClick={addSkillGroup}>+ Add Skill Group</button>
+              <button className="about-add-btn" onClick={addSkillGroup}>+ Add Skill Group</button>
+            </>
+          ) : (
+            <div className="about-rotator-stage" ref={skillsRef}>
+              {/* Rotator uses its own curated 20 skills (the design-spec list).
+                  All editable categories still live in the grid above when in
+                  edit mode. */}
+              <AboutRotator />
+            </div>
           )}
         </div>
 
-        {/* Experience Section */}
+        {/* Experience Section — timeline in both view and edit modes */}
         <div className="experience-section">
           <Editable tag="h2" className="section-heading" value={about.experienceTitle || 'Experience'} onChange={(v) => updateAbout('experienceTitle', v)} />
           <div className="experience-timeline" ref={experienceRef}>

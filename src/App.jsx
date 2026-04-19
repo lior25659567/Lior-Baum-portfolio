@@ -4,6 +4,7 @@ import { EditProvider } from './context/EditContext';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import EditPanel from './components/EditPanel';
+import RouteErrorBoundary from './components/RouteErrorBoundary';
 import Home from './pages/Home';
 import About from './pages/About';
 import './App.css';
@@ -21,15 +22,17 @@ function AppLayout() {
     <>
       <Navigation />
       <main>
-        <Suspense fallback={null}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/project/:projectId" element={<CaseStudy />} />
-            <Route path="/docs/slides" element={<SlideDocumentation />} />
-            <Route path="/cv" element={<CVBuilder />} />
-          </Routes>
-        </Suspense>
+        <RouteErrorBoundary>
+          <Suspense fallback={null}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/project/:projectId" element={<CaseStudy />} />
+              <Route path="/docs/slides" element={<SlideDocumentation />} />
+              <Route path="/cv" element={<CVBuilder />} />
+            </Routes>
+          </Suspense>
+        </RouteErrorBoundary>
       </main>
       {!isAbout && <Footer />}
       <EditPanel />

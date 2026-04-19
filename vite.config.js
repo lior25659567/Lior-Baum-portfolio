@@ -8,12 +8,31 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
+    // Explicit HMR config — avoids the client falling back to 443/polling when
+    // served through Cursor's preview proxy, which was causing "connection
+    // lost → refresh" loops during editing.
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+      port: 5173,
+      overlay: true,
+    },
     watch: {
+      // Large or auto-generated trees — excluded so Save All / git writes
+      // don't kick off a rebuild in the middle of the save.
       ignored: [
         '**/public/case-studies/**',
         '**/public/about/**',
         '**/public/fonts/**',
+        '**/dist/**',
+        '**/.git/**',
+        '**/node_modules/**',
       ],
+      usePolling: false,
+    },
+    fs: {
+      // Don't let Vite serve files from the OS home dir even if a route asks
+      strict: true,
     },
   },
   preview: {

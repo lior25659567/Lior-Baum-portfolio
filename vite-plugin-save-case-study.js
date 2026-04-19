@@ -1,273 +1,350 @@
 // Vite plugin: dev-only API to save case study data back to source files
-// Exposes POST /api/save-case-study during development
+// Exposes POST /api/save-case-study (and friends) during development.
+//
+// Design notes:
+//   * All file I/O is async (fs/promises) so the dev-server event loop keeps
+//     servicing HMR websockets and other API calls while a save is in flight.
+//   * JSON endpoints cap body size at 50MB and early-reject via Content-Length.
+//     Large media goes through /api/save-video which streams to disk instead
+//     of base64-in-JSON (which was OOM'ing the Vite process).
+//   * Every /api/* request logs method, path, size, and duration so we can
+//     spot slow middleware before it takes the server down.
 
 import fs from 'fs';
+import fsp from 'fs/promises';
 import path from 'path';
 import { exec } from 'child_process';
 import https from 'https';
 
 const NETLIFY_BUILD_HOOK = 'https://api.netlify.com/build_hooks/69d7cb8c2578b11512ef44a2';
 
-// 500 MB ceiling — protects against runaway uploads but allows large videos
-const MAX_BODY_BYTES = 500 * 1024 * 1024;
+// Per-request JSON body cap. Kept intentionally small — anything bigger should
+// use the streaming /api/save-video endpoint.
+const MAX_JSON_BYTES = 50 * 1024 * 1024; // 50 MB
+// Streaming video upload cap
+const MAX_VIDEO_BYTES = 500 * 1024 * 1024; // 500 MB
+const SLOW_REQUEST_MS = 2_000;
 
-// Callback-style body reader (avoids async middleware signatures that hang Vite's chain).
-// Uses Buffer chunks — string concat is O(n²) on large base64 payloads.
-function readJsonBody(req, cb) {
+const SERVER_STARTED_AT = Date.now();
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+
+function contentLengthTooBig(req, max) {
+  const len = Number(req.headers['content-length']);
+  return Number.isFinite(len) && len > max;
+}
+
+function sendJson(res, statusCode, body) {
+  res.statusCode = statusCode;
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify(body));
+}
+
+// Callback-style body reader — buffered because JSON endpoints are small now.
+// Hard-caps by total bytes and destroys the socket on overflow.
+function readJsonBody(req, max, cb) {
   const chunks = [];
   let size = 0;
+  let done = false;
+  const finish = (err, val) => {
+    if (done) return;
+    done = true;
+    cb(err, val);
+  };
   req.on('data', (chunk) => {
     size += chunk.length;
-    if (size > MAX_BODY_BYTES) {
-      cb(new Error(`Request body exceeds ${MAX_BODY_BYTES} bytes`));
+    if (size > max) {
+      const err = new Error(`Request body exceeds ${max} bytes`);
+      err.statusCode = 413;
       req.destroy();
+      finish(err);
       return;
     }
     chunks.push(chunk);
   });
   req.on('end', () => {
     try {
-      cb(null, JSON.parse(Buffer.concat(chunks).toString('utf-8')));
-    } catch (err) {
-      cb(err);
+      finish(null, JSON.parse(Buffer.concat(chunks).toString('utf-8')));
+    } catch (e) {
+      finish(e);
     }
   });
-  req.on('error', cb);
+  req.on('error', finish);
 }
+
+async function pathExists(p) {
+  try { await fsp.access(p); return true; }
+  catch { return false; }
+}
+
+// Wrap a handler with request logging + uniform error handling. Handler must
+// return a value (sent as JSON 200) or throw. Throw an object with statusCode
+// to customize the response code.
+function wrap(name, handler) {
+  return (req, res) => {
+    const startedAt = Date.now();
+    const size = Number(req.headers['content-length']) || 0;
+    let statusCode = 200;
+    Promise.resolve()
+      .then(() => handler(req, res))
+      .then((result) => {
+        if (!res.writableEnded) {
+          if (result === undefined) {
+            sendJson(res, 200, { ok: true });
+          } else {
+            sendJson(res, 200, { ok: true, ...result });
+          }
+        }
+        statusCode = res.statusCode;
+      })
+      .catch((err) => {
+        statusCode = err.statusCode || 500;
+        console.error(`[${name}] Error:`, err.message);
+        if (!res.writableEnded) sendJson(res, statusCode, { error: err.message });
+      })
+      .finally(() => {
+        const ms = Date.now() - startedAt;
+        const tag = ms > SLOW_REQUEST_MS ? '[slow]' : '';
+        console.log(`[api]${tag} ${req.method} ${name} ${statusCode} ${ms}ms bytesIn=${size}`);
+      });
+  };
+}
+
+function assertMethod(req, method) {
+  if (req.method !== method) {
+    const err = new Error('Method not allowed');
+    err.statusCode = 405;
+    throw err;
+  }
+}
+
+async function readJson(req, max = MAX_JSON_BYTES) {
+  if (contentLengthTooBig(req, max)) {
+    const err = new Error(`Request body exceeds ${max} bytes (Content-Length)`);
+    err.statusCode = 413;
+    throw err;
+  }
+  return new Promise((resolve, reject) => {
+    readJsonBody(req, max, (err, body) => (err ? reject(err) : resolve(body)));
+  });
+}
+
+// ── Plugin ─────────────────────────────────────────────────────────────────
 
 export function saveCaseStudyPlugin() {
   return {
     name: 'save-case-study',
     configureServer(server) {
-      server.middlewares.use('/api/save-case-study', (req, res) => {
+      // Health probe — used by Save All and by the dev:doctor script to
+      // confirm the plugin's event loop is still responsive before firing
+      // expensive batches. Intentionally zero-I/O.
+      server.middlewares.use('/api/health', wrap('/api/health', async (req) => {
+        assertMethod(req, 'GET');
+        const mem = process.memoryUsage();
+        return {
+          uptimeSec: Math.round((Date.now() - SERVER_STARTED_AT) / 1000),
+          memoryMB: {
+            rss: Math.round(mem.rss / 1024 / 1024),
+            heapUsed: Math.round(mem.heapUsed / 1024 / 1024),
+            heapTotal: Math.round(mem.heapTotal / 1024 / 1024),
+          },
+          node: process.version,
+        };
+      }));
+
+      // Save a case study JSON and regenerate the index.
+      server.middlewares.use('/api/save-case-study', wrap('/api/save-case-study', async (req) => {
+        assertMethod(req, 'POST');
+        const body = await readJson(req);
+        const { projectId, data } = body;
+        if (!projectId || !data) {
+          const err = new Error('Missing projectId or data');
+          err.statusCode = 400;
+          throw err;
+        }
+        const dir = path.resolve('src/data/case-studies');
+        await fsp.mkdir(dir, { recursive: true });
+        const filePath = path.join(dir, `${projectId}.json`);
+        await fsp.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
+        await updateIndex(dir);
+        console.log(`[save-case-study] Saved ${projectId} → ${filePath}`);
+        return { path: filePath };
+      }));
+
+      server.middlewares.use('/api/delete-case-study', wrap('/api/delete-case-study', async (req) => {
+        assertMethod(req, 'POST');
+        const { projectId } = await readJson(req);
+        if (!projectId) {
+          const err = new Error('Missing projectId');
+          err.statusCode = 400;
+          throw err;
+        }
+        const dir = path.resolve('src/data/case-studies');
+        const filePath = path.join(dir, `${projectId}.json`);
+        if (await pathExists(filePath)) {
+          await fsp.unlink(filePath);
+          await updateIndex(dir);
+          console.log(`[delete-case-study] Deleted ${projectId}`);
+        }
+        return {};
+      }));
+
+      // Image save (base64-in-JSON). Kept for backward compat with the editor
+      // but capped at MAX_JSON_BYTES — videos must use /api/save-video.
+      server.middlewares.use('/api/save-image', wrap('/api/save-image', async (req) => {
+        assertMethod(req, 'POST');
+        const { projectId, filename, base64data } = await readJson(req);
+        if (!projectId || !filename || !base64data) {
+          const err = new Error('Missing projectId, filename, or base64data');
+          err.statusCode = 400;
+          throw err;
+        }
+        const dir = path.resolve('public', 'case-studies', projectId);
+        await fsp.mkdir(dir, { recursive: true });
+        const filePath = path.join(dir, filename);
+        const buffer = Buffer.from(base64data, 'base64');
+        // Skip write if identical file already exists — avoids rewriting
+        // large assets on every "Save All".
+        try {
+          const stat = await fsp.stat(filePath);
+          if (stat.size === buffer.length) {
+            return { path: `/case-studies/${projectId}/${filename}`, skipped: true };
+          }
+        } catch { /* file does not exist — continue */ }
+        await fsp.writeFile(filePath, buffer);
+        console.log(`[save-image] Saved ${projectId}/${filename} (${buffer.length} bytes)`);
+        return { path: `/case-studies/${projectId}/${filename}` };
+      }));
+
+      // Streaming video upload — avoids loading the whole file into a JS
+      // string before parsing. Query params carry metadata.
+      //   POST /api/save-video?projectId=foo&filename=demo.mp4
+      //   Content-Type: application/octet-stream
+      server.middlewares.use('/api/save-video', (req, res) => {
+        const startedAt = Date.now();
         if (req.method !== 'POST') {
-          res.statusCode = 405;
-          res.end(JSON.stringify({ error: 'Method not allowed' }));
+          sendJson(res, 405, { error: 'Method not allowed' });
+          console.log(`[api] POST /api/save-video 405 ${Date.now() - startedAt}ms`);
           return;
         }
-        readJsonBody(req, (err, body) => {
-          if (err) {
-            console.error('[save-case-study] Error:', err);
-            res.statusCode = 500;
-            res.end(JSON.stringify({ error: err.message }));
-            return;
-          }
-          try {
-            const { projectId, data } = body;
-            if (!projectId || !data) {
-              res.statusCode = 400;
-              res.end(JSON.stringify({ error: 'Missing projectId or data' }));
-              return;
-            }
-            const dir = path.resolve('src/data/case-studies');
-            if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-            const filePath = path.join(dir, `${projectId}.json`);
-            fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
-            updateIndex(dir);
-            console.log(`[save-case-study] Saved ${projectId} → ${filePath}`);
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({ ok: true, path: filePath }));
-          } catch (e) {
-            console.error('[save-case-study] Error:', e);
-            res.statusCode = 500;
-            res.end(JSON.stringify({ error: e.message }));
-          }
-        });
-      });
-
-      // Delete a saved case study
-      server.middlewares.use('/api/delete-case-study', (req, res) => {
-        if (req.method !== 'POST') {
-          res.statusCode = 405;
-          res.end(JSON.stringify({ error: 'Method not allowed' }));
+        if (contentLengthTooBig(req, MAX_VIDEO_BYTES)) {
+          sendJson(res, 413, { error: `Video exceeds ${MAX_VIDEO_BYTES} bytes` });
+          console.log(`[api] POST /api/save-video 413 ${Date.now() - startedAt}ms`);
           return;
         }
-        readJsonBody(req, (err, body) => {
-          if (err) {
-            console.error('[save-case-study] Delete error:', err);
-            res.statusCode = 500;
-            res.end(JSON.stringify({ error: err.message }));
-            return;
-          }
-          try {
-            const { projectId } = body;
-            if (!projectId) {
-              res.statusCode = 400;
-              res.end(JSON.stringify({ error: 'Missing projectId' }));
-              return;
-            }
-            const dir = path.resolve('src/data/case-studies');
-            const filePath = path.join(dir, `${projectId}.json`);
-            if (fs.existsSync(filePath)) {
-              fs.unlinkSync(filePath);
-              updateIndex(dir);
-              console.log(`[save-case-study] Deleted ${projectId}`);
-            }
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({ ok: true }));
-          } catch (e) {
-            console.error('[save-case-study] Delete error:', e);
-            res.statusCode = 500;
-            res.end(JSON.stringify({ error: e.message }));
-          }
-        });
-      });
-
-      // Save a single image file to public/case-studies/{projectId}/
-      server.middlewares.use('/api/save-image', (req, res) => {
-        if (req.method !== 'POST') {
-          res.statusCode = 405;
-          res.end(JSON.stringify({ error: 'Method not allowed' }));
+        const url = new URL(req.url, 'http://localhost');
+        const projectId = url.searchParams.get('projectId');
+        const filename = url.searchParams.get('filename');
+        if (!projectId || !filename) {
+          sendJson(res, 400, { error: 'Missing projectId or filename query param' });
           return;
         }
-        readJsonBody(req, (err, body) => {
-          if (err) {
-            console.error('[save-image] Error:', err);
-            res.statusCode = 500;
-            res.end(JSON.stringify({ error: err.message }));
-            return;
-          }
+        const dir = path.resolve('public', 'case-studies', projectId);
+        const filePath = path.join(dir, filename);
+        const tmpPath = `${filePath}.part`;
+
+        (async () => {
           try {
-            const { projectId, filename, base64data } = body;
-            if (!projectId || !filename || !base64data) {
-              res.statusCode = 400;
-              res.end(JSON.stringify({ error: 'Missing projectId, filename, or base64data' }));
-              return;
-            }
-            const dir = path.resolve('public', 'case-studies', projectId);
-            if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-            const filePath = path.join(dir, filename);
-            const buffer = Buffer.from(base64data, 'base64');
-            // Skip write if identical file already exists — avoids rewriting 30MB videos on every save
-            if (fs.existsSync(filePath) && fs.statSync(filePath).size === buffer.length) {
-              res.setHeader('Content-Type', 'application/json');
-              res.end(JSON.stringify({ ok: true, path: `/case-studies/${projectId}/${filename}`, skipped: true }));
-              return;
-            }
-            fs.writeFileSync(filePath, buffer);
-            console.log(`[save-image] Saved ${projectId}/${filename} (${buffer.length} bytes)`);
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({ ok: true, path: `/case-studies/${projectId}/${filename}` }));
+            await fsp.mkdir(dir, { recursive: true });
+            const out = fs.createWriteStream(tmpPath);
+            let received = 0;
+            let aborted = false;
+
+            const abort = (statusCode, msg) => {
+              aborted = true;
+              req.unpipe(out);
+              out.destroy();
+              fsp.unlink(tmpPath).catch(() => {});
+              if (!res.writableEnded) sendJson(res, statusCode, { error: msg });
+              console.log(`[api] POST /api/save-video ${statusCode} ${Date.now() - startedAt}ms bytesIn=${received}`);
+            };
+
+            req.on('data', (chunk) => {
+              received += chunk.length;
+              if (received > MAX_VIDEO_BYTES) {
+                req.destroy();
+                abort(413, `Video exceeds ${MAX_VIDEO_BYTES} bytes`);
+              }
+            });
+            req.on('error', (e) => abort(500, `Upload error: ${e.message}`));
+            out.on('error', (e) => abort(500, `Write error: ${e.message}`));
+
+            req.pipe(out);
+
+            out.on('close', async () => {
+              if (aborted) return;
+              try {
+                await fsp.rename(tmpPath, filePath);
+                console.log(`[save-video] Saved ${projectId}/${filename} (${received} bytes) in ${Date.now() - startedAt}ms`);
+                sendJson(res, 200, { ok: true, path: `/case-studies/${projectId}/${filename}`, bytes: received });
+              } catch (e) {
+                console.error('[save-video] rename failed:', e.message);
+                sendJson(res, 500, { error: e.message });
+              }
+            });
           } catch (e) {
-            console.error('[save-image] Error:', e);
-            res.statusCode = 500;
-            res.end(JSON.stringify({ error: e.message }));
+            console.error('[save-video] setup failed:', e.message);
+            sendJson(res, 500, { error: e.message });
           }
-        });
+        })();
       });
 
-      // Save about page profile image to public/about/
-      server.middlewares.use('/api/save-about-image', (req, res) => {
-        if (req.method !== 'POST') {
-          res.statusCode = 405;
-          res.end(JSON.stringify({ error: 'Method not allowed' }));
-          return;
+      server.middlewares.use('/api/save-about-image', wrap('/api/save-about-image', async (req) => {
+        assertMethod(req, 'POST');
+        const { filename, base64data } = await readJson(req);
+        if (!filename || !base64data) {
+          const err = new Error('Missing filename or base64data');
+          err.statusCode = 400;
+          throw err;
         }
-        readJsonBody(req, (err, body) => {
-          if (err) {
-            console.error('[save-about-image] Error:', err);
-            res.statusCode = 500;
-            res.end(JSON.stringify({ error: err.message }));
-            return;
-          }
-          try {
-            const { filename, base64data } = body;
-            if (!filename || !base64data) {
-              res.statusCode = 400;
-              res.end(JSON.stringify({ error: 'Missing filename or base64data' }));
-              return;
-            }
-            const dir = path.resolve('public', 'about');
-            if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-            const filePath = path.join(dir, filename);
-            const buffer = Buffer.from(base64data, 'base64');
-            fs.writeFileSync(filePath, buffer);
-            console.log(`[save-about-image] Saved ${filename} (${buffer.length} bytes)`);
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({ ok: true, path: `/about/${filename}` }));
-          } catch (e) {
-            console.error('[save-about-image] Error:', e);
-            res.statusCode = 500;
-            res.end(JSON.stringify({ error: e.message }));
-          }
-        });
-      });
+        const dir = path.resolve('public', 'about');
+        await fsp.mkdir(dir, { recursive: true });
+        const filePath = path.join(dir, filename);
+        const buffer = Buffer.from(base64data, 'base64');
+        await fsp.writeFile(filePath, buffer);
+        console.log(`[save-about-image] Saved ${filename} (${buffer.length} bytes)`);
+        return { path: `/about/${filename}` };
+      }));
 
-      // Save about page content (bio, skills, experience)
-      server.middlewares.use('/api/save-about-content', (req, res) => {
-        if (req.method !== 'POST') {
-          res.statusCode = 405;
-          res.end(JSON.stringify({ error: 'Method not allowed' }));
-          return;
+      server.middlewares.use('/api/save-about-content', wrap('/api/save-about-content', async (req) => {
+        assertMethod(req, 'POST');
+        const data = await readJson(req);
+        const dir = path.resolve('src/data');
+        await fsp.mkdir(dir, { recursive: true });
+        const filePath = path.join(dir, 'about-content.json');
+        await fsp.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
+        console.log(`[save-about-content] Saved → ${filePath}`);
+        return { path: filePath };
+      }));
+
+      server.middlewares.use('/api/save-home-content', wrap('/api/save-home-content', async (req) => {
+        assertMethod(req, 'POST');
+        const { content, styles } = await readJson(req);
+        if (!content && !styles) {
+          const err = new Error('Missing content or styles');
+          err.statusCode = 400;
+          throw err;
         }
-        readJsonBody(req, (err, data) => {
-          if (err) {
-            console.error('[save-about-content] Error:', err);
-            res.statusCode = 500;
-            res.end(JSON.stringify({ error: err.message }));
-            return;
-          }
-          try {
-            const dir = path.resolve('src/data');
-            if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-            const filePath = path.join(dir, 'about-content.json');
-            fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
-            console.log(`[save-about-content] Saved → ${filePath}`);
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({ ok: true, path: filePath }));
-          } catch (e) {
-            console.error('[save-about-content] Error:', e);
-            res.statusCode = 500;
-            res.end(JSON.stringify({ error: e.message }));
-          }
-        });
-      });
+        const dir = path.resolve('src/data');
+        await fsp.mkdir(dir, { recursive: true });
+        const filePath = path.join(dir, 'home-content.json');
+        await fsp.writeFile(filePath, JSON.stringify({ content, styles }, null, 2), 'utf-8');
+        console.log(`[save-home-content] Saved → ${filePath}`);
+        return { path: filePath };
+      }));
 
-      // Save home page content + styles
-      server.middlewares.use('/api/save-home-content', (req, res) => {
-        if (req.method !== 'POST') {
-          res.statusCode = 405;
-          res.end(JSON.stringify({ error: 'Method not allowed' }));
-          return;
-        }
-        readJsonBody(req, (err, body) => {
-          if (err) {
-            console.error('[save-home-content] Error:', err);
-            res.statusCode = 500;
-            res.end(JSON.stringify({ error: err.message }));
-            return;
-          }
-          try {
-            const { content, styles } = body;
-            if (!content && !styles) {
-              res.statusCode = 400;
-              res.end(JSON.stringify({ error: 'Missing content or styles' }));
-              return;
-            }
-            const dir = path.resolve('src/data');
-            if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-            const filePath = path.join(dir, 'home-content.json');
-            fs.writeFileSync(filePath, JSON.stringify({ content, styles }, null, 2), 'utf-8');
-            console.log(`[save-home-content] Saved → ${filePath}`);
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({ ok: true, path: filePath }));
-          } catch (e) {
-            console.error('[save-home-content] Error:', e);
-            res.statusCode = 500;
-            res.end(JSON.stringify({ error: e.message }));
-          }
-        });
-      });
-
-      // Git commit + push
+      // Git commit + push — fully instrumented with per-step timing and
+      // structured error responses (step / code / stderr) so the UI can show
+      // the real reason a push failed.
       server.middlewares.use('/api/git-push', (req, res) => {
+        const requestStart = Date.now();
         if (req.method !== 'POST') {
-          res.statusCode = 405;
-          res.end(JSON.stringify({ error: 'Method not allowed' }));
+          sendJson(res, 405, { error: 'Method not allowed' });
           return;
         }
 
-        const run = (cmd, timeoutMs = 60_000) => new Promise((resolve, reject) => {
+        const run = (cmd, timeoutMs = 60_000) => new Promise((resolve) => {
+          const startedAt = Date.now();
           exec(
             cmd,
             {
@@ -281,106 +358,149 @@ export function saveCaseStudyPlugin() {
                 GIT_ASKPASS: 'echo',
               },
             },
-            (err, stdout, stderr) => {
-              if (err) {
-                const msg = (stderr || err.message || '').trim();
-                reject(new Error(msg || `Command failed: ${cmd}`));
-              } else {
-                resolve(stdout.trim());
-              }
-            }
+            (err, stdout, stderr) => resolve({
+              cmd,
+              ms: Date.now() - startedAt,
+              code: err ? (err.code ?? err.signal ?? 1) : 0,
+              killed: !!(err && err.killed),
+              stdout: (stdout || '').trim(),
+              stderr: (stderr || '').trim(),
+              error: err ? (err.message || '').trim() : null,
+            })
           );
         });
 
+        const must = async (cmd, timeoutMs, step) => {
+          const r = await run(cmd, timeoutMs);
+          console.log(`[git-push] step=${step} cmd="${cmd}" exit=${r.code} ms=${r.ms}${r.stderr ? ` stderr="${r.stderr.slice(0, 300)}"` : ''}`);
+          if (r.code !== 0) {
+            const hint = r.killed ? ' (killed — likely timeout)' : '';
+            const detail = r.stderr || r.error || r.stdout || `exit ${r.code}`;
+            const e = new Error(`${step} failed${hint}: ${detail}`);
+            e.step = step;
+            e.code = r.code;
+            e.stderr = r.stderr;
+            e.stdout = r.stdout;
+            throw e;
+          }
+          return r.stdout;
+        };
+
         (async () => {
           try {
-            await run('git add src/data/case-studies/');
-            // Also stage any saved image files
-            const publicDir = path.resolve('public', 'case-studies');
-            if (fs.existsSync(publicDir)) {
-              await run('git add public/case-studies/');
+            await must('git add src/data/case-studies/', 30_000, 'add-case-studies');
+
+            if (await pathExists(path.resolve('public', 'case-studies'))) {
+              await must('git add public/case-studies/', 30_000, 'add-public-case-studies');
             }
-            // Stage home content if it exists
-            const homeContentPath = path.resolve('src/data/home-content.json');
-            if (fs.existsSync(homeContentPath)) {
-              await run('git add src/data/home-content.json');
+            if (await pathExists(path.resolve('src/data/home-content.json'))) {
+              await must('git add src/data/home-content.json', 30_000, 'add-home-content');
             }
-            // Stage about content if it exists
-            const aboutContentPath = path.resolve('src/data/about-content.json');
-            if (fs.existsSync(aboutContentPath)) {
-              await run('git add src/data/about-content.json');
+            if (await pathExists(path.resolve('src/data/about-content.json'))) {
+              await must('git add src/data/about-content.json', 30_000, 'add-about-content');
             }
-            // Stage about images if they exist
-            const aboutImagesDir = path.resolve('public', 'about');
-            if (fs.existsSync(aboutImagesDir)) {
-              await run('git add public/about/');
+            if (await pathExists(path.resolve('public', 'about'))) {
+              await must('git add public/about/', 30_000, 'add-about-images');
             }
 
-            // Check if there's anything staged to commit
-            const staged = await run('git diff --cached --name-only').catch(() => '');
+            const staged = await must('git diff --cached --name-only', 30_000, 'diff-cached');
             if (staged) {
               const date = new Date().toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' });
-              await run(`git commit -m "Update case studies (${date})"`);
+              await must(`git commit -m "Update case studies (${date})"`, 30_000, 'commit');
             }
 
-            // Longer timeout on push — large media transfers can legitimately take a while
-            await run('git push', 180_000);
+            await must('git push', 180_000, 'push');
 
-            // Trigger Netlify deploy automatically
             await new Promise((resolve) => {
               const url = new URL(NETLIFY_BUILD_HOOK);
-              const req = https.request({ hostname: url.hostname, path: url.pathname, method: 'POST' }, (r) => {
-                r.resume();
-                resolve();
-              });
-              req.on('error', (e) => { console.warn('[git-push] Netlify hook failed:', e.message); resolve(); });
-              req.end();
+              const hookReq = https.request(
+                { hostname: url.hostname, path: url.pathname, method: 'POST' },
+                (r) => { r.resume(); resolve(); }
+              );
+              hookReq.on('error', (e) => { console.warn('[git-push] Netlify hook failed:', e.message); resolve(); });
+              hookReq.end();
             });
-            console.log('[git-push] Netlify deploy triggered');
-
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({ ok: true, committed: !!staged }));
+            const totalMs = Date.now() - requestStart;
+            console.log(`[git-push] OK totalMs=${totalMs} committed=${!!staged}`);
+            sendJson(res, 200, { ok: true, committed: !!staged, elapsedMs: totalMs });
           } catch (err) {
-            console.error('[git-push] Error:', err.message);
-            res.statusCode = 500;
-            res.end(JSON.stringify({ error: err.message }));
+            const totalMs = Date.now() - requestStart;
+            console.error(`[git-push] FAILED step=${err.step || '?'} code=${err.code || '?'} totalMs=${totalMs} msg=${err.message}`);
+            sendJson(res, 500, {
+              error: err.message,
+              step: err.step || null,
+              code: err.code ?? null,
+              stderr: err.stderr || null,
+              stdout: err.stdout || null,
+            });
           }
         })();
       });
 
-      // List saved case studies
-      server.middlewares.use('/api/list-case-studies', (req, res) => {
-        if (req.method !== 'GET') {
-          res.statusCode = 405;
-          res.end(JSON.stringify({ error: 'Method not allowed' }));
-          return;
-        }
+      // Cheap, always-safe git state snapshot.
+      server.middlewares.use('/api/git-status', wrap('/api/git-status', async (req) => {
+        assertMethod(req, 'GET');
+        const run = (cmd, timeoutMs = 5_000) => new Promise((resolve) => {
+          exec(
+            cmd,
+            {
+              cwd: path.resolve('.'),
+              timeout: timeoutMs,
+              maxBuffer: 1 * 1024 * 1024,
+              env: { ...process.env, GIT_TERMINAL_PROMPT: '0', GIT_ASKPASS: 'echo' },
+            },
+            (err, stdout, stderr) => resolve({
+              code: err ? (err.code ?? 1) : 0,
+              stdout: (stdout || '').trim(),
+              stderr: (stderr || '').trim(),
+            })
+          );
+        });
+        const [branchR, remoteR, aheadBehindR, dirtyR, credR, lsRemoteR] = await Promise.all([
+          run('git rev-parse --abbrev-ref HEAD'),
+          run('git config --get remote.origin.url'),
+          run('git rev-list --left-right --count @{u}...HEAD'),
+          run('git status --porcelain'),
+          run('git config --get credential.helper'),
+          run('git ls-remote --heads origin', 10_000),
+        ]);
+        const parts = (aheadBehindR.stdout || '0\t0').split(/\s+/).map(Number);
+        const [behind, ahead] = [parts[0] || 0, parts[1] || 0];
+        return {
+          branch: branchR.stdout || null,
+          remote: remoteR.stdout || null,
+          ahead,
+          behind,
+          hasUnstaged: !!dirtyR.stdout,
+          unstagedCount: dirtyR.stdout ? dirtyR.stdout.split('\n').length : 0,
+          credentialHelper: credR.stdout || null,
+          remoteReachable: lsRemoteR.code === 0,
+          remoteError: lsRemoteR.code === 0 ? null : (lsRemoteR.stderr || `exit ${lsRemoteR.code}`),
+        };
+      }));
+
+      server.middlewares.use('/api/list-case-studies', wrap('/api/list-case-studies', async (req) => {
+        assertMethod(req, 'GET');
         const dir = path.resolve('src/data/case-studies');
-        if (!fs.existsSync(dir)) {
-          res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({ ids: [] }));
-          return;
-        }
-        const ids = fs.readdirSync(dir)
+        if (!(await pathExists(dir))) return { ids: [] };
+        const entries = await fsp.readdir(dir);
+        const ids = entries
           .filter(f => f.endsWith('.json') && f !== 'index.js')
           .map(f => f.replace('.json', ''));
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify({ ids }));
-      });
+        return { ids };
+      }));
     },
   };
 }
 
-function updateIndex(dir) {
-  const files = fs.readdirSync(dir).filter(f => f.endsWith('.json'));
-  const imports = files.map((f, i) => {
-    const id = f.replace('.json', '');
-    return `import cs${i} from './${f}';`;
-  });
-  const entries = files.map((f, i) => {
+async function updateIndex(dir) {
+  const entries = await fsp.readdir(dir);
+  const files = entries.filter(f => f.endsWith('.json'));
+  const imports = files.map((f, i) => `import cs${i} from './${f}';`);
+  const entriesStr = files.map((f, i) => {
     const id = f.replace('.json', '');
     return `  '${id}': cs${i},`;
   });
-  const content = `// Auto-generated — do not edit manually\n${imports.join('\n')}\n\nexport const savedCaseStudies = {\n${entries.join('\n')}\n};\n`;
-  fs.writeFileSync(path.join(dir, 'index.js'), content, 'utf-8');
+  const content = `// Auto-generated — do not edit manually\n${imports.join('\n')}\n\nexport const savedCaseStudies = {\n${entriesStr.join('\n')}\n};\n`;
+  await fsp.writeFile(path.join(dir, 'index.js'), content, 'utf-8');
 }

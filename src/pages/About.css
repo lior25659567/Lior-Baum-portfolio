@@ -272,7 +272,19 @@
 
 /* Skills Section */
 .skills-section {
-  padding: var(--spacing-xl) 0;
+  padding: var(--spacing-md) 0;
+}
+
+/* Rotator stage — holds the circular skills display in view mode.
+   Zero vertical padding: the rotator already has its own internal breathing
+   room, and the surrounding section padding handles outer rhythm. */
+.about-rotator-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 100%;
+  overflow: hidden;
 }
 
 /* Section headings: same font logic as Hero (body font, heading letter-spacing) */
@@ -282,7 +294,7 @@
   font-weight: var(--fw-body);
   letter-spacing: var(--ls-heading);
   color: var(--color-text);
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
 }
 
 .skills-grid {

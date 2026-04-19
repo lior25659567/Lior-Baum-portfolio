@@ -1,0 +1,136 @@
+/* ── AboutRotator — radial skills wheel ────────────────────────────────
+   20 spokes pinned at the wheel's center; each spoke uses padding-left to
+   push its text outward from the inner radius. The whole ring spins via
+   CSS animation. Per-label opacity is driven by JS in AboutRotator.jsx
+   (per-label "breathing" + cursor-following spotlight on hover).
+
+   All sizing scales proportionally from the canonical 720×720 spec via a
+   single --rotator-size variable so the layout stays self-consistent on
+   every viewport. */
+
+.abt-anim-text-rotator-wrap {
+  /* Sizes scale proportionally from a single --rotator-size. The ratios
+     (110/880 inner radius, 64/880 center mark) are tuned for visual balance
+     at the new larger size. */
+  --rotator-size: min(720px, 92vw);
+  --rotator-inner-radius: calc(var(--rotator-size) * 155 / 720);
+  --rotator-cross-size: calc(var(--rotator-size) * 64 / 720);
+  --rotator-spin-duration: 26s;
+
+  position: relative;
+  width: var(--rotator-size);
+  height: var(--rotator-size);
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  isolation: isolate;
+  /* Cursor hint — hovering activates the spotlight */
+  cursor: crosshair;
+}
+
+/* ── The ring — this is the element that spins ───────────────────── */
+.abt-anim-text-rotator {
+  position: absolute;
+  inset: 0;
+  animation: abt-spin var(--rotator-spin-duration) linear infinite;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+@keyframes abt-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .abt-anim-text-rotator { animation: none; }
+}
+
+/* ── Central 4-petal mark (the "+") ──────────────────────────────────
+   IMPORTANT: the OUTER element handles centering with translate(-50%,-50%);
+   keeping any animation on this element would clobber that translate and
+   visually shove the mark off-center. The mark itself is rotationally
+   symmetric every 90° so we don't bother spinning it at all. */
+.abt-anim-rotater-o {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--rotator-cross-size);
+  height: var(--rotator-cross-size);
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.atb-rotator-c { width: 100%; height: 100%; }
+.atb-rotator-c svg { width: 100%; height: 100%; display: block; }
+.atb-rotator-c svg path { fill: var(--color-accent); }
+
+/* ── Label wrapper — holds the 20 spokes ─────────────────────────── */
+.abt-anim-label-w {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* THE KEY RULE — each label is a spoke pinned at the center.
+   • position absolute + top/left 50% pins the spoke's left edge to the
+     wheel's center.
+   • width 50% gives the spoke a real length (= radius).
+   • transform-origin: 0% 50% rotates around that inner end (the center).
+   • padding-left = inner radius pushes the text outward to the rim,
+     leaving an empty circle in the middle for the petal mark. */
+.abt-anim-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 0;
+  transform-origin: 0% 50%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: var(--rotator-inner-radius);
+}
+
+/* ── The label text — design system typography ─────────────────────
+   Base color uses --color-text-muted to match the .section-label /
+   caps-label convention across the site. The JS rAF loop overrides
+   color inline to --color-accent when a label crosses LIT_THRESHOLD,
+   so peaks read in the brand accent while the quiet majority sits in
+   the muted tone used for every other structural label. */
+.abt-anim-label .text-small {
+  font-family: var(--font-body);
+  font-size: clamp(12px, calc(var(--rotator-size) * 15 / 720), 15px);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-label);
+  white-space: nowrap;
+  color: var(--color-text-muted);
+  /* Initial opacity — the rAF loop in JS overrides this every frame */
+  opacity: 0.15;
+  transition: color var(--transition-fast);
+  line-height: 1;
+}
+
+/* Selected/lit labels — JS toggles .is-lit when a label's strength crosses
+   LIT_THRESHOLD. Use the brand accent so peaks pop visually. */
+.abt-anim-label .text-small.is-lit {
+  color: var(--color-accent);
+}
+
+.abt-anim-label .caps {
+  text-transform: uppercase;
+}
+
+/* Bottom/left half (angles 144°–306°): flip the text 180° so letters
+   stay upright once the spoke has rotated them past the halfway point. */
+.abt-anim-label .flip-text {
+  transform: rotate(180deg);
+  transform-origin: center;
+}
+
+/* ── Reduced motion: pin everything visible at full opacity, no spin. */
+@media (prefers-reduced-motion: reduce) {
+  .abt-anim-label .text-small { opacity: 1; }
+}

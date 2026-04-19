@@ -35,9 +35,12 @@ const defaultContent = {
     email: 'Lior2565967@gmail.com',
     skillsTitle: 'Skills & Expertise',
     skills: [
-      { category: 'Design', items: ['UX Strategy & Design Thinking', 'Product Discovery & User Research', 'Wireframing & Prototyping', 'Interaction Design & Microinteractions', 'UI Systems & Component Libraries'] },
-      { category: 'Tools', items: ['Figma', 'After Effects', 'Illustrator', 'Photoshop', 'Webflow', 'HTML/CSS'] },
-      { category: 'AI & Development', items: ['Claude Code', 'Cursor', 'Vibe Coding\u2122', 'AI-Assisted Prototyping', 'Prompt Engineering'] },
+      { category: 'Product & UX Strategy', items: ['Product Strategy', 'Product Roadmapping', 'UX Strategy', 'Service Design', 'Information Architecture', 'Interaction Design', 'Design Systems', 'Design Ops'] },
+      { category: 'Research & Testing', items: ['User Research', 'Usability Testing', 'Behavioral Analytics', 'Jobs-to-be-Done', 'Heuristic Evaluation', 'A/B Testing', 'Stakeholder Interviews'] },
+      { category: 'Craft & Visual', items: ['Visual Design', 'Typography', 'Motion Design', 'Prototyping', 'Wireframing', 'Data Visualization', 'Accessibility', 'Brand Identity'] },
+      { category: 'AI & Emerging Tech', items: ['AI-Native Interfaces', 'Generative UX', 'Agent-Based UX', 'Prompt Engineering', 'LLM Integration', 'Multimodal Design', 'AI-Assisted Prototyping', 'Vibe Coding'] },
+      { category: 'Tools', items: ['Figma', 'FigJam', 'Framer', 'Webflow', 'Cursor', 'Claude Code', 'After Effects', 'Illustrator'] },
+      { category: 'Collaboration', items: ['Cross-functional Collaboration', 'Stakeholder Management', 'Design Critique', 'Mentorship', 'Workshop Facilitation'] },
     ],
     experienceTitle: 'Experience',
     experience: [
@@ -99,11 +102,23 @@ const defaultStyles = {
   },
 };
 
+// Treat skill arrays that are only unedited placeholders (empty categories
+// with "Skill 1" items) as if nothing was saved, so defaults kick in. Avoids
+// leaving users stuck with a half-built list they created accidentally.
+const PLACEHOLDER_CATEGORIES = new Set(['', 'New Category']);
+const PLACEHOLDER_ITEMS = new Set(['', 'New Skill', 'Skill 1']);
+const isPlaceholderSkills = (skills) =>
+  !skills?.length ||
+  skills.every(g =>
+    PLACEHOLDER_CATEGORIES.has(g?.category || '') &&
+    (!g?.items?.length || g.items.every(i => PLACEHOLDER_ITEMS.has(i || '')))
+  );
+
 // Override defaults with saved home-content.json if present
 const effectiveDefaultContent = (() => {
   if (!savedHomeData?.content) return defaultContent;
   const mergedAbout = { ...defaultContent.about, ...savedHomeData.content.about };
-  if (!mergedAbout.skills?.length) mergedAbout.skills = defaultContent.about.skills;
+  if (isPlaceholderSkills(mergedAbout.skills)) mergedAbout.skills = defaultContent.about.skills;
   if (!mergedAbout.experience?.length) mergedAbout.experience = defaultContent.about.experience;
   return {
     ...defaultContent,
@@ -122,8 +137,8 @@ const effectiveDefaultStyles = savedHomeData?.styles
 function mergeContent(saved) {
   if (!saved) return effectiveDefaultContent;
   const mergedAbout = { ...effectiveDefaultContent.about, ...saved.about };
-  // Preserve default skills/experience when saved data has empty arrays
-  if (!mergedAbout.skills?.length) mergedAbout.skills = effectiveDefaultContent.about.skills;
+  // Fall back to defaults when saved skills are empty or all placeholders
+  if (isPlaceholderSkills(mergedAbout.skills)) mergedAbout.skills = effectiveDefaultContent.about.skills;
   if (!mergedAbout.experience?.length) mergedAbout.experience = effectiveDefaultContent.about.experience;
   return {
     ...effectiveDefaultContent,
@@ -171,6 +186,19 @@ export const EditProvider = ({ children }) => {
     })();
     return () => { cancelled = true; };
   }, []);
+
+  // One-shot migration: if the current content (from useState init or HMR-
+  // preserved state) has placeholder skills, swap them for defaults. Runs on
+  // every mount but is idempotent — after the first substitution, the check
+  // returns false and the effect is a no-op.
+  useEffect(() => {
+    if (isPlaceholderSkills(content?.about?.skills)) {
+      setContent(prev => ({
+        ...prev,
+        about: { ...prev.about, skills: effectiveDefaultContent.about.skills },
+      }));
+    }
+  }, [content]);
 
   // Toggle edit mode with Cmd+E (Mac) or Ctrl+E (Windows/Linux)
   useEffect(() => {
@@ -226,16 +254,36 @@ export const EditProvider = ({ children }) => {
     }
   }, [editMode, showPanel]);
 
+  // Debounced persistence — IndexedDB is the source of truth. localStorage
+  // is kept only as a best-effort fast path for first-paint hydration, and
+  // only for payloads that fit comfortably under its ~5MB quota.
+  const LOCAL_STORAGE_MAX = 2 * 1024 * 1024; // 2 MB safety margin below browser quotas
+  const persistTimers = useRef({});
   useEffect(() => {
     if (!editMode || !hydrated.current) return;
-    saveData('siteContent', content);
-    try { localStorage.setItem('siteContent', JSON.stringify(content)); } catch { /* quota */ }
+    clearTimeout(persistTimers.current.content);
+    persistTimers.current.content = setTimeout(() => {
+      saveData('siteContent', content);
+      try {
+        const json = JSON.stringify(content);
+        if (json.length < LOCAL_STORAGE_MAX) localStorage.setItem('siteContent', json);
+        else localStorage.removeItem('siteContent');
+      } catch { /* quota — IndexedDB still has it */ }
+    }, 500);
+    return () => clearTimeout(persistTimers.current.content);
   }, [content, editMode]);
 
   useEffect(() => {
     if (!editMode || !hydrated.current) return;
-    saveData('siteStyles', styles);
-    try { localStorage.setItem('siteStyles', JSON.stringify(styles)); } catch { /* quota */ }
+    clearTimeout(persistTimers.current.styles);
+    persistTimers.current.styles = setTimeout(() => {
+      saveData('siteStyles', styles);
+      try {
+        const json = JSON.stringify(styles);
+        if (json.length < LOCAL_STORAGE_MAX) localStorage.setItem('siteStyles', json);
+      } catch { /* quota */ }
+    }, 500);
+    return () => clearTimeout(persistTimers.current.styles);
   }, [styles, editMode]);
 
   // Apply CSS variables when styles change
