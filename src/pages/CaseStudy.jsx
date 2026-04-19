@@ -1637,12 +1637,10 @@ const CaseStudy = () => {
       // Always include the current project even if not in list
       if (!ids.includes(projectId)) ids.push(projectId);
 
-      let failed = 0;
-      for (const pid of ids) {
+      const results = await Promise.all(ids.map(async (pid) => {
         try {
-          // Load full data (with images) for each project
           const data = pid === projectId ? project : await getCaseStudyDataAsync(pid);
-          if (!data) continue;
+          if (!data) return true;
           const cleanData = await extractAndSaveMedia(pid, data);
           const res = await fetch('/api/save-case-study', {
             method: 'POST',
@@ -1652,13 +1650,15 @@ const CaseStudy = () => {
           const result = await res.json();
           if (!result.ok) {
             console.error(`[save-all] Failed for ${pid}:`, result.error);
-            failed++;
+            return false;
           }
+          return true;
         } catch (err) {
           console.error(`[save-all] Error for ${pid}:`, err);
-          failed++;
+          return false;
         }
-      }
+      }));
+      const failed = results.filter(ok => !ok).length;
       if (failed === 0) {
         setSaveAllStatus('saved');
       } else {
@@ -1682,6 +1682,7 @@ const CaseStudy = () => {
         setGitPushStatus('pushed');
         setTimeout(() => setGitPushStatus(null), 3000);
       } else {
+        console.error('[git-push] Failed:', data.error);
         setGitPushStatus('error');
         setTimeout(() => setGitPushStatus(null), 4000);
       }
@@ -3430,10 +3431,9 @@ My instructions: `;
             ];
             
             const isContain = imgFit === 'contain';
-            // Inline styles for contain mode to guarantee no dark background/radius
+            // Inline styles for contain mode — only remove radius/overflow when no wrapper bg
             const wrapperContainStyle = isContain ? {
-              borderRadius: 0,
-              overflow: 'visible',
+              ...(wrapperBg ? {} : { borderRadius: 0, overflow: 'visible' }),
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -3446,7 +3446,7 @@ My instructions: `;
               height: 'auto',
               maxWidth: '100%',
               maxHeight: '100%',
-              borderRadius: '12px',
+              borderRadius: 0,
               objectPosition: position,
               objectFit: imgFit,
             } : { objectPosition: position, objectFit: imgFit };
@@ -4338,10 +4338,55 @@ My instructions: `;
                   <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
                 </div>
               </OptionalField>
+              {/* CTA Button */}
+              {slide.cta ? (
+                <div className="info-cta-wrapper">
+                  <a
+                    href={editMode ? undefined : slide.cta.url}
+                    target={editMode ? undefined : '_blank'}
+                    rel="noopener noreferrer"
+                    className="info-cta-button"
+                    onClick={(e) => editMode && e.preventDefault()}
+                  >
+                    <EditableField
+                      value={slide.cta.label}
+                      onChange={(v) => updateSlide(index, { cta: { ...slide.cta, label: v } })}
+                    />
+                  </a>
+                  {editMode && (
+                    <div className="info-cta-controls">
+                      <label className="info-cta-url-label">
+                        URL:
+                        <input
+                          type="text"
+                          className="info-cta-url-input"
+                          value={slide.cta.url || ''}
+                          onChange={(e) => updateSlide(index, { cta: { ...slide.cta, url: e.target.value } })}
+                          placeholder="https://..."
+                        />
+                      </label>
+                      <button
+                        className="remove-item-btn"
+                        onClick={() => updateSlide(index, { cta: null })}
+                        title="Remove CTA"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : editMode ? (
+                <button
+                  className="add-field-btn"
+                  onClick={() => updateSlide(index, { cta: { label: 'View Project', url: '' } })}
+                >
+                  + Add CTA Button
+                </button>
+              ) : null}
             </div>
           </div>
         );
-      
+
       case 'media':
       case 'image':
         return (

@@ -954,6 +954,64 @@ body.case-study-active .footer {
   font-weight: 500;
 }
 
+/* Info CTA Button */
+.info-cta-wrapper {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.info-cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  font-family: var(--font-body);
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.info-cta-button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.info-cta-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.info-cta-url-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  flex: 1;
+}
+
+.info-cta-url-input {
+  flex: 1;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
 /* Text Slide – compact gap so all content fits in viewport without scroll */
 .slide-text .slide-inner {
   gap: clamp(0.5rem, 1.2vh, 1rem);
@@ -3518,12 +3576,18 @@ body.case-study-active .footer {
   height: calc(100% - 2.5rem);
   object-fit: contain;
   object-position: center;
-  border-radius: 16px;
+  border-radius: 0;
 }
 
 /* No wrapper background — user toggled BG off */
 .dynamic-image-item.no-wrapper-bg .dynamic-image-wrapper {
   background: transparent;
+}
+
+
+/* Caption sits closer under image when no background wrapper */
+.dynamic-image-item.no-wrapper-bg .dynamic-image-caption-wrapper {
+  padding-top: 16px;
 }
 
 /* Image fit styles - contain mode: natural sizing so img box = visible content */
@@ -3545,14 +3609,14 @@ body.case-study-active .footer {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 0;
 }
 
-/* Contain mode WITHOUT wrapper bg — no padding, no bg radius */
+/* Contain mode WITHOUT wrapper bg — no padding, keep radius + clip */
 .dynamic-image-item.img-fit-contain.no-wrapper-bg .dynamic-image-wrapper {
   background: transparent;
-  border-radius: 0;
-  overflow: visible;
+  border-radius: 16px;
+  overflow: hidden;
   padding: 0;
 }
 

@@ -28,6 +28,7 @@ export const slideTemplates = {
       { label: 'Duration', value: 'Timeline' },
       { label: 'Deliverables', value: 'What you delivered' },
     ],
+    cta: null,
   },
   media: {
     type: 'media',

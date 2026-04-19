@@ -8,6 +8,33 @@ import https from 'https';
 
 const NETLIFY_BUILD_HOOK = 'https://api.netlify.com/build_hooks/69d7cb8c2578b11512ef44a2';
 
+// 500 MB ceiling — protects against runaway uploads but allows large videos
+const MAX_BODY_BYTES = 500 * 1024 * 1024;
+
+// Callback-style body reader (avoids async middleware signatures that hang Vite's chain).
+// Uses Buffer chunks — string concat is O(n²) on large base64 payloads.
+function readJsonBody(req, cb) {
+  const chunks = [];
+  let size = 0;
+  req.on('data', (chunk) => {
+    size += chunk.length;
+    if (size > MAX_BODY_BYTES) {
+      cb(new Error(`Request body exceeds ${MAX_BODY_BYTES} bytes`));
+      req.destroy();
+      return;
+    }
+    chunks.push(chunk);
+  });
+  req.on('end', () => {
+    try {
+      cb(null, JSON.parse(Buffer.concat(chunks).toString('utf-8')));
+    } catch (err) {
+      cb(err);
+    }
+  });
+  req.on('error', cb);
+}
+
 export function saveCaseStudyPlugin() {
   return {
     name: 'save-case-study',
@@ -18,35 +45,32 @@ export function saveCaseStudyPlugin() {
           res.end(JSON.stringify({ error: 'Method not allowed' }));
           return;
         }
-
-        let body = '';
-        req.on('data', chunk => { body += chunk; });
-        req.on('end', () => {
+        readJsonBody(req, (err, body) => {
+          if (err) {
+            console.error('[save-case-study] Error:', err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: err.message }));
+            return;
+          }
           try {
-            const { projectId, data } = JSON.parse(body);
+            const { projectId, data } = body;
             if (!projectId || !data) {
               res.statusCode = 400;
               res.end(JSON.stringify({ error: 'Missing projectId or data' }));
               return;
             }
-
-            // Write to individual JSON files in src/data/case-studies/
             const dir = path.resolve('src/data/case-studies');
             if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-
             const filePath = path.join(dir, `${projectId}.json`);
             fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
-
-            // Update the index file that exports all saved case studies
             updateIndex(dir);
-
             console.log(`[save-case-study] Saved ${projectId} → ${filePath}`);
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify({ ok: true, path: filePath }));
-          } catch (err) {
-            console.error('[save-case-study] Error:', err);
+          } catch (e) {
+            console.error('[save-case-study] Error:', e);
             res.statusCode = 500;
-            res.end(JSON.stringify({ error: err.message }));
+            res.end(JSON.stringify({ error: e.message }));
           }
         });
       });
@@ -58,11 +82,15 @@ export function saveCaseStudyPlugin() {
           res.end(JSON.stringify({ error: 'Method not allowed' }));
           return;
         }
-        let body = '';
-        req.on('data', chunk => { body += chunk; });
-        req.on('end', () => {
+        readJsonBody(req, (err, body) => {
+          if (err) {
+            console.error('[save-case-study] Delete error:', err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: err.message }));
+            return;
+          }
           try {
-            const { projectId } = JSON.parse(body);
+            const { projectId } = body;
             if (!projectId) {
               res.statusCode = 400;
               res.end(JSON.stringify({ error: 'Missing projectId' }));
@@ -77,10 +105,10 @@ export function saveCaseStudyPlugin() {
             }
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify({ ok: true }));
-          } catch (err) {
-            console.error('[save-case-study] Delete error:', err);
+          } catch (e) {
+            console.error('[save-case-study] Delete error:', e);
             res.statusCode = 500;
-            res.end(JSON.stringify({ error: err.message }));
+            res.end(JSON.stringify({ error: e.message }));
           }
         });
       });
@@ -92,11 +120,15 @@ export function saveCaseStudyPlugin() {
           res.end(JSON.stringify({ error: 'Method not allowed' }));
           return;
         }
-        let body = '';
-        req.on('data', chunk => { body += chunk; });
-        req.on('end', () => {
+        readJsonBody(req, (err, body) => {
+          if (err) {
+            console.error('[save-image] Error:', err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: err.message }));
+            return;
+          }
           try {
-            const { projectId, filename, base64data } = JSON.parse(body);
+            const { projectId, filename, base64data } = body;
             if (!projectId || !filename || !base64data) {
               res.statusCode = 400;
               res.end(JSON.stringify({ error: 'Missing projectId, filename, or base64data' }));
@@ -106,14 +138,87 @@ export function saveCaseStudyPlugin() {
             if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
             const filePath = path.join(dir, filename);
             const buffer = Buffer.from(base64data, 'base64');
+            // Skip write if identical file already exists — avoids rewriting 30MB videos on every save
+            if (fs.existsSync(filePath) && fs.statSync(filePath).size === buffer.length) {
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ ok: true, path: `/case-studies/${projectId}/${filename}`, skipped: true }));
+              return;
+            }
             fs.writeFileSync(filePath, buffer);
             console.log(`[save-image] Saved ${projectId}/${filename} (${buffer.length} bytes)`);
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify({ ok: true, path: `/case-studies/${projectId}/${filename}` }));
-          } catch (err) {
-            console.error('[save-image] Error:', err);
+          } catch (e) {
+            console.error('[save-image] Error:', e);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: e.message }));
+          }
+        });
+      });
+
+      // Save about page profile image to public/about/
+      server.middlewares.use('/api/save-about-image', (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405;
+          res.end(JSON.stringify({ error: 'Method not allowed' }));
+          return;
+        }
+        readJsonBody(req, (err, body) => {
+          if (err) {
+            console.error('[save-about-image] Error:', err);
             res.statusCode = 500;
             res.end(JSON.stringify({ error: err.message }));
+            return;
+          }
+          try {
+            const { filename, base64data } = body;
+            if (!filename || !base64data) {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: 'Missing filename or base64data' }));
+              return;
+            }
+            const dir = path.resolve('public', 'about');
+            if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+            const filePath = path.join(dir, filename);
+            const buffer = Buffer.from(base64data, 'base64');
+            fs.writeFileSync(filePath, buffer);
+            console.log(`[save-about-image] Saved ${filename} (${buffer.length} bytes)`);
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ ok: true, path: `/about/${filename}` }));
+          } catch (e) {
+            console.error('[save-about-image] Error:', e);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: e.message }));
+          }
+        });
+      });
+
+      // Save about page content (bio, skills, experience)
+      server.middlewares.use('/api/save-about-content', (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405;
+          res.end(JSON.stringify({ error: 'Method not allowed' }));
+          return;
+        }
+        readJsonBody(req, (err, data) => {
+          if (err) {
+            console.error('[save-about-content] Error:', err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: err.message }));
+            return;
+          }
+          try {
+            const dir = path.resolve('src/data');
+            if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+            const filePath = path.join(dir, 'about-content.json');
+            fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+            console.log(`[save-about-content] Saved → ${filePath}`);
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ ok: true, path: filePath }));
+          } catch (e) {
+            console.error('[save-about-content] Error:', e);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: e.message }));
           }
         });
       });
@@ -125,11 +230,15 @@ export function saveCaseStudyPlugin() {
           res.end(JSON.stringify({ error: 'Method not allowed' }));
           return;
         }
-        let body = '';
-        req.on('data', chunk => { body += chunk; });
-        req.on('end', () => {
+        readJsonBody(req, (err, body) => {
+          if (err) {
+            console.error('[save-home-content] Error:', err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: err.message }));
+            return;
+          }
           try {
-            const { content, styles } = JSON.parse(body);
+            const { content, styles } = body;
             if (!content && !styles) {
               res.statusCode = 400;
               res.end(JSON.stringify({ error: 'Missing content or styles' }));
@@ -142,10 +251,10 @@ export function saveCaseStudyPlugin() {
             console.log(`[save-home-content] Saved → ${filePath}`);
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify({ ok: true, path: filePath }));
-          } catch (err) {
-            console.error('[save-home-content] Error:', err);
+          } catch (e) {
+            console.error('[save-home-content] Error:', e);
             res.statusCode = 500;
-            res.end(JSON.stringify({ error: err.message }));
+            res.end(JSON.stringify({ error: e.message }));
           }
         });
       });
@@ -158,11 +267,29 @@ export function saveCaseStudyPlugin() {
           return;
         }
 
-        const run = (cmd) => new Promise((resolve, reject) => {
-          exec(cmd, { cwd: path.resolve('.') }, (err, stdout, stderr) => {
-            if (err) reject(new Error(stderr || err.message));
-            else resolve(stdout.trim());
-          });
+        const run = (cmd, timeoutMs = 60_000) => new Promise((resolve, reject) => {
+          exec(
+            cmd,
+            {
+              cwd: path.resolve('.'),
+              timeout: timeoutMs,
+              maxBuffer: 10 * 1024 * 1024,
+              env: {
+                ...process.env,
+                // Fail instead of hanging forever if git needs credentials interactively
+                GIT_TERMINAL_PROMPT: '0',
+                GIT_ASKPASS: 'echo',
+              },
+            },
+            (err, stdout, stderr) => {
+              if (err) {
+                const msg = (stderr || err.message || '').trim();
+                reject(new Error(msg || `Command failed: ${cmd}`));
+              } else {
+                resolve(stdout.trim());
+              }
+            }
+          );
         });
 
         (async () => {
@@ -178,6 +305,16 @@ export function saveCaseStudyPlugin() {
             if (fs.existsSync(homeContentPath)) {
               await run('git add src/data/home-content.json');
             }
+            // Stage about content if it exists
+            const aboutContentPath = path.resolve('src/data/about-content.json');
+            if (fs.existsSync(aboutContentPath)) {
+              await run('git add src/data/about-content.json');
+            }
+            // Stage about images if they exist
+            const aboutImagesDir = path.resolve('public', 'about');
+            if (fs.existsSync(aboutImagesDir)) {
+              await run('git add public/about/');
+            }
 
             // Check if there's anything staged to commit
             const staged = await run('git diff --cached --name-only').catch(() => '');
@@ -186,7 +323,8 @@ export function saveCaseStudyPlugin() {
               await run(`git commit -m "Update case studies (${date})"`);
             }
 
-            await run('git push');
+            // Longer timeout on push — large media transfers can legitimately take a while
+            await run('git push', 180_000);
 
             // Trigger Netlify deploy automatically
             await new Promise((resolve) => {

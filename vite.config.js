@@ -8,7 +8,13 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
-    open: true,
+    watch: {
+      ignored: [
+        '**/public/case-studies/**',
+        '**/public/about/**',
+        '**/public/fonts/**',
+      ],
+    },
   },
   preview: {
     port: 5173,
