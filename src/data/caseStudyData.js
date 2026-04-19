@@ -4,6 +4,17 @@
 
 import { savedCaseStudies } from './case-studies/index.js';
 
+// Site-wide contact defaults — used as fallback on any end slide that
+// doesn't have its own email/phone/linkedinUrl set. Rendering in
+// CaseStudy.jsx reads `slide.field ?? contactDefaults.field` so the
+// defaults appear unless the user explicitly clears the field (empty
+// string is treated as "hidden" per the existing show/hide pattern).
+export const contactDefaults = {
+  email: 'lior2655967@gmail.com',
+  phone: '050-5550409',
+  linkedinUrl: 'https://www.linkedin.com/in/lior-baum/',
+};
+
 export const slideTemplates = {
   // === EXISTING TEMPLATES ===
   intro: {
@@ -97,9 +108,9 @@ export const slideTemplates = {
     title: 'Thank You',
     subtitle: 'Want to work together?',
     cta: 'Get in touch',
-    email: '',
-    phone: '',
-    linkedinUrl: '',
+    email: contactDefaults.email,
+    phone: contactDefaults.phone,
+    linkedinUrl: contactDefaults.linkedinUrl,
   },
 
   // === NEW TEMPLATES ===

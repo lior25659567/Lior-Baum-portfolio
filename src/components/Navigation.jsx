@@ -32,7 +32,6 @@ const Navigation = () => {
   const navItems = [
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
-    { label: 'Projects', href: '/#projects' },
     ...(editMode ? [{ label: 'Docs', href: '/docs/slides' }, { label: 'CV Builder', href: '/cv' }] : []),
   ];
 

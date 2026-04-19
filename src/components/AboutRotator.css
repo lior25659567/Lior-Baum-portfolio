@@ -15,7 +15,7 @@
   --rotator-size: min(720px, 92vw);
   --rotator-inner-radius: calc(var(--rotator-size) * 155 / 720);
   --rotator-cross-size: calc(var(--rotator-size) * 64 / 720);
-  --rotator-spin-duration: 26s;
+  --rotator-spin-duration: 42s;
 
   position: relative;
   width: var(--rotator-size);
@@ -113,10 +113,11 @@
   line-height: 1;
 }
 
-/* Selected/lit labels — JS toggles .is-lit when a label's strength crosses
-   LIT_THRESHOLD. Use the brand accent so peaks pop visually. */
+/* Selected/lit labels — peaks use primary text color (not accent orange)
+   so they pop via contrast against the muted base without stealing
+   attention from surrounding copy. */
 .abt-anim-label .text-small.is-lit {
-  color: var(--color-accent);
+  color: var(--color-text);
 }
 
 .abt-anim-label .caps {

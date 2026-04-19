@@ -23,13 +23,12 @@
   padding: var(--spacing-xl) 0;
 }
 
-/* About hero: same font logic as Hero section (sans = body, serif = display, accent = primary) */
+/* About hero label — matches Hero "Hello, I'm" styling exactly: base
+   .section-label rules from index.css give body font, caption size,
+   heading weight, muted color, normal letter-spacing; opacity 0.65
+   mirrors the .hero-greeting tweak so both pages read identically. */
 .about-hero .section-label {
-  font-family: var(--font-body);
-  font-size: var(--text-caption);
-  font-weight: var(--fw-body);
-  letter-spacing: var(--ls-heading);
-  color: var(--color-text);
+  opacity: 0.65;
 }
 
 .title-line-wrapper {

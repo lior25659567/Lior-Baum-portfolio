@@ -3,7 +3,7 @@ import { useRef, useState, useEffect, useCallback, Component, memo, useMemo } fr
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedButton from '../components/AnimatedButton';
 import { useEdit } from '../context/EditContext';
-import { getCaseStudyData, getCaseStudyDataAsync, saveCaseStudyData, resetCaseStudyData, listSavedCaseStudies, slideTemplates, templateCategories, compressImage, defaultCaseStudies } from '../data/caseStudyData';
+import { getCaseStudyData, getCaseStudyDataAsync, saveCaseStudyData, resetCaseStudyData, listSavedCaseStudies, slideTemplates, templateCategories, compressImage, defaultCaseStudies, contactDefaults } from '../data/caseStudyData';
 import { slideTemplateDocs } from '../data/slideTemplateDocs';
 import './CaseStudy.css';
 
@@ -5295,32 +5295,51 @@ My instructions: `;
                   {slide.buttons?.[1]?.text || 'Back to projects'}
                 </AnimatedButton>
               </div>
-              <div className="end-contact-info">
-                {(slide.email || editMode) && (
-                  <a href={slide.email ? `mailto:${slide.email}` : undefined} className="end-contact-item">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
-                    <span className="end-contact-value">
-                      <EditableField value={slide.email || ''} onChange={(v) => updateSlide(index, { email: v })} placeholder="your@email.com" />
-                    </span>
-                  </a>
-                )}
-                {(slide.phone || editMode) && (
-                  <a href={slide.phone ? `tel:${slide.phone.replace(/\s/g, '')}` : undefined} className="end-contact-item">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
-                    <span className="end-contact-value">
-                      <EditableField value={slide.phone || ''} onChange={(v) => updateSlide(index, { phone: v })} placeholder="+1 234 567 890" />
-                    </span>
-                  </a>
-                )}
-                {(slide.linkedinUrl || editMode) && (
-                  <a href={slide.linkedinUrl || undefined} target="_blank" rel="noopener noreferrer" className="end-contact-item end-contact-linkedin">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                    <span className="end-contact-value">
-                      <EditableField value={slide.linkedinUrl || ''} onChange={(v) => updateSlide(index, { linkedinUrl: v })} placeholder="https://linkedin.com/in/yourname" />
-                    </span>
-                  </a>
-                )}
-              </div>
+              {(() => {
+                // Fallback pattern: when a slide-level contact field is undefined
+                // (existing slides that predate the defaults), fall back to the
+                // site-wide contactDefaults. Explicit empty string keeps the
+                // "cleared → hidden" behavior, so removing a field per slide
+                // still works. To add back, user sets it back to the default
+                // (or any value) via the edit field.
+                const effEmail = slide.email ?? contactDefaults.email;
+                const effPhone = slide.phone ?? contactDefaults.phone;
+                const effLinkedin = slide.linkedinUrl ?? contactDefaults.linkedinUrl;
+                return (
+                  <div className="end-contact-info">
+                    {(effEmail || editMode) && (
+                      <a href={effEmail ? `mailto:${effEmail}` : undefined} className="end-contact-item">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
+                        <span className="end-contact-value">
+                          <EditableField value={effEmail} onChange={(v) => updateSlide(index, { email: v })} placeholder="your@email.com" />
+                        </span>
+                      </a>
+                    )}
+                    {(effPhone || editMode) && (
+                      <a href={effPhone ? `tel:${effPhone.replace(/\s/g, '')}` : undefined} className="end-contact-item">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                        <span className="end-contact-value">
+                          <EditableField value={effPhone} onChange={(v) => updateSlide(index, { phone: v })} placeholder="+1 234 567 890" />
+                        </span>
+                      </a>
+                    )}
+                    {(effLinkedin || editMode) && (
+                      <a href={effLinkedin || undefined} target="_blank" rel="noopener noreferrer" className="end-contact-item end-contact-linkedin">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        <span className="end-contact-value">
+                          {/* View mode shows the clean "LinkedIn" label; edit mode
+                              exposes the URL for editing. */}
+                          {editMode ? (
+                            <EditableField value={effLinkedin} onChange={(v) => updateSlide(index, { linkedinUrl: v })} placeholder="https://linkedin.com/in/yourname" />
+                          ) : (
+                            'LinkedIn'
+                          )}
+                        </span>
+                      </a>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           </div>
         );

@@ -38,14 +38,22 @@ const PetalSvg = () => (
 
 // Animation tuning constants
 const MIN_OPACITY = 0.12;
-const MAX_OPACITY = 1.0;
+// Peaks cap at 0.72 (not 1.0) so "lit" labels read as a quiet
+// emphasis rather than a strong spotlight — the wheel's peaks
+// should feel present but not attention-grabbing.
+const MAX_OPACITY = 0.72;
 const HOVER_RANGE = 45;       // spotlight cone width in degrees
-const PERIOD_MIN = 3500;       // ms — slowest "breath"
-const PERIOD_MAX = 8000;       // ms — fastest "breath"
+const PERIOD_MIN = 5500;       // ms — slowest "breath"
+const PERIOD_MAX = 12000;      // ms — fastest "breath"
 const PEAKINESS_MIN = 2.5;     // higher = briefer bright moments
 const PEAKINESS_MAX = 4.5;
 // Above this strength, a label is considered "selected" → accent color
 const LIT_THRESHOLD = 0.45;
+// Only this many labels are "active" (breathing) at once; the rest sit
+// at MIN_OPACITY. One active slot rotates to a new index every
+// ACTIVE_ROTATE_MS, so the selection slowly drifts across the wheel.
+const ACTIVE_COUNT = 4;
+const ACTIVE_ROTATE_MS = 2800;
 
 /**
  * AboutRotator — radial skills wheel.
@@ -80,6 +88,16 @@ const AboutRotator = ({ items }) => {
   const textRefs = useRef([]);
   const labelDataRef = useRef([]);
   const stateRef = useRef({ hovering: false, mouseAngle: 0 });
+  // Rolling set of currently "active" (breathing) label indices. One
+  // slot swaps to a new index every ACTIVE_ROTATE_MS so the feature
+  // reads as 3–4 skills selected at a time, slowly shifting.
+  const activeSetRef = useRef(new Set());
+  const lastRotateAtRef = useRef(0);
+  // Per-label activation level (0..1) — eased toward 1 when the index
+  // joins the active set and toward 0 when it leaves. Multiplied into
+  // the breathing curve so swaps fade in/out smoothly instead of
+  // popping.
+  const activationsRef = useRef([]);
 
   // Re-roll per-label random rhythm whenever the label set changes
   useEffect(() => {
@@ -88,17 +106,31 @@ const AboutRotator = ({ items }) => {
       period: PERIOD_MIN + Math.random() * (PERIOD_MAX - PERIOD_MIN),
       peakiness: PEAKINESS_MIN + Math.random() * (PEAKINESS_MAX - PEAKINESS_MIN),
     }));
+    // Seed the active set with a unique random subset
+    const seed = new Set();
+    const N = labels.length;
+    while (seed.size < Math.min(ACTIVE_COUNT, N)) {
+      seed.add(Math.floor(Math.random() * N));
+    }
+    activeSetRef.current = seed;
+    lastRotateAtRef.current = 0;
+    // Mirror active-set membership in the activations array so initial
+    // paint already shows the seeded labels at full strength.
+    activationsRef.current = Array.from({ length: N }, (_, i) => (seed.has(i) ? 1 : 0));
   }, [labels]);
 
   // rAF loop — drives per-label opacity directly via refs (no React re-renders)
   useEffect(() => {
     if (!wrapRef.current || !ringRef.current) return;
 
-    // Resolve accent color to a literal value at mount. Inline style
-    // assignments bypass any chance of var() not resolving in a given
-    // context, and the value caches for the lifetime of this loop.
+    // Resolve the "lit" label color to a literal value at mount. Peaks
+    // use --color-text (primary black/white in dark mode) rather than
+    // --color-accent — the orange was pulling too much attention away
+    // from the surrounding copy. Inline style assignments bypass any
+    // chance of var() not resolving in a given context, and the value
+    // caches for the lifetime of this loop.
     const root = document.documentElement;
-    const accent = getComputedStyle(root).getPropertyValue('--color-accent').trim() || '#ff584a';
+    const litColor = getComputedStyle(root).getPropertyValue('--color-text').trim() || '#0a0a0a';
 
     // Respect user motion preference — freeze opacities at MAX so all labels
     // are readable, no spotlight, no spin.
@@ -128,6 +160,26 @@ const AboutRotator = ({ items }) => {
       const refs = textRefs.current;
       const N = data.length;
 
+      // Idle-only: rotate one active slot out/in every ACTIVE_ROTATE_MS.
+      // Hover bypasses the active set so the spotlight can light any label
+      // the cursor points at.
+      if (!hovering && t - lastRotateAtRef.current > ACTIVE_ROTATE_MS) {
+        lastRotateAtRef.current = t;
+        const active = activeSetRef.current;
+        if (active.size > 0 && active.size < N) {
+          const inactive = [];
+          for (let j = 0; j < N; j++) if (!active.has(j)) inactive.push(j);
+          const activeArr = Array.from(active);
+          const drop = activeArr[Math.floor(Math.random() * activeArr.length)];
+          const add = inactive[Math.floor(Math.random() * inactive.length)];
+          active.delete(drop);
+          active.add(add);
+        }
+      }
+
+      const activations = activationsRef.current;
+      const activeSet = activeSetRef.current;
+
       for (let i = 0; i < N; i++) {
         const el = refs[i];
         const d = data[i];
@@ -142,8 +194,16 @@ const AboutRotator = ({ items }) => {
           if (diff > 180) diff = 360 - diff;
           strength = diff < HOVER_RANGE ? 1 - diff / HOVER_RANGE : 0;
         } else {
+          // Ease the per-label activation toward its target (1 = in active set,
+          // 0 = not) so rotations swap in/out as smooth crossfades.
+          const target = activeSet.has(i) ? 1 : 0;
+          activations[i] += (target - activations[i]) * 0.04;
+          // Active labels keep a gentle breathing curve between 0.55 and
+          // 1.0 — always above LIT_THRESHOLD so all ACTIVE_COUNT selected
+          // labels read as lit simultaneously, with subtle variation.
           const wave = Math.sin((t / d.period) * 2 * Math.PI + d.phase);
-          strength = Math.pow(Math.max(0, wave), d.peakiness);
+          const breath = 0.775 + 0.225 * wave;
+          strength = activations[i] * breath;
         }
 
         const opacity = MIN_OPACITY + strength * (MAX_OPACITY - MIN_OPACITY);
@@ -152,7 +212,7 @@ const AboutRotator = ({ items }) => {
         // pre-resolved hex from the design token (read at effect mount) so
         // there's zero ambiguity about var() resolution in inline styles.
         // Empty string clears the inline color and falls back to --color-text.
-        el.style.color = strength > LIT_THRESHOLD ? accent : '';
+        el.style.color = strength > LIT_THRESHOLD ? litColor : '';
       }
 
       rafId = requestAnimationFrame(tick);
