@@ -47,6 +47,39 @@
   will-change: transform, opacity;
 }
 
+/* Filter Chips */
+.projects-filter-bar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.projects-filter-chip {
+  padding: 0.45rem 1.1rem;
+  border-radius: 100px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: var(--fw-body);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.projects-filter-chip:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.projects-filter-chip.active {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
 /* Grid */
 .projects-grid {
   display: grid;
@@ -273,6 +306,77 @@
 .project-remove-btn:hover {
   transform: scale(1.1);
   background: rgba(220, 38, 38, 1);
+}
+
+/* Edit-mode: tag selector + reorder */
+.project-edit-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem 0.65rem;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  position: relative;
+  z-index: 4;
+}
+
+.project-tag-selector {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.project-tag-btn {
+  padding: 0.25rem 0.65rem;
+  border-radius: 100px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: var(--fw-body);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.project-tag-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.project-tag-btn.active {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+.project-reorder-controls {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.project-reorder-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.project-reorder-btn:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.project-reorder-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
 }
 
 /* Add New Project card (edit mode) */

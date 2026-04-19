@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -6,11 +6,50 @@ import { useEdit } from '../context/EditContext';
 import AnimatedButton from '../components/AnimatedButton';
 import Footer from '../components/Footer';
 import './About.css';
+import './HomePublishBar.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Lightweight inline editable text for the About page
+const Editable = ({ value, onChange, tag: Tag = 'span', className, multiline = false, placeholder = 'Edit...' }) => {
+  const { editMode } = useEdit();
+  const ref = useRef(null);
+
+  const handleBlur = () => {
+    const el = ref.current;
+    if (!el) return;
+    const newVal = multiline ? el.innerText : el.innerText.replace(/\n/g, ' ');
+    if (newVal !== value) onChange(newVal);
+  };
+
+  const handleKeyDown = (e) => {
+    if (!multiline && e.key === 'Enter') {
+      e.preventDefault();
+      e.target.blur();
+    }
+  };
+
+  if (!editMode) {
+    return <Tag className={className}>{value}</Tag>;
+  }
+
+  return (
+    <Tag
+      ref={ref}
+      className={`${className || ''} about-editable`}
+      contentEditable
+      suppressContentEditableWarning
+      onBlur={handleBlur}
+      onKeyDown={handleKeyDown}
+      data-placeholder={placeholder}
+    >
+      {value}
+    </Tag>
+  );
+};
+
 const About = () => {
-  const { content, editMode } = useEdit();
+  const { content, editMode, updateContent, gitPush } = useEdit();
   const heroRef = useRef(null);
   const labelRef = useRef(null);
   const line1Ref = useRef(null);
@@ -21,42 +60,103 @@ const About = () => {
   const [profileImage, setProfileImage] = useState(() => {
     return localStorage.getItem('aboutProfileImage') || '';
   });
+  const [publishStatus, setPublishStatus] = useState('');
 
-  const skills = [
-    { category: 'Design', items: ['UI/UX Design', 'Product Design', 'Design Systems', 'Prototyping', 'User Research'] },
-    { category: 'Tools', items: ['Figma', 'Adobe Creative Suite', 'Sketch', 'Framer', 'Webflow'] },
-    { category: 'Development', items: ['HTML/CSS', 'JavaScript', 'React', 'Motion Design', 'Responsive Design'] },
-  ];
+  const about = content.about || {};
+  const skills = about.skills || [];
+  const experience = about.experience || [];
 
-  const experience = [
-    {
-      year: '2023 - Present',
-      role: 'Senior Product Designer',
-      company: 'Company Name',
-      description: 'Leading design initiatives for flagship products, establishing design systems, and mentoring junior designers.',
-    },
-    {
-      year: '2021 - 2023',
-      role: 'Product Designer',
-      company: 'Previous Company',
-      description: 'Designed end-to-end user experiences for web and mobile applications, conducted user research and usability testing.',
-    },
-    {
-      year: '2019 - 2021',
-      role: 'UI/UX Designer',
-      company: 'Startup Name',
-      description: 'Created visual designs and interactive prototypes for early-stage products, collaborated closely with development teams.',
-    },
-  ];
+  // Helpers to update nested about content
+  const updateAbout = useCallback((key, value) => {
+    updateContent('about', key, value);
+  }, [updateContent]);
+
+  const updateBioParagraph = useCallback((i, newText) => {
+    const newBio = [...(about.bio || [])];
+    newBio[i] = newText;
+    updateAbout('bio', newBio);
+  }, [about.bio, updateAbout]);
+
+  const addBioParagraph = useCallback(() => {
+    updateAbout('bio', [...(about.bio || []), 'New paragraph...']);
+  }, [about.bio, updateAbout]);
+
+  const removeBioParagraph = useCallback((i) => {
+    updateAbout('bio', (about.bio || []).filter((_, idx) => idx !== i));
+  }, [about.bio, updateAbout]);
+
+  // Skills helpers
+  const updateSkillCategory = useCallback((groupIndex, newCategory) => {
+    const newSkills = skills.map((g, i) => i === groupIndex ? { ...g, category: newCategory } : g);
+    updateAbout('skills', newSkills);
+  }, [skills, updateAbout]);
+
+  const updateSkillItem = useCallback((groupIndex, itemIndex, newValue) => {
+    const newSkills = skills.map((g, gi) =>
+      gi === groupIndex ? { ...g, items: g.items.map((s, si) => si === itemIndex ? newValue : s) } : g
+    );
+    updateAbout('skills', newSkills);
+  }, [skills, updateAbout]);
+
+  const addSkillItem = useCallback((groupIndex) => {
+    const newSkills = skills.map((g, i) =>
+      i === groupIndex ? { ...g, items: [...g.items, 'New Skill'] } : g
+    );
+    updateAbout('skills', newSkills);
+  }, [skills, updateAbout]);
+
+  const removeSkillItem = useCallback((groupIndex, itemIndex) => {
+    const newSkills = skills.map((g, gi) =>
+      gi === groupIndex ? { ...g, items: g.items.filter((_, si) => si !== itemIndex) } : g
+    );
+    updateAbout('skills', newSkills);
+  }, [skills, updateAbout]);
+
+  const addSkillGroup = useCallback(() => {
+    updateAbout('skills', [...skills, { category: 'New Category', items: ['Skill 1'] }]);
+  }, [skills, updateAbout]);
+
+  const removeSkillGroup = useCallback((groupIndex) => {
+    updateAbout('skills', skills.filter((_, i) => i !== groupIndex));
+  }, [skills, updateAbout]);
+
+  // Experience helpers
+  const updateExperienceField = useCallback((expIndex, field, value) => {
+    const newExp = experience.map((e, i) => i === expIndex ? { ...e, [field]: value } : e);
+    updateAbout('experience', newExp);
+  }, [experience, updateAbout]);
+
+  const addExperience = useCallback(() => {
+    updateAbout('experience', [...experience, { year: '2024', role: 'Role', company: 'Company', description: 'Description...' }]);
+  }, [experience, updateAbout]);
+
+  const removeExperience = useCallback((expIndex) => {
+    updateAbout('experience', experience.filter((_, i) => i !== expIndex));
+  }, [experience, updateAbout]);
+
 
   const handleImageUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = async (event) => {
         const imageData = event.target?.result;
         setProfileImage(imageData);
         localStorage.setItem('aboutProfileImage', imageData);
+        try {
+          const ext = file.name.split('.').pop() || 'jpg';
+          const base64data = imageData.split(',')[1];
+          await fetch('/api/save-about-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filename: `profile.${ext}`, base64data }),
+          });
+          const filePath = `/about/profile.${ext}`;
+          setProfileImage(filePath);
+          localStorage.setItem('aboutProfileImage', filePath);
+        } catch (err) {
+          console.warn('[About] Could not save image to filesystem:', err);
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -68,30 +168,54 @@ const About = () => {
     }
   };
 
+  const saveAboutToCode = async () => {
+    const res = await fetch('/api/save-about-content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        profileImage: profileImage,
+        about: content.about,
+      }),
+    });
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error || 'Save failed');
+    return json;
+  };
+
+  const handleSaveToCode = async () => {
+    setPublishStatus('saving');
+    try {
+      await saveAboutToCode();
+      setPublishStatus('saved');
+      setTimeout(() => setPublishStatus(''), 2500);
+    } catch (err) {
+      console.error(err);
+      setPublishStatus('error');
+      setTimeout(() => setPublishStatus(''), 3000);
+    }
+  };
+
+  const handlePushToGit = async () => {
+    setPublishStatus('pushing');
+    try {
+      await saveAboutToCode();
+      await gitPush();
+      setPublishStatus('pushed');
+      setTimeout(() => setPublishStatus(''), 3000);
+    } catch (err) {
+      console.error(err);
+      setPublishStatus('error');
+      setTimeout(() => setPublishStatus(''), 3000);
+    }
+  };
+
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Initial animation on load — blur reveal with elastic ease
       const tl = gsap.timeline();
+      tl.fromTo(labelRef.current, { y: 18, opacity: 0, filter: 'blur(4px)' }, { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.6, ease: 'power2.out' })
+        .fromTo(line1Ref.current, { y: 60, opacity: 0, filter: 'blur(4px)' }, { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'back.out(1.4)' }, '-=0.3')
+        .fromTo(line2Ref.current, { y: 60, opacity: 0, filter: 'blur(4px)' }, { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'back.out(1.4)' }, '-=0.5');
 
-      tl.fromTo(
-        labelRef.current,
-        { y: 18, opacity: 0, filter: 'blur(4px)' },
-        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.6, ease: 'power2.out' }
-      )
-      .fromTo(
-        line1Ref.current,
-        { y: 60, opacity: 0, filter: 'blur(4px)' },
-        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'back.out(1.4)' },
-        '-=0.3'
-      )
-      .fromTo(
-        line2Ref.current,
-        { y: 60, opacity: 0, filter: 'blur(4px)' },
-        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'back.out(1.4)' },
-        '-=0.5'
-      );
-
-      // Scroll-based parallax (reverse on scroll up naturally via scrub)
       ScrollTrigger.create({
         trigger: heroRef.current,
         start: 'top top',
@@ -99,32 +223,15 @@ const About = () => {
         scrub: 0.5,
         onUpdate: (self) => {
           const progress = self.progress;
-          gsap.to(labelRef.current, {
-            y: progress * 30,
-            opacity: 1 - progress * 0.6,
-            filter: `blur(${progress * 4}px)`,
-            duration: 0.1
-          });
-          gsap.to(line1Ref.current, {
-            y: progress * 60,
-            opacity: 1 - progress * 0.7,
-            filter: `blur(${progress * 4}px)`,
-            duration: 0.1
-          });
-          gsap.to(line2Ref.current, {
-            y: progress * 80,
-            opacity: 1 - progress * 0.7,
-            filter: `blur(${progress * 4}px)`,
-            duration: 0.1
-          });
+          gsap.to(labelRef.current, { y: progress * 30, opacity: 1 - progress * 0.6, filter: `blur(${progress * 4}px)`, duration: 0.1 });
+          gsap.to(line1Ref.current, { y: progress * 60, opacity: 1 - progress * 0.7, filter: `blur(${progress * 4}px)`, duration: 0.1 });
+          gsap.to(line2Ref.current, { y: progress * 80, opacity: 1 - progress * 0.7, filter: `blur(${progress * 4}px)`, duration: 0.1 });
         }
       });
     }, heroRef);
-
     return () => ctx.revert();
   }, []);
 
-  // Scroll animation for Skills (same style as Services/Projects)
   useEffect(() => {
     const el = skillsRef.current;
     if (!el) return;
@@ -132,23 +239,12 @@ const About = () => {
     if (!cards.length) return;
     gsap.set(cards, { y: 50, opacity: 0 });
     const st = ScrollTrigger.create({
-      trigger: el,
-      start: 'top 82%',
-      once: true,
-      onEnter: () => {
-        gsap.to(cards, {
-          y: 0,
-          opacity: 1,
-          duration: 0.75,
-          stagger: 0.1,
-          ease: 'power3.out',
-        });
-      },
+      trigger: el, start: 'top 82%', once: true,
+      onEnter: () => { gsap.to(cards, { y: 0, opacity: 1, duration: 0.75, stagger: 0.1, ease: 'power3.out' }); },
     });
     return () => st.kill();
   }, []);
 
-  // Scroll animation for Experience (same style)
   useEffect(() => {
     const el = experienceRef.current;
     if (!el) return;
@@ -156,18 +252,8 @@ const About = () => {
     if (!items.length) return;
     gsap.set(items, { y: 50, opacity: 0 });
     const st = ScrollTrigger.create({
-      trigger: el,
-      start: 'top 82%',
-      once: true,
-      onEnter: () => {
-        gsap.to(items, {
-          y: 0,
-          opacity: 1,
-          duration: 0.75,
-          stagger: 0.1,
-          ease: 'power3.out',
-        });
-      },
+      trigger: el, start: 'top 82%', once: true,
+      onEnter: () => { gsap.to(items, { y: 0, opacity: 1, duration: 0.75, stagger: 0.1, ease: 'power3.out' }); },
     });
     return () => st.kill();
   }, []);
@@ -178,17 +264,21 @@ const About = () => {
         {/* Hero Section */}
         <div className="about-hero" ref={heroRef}>
           <div className="title-line-wrapper">
-            <span className="section-label" ref={labelRef}>{content.about?.label || 'About Me'}</span>
+            <span className="section-label" ref={labelRef}>
+              <Editable value={about.label || 'About Me'} onChange={(v) => updateAbout('label', v)} placeholder="Label" />
+            </span>
           </div>
           <h1 className="about-title">
             <div className="title-line-wrapper">
               <div className="title-line" ref={line1Ref}>
-                <span className="sans">{content.about?.title1 || 'Designing'}</span> <span className="serif">{content.about?.title2 || 'experiences'}</span>
+                <span className="sans"><Editable value={about.title1 || 'Designing'} onChange={(v) => updateAbout('title1', v)} /></span>
+                {' '}
+                <span className="serif"><Editable value={about.title2 || 'experiences'} onChange={(v) => updateAbout('title2', v)} /></span>
               </div>
             </div>
             <div className="title-line-wrapper">
               <div className="title-line" ref={line2Ref}>
-                <span className="serif accent">{content.about?.title3 || 'that matter'}</span>
+                <span className="serif accent"><Editable value={about.title3 || 'that matter'} onChange={(v) => updateAbout('title3', v)} /></span>
               </div>
             </div>
           </h1>
@@ -202,10 +292,7 @@ const About = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <div 
-              className={`about-image ${editMode ? 'editable' : ''}`}
-              onClick={handleImageClick}
-            >
+            <div className={`about-image ${editMode ? 'editable' : ''}`} onClick={handleImageClick}>
               {profileImage ? (
                 <>
                   <img src={profileImage} alt="Profile" />
@@ -217,13 +304,7 @@ const About = () => {
                 </div>
               )}
             </div>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleImageUpload}
-              accept="image/*"
-              style={{ display: 'none' }}
-            />
+            <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" style={{ display: 'none' }} />
             <div className="image-decoration" />
           </motion.div>
 
@@ -233,68 +314,107 @@ const About = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            <h2 className="bio-heading">{content.about?.bioHeading || 'Hello!'}</h2>
-            {(content.about?.bio || [
-              "I'm a product designer with a passion for creating digital experiences that are both beautiful and functional. With over 5 years of experience in the industry, I've had the privilege of working with startups and established companies alike.",
-              "My approach combines user-centered design principles with a keen eye for aesthetics. I believe that great design should not only look good but also solve real problems and create meaningful connections between products and their users.",
-              "When I'm not designing, you can find me exploring new places, experimenting with photography, or diving into the latest design trends and technologies.",
-            ]).map((text, i) => (
-              <p key={i} className="bio-text">{text}</p>
+            <Editable tag="h2" className="bio-heading" value={about.bioHeading || 'Hello!'} onChange={(v) => updateAbout('bioHeading', v)} />
+            {(about.bio || []).map((text, i) => (
+              <div key={i} className="bio-paragraph-wrapper">
+                <Editable tag="p" className="bio-text" value={text} onChange={(v) => updateBioParagraph(i, v)} multiline placeholder="Write a paragraph..." />
+                {editMode && (
+                  <button className="about-remove-btn" onClick={() => removeBioParagraph(i)} title="Remove paragraph">&times;</button>
+                )}
+              </div>
             ))}
+            {editMode && (
+              <button className="about-add-btn" onClick={addBioParagraph}>+ Add Paragraph</button>
+            )}
 
             <div className="bio-cta">
-              <AnimatedButton 
-                href={content.hero?.cvLink || '/resume.pdf'} 
-                variant="primary"
-                icon="↓"
-              >
+              <AnimatedButton href={content.hero?.cvLink || '/resume.pdf'} variant="primary" icon="↓">
                 Download CV
               </AnimatedButton>
-              <AnimatedButton 
-                href={`mailto:${content.about?.email || 'lior@example.com'}`}
-                variant="outline"
-                icon="→"
-              >
+              <AnimatedButton href={`mailto:${about.email || 'lior@example.com'}`} variant="outline" icon="→">
                 Get in touch
               </AnimatedButton>
             </div>
+            {editMode && (
+              <div className="about-email-edit">
+                <label>
+                  Email:
+                  <input type="text" value={about.email || ''} onChange={(e) => updateAbout('email', e.target.value)} className="about-inline-input" />
+                </label>
+              </div>
+            )}
           </motion.div>
         </div>
 
         {/* Skills Section */}
         <div className="skills-section">
-          <h2 className="section-heading">Skills & Expertise</h2>
+          <Editable tag="h2" className="section-heading" value={about.skillsTitle || 'Skills & Expertise'} onChange={(v) => updateAbout('skillsTitle', v)} />
           <div className="skills-grid" ref={skillsRef}>
-            {skills.map((skillGroup) => (
-              <div key={skillGroup.category} className="skill-card">
-                <h3 className="skill-category">{skillGroup.category}</h3>
+            {skills.map((skillGroup, gi) => (
+              <div key={gi} className="skill-card">
+                <div className="skill-card-header">
+                  <Editable tag="h3" className="skill-category" value={skillGroup.category} onChange={(v) => updateSkillCategory(gi, v)} />
+                  {editMode && (
+                    <button className="about-remove-btn small" onClick={() => removeSkillGroup(gi)} title="Remove category">&times;</button>
+                  )}
+                </div>
                 <ul className="skill-list">
-                  {skillGroup.items.map((skill) => (
-                    <li key={skill} className="skill-item">{skill}</li>
+                  {skillGroup.items.map((skill, si) => (
+                    <li key={si} className="skill-item">
+                      <Editable value={skill} onChange={(v) => updateSkillItem(gi, si, v)} placeholder="Skill name" />
+                      {editMode && (
+                        <button className="about-remove-btn small inline" onClick={() => removeSkillItem(gi, si)} title="Remove skill">&times;</button>
+                      )}
+                    </li>
                   ))}
                 </ul>
+                {editMode && (
+                  <button className="about-add-btn small" onClick={() => addSkillItem(gi)}>+ Add Skill</button>
+                )}
               </div>
             ))}
           </div>
+          {editMode && (
+            <button className="about-add-btn" onClick={addSkillGroup}>+ Add Skill Group</button>
+          )}
         </div>
 
         {/* Experience Section */}
         <div className="experience-section">
-          <h2 className="section-heading">Experience</h2>
+          <Editable tag="h2" className="section-heading" value={about.experienceTitle || 'Experience'} onChange={(v) => updateAbout('experienceTitle', v)} />
           <div className="experience-timeline" ref={experienceRef}>
             {experience.map((exp, index) => (
               <div key={index} className="experience-item">
-                <div className="experience-year">{exp.year}</div>
+                <Editable tag="div" className="experience-year" value={exp.year} onChange={(v) => updateExperienceField(index, 'year', v)} placeholder="Year" />
                 <div className="experience-content">
-                  <h3 className="experience-role">{exp.role}</h3>
-                  <p className="experience-company">{exp.company}</p>
-                  <p className="experience-description">{exp.description}</p>
+                  <Editable tag="h3" className="experience-role" value={exp.role} onChange={(v) => updateExperienceField(index, 'role', v)} placeholder="Role" />
+                  <Editable tag="p" className="experience-company" value={exp.company} onChange={(v) => updateExperienceField(index, 'company', v)} placeholder="Company" />
+                  <Editable tag="p" className="experience-description" value={exp.description} onChange={(v) => updateExperienceField(index, 'description', v)} multiline placeholder="Description..." />
                 </div>
+                {editMode && (
+                  <button className="about-remove-btn" onClick={() => removeExperience(index)} title="Remove experience">&times;</button>
+                )}
               </div>
             ))}
           </div>
+          {editMode && (
+            <button className="about-add-btn" onClick={addExperience}>+ Add Experience</button>
+          )}
         </div>
+
       </div>
+
+      {editMode && (
+        <div className="home-publish-bar">
+          <button className="home-publish-btn save-btn" onClick={handleSaveToCode} disabled={publishStatus === 'saving' || publishStatus === 'pushing'}>
+            {publishStatus === 'saving' ? 'Saving...' : publishStatus === 'saved' ? '\u2713 Saved' : '\uD83D\uDCBE Save to Code'}
+          </button>
+          <button className="home-publish-btn push-btn" onClick={handlePushToGit} disabled={publishStatus === 'saving' || publishStatus === 'pushing'}>
+            {publishStatus === 'pushing' ? 'Pushing...' : publishStatus === 'pushed' ? '\u2713 Pushed & Deployed' : '\u2191 Push to Git'}
+          </button>
+          {publishStatus === 'error' && <span className="home-publish-error">Failed — check console</span>}
+        </div>
+      )}
 
       <Footer />
     </section>

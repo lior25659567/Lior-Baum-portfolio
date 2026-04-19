@@ -1,12 +1,18 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useRef, useCallback, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useRef, useState, useCallback, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEdit } from '../context/EditContext';
 import './Projects.css';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const PROJECT_TAGS = [
+  { id: 'all', label: 'All' },
+  { id: 'work', label: 'Work' },
+  { id: 'personal', label: 'Personal' },
+];
 
 // Default projects - used as fallback
 const defaultProjects = [
@@ -16,6 +22,7 @@ const defaultProjects = [
     category: 'UI Unification & Efficiency',
     image: '/case-studies/align/slide-1.png',
     year: '2024',
+    tag: 'work',
   },
   {
     id: 'itero-scan-workflow',
@@ -23,6 +30,7 @@ const defaultProjects = [
     category: 'Clinical Workflow Redesign',
     image: '',
     year: '2024',
+    tag: 'work',
   },
   {
     id: 'wizecare',
@@ -30,10 +38,11 @@ const defaultProjects = [
     category: 'B2B Complex System',
     image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop',
     year: '2023',
+    tag: 'work',
   },
 ];
 
-const ProjectCard = ({ project, index, editMode, onImageChange, onRemove, onUpdate }) => {
+const ProjectCard = ({ project, index, total, editMode, onImageChange, onRemove, onUpdate, onMoveUp, onMoveDown }) => {
   const fileInputRef = useRef(null);
   const fileInputId = `project-image-${project.id}`;
 
@@ -141,6 +150,35 @@ const ProjectCard = ({ project, index, editMode, onImageChange, onRemove, onUpda
         )}
       </div>
 
+      {editMode && (
+        <div className="project-edit-controls">
+          <div className="project-tag-selector">
+            {PROJECT_TAGS.filter(t => t.id !== 'all').map(t => (
+              <button
+                key={t.id}
+                className={`project-tag-btn ${(project.tag || 'work') === t.id ? 'active' : ''}`}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onUpdate(project.id, { tag: t.id }); }}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+          <div className="project-reorder-controls">
+            <button
+              className="project-reorder-btn"
+              disabled={index === 0}
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onMoveUp(index); }}
+              title="Move up"
+            >&#8593;</button>
+            <button
+              className="project-reorder-btn"
+              disabled={index === total - 1}
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onMoveDown(index); }}
+              title="Move down"
+            >&#8595;</button>
+          </div>
+        </div>
+      )}
       {editMode && onRemove && (
         <button className="project-remove-btn" onClick={(e) => { e.preventDefault(); e.stopPropagation(); onRemove(project.id); }} title="Remove project">×</button>
       )}
@@ -153,6 +191,7 @@ const Projects = () => {
   const navigate = useNavigate();
   const titleRef = useRef(null);
   const gridRef = useRef(null);
+  const [activeFilter, setActiveFilter] = useState('all');
 
   // GSAP scroll animation for project cards (smoother entrance)
   useEffect(() => {
@@ -203,21 +242,32 @@ const Projects = () => {
     return () => st.kill();
   }, [content.projects?.sectionTitle]);
 
-  // Merge default projects with saved content, and include any extra saved projects
+  // Merge default projects with saved content, respecting saved order
   const projects = (() => {
     const savedItems = content.projects?.items || [];
     const removedIds = content.projects?.removedIds || [];
-    // Start with defaults merged with saved overrides, excluding removed
-    const merged = defaultProjects
-      .filter(p => !removedIds.includes(p.id))
-      .map(defaultProject => {
-        const savedItem = savedItems.find(item => item.id === defaultProject.id);
-        return savedItem ? { ...defaultProject, ...savedItem } : defaultProject;
+
+    let all;
+    if (savedItems.length > 0) {
+      // Saved items define the order — merge defaults into them
+      const savedIds = savedItems.map(p => p.id);
+      all = savedItems
+        .filter(p => !removedIds.includes(p.id))
+        .map(saved => {
+          const def = defaultProjects.find(d => d.id === saved.id);
+          return def ? { ...def, ...saved } : saved;
+        });
+      // Append any defaults not yet in saved items (newly added defaults)
+      defaultProjects.forEach(def => {
+        if (!savedIds.includes(def.id) && !removedIds.includes(def.id)) {
+          all.push(def);
+        }
       });
-    // Add any saved items that aren't in defaults and not removed (user-created projects)
-    const defaultIds = defaultProjects.map(p => p.id);
-    const extras = savedItems.filter(item => !defaultIds.includes(item.id) && !removedIds.includes(item.id));
-    const all = [...merged, ...extras];
+    } else {
+      // No saved items — use default order
+      all = defaultProjects.filter(p => !removedIds.includes(p.id));
+    }
+
     // In edit mode, add the template demo project if not already present
     if (editMode && !all.some(p => p.id === 'template-demo')) {
       all.push({
@@ -253,6 +303,7 @@ const Projects = () => {
       category: 'Case Study',
       image: '',
       year: new Date().getFullYear().toString(),
+      tag: 'work',
     };
     
     setContent(prev => {
@@ -301,6 +352,42 @@ const Projects = () => {
   // Only allow removal of user-created projects (not defaults)
   const defaultIds = defaultProjects.map(p => p.id);
 
+  // Filter projects by active tag
+  const filteredProjects = activeFilter === 'all'
+    ? projects
+    : projects.filter(p => (p.tag || 'work') === activeFilter);
+
+  const handleMoveUp = useCallback((filteredIdx) => {
+    if (filteredIdx <= 0) return;
+    const projectId = filteredProjects[filteredIdx]?.id;
+    const prevProjectId = filteredProjects[filteredIdx - 1]?.id;
+    if (!projectId || !prevProjectId) return;
+    setContent(prev => {
+      // Use the full merged projects list as source of truth for order
+      const items = [...(prev.projects?.items?.length ? prev.projects.items : projects.map(p => ({ ...p })))];
+      const idxA = items.findIndex(p => p.id === prevProjectId);
+      const idxB = items.findIndex(p => p.id === projectId);
+      if (idxA < 0 || idxB < 0) return prev;
+      [items[idxA], items[idxB]] = [items[idxB], items[idxA]];
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
+  }, [setContent, filteredProjects, projects]);
+
+  const handleMoveDown = useCallback((filteredIdx) => {
+    if (filteredIdx >= filteredProjects.length - 1) return;
+    const projectId = filteredProjects[filteredIdx]?.id;
+    const nextProjectId = filteredProjects[filteredIdx + 1]?.id;
+    if (!projectId || !nextProjectId) return;
+    setContent(prev => {
+      const items = [...(prev.projects?.items?.length ? prev.projects.items : projects.map(p => ({ ...p })))];
+      const idxA = items.findIndex(p => p.id === projectId);
+      const idxB = items.findIndex(p => p.id === nextProjectId);
+      if (idxA < 0 || idxB < 0) return prev;
+      [items[idxA], items[idxB]] = [items[idxB], items[idxA]];
+      return { ...prev, projects: { ...prev.projects, items } };
+    });
+  }, [setContent, filteredProjects, projects]);
+
   return (
     <section className={`projects ${editMode ? 'edit-mode-active' : ''}`} id="projects">
       <div className="projects-container">
@@ -328,22 +415,48 @@ const Projects = () => {
             ))}
           </h2>
         </motion.div>
-        
-        <div className="projects-grid" ref={gridRef}>
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              index={index}
-              editMode={editMode}
-              onImageChange={handleImageChange}
-              onUpdate={handleUpdateProject}
-              onRemove={handleRemoveProject}
-            />
+
+        <div className="projects-filter-bar">
+          {PROJECT_TAGS.map(tag => (
+            <button
+              key={tag.id}
+              className={`projects-filter-chip ${activeFilter === tag.id ? 'active' : ''}`}
+              onClick={() => setActiveFilter(tag.id)}
+            >
+              {tag.label}
+            </button>
           ))}
+        </div>
+
+        <div className="projects-grid" ref={gridRef}>
+          <AnimatePresence mode="popLayout">
+            {filteredProjects.map((project, index) => (
+              <motion.div
+                key={project.id}
+                layout
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+              >
+                <ProjectCard
+                  project={project}
+                  index={index}
+                  total={filteredProjects.length}
+                  editMode={editMode}
+                  onImageChange={handleImageChange}
+                  onUpdate={handleUpdateProject}
+                  onRemove={handleRemoveProject}
+                  onMoveUp={handleMoveUp}
+                  onMoveDown={handleMoveDown}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
           {editMode && (
             <motion.article
               className="project-card project-card--add"
+              layout
               initial={{ opacity: 0, y: 48 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

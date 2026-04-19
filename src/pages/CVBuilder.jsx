@@ -112,6 +112,11 @@ const DEFAULT_CV = {
 
 const STORAGE_KEY = 'portfolio_cv_builder';
 
+const CV_STYLES = [
+  { id: 'default', label: 'Default' },
+  { id: 'minimal', label: 'Minimal' },
+];
+
 const CVBuilder = () => {
   const [cv, setCv] = useState(() => {
     try {
@@ -120,10 +125,17 @@ const CVBuilder = () => {
     } catch {}
     return DEFAULT_CV;
   });
+  const [cvStyle, setCvStyle] = useState(() => {
+    return localStorage.getItem('portfolio_cv_style') || 'default';
+  });
   const [activeSection, setActiveSection] = useState('personal');
   const [jsonDraft, setJsonDraft] = useState('');
   const [jsonStatus, setJsonStatus] = useState('');
   const printRef = useRef(null);
+
+  useEffect(() => {
+    localStorage.setItem('portfolio_cv_style', cvStyle);
+  }, [cvStyle]);
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -274,6 +286,20 @@ const CVBuilder = () => {
                 <input type="range" min="140" max="200" step="5" value={cv.contentWidth || 180} onChange={e => update('contentWidth', parseInt(e.target.value))} />
                 <span>{cv.contentWidth || 180}mm</span>
               </div>
+            </div>
+          </div>
+          <div className="cv-style-selector">
+            <label>Style</label>
+            <div className="cv-style-options">
+              {CV_STYLES.map(s => (
+                <button
+                  key={s.id}
+                  className={`cv-style-btn ${cvStyle === s.id ? 'active' : ''}`}
+                  onClick={() => setCvStyle(s.id)}
+                >
+                  {s.label}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -684,7 +710,7 @@ const CVBuilder = () => {
 
       {/* CV Preview / Print Target */}
       <div className="cv-preview-wrapper">
-        <div className="cv-preview" ref={printRef} style={{ '--cv-font-size': `${cv.fontSize || 9}pt`, '--cv-content-width': `${cv.contentWidth || 180}mm` }}>
+        <div className={`cv-preview cv-style-${cvStyle}`} ref={printRef} style={{ '--cv-font-size': `${cv.fontSize || 9}pt`, '--cv-content-width': `${cv.contentWidth || 180}mm` }}>
           {/* Header */}
           <header className="cv-doc-header">
             <div className="cv-doc-header-left">

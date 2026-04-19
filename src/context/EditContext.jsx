@@ -28,19 +28,32 @@ const defaultContent = {
     title3: 'that matter',
     bioHeading: 'Hello!',
     bio: [
-      "I'm a product designer with a passion for creating digital experiences that are both beautiful and functional. With over 5 years of experience in the industry, I've had the privilege of working with startups and established companies alike.",
-      "My approach combines user-centered design principles with a keen eye for aesthetics. I believe that great design should not only look good but also solve real problems and create meaningful connections between products and their users.",
-      "When I'm not designing, you can find me exploring new places, experimenting with photography, or diving into the latest design trends and technologies.",
+      "Product & UX Designer with hands-on experience in B2B SaaS and MedTech, specializing in complex clinical workflows, design systems, and data-driven interfaces.",
+      "Passionate about bridging user needs with business goals through research-backed design decisions and rapid prototyping. Currently exploring the intersection of design and AI-assisted development.",
+      "I've worked across MedTech, privacy, and B2B SaaS \u2014 from redesigning clinical workflows at WizeCare, to building automated risk detection flows at BigID, to improving the iTero scanner experience at Align Technology.",
     ],
-    email: 'lior@example.com',
+    email: 'Lior2565967@gmail.com',
+    skillsTitle: 'Skills & Expertise',
+    skills: [
+      { category: 'Design', items: ['UX Strategy & Design Thinking', 'Product Discovery & User Research', 'Wireframing & Prototyping', 'Interaction Design & Microinteractions', 'UI Systems & Component Libraries'] },
+      { category: 'Tools', items: ['Figma', 'After Effects', 'Illustrator', 'Photoshop', 'Webflow', 'HTML/CSS'] },
+      { category: 'AI & Development', items: ['Claude Code', 'Cursor', 'Vibe Coding\u2122', 'AI-Assisted Prototyping', 'Prompt Engineering'] },
+    ],
+    experienceTitle: 'Experience',
+    experience: [
+      { year: 'Dec 2024 \u2013 Present', role: 'UX/UI Designer', company: 'Align Technology', description: 'Improved key parts of the iTero\u2122 scanner experience, focusing on how doctors and patients move through the system. Redesigned navigation and content structure within the iTero\u2122 Store to enhance discoverability and usability. Designed the full UX experience around scanning \u2013 from patient onboarding and scan setup to post-scan insights and next steps.' },
+      { year: 'Mar 2025 \u2013 Present', role: 'Teaching Assistant \u2013 Vibe Coding Course', company: 'Shenkar College', description: 'Assisting in a new interdisciplinary course that teaches designers to build functional products using AI-assisted coding tools. Supporting students in translating design concepts into working prototypes using Cursor, Claude, and modern web frameworks. Providing one-on-one mentorship and code reviews, bridging the gap between design thinking and technical implementation.' },
+      { year: 'Jul 2024 \u2013 Oct 2024', role: 'UX/UI Designer', company: 'BigIdea', description: 'Led the redesign of the asset management panel within a complex privacy system. Designed flows that supported automated risk detection in sensitive data environments. Partnered with privacy officers and PMs to refine logic and improve system trust and usability.' },
+      { year: 'Jul 2023 \u2013 Nov 2023', role: 'UX/UI Design Intern', company: 'WizeCare', description: 'Reimagined clinician dashboard to reduce friction in digital physical therapy sessions. Conducted interviews with stakeholders and therapists to identify pain points and deliver improved task flows. Created onboarding flows and visual guidance assets to support product adoption.' },
+    ],
   },
   projects: {
     sectionLabel: 'Portfolio',
     sectionTitle: 'Selected Projects',
     items: [
-      { id: 'align-technology', title: 'iTero Toolbar', category: 'UI Unification & Efficiency', year: '2024', image: '/case-studies/align/slide-1.png' },
-      { id: 'itero-scan-workflow', title: 'iTero Scan Workflow', category: 'Clinical Workflow Redesign', year: '2024', image: '' },
-      { id: 'wizecare', title: 'WizeCare', category: 'B2B Complex System', year: '2023', image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop' },
+      { id: 'align-technology', title: 'iTero Toolbar', category: 'UI Unification & Efficiency', year: '2024', image: '/case-studies/align/slide-1.png', tag: 'work' },
+      { id: 'itero-scan-workflow', title: 'iTero Scan Workflow', category: 'Clinical Workflow Redesign', year: '2024', image: '', tag: 'work' },
+      { id: 'wizecare', title: 'WizeCare', category: 'B2B Complex System', year: '2023', image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop', tag: 'work' },
     ],
   },
   footer: {
@@ -87,16 +100,20 @@ const defaultStyles = {
 };
 
 // Override defaults with saved home-content.json if present
-const effectiveDefaultContent = savedHomeData?.content
-  ? {
-      ...defaultContent,
-      ...savedHomeData.content,
-      hero: { ...defaultContent.hero, ...savedHomeData.content.hero },
-      footer: { ...defaultContent.footer, ...savedHomeData.content.footer },
-      about: { ...defaultContent.about, ...savedHomeData.content.about },
-      projects: { ...defaultContent.projects, ...savedHomeData.content.projects },
-    }
-  : defaultContent;
+const effectiveDefaultContent = (() => {
+  if (!savedHomeData?.content) return defaultContent;
+  const mergedAbout = { ...defaultContent.about, ...savedHomeData.content.about };
+  if (!mergedAbout.skills?.length) mergedAbout.skills = defaultContent.about.skills;
+  if (!mergedAbout.experience?.length) mergedAbout.experience = defaultContent.about.experience;
+  return {
+    ...defaultContent,
+    ...savedHomeData.content,
+    hero: { ...defaultContent.hero, ...savedHomeData.content.hero },
+    footer: { ...defaultContent.footer, ...savedHomeData.content.footer },
+    about: mergedAbout,
+    projects: { ...defaultContent.projects, ...savedHomeData.content.projects },
+  };
+})();
 
 const effectiveDefaultStyles = savedHomeData?.styles
   ? { ...defaultStyles, ...savedHomeData.styles }
@@ -104,12 +121,16 @@ const effectiveDefaultStyles = savedHomeData?.styles
 
 function mergeContent(saved) {
   if (!saved) return effectiveDefaultContent;
+  const mergedAbout = { ...effectiveDefaultContent.about, ...saved.about };
+  // Preserve default skills/experience when saved data has empty arrays
+  if (!mergedAbout.skills?.length) mergedAbout.skills = effectiveDefaultContent.about.skills;
+  if (!mergedAbout.experience?.length) mergedAbout.experience = effectiveDefaultContent.about.experience;
   return {
     ...effectiveDefaultContent,
     ...saved,
     hero: { ...effectiveDefaultContent.hero, ...saved.hero },
     footer: { ...effectiveDefaultContent.footer, ...saved.footer },
-    about: { ...effectiveDefaultContent.about, ...saved.about },
+    about: mergedAbout,
     projects: { ...effectiveDefaultContent.projects, ...saved.projects },
   };
 }
