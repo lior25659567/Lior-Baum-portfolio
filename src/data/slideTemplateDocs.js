@@ -16,11 +16,12 @@ export const slideTemplateDocs = {
       { field: 'logo', type: 'logo image', description: 'Optional project/company logo. introHeaderMode controls placement: "both" shows title + logo, "logo" replaces title with logo.' },
     ],
     requiredFields: ['title', 'description'],
-    optionalFields: ['subtitle', 'clientLabel', 'client', 'focusLabel', 'focus', 'logo', 'introHeaderMode', 'splitRatio', 'metaItems'],
+    optionalFields: ['subtitle', 'clientLabel', 'client', 'focusLabel', 'focus', 'logo', 'introHeaderMode', 'splitRatio', 'metaItems', 'cta'],
     contentLimits: {
       title: { recommended: '2-4 words, supports line breaks with \\n' },
       description: { recommended: '1-2 sentences', max: '3 sentences' },
       metaItems: { max: 4, note: 'Array of { label, value } pairs. Falls back to client/focus fields if absent.' },
+      cta: { note: 'Optional { label, url } — renders a call-to-action button linking to an external URL. Opens in a new tab.' },
     },
     aiSelectionHints: {
       signals: ['project introduction', 'case study opening', 'hero slide', 'project title'],

@@ -18,6 +18,7 @@ export const slideTemplates = {
     logo: '',
     introHeaderMode: 'both', // 'both' = title + logo at bottom, 'logo' = logo only in title position
     splitRatio: 50,
+    cta: null, // { label, url } — optional call-to-action button
   },
   info: {
     type: 'info',

@@ -313,6 +313,15 @@ const TemplatePreview = ({ type }) => {
   );
 };
 
+// Add a scheme to user-entered URLs so `google.com` navigates as an external link.
+const normalizeExternalUrl = (u) => {
+  if (!u || typeof u !== 'string') return '';
+  const trimmed = u.trim();
+  if (!trimmed) return '';
+  if (/^(https?:)?\/\//i.test(trimmed) || trimmed.startsWith('mailto:') || trimmed.startsWith('tel:')) return trimmed;
+  return `https://${trimmed}`;
+};
+
 // Editable field component - defined outside CaseStudy for stable React identity across renders.
 // This prevents unmount/remount cycles that destroy input state, cursor position, and focus.
 const EditableField = memo(function EditableField({ value, onChange, multiline = false, allowLineBreaks = false, className = '', placeholder = '' }) {
@@ -4235,6 +4244,51 @@ My instructions: `;
                   </p>
                 </OptionalField>
 
+                {/* CTA Button — placed above meta row so it's out of the bottom nav hover zone */}
+                {slide.cta ? (
+                  <div className="info-cta-wrapper">
+                    {editMode ? (
+                      <div className="info-cta-edit-row">
+                        <span className="info-cta-button info-cta-preview">
+                          <EditableField
+                            value={slide.cta.label}
+                            onChange={(v) => updateSlide(index, { cta: { ...slide.cta, label: v } })}
+                          />
+                        </span>
+                        <input
+                          type="text"
+                          className="info-cta-url-input"
+                          value={slide.cta.url || ''}
+                          onChange={(e) => updateSlide(index, { cta: { ...slide.cta, url: e.target.value } })}
+                          placeholder="https://example.com"
+                        />
+                        <button
+                          className="remove-item-btn"
+                          onClick={() => updateSlide(index, { cta: null })}
+                          title="Remove CTA"
+                        >×</button>
+                      </div>
+                    ) : (
+                      <AnimatedButton
+                        href={normalizeExternalUrl(slide.cta.url) || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant="outline"
+                        icon="→"
+                      >
+                        {slide.cta.label || 'View Project'}
+                      </AnimatedButton>
+                    )}
+                  </div>
+                ) : editMode ? (
+                  <button
+                    className="add-field-btn"
+                    onClick={() => updateSlide(index, { cta: { label: 'View Project', url: '' } })}
+                  >
+                    + Add CTA Button
+                  </button>
+                ) : null}
+
                 {/* Dynamic meta row */}
                 <div className="intro-meta-row">
                   {introMeta.map((item, i) => (
@@ -4328,51 +4382,45 @@ My instructions: `;
                 ))}
               </div>
               )}
-              <AddItemButton 
+              <AddItemButton
                 onClick={() => addArrayItem(index, 'items', { label: 'Label', value: 'Value' })}
                 label="Info Item"
               />
-              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="info-bullets" label="Bullet" />
-              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                <div className="info-highlight">
-                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                </div>
-              </OptionalField>
-              {/* CTA Button */}
+
+              {/* CTA Button — placed above bullets/highlight so it's out of the bottom nav hover zone */}
               {slide.cta ? (
                 <div className="info-cta-wrapper">
-                  <a
-                    href={editMode ? undefined : slide.cta.url}
-                    target={editMode ? undefined : '_blank'}
-                    rel="noopener noreferrer"
-                    className="info-cta-button"
-                    onClick={(e) => editMode && e.preventDefault()}
-                  >
-                    <EditableField
-                      value={slide.cta.label}
-                      onChange={(v) => updateSlide(index, { cta: { ...slide.cta, label: v } })}
-                    />
-                  </a>
-                  {editMode && (
-                    <div className="info-cta-controls">
-                      <label className="info-cta-url-label">
-                        URL:
-                        <input
-                          type="text"
-                          className="info-cta-url-input"
-                          value={slide.cta.url || ''}
-                          onChange={(e) => updateSlide(index, { cta: { ...slide.cta, url: e.target.value } })}
-                          placeholder="https://..."
+                  {editMode ? (
+                    <div className="info-cta-edit-row">
+                      <span className="info-cta-button info-cta-preview">
+                        <EditableField
+                          value={slide.cta.label}
+                          onChange={(v) => updateSlide(index, { cta: { ...slide.cta, label: v } })}
                         />
-                      </label>
+                      </span>
+                      <input
+                        type="text"
+                        className="info-cta-url-input"
+                        value={slide.cta.url || ''}
+                        onChange={(e) => updateSlide(index, { cta: { ...slide.cta, url: e.target.value } })}
+                        placeholder="https://example.com"
+                      />
                       <button
                         className="remove-item-btn"
                         onClick={() => updateSlide(index, { cta: null })}
                         title="Remove CTA"
-                      >
-                        ×
-                      </button>
+                      >×</button>
                     </div>
+                  ) : (
+                    <AnimatedButton
+                      href={normalizeExternalUrl(slide.cta.url) || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      variant="outline"
+                      icon="→"
+                    >
+                      {slide.cta.label || 'View Project'}
+                    </AnimatedButton>
                   )}
                 </div>
               ) : editMode ? (
@@ -4383,6 +4431,13 @@ My instructions: `;
                   + Add CTA Button
                 </button>
               ) : null}
+
+              <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="info-bullets" label="Bullet" />
+              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                <div className="info-highlight">
+                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                </div>
+              </OptionalField>
             </div>
           </div>
         );

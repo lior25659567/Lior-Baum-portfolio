@@ -1,0 +1,187 @@
+{
+  "dataVersion": 4,
+  "title": "The Techno Chronicles",
+  "subtitle": "A scroll-telling experience documenting the history of techno.",
+  "category": "Interactive Web / Creative Coding",
+  "year": "2024",
+  "color": "#111111",
+  "slides": [
+    {
+      "type": "intro",
+      "title": "The Techno Chronicles",
+      "description": "A scroll-telling experience built from interconnected Wikipedia entries — breaking away from the generic layout to capture the rhythmic, raw energy of techno.",
+      "clientLabel": "Type",
+      "client": "Personal project",
+      "focusLabel": "Focus",
+      "focus": "Scroll-Telling Experience",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776617213367/img-jnygmlukc.jpg",
+          "caption": "Final site",
+          "isVideo": false,
+          "isGif": false,
+          "embedType": ""
+        }
+      ],
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
+      "splitRatio": 40,
+      "cta": {
+        "label": "View Project",
+        "url": "https://technoh.webflow.io/"
+      }
+    },
+    {
+      "type": "problem",
+      "label": "The premise",
+      "title": "Interconnected. Built to feel, not just inform.",
+      "content": "Built from connected Wikipedia entries using scroll-telling — breaking away from Wikipedia's functional, generic layout with hierarchy, rhythm, focus, and visual interest.",
+      "highlight": "Not a redesign of Wikipedia — a reimagining of how its content could feel.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776617213367/img-li9zcjia00.png",
+          "caption": "Original Wikipedia article",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 45,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "problem",
+      "label": "The Challenge",
+      "title": "Capture techno without overdoing it",
+      "content": "Evoke the techno vibe subtly — balancing the rhythmic, raw energy of the genre with historical storytelling. Feel the genre without the design ever getting loud enough to distract from it.",
+      "highlight": "The vibe had to live in the rhythm — not the decoration.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": false,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776617213367/img-94n2fmhkw0.png",
+          "caption": "Mood and direction",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "problem",
+      "label": "Responsive",
+      "title": "Fluid across every device",
+      "content": "Flexible grids, adaptive layouts, and refined typography scaling kept the experience seamless from desktop to mobile — without losing the visual weight of the design.",
+      "highlight": "The rhythm had to work on any screen — not just the big one.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776617213367/img-27vpu5b4k8.jpg",
+          "caption": "Desktop, tablet, mobile",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776617213367/img-5zlu9zvqkg.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776617213367/img-63zqpe17k0.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 45,
+      "gridCols": 2,
+      "imageDisplayMode": "carousel",
+      "imageCarouselFit": "contain",
+      "imageCarouselInterval": 1500
+    },
+    {
+      "type": "media",
+      "title": null,
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "https://www.youtube.com/embed/auEMKRriL4w?autoplay=1&mute=1&loop=1&playlist=auEMKRriL4w&rel=0&modestbranding=1&playsinline=1",
+          "src": "",
+          "caption": "",
+          "embedType": "youtube",
+          "isVideo": false,
+          "isGif": false
+        }
+      ],
+      "label": "Final Design"
+    },
+    {
+      "type": "outcomes",
+      "label": "Key Learnings",
+      "title": "What the project reinforced",
+      "outcomes": [
+        {
+          "metric": "Rhythm",
+          "title": "Scroll-telling controls pace",
+          "description": "Scroll-triggered reveals let the story breathe — pacing becomes part of the design."
+        },
+        {
+          "metric": "Balance",
+          "title": "Aesthetic meets usability",
+          "description": "Bold creative choices stayed readable and navigable — neither side had to lose."
+        },
+        {
+          "metric": "Responsive",
+          "title": "Seamless across devices",
+          "description": "Flexible grids and adaptive typography kept the experience intact on any screen."
+        },
+        {
+          "metric": "Clarity",
+          "title": "Minimalism with bold accents",
+          "description": "A clean base with intentional emphasis kept focus on the moments that mattered."
+        }
+      ],
+      "showNumbers": false,
+      "cardVariant": "default"
+    },
+    {
+      "type": "end",
+      "title": "Thank You",
+      "subtitle": "Designing experiences that move with the content.",
+      "cta": "Visit the site"
+    }
+  ]
+}

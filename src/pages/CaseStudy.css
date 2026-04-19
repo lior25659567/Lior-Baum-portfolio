@@ -1012,6 +1012,19 @@ body.case-study-active .footer {
   color: var(--color-text);
 }
 
+.info-cta-edit-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.info-cta-preview {
+  /* Label editor styled like the actual button so users see what it'll look like */
+  cursor: text;
+}
+
 /* Text Slide – compact gap so all content fits in viewport without scroll */
 .slide-text .slide-inner {
   gap: clamp(0.5rem, 1.2vh, 1rem);
@@ -2165,7 +2178,10 @@ body.case-study-active .footer {
   bottom: 0;
   height: min(42vh, 340px);
   z-index: 50;
-  pointer-events: auto;
+  /* Must NOT block clicks — otherwise it eats interactions on CTAs / buttons at the bottom
+     of slides. The nav pill is already revealed by .case-study-slides-wrapper's onMouseEnter,
+     so this element just exists for layout reference. */
+  pointer-events: none;
 }
 
 .slide-nav-pill {

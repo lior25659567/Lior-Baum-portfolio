@@ -6,6 +6,15 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEdit } from '../context/EditContext';
 import './Projects.css';
 
+// Add scheme to bare URLs so `google.com` works as an external link.
+const normalizeExternalUrl = (u) => {
+  if (!u || typeof u !== 'string') return '';
+  const trimmed = u.trim();
+  if (!trimmed) return '';
+  if (/^(https?:)?\/\//i.test(trimmed) || trimmed.startsWith('mailto:') || trimmed.startsWith('tel:')) return trimmed;
+  return `https://${trimmed}`;
+};
+
 gsap.registerPlugin(ScrollTrigger);
 
 const PROJECT_TAGS = [
@@ -74,9 +83,21 @@ const ProjectCard = ({ project, index, total, editMode, onImageChange, onRemove,
     e.target.value = '';
   }, [project.id, onImageChange]);
 
+  const externalUrl = normalizeExternalUrl(project.url);
+
   return (
     <article className="project-card work-grid-project">
-      <Link to={`/project/${project.id}`} className="project-link" aria-label={project.title} />
+      {externalUrl ? (
+        <a
+          href={externalUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="project-link"
+          aria-label={project.title}
+        />
+      ) : (
+        <Link to={`/project/${project.id}`} className="project-link" aria-label={project.title} />
+      )}
 
       {/* Image area */}
       <div className="project-media">
@@ -152,6 +173,15 @@ const ProjectCard = ({ project, index, total, editMode, onImageChange, onRemove,
 
       {editMode && (
         <div className="project-edit-controls">
+          <input
+            type="text"
+            className="project-inline-edit project-url-input"
+            value={project.url || ''}
+            onChange={(e) => onUpdate(project.id, { url: e.target.value })}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+            placeholder="External URL (leave empty to link to case study)"
+            title="If set, clicking the card opens this URL in a new tab instead of the case study"
+          />
           <div className="project-tag-selector">
             {PROJECT_TAGS.filter(t => t.id !== 'all').map(t => (
               <button
