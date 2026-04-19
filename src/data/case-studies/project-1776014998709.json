@@ -195,7 +195,7 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-fay0vqurotc.mp4",
+          "src": "/case-studies/project-1776014998709/vid-fay0vqurotc.mp4",
           "caption": "Template picker and modular section builder",
           "isVideo": true,
           "embedType": "",
@@ -226,7 +226,7 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-jl0tegce3qg.mp4",
+          "src": "/case-studies/project-1776014998709/vid-jl0tegce3qg.mp4",
           "caption": "Annotation canvas and FDI tooth chart",
           "isVideo": true,
           "embedType": "",
@@ -261,7 +261,7 @@
           "fit": "contain",
           "wrapperBg": false,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-47ggf6tvc0.mp4",
+          "src": "/case-studies/project-1776014998709/vid-47ggf6tvc0.mp4",
           "caption": "New — Share Report modal with access control and multi-channel delivery",
           "isVideo": true,
           "embedType": "",
@@ -286,6 +286,13 @@
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "splitRatio": 40
+    },
+    {
+      "type": "testimonial",
+      "label": "Doctor Feedback",
+      "quote": "Full canvas to work with, every action in the header, and templates that actually fit how I write reports.",
+      "author": "Dr. N. Haddad",
+      "role": "Orthodontist, iTero early access"
     },
     {
       "type": "outcomes",
