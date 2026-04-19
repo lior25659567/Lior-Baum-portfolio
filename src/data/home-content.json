@@ -24,21 +24,77 @@
       "skillsTitle": "Skills & Expertise",
       "skills": [
         {
-          "category": "New Category",
+          "category": "Product & UX Strategy",
           "items": [
-            "Skill 1"
+            "Product Strategy",
+            "Product Roadmapping",
+            "UX Strategy",
+            "Service Design",
+            "Information Architecture",
+            "Interaction Design",
+            "Design Systems",
+            "Design Ops"
           ]
         },
         {
-          "category": "New Category",
+          "category": "Research & Testing",
           "items": [
-            "Skill 1"
+            "User Research",
+            "Usability Testing",
+            "Behavioral Analytics",
+            "Jobs-to-be-Done",
+            "Heuristic Evaluation",
+            "A/B Testing",
+            "Stakeholder Interviews"
           ]
         },
         {
-          "category": "New Category",
+          "category": "Craft & Visual",
           "items": [
-            "Skill 1"
+            "Visual Design",
+            "Typography",
+            "Motion Design",
+            "Prototyping",
+            "Wireframing",
+            "Data Visualization",
+            "Accessibility",
+            "Brand Identity"
+          ]
+        },
+        {
+          "category": "AI & Emerging Tech",
+          "items": [
+            "AI-Native Interfaces",
+            "Generative UX",
+            "Agent-Based UX",
+            "Prompt Engineering",
+            "LLM Integration",
+            "Multimodal Design",
+            "AI-Assisted Prototyping",
+            "Vibe Coding"
+          ]
+        },
+        {
+          "category": "Tools",
+          "items": [
+            "Figma",
+            "FigJam",
+            "Framer",
+            "Webflow",
+            "Cursor",
+            "Claude Code",
+            "After Effects",
+            "Illustrator"
+          ]
+        },
+        {
+          "category": "Collaboration",
+          "items": [
+            "Cross-functional Collaboration",
+            "Stakeholder Management",
+            "Design Critique",
+            "Mentorship",
+            "Workshop Facilitation"
           ]
         }
       ],

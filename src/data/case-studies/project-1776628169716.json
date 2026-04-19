@@ -1,0 +1,271 @@
+{
+  "dataVersion": 4,
+  "title": "Design System\nMigration",
+  "subtitle": "Moving Align's design system from Figma to Claude Code.",
+  "category": "Design Systems / AI Tooling",
+  "year": "2025",
+  "color": "#D97757",
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Design System\nMigration",
+      "description": "We moved Align's design system from a Figma library to Claude Code — turning components into code the team can prompt, generate, and ship directly.",
+      "clientLabel": "Client",
+      "client": "Align Technology",
+      "focusLabel": "Focus",
+      "focus": "Design Systems / AI Tooling",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Figma → Claude Code",
+          "isVideo": false,
+          "isGif": false,
+          "embedType": ""
+        }
+      ],
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
+      "splitRatio": 50
+    },
+    {
+      "type": "problem",
+      "label": "The Problem",
+      "title": "Figma said one thing. Production said another.",
+      "content": "The system lived in Figma, but every handoff introduced drift. By the time components reached users, they didn't match what was designed.",
+      "issuesTitle": "Where it broke down",
+      "issues": [
+        "Figma components and shipped code drifted every release",
+        "Handoffs required re-specifying what was already visible in Figma",
+        "Token updates in Figma never reached the product",
+        "Designers maintained a system that wasn't the source of truth"
+      ],
+      "highlight": "The design system was a reference — not the thing that shipped.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Figma component vs shipped UI",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 45,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "problem",
+      "label": "Why Claude Code",
+      "title": "If the code is the product, the system should live in code.",
+      "content": "Figma is built for exploration — not for being the source of truth. Claude Code collapses the design-to-code gap: designers describe a component, Claude generates it in the real stack, and the output is the system itself.",
+      "highlight": "Figma shows what it should look like. Claude Code ships what it actually is.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Claude Code generating a component",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 45,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "goals",
+      "label": "Design Goals",
+      "title": "What the migration had to deliver.",
+      "goals": [
+        {
+          "number": "1",
+          "title": "One source of truth",
+          "description": "Components in code — Figma becomes exploration, not reference."
+        },
+        {
+          "number": "2",
+          "title": "Close the handoff gap",
+          "description": "Design decisions ship without a spec in between."
+        },
+        {
+          "number": "3",
+          "title": "Tokens that propagate",
+          "description": "Change once, update everywhere — automatically."
+        },
+        {
+          "number": "4",
+          "title": "Docs that write themselves",
+          "description": "Every component ships with its own usage guidelines."
+        }
+      ],
+      "kpis": [
+        "Time from design to shipped component",
+        "Design-code drift incidents",
+        "Component reuse rate",
+        "Designer-engineer alignment"
+      ],
+      "goalsCardsTitle": "Goals",
+      "gridColumns": 4,
+      "cardHeight": "100",
+      "kpisGridColumns": 4,
+      "showKpisSection": true,
+      "goalsCardVariant": "minimal"
+    },
+    {
+      "type": "comparison",
+      "label": "The Pipeline",
+      "title": "From Figma handoff to Claude-generated components",
+      "beforeImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Old — Design → Spec → Build → QA → Drift",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "afterImage": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "New — Prompt → Generate → Review → Ship",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "beforeDescription": "Designers specced in Figma, engineers rebuilt in code, QA chased the gaps. Every step introduced translation loss.",
+      "afterDescription": "Designers prompt Claude with intent and tokens. Claude generates the component in the real stack — ready to review and ship.",
+      "beforeBullets": [
+        "Figma as the canonical reference",
+        "Manual spec writing for every component",
+        "Engineers re-interpreted design in code",
+        "Drift caught only in QA"
+      ],
+      "afterBullets": [
+        "Claude generates directly in the codebase",
+        "Prompts capture intent — versioned and reviewable",
+        "Tokens and patterns applied consistently",
+        "Review happens on the real component"
+      ],
+      "highlight": "The handoff didn't get faster. It stopped existing.",
+      "slideMode": "before-after",
+      "switcherStyle": "pill",
+      "splitRatio": 40
+    },
+    {
+      "type": "problem",
+      "label": "Tokens & Components",
+      "title": "One token source. 40+ components rebuilt.",
+      "content": "Colour, spacing, typography, and motion tokens live in one place and flow through Claude Code into every component. We rebuilt the core library — buttons, inputs, modals, cards, tables — each with variants, states, a11y, and docs generated alongside.",
+      "issuesTitle": "What shipped",
+      "issues": [
+        "Three-layer token model — primitive → semantic → component",
+        "40+ core components generated and reviewed through Claude Code",
+        "Usage docs and Storybook entries generated from the same prompts",
+        "Token changes reviewed like code — with diffs and history"
+      ],
+      "highlight": "Components ship with their docs. Tokens update everywhere at once.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Token architecture and core component library",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 45,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "problem",
+      "label": "Proof in Product",
+      "title": "Rebuilding iTero screens on the new system",
+      "content": "We rebuilt three of the most complex iTero screens — patient report, scan workflow, and clinician dashboard — using only the new library and Claude Code. Every screen came together faster, with less custom code, and matched the design pixel-for-pixel.",
+      "highlight": "What used to take a sprint shipped in an afternoon — with no drift.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "iTero screens rebuilt with the new system",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 45,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "testimonial",
+      "label": "Team Feedback",
+      "quote": "I stopped writing specs. I describe what I want, Claude builds it in our stack, and we review the real thing.",
+      "author": "Senior Product Designer",
+      "role": "Align Technology"
+    },
+    {
+      "type": "outcomes",
+      "label": "Outcomes",
+      "title": "A system that ships what it designs.",
+      "outcomes": [
+        {
+          "metric": "Faster",
+          "title": "Design-to-shipped",
+          "description": "Components that took weeks now generate and ship in hours."
+        },
+        {
+          "metric": "Zero",
+          "title": "Figma-to-code drift",
+          "description": "The code is the system — nothing to drift from."
+        },
+        {
+          "metric": "Higher",
+          "title": "Component reuse",
+          "description": "Teams pull from the same library — no one-off implementations."
+        },
+        {
+          "metric": "Better",
+          "title": "Designer-engineer alignment",
+          "description": "Both sides work in the same medium — nothing lost in translation."
+        }
+      ],
+      "showNumbers": false,
+      "cardVariant": "default"
+    },
+    {
+      "type": "end",
+      "title": "Thank You",
+      "subtitle": "Building design systems that actually ship.",
+      "cta": "Get in touch"
+    }
+  ]
+}
