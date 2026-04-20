@@ -16,9 +16,9 @@
       "title3": "that matter",
       "bioHeading": "Hello!",
       "bio": [
-        "I'm a product designer with a passion for creating digital experiences that are both beautiful and functional. With over 5 years of experience in the industry, I've had the privilege of working with startups and established companies alike.",
-        "My approach combines user-centered design principles with a keen eye for aesthetics. I believe that great design should not only look good but also solve real problems and create meaningful connections between products and their users.",
-        "When I'm not designing, you can find me exploring new places, experimenting with photography, or diving into the latest design trends and technologies."
+        "Hey, I'm Lior \u2014 a Product & UX Designer drawn to complex B2B SaaS and MedTech. I love taking tangled systems and dense workflows and turning them into interfaces people actually enjoy using.",
+        "I'm into design, technology, and AI \u2014 and how they keep reshaping the way we build. I care a lot about improving myself, learning something new every week, and pushing my craft forward.",
+        "Outside Figma, you'll usually find me with a good coffee in hand, thinking up the next thing to make. Always happy to chat \u2014 especially if complicated systems are involved."
       ],
       "email": "lior@example.com",
       "skillsTitle": "Skills & Expertise",
@@ -104,25 +104,25 @@
           "year": "Dec 2024 – Present",
           "role": "UX/UI Designer",
           "company": "Align Technology",
-          "description": "Improved key parts of the iTero™ scanner experience, focusing on how doctors and patients move through the system. Redesigned navigation and content structure within the iTero™ Store to enhance discoverability and usability. Designed the full UX experience around scanning – from patient onboarding and scan setup to post-scan insights and next steps."
+          "description": "Designing the iTero™ scanner experience end-to-end — from patient onboarding and scan setup to post-scan insights — plus cleaning up navigation and discoverability across the iTero™ Store."
         },
         {
           "year": "Mar 2025 – Present",
           "role": "Teaching Assistant – Vibe Coding Course",
           "company": "Shenkar College",
-          "description": "Assisting in a new interdisciplinary course that teaches designers to build functional products using AI-assisted coding tools. Supporting students in translating design concepts into working prototypes using Cursor, Claude, and modern web frameworks. Providing one-on-one mentorship and code reviews, bridging the gap between design thinking and technical implementation."
+          "description": "Helping designers ship real products with AI-assisted tools like Cursor and Claude. Code reviews, mentorship, and bridging design thinking with implementation."
         },
         {
           "year": "Jul 2024 – Oct 2024",
           "role": "UX/UI Designer",
           "company": "BigIdea",
-          "description": "Led the redesign of the asset management panel within a complex privacy system. Designed flows that supported automated risk detection in sensitive data environments. Partnered with privacy officers and PMs to refine logic and improve system trust and usability."
+          "description": "Redesigned the asset management panel and risk-detection flows inside a complex privacy platform, partnering with privacy officers and PMs."
         },
         {
           "year": "Jul 2023 – Nov 2023",
           "role": "UX/UI Design Intern",
           "company": "WizeCare",
-          "description": "Reimagined clinician dashboard to reduce friction in digital physical therapy sessions. Conducted interviews with stakeholders and therapists to identify pain points and deliver improved task flows. Created onboarding flows and visual guidance assets to support product adoption."
+          "description": "Reimagined the clinician dashboard for digital PT sessions, simplified core task flows, and built onboarding to drive product adoption."
         }
       ]
     },

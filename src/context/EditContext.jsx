@@ -28,9 +28,9 @@ const defaultContent = {
     title3: 'that matter',
     bioHeading: 'Hello!',
     bio: [
-      "Product & UX Designer with hands-on experience in B2B SaaS and MedTech, specializing in complex clinical workflows, design systems, and data-driven interfaces.",
-      "Passionate about bridging user needs with business goals through research-backed design decisions and rapid prototyping. Currently exploring the intersection of design and AI-assisted development.",
-      "I've worked across MedTech, privacy, and B2B SaaS \u2014 from redesigning clinical workflows at WizeCare, to building automated risk detection flows at BigID, to improving the iTero scanner experience at Align Technology.",
+      "Hey, I'm Lior \u2014 a Product & UX Designer drawn to complex B2B SaaS and MedTech. I love taking tangled systems and dense workflows and turning them into interfaces people actually enjoy using.",
+      "I'm into design, technology, and AI \u2014 and how they keep reshaping the way we build. I care a lot about improving myself, learning something new every week, and pushing my craft forward.",
+      "Outside Figma, you'll usually find me with a good coffee in hand, thinking up the next thing to make. Always happy to chat \u2014 especially if complicated systems are involved.",
     ],
     email: 'Lior2565967@gmail.com',
     skillsTitle: 'Skills & Expertise',
@@ -44,10 +44,10 @@ const defaultContent = {
     ],
     experienceTitle: 'Experience',
     experience: [
-      { year: 'Dec 2024 \u2013 Present', role: 'UX/UI Designer', company: 'Align Technology', description: 'Improved key parts of the iTero\u2122 scanner experience, focusing on how doctors and patients move through the system. Redesigned navigation and content structure within the iTero\u2122 Store to enhance discoverability and usability. Designed the full UX experience around scanning \u2013 from patient onboarding and scan setup to post-scan insights and next steps.' },
-      { year: 'Mar 2025 \u2013 Present', role: 'Teaching Assistant \u2013 Vibe Coding Course', company: 'Shenkar College', description: 'Assisting in a new interdisciplinary course that teaches designers to build functional products using AI-assisted coding tools. Supporting students in translating design concepts into working prototypes using Cursor, Claude, and modern web frameworks. Providing one-on-one mentorship and code reviews, bridging the gap between design thinking and technical implementation.' },
-      { year: 'Jul 2024 \u2013 Oct 2024', role: 'UX/UI Designer', company: 'BigIdea', description: 'Led the redesign of the asset management panel within a complex privacy system. Designed flows that supported automated risk detection in sensitive data environments. Partnered with privacy officers and PMs to refine logic and improve system trust and usability.' },
-      { year: 'Jul 2023 \u2013 Nov 2023', role: 'UX/UI Design Intern', company: 'WizeCare', description: 'Reimagined clinician dashboard to reduce friction in digital physical therapy sessions. Conducted interviews with stakeholders and therapists to identify pain points and deliver improved task flows. Created onboarding flows and visual guidance assets to support product adoption.' },
+      { year: 'Dec 2024 \u2013 Present', role: 'UX/UI Designer', company: 'Align Technology', description: 'Designing the iTero\u2122 scanner experience end-to-end \u2014 from patient onboarding and scan setup to post-scan insights \u2014 plus cleaning up navigation and discoverability across the iTero\u2122 Store.' },
+      { year: 'Mar 2025 \u2013 Present', role: 'Teaching Assistant \u2013 Vibe Coding Course', company: 'Shenkar College', description: 'Helping designers ship real products with AI-assisted tools like Cursor and Claude. Code reviews, mentorship, and bridging design thinking with implementation.' },
+      { year: 'Jul 2024 \u2013 Oct 2024', role: 'UX/UI Designer', company: 'BigIdea', description: 'Redesigned the asset management panel and risk-detection flows inside a complex privacy platform, partnering with privacy officers and PMs.' },
+      { year: 'Jul 2023 \u2013 Nov 2023', role: 'UX/UI Design Intern', company: 'WizeCare', description: 'Reimagined the clinician dashboard for digital PT sessions, simplified core task flows, and built onboarding to drive product adoption.' },
     ],
   },
   projects: {

@@ -21,7 +21,7 @@
           "fit": "contain",
           "wrapperBg": false,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-PHN2ZyB3aWR0.svg",
+          "src": "/case-studies/itero-scan-workflow/img-5gudl7g6j0.svg",
           "caption": "",
           "isVideo": false,
           "isGif": false,
@@ -124,7 +124,7 @@
       ],
       "bullets": [],
       "cardHeight": "100",
-      "cardVariant": "default"
+      "cardVariant": "soft"
     },
     {
       "type": "goals",
@@ -164,7 +164,7 @@
       "kpisGridColumns": 4,
       "showKpisSection": true,
       "cardVariant": "default",
-      "kpisCardVariant": "filled",
+      "kpisCardVariant": "soft",
       "goalsCardVariant": "minimal"
     },
     {
@@ -491,7 +491,8 @@
       "title": "Thank You",
       "subtitle": "Designing systems for real-time decisions",
       "email": "lior2565967@gmail.com",
-      "phone": "050-5550409"
+      "phone": "050-5550409",
+      "linkedinUrl": "https://www.linkedin.com/in/lior-baum/"
     }
   ]
 }

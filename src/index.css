@@ -18,6 +18,18 @@
   --color-accent-contrast: #ffffff;
   --color-border: #e0e0e0;
   --color-image-contain-bg: #e8e8e8; /* Softer background for "fit" image gaps (light) */
+
+  /* Named accent palette (used by project-card template presets) */
+  --accent-warm: #ff584a;
+  --accent-cool: #0097a7;
+  --accent-violet: #6b5ce7;
+  --accent-graphite: #3b3b3b;
+
+  /* Showcase pastel palette (used by project-card showcase mode) */
+  --showcase-lavender: #bfb0e8;
+  --showcase-pink: #f5c5d7;
+  --showcase-orange: #eb9760;
+  --showcase-lime: #c4df54;
   
   --font-display: 'Crimson Text', serif;
   --font-body: 'Mona Sans', sans-serif;
@@ -87,6 +99,11 @@
   --color-accent: #ff584a;
   --color-accent-contrast: #ffffff;
   --color-border: #2a2a2a;
+
+  --accent-warm: #ff6a5d;
+  --accent-cool: #26b6c7;
+  --accent-violet: #8879ff;
+  --accent-graphite: #c9c9c9;
 }
 
 /* 1920px+ - Large Desktop */
