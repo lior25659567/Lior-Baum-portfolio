@@ -62,8 +62,8 @@ const defaultContent = {
   footer: {
     line1: 'How about',
     line2_1: 'we do a ',
-    line2_2: 'thing',
-    line3_1: 'Or two,',
+    line2_2: 'Thing',
+    line3_1: 'or two,',
     line4: 'Together',
     email: 'lior@example.com',
     copyright: 'Lior Baum',

@@ -266,6 +266,34 @@ img {
   }
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Mobile responsiveness overlay — applies ONLY at ≤767px.
+   Placed AFTER the desktop/tablet blocks so these overrides win without
+   touching any ≥768px rules. Satisfies: no text < 12px; body ≥ 14px; clean
+   4/8px spacing scale; H1 32–40 / H2 26–32 / H3 20–24; eyebrow ≥ 14px.
+   ───────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  :root {
+    --text-caption: clamp(0.8125rem, 2.4vw, 0.9375rem); /* ≥13px floor, up to 15px */
+    --text-body-sm: clamp(0.875rem, 2.6vw, 1rem);        /* ≥14px floor */
+    --text-body: clamp(0.9375rem, 2.8vw, 1rem);          /* 15–16px */
+    --text-eyebrow: 0.9375rem;                            /* 15px uppercase eyebrow */
+    --text-h1: clamp(2rem, 8vw, 2.5rem);                  /* 32–40px */
+    --text-h2: clamp(1.625rem, 6vw, 2rem);                /* 26–32px */
+    --text-h3: clamp(1.25rem, 5vw, 1.5rem);               /* 20–24px */
+
+    /* Consistent 4/8 spacing grid at mobile */
+    --spacing-xs: 0.25rem; /* 4 */
+    --spacing-sm: 0.5rem;  /* 8 */
+    --spacing-md: 1rem;    /* 16 */
+    --spacing-lg: 1.5rem;  /* 24 */
+    --spacing-xl: 3rem;    /* 48 */
+    --spacing-2xl: 4rem;   /* 64 */
+  }
+
+  html { font-size: 15px; }
+}
+
 /* Shared section label utility */
 .section-label {
   display: inline-block;
@@ -276,6 +304,18 @@ img {
   letter-spacing: normal;
   color: var(--color-text-muted);
   margin-bottom: var(--spacing-sm);
+}
+
+/* Mobile eyebrow treatment — promote section-labels to a prominent,
+   uppercase, tracked eyebrow. Scoped strictly to ≤767px. */
+@media (max-width: 767px) {
+  .section-label {
+    font-size: var(--text-eyebrow);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
 }
 
 /* ── Button typography normalization ─────────────────────────────────────

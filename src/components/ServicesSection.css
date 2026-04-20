@@ -213,3 +213,22 @@
     padding: 0 var(--spacing-sm);
   }
 }
+
+/* ===== Mobile responsiveness overrides (≤767px only) ===== */
+@media (max-width: 767px) {
+  .services-section {
+    padding: var(--spacing-xl) 0; /* 48px resolved via tokens */
+  }
+
+  .services-section-container {
+    padding: 0 var(--spacing-md); /* 16px horizontal */
+  }
+
+  .services-cards {
+    gap: var(--spacing-md); /* 16px */
+  }
+
+  .services-card-inner {
+    padding: var(--spacing-md);
+  }
+}

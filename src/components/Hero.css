@@ -704,6 +704,30 @@
   .hero-cta .hero-cta-btn { padding: 12px 22px; font-size: 0.82rem; }
 }
 
+/* ===== Mobile responsiveness overrides (≤767px only) =====
+   Scoped AFTER the ≤768px block so only phones (not tablets) are affected. */
+@media (max-width: 767px) {
+  /* Raise all tiny text to satisfy: never below 12px; eyebrow/labels ≥14px */
+  .hero-badge         { font-size: var(--text-caption); }
+  .hero-chip          { font-size: var(--text-caption); }
+  .hero-stat-label    { font-size: var(--text-caption); }
+  .hero-marquee-item  { font-size: 0.8125rem; }      /* ~13px floor */
+  .hero-scroll-text   { font-size: 0.75rem;  }       /* ~12px floor */
+
+  /* CTA: ≥44px tap target + readable label */
+  .hero-cta .hero-cta-btn {
+    padding: 0.875rem 1.25rem;
+    font-size: var(--text-body-sm);
+    min-height: 44px;
+  }
+
+  /* Section vertical rhythm: 48–64px top/bottom */
+  .hero-container {
+    padding-top: clamp(96px, 14vh, 128px);
+    padding-bottom: var(--spacing-xl);
+  }
+}
+
 /* 480px — Small mobile */
 @media (max-width: 480px) {
   .hero-container {

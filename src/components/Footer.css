@@ -239,34 +239,62 @@
 /* 768px - Mobile */
 @media (max-width: 768px) {
   .footer {
-    padding: var(--spacing-lg) var(--spacing-md);
+    padding: 3.5rem var(--spacing-md) 2rem;
   }
 
   .footer-cta-wrapper {
     min-height: auto;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 2.5rem;
+  }
+
+  .footer-cta {
+    gap: 0.25rem;
+  }
+
+  .cta-line-wrapper {
+    padding: 0.05em 0;
   }
 
   .cta-text {
-    font-size: clamp(2rem, 9vw, 3.25rem);
+    font-size: clamp(2.25rem, 10vw, 3.25rem);
+    line-height: 1.05;
   }
 
   .cta-line.with-button {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--spacing-md);
+    gap: 0.85rem;
+    margin-top: 0.5rem;
   }
 
   .footer-bottom {
     flex-direction: column;
     gap: var(--spacing-md);
     text-align: center;
-    padding-top: var(--spacing-lg);
+    padding-top: 2rem;
     border-top: 1px solid var(--color-border);
   }
 
   .footer-copyright {
     font-size: 0.85rem;
+  }
+}
+
+/* ===== Mobile responsiveness overrides (≤767px only) ===== */
+@media (max-width: 767px) {
+  .footer {
+    padding: 3.5rem var(--spacing-md) 2rem;
+  }
+
+  .footer-copyright {
+    font-size: 0.875rem; /* 14px floor */
+  }
+
+  /* Ensure footer CTA button (AnimatedButton) meets 44px tap target */
+  .footer .animated-btn,
+  .footer-cta .animated-btn {
+    min-height: 44px;
+    padding: 0.875rem 1.4rem;
   }
 }
 

@@ -90,3 +90,14 @@
   }
 }
 
+/* Mobile (≤767px): enlarge invisible hit area to 44×44 without scaling
+   the visual pill. The button itself receives the padding, so the track
+   stays the same size while tap target is 44×44. */
+@media (max-width: 767px) {
+  .theme-toggle {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 10px;
+  }
+}
+

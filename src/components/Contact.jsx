@@ -3,7 +3,7 @@ import AnimatedButton from './AnimatedButton';
 import './Contact.css';
 
 const Contact = () => {
-  const words = ['How about', 'we do a', 'thing', 'or two,', 'Together'];
+  const words = ['How about', 'we do a', 'Thing', 'or two,', 'Together'];
   
   return (
     <section className="contact" id="contact">

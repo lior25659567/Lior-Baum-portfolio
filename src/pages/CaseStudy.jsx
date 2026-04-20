@@ -1,11 +1,104 @@
 import { useParams, Link } from 'react-router-dom';
 import { useRef, useState, useEffect, useCallback, Component, memo, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import AnimatedButton from '../components/AnimatedButton';
 import { useEdit } from '../context/EditContext';
 import { getCaseStudyData, getCaseStudyDataAsync, saveCaseStudyData, resetCaseStudyData, listSavedCaseStudies, slideTemplates, templateCategories, compressImage, defaultCaseStudies, contactDefaults } from '../data/caseStudyData';
 import { slideTemplateDocs } from '../data/slideTemplateDocs';
 import './CaseStudy.css';
+
+// Inline matchMedia hook — avoids adding another dependency.
+// Returns true when the media query matches; listens for changes.
+function useMediaQuery(query) {
+  const getInitial = () => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+    return window.matchMedia(query).matches;
+  };
+  const [matches, setMatches] = useState(getInitial);
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const mql = window.matchMedia(query);
+    const onChange = (e) => setMatches(e.matches);
+    setMatches(mql.matches);
+    if (mql.addEventListener) mql.addEventListener('change', onChange);
+    else mql.addListener(onChange);
+    return () => {
+      if (mql.removeEventListener) mql.removeEventListener('change', onChange);
+      else mql.removeListener(onChange);
+    };
+  }, [query]);
+  return matches;
+}
+
+// ─── Mobile slide artboard ───────────────────────────────────────────────
+// Desktop-composed slides render into a fixed 1440×810 (16:9) artboard on
+// phones — the reference width desktop CSS is tuned for. react-zoom-pan-pinch
+// scales the artboard to fit the viewport width; pinch zooms up to 4× from
+// that base. The library owns the transform — no CSS transform is stacked.
+const SLIDE_DESIGN_W = 1440;
+const SLIDE_DESIGN_H = 810;
+const DEFAULT_FIT_SCALE = 0.26; // safe SSR default (~375px / 1440)
+
+function computeFitScale() {
+  if (typeof window === 'undefined') return DEFAULT_FIT_SCALE;
+  const vw = window.innerWidth || document.documentElement.clientWidth || 375;
+  return Math.max(0.05, vw / SLIDE_DESIGN_W);
+}
+
+/**
+ * SlideContainer
+ * ---------------
+ * On mobile (≤767px) wraps a slide in a pan/zoom surface that behaves
+ * like a Figma/Canva presentation: a fixed 1440×810 artboard scaled
+ * uniformly to fit the viewport width, with pinch/double-tap zoom, and
+ * panning constrained to the slide edges (no wandering into the dark
+ * letterbox). On desktop (≥768px) this is a passthrough.
+ */
+const SlideContainer = ({ children, isMobile, transformKey, onScaleChange }) => {
+  const [fitScale, setFitScale] = useState(() => (isMobile ? computeFitScale() : 1));
+
+  useEffect(() => {
+    if (!isMobile) return;
+    const update = () => setFitScale(computeFitScale());
+    update();
+    window.addEventListener('resize', update);
+    window.addEventListener('orientationchange', update);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('orientationchange', update);
+    };
+  }, [isMobile]);
+
+  if (!isMobile) return children;
+
+  return (
+    <TransformWrapper
+      key={`${transformKey}-${fitScale.toFixed(3)}`}
+      initialScale={fitScale}
+      minScale={fitScale}
+      maxScale={fitScale * 4}
+      centerOnInit={true}
+      centerZoomedOut={true}
+      limitToBounds={true}
+      doubleClick={{ mode: 'toggle', step: 1.8 }}
+      panning={{ velocityDisabled: true }}
+      wheel={{ disabled: true }}
+      pinch={{ step: 5 }}
+      onTransformed={(_ref, state) => onScaleChange && onScaleChange(state.scale, fitScale)}
+    >
+      <TransformComponent
+        wrapperClass="slide-zoom-wrapper"
+        contentClass="slide-canvas"
+      >
+        {/* Frozen 1440×810 desktop artboard — the library handles scaling. */}
+        <div className="slide-design">
+          {children}
+        </div>
+      </TransformComponent>
+    </TransformWrapper>
+  );
+};
 
 // Error Boundary to catch rendering errors
 class SlideErrorBoundary extends Component {
@@ -953,6 +1046,33 @@ const CaseStudy = () => {
   const slideNavHideTimeoutRef = useRef(null);
   const hideSlideNavRef = useRef(null);
 
+  // ── Mobile Figma/Canva-style scaled slide viewer ───────────────────────
+  // Below 768px we render each slide inside a TransformWrapper (pinch-zoom
+  // & pan) over a fixed 1440×810 design canvas. At desktop widths this is
+  // a pass-through — no visual change.
+  const isMobileSlide = useMediaQuery('(max-width: 767px)');
+  // Tracks the active slide's library scale. Because the library's base
+  // (fit-to-viewport) scale is NOT 1 on mobile (it's viewportW/1440), we
+  // also track the fitScale so we can detect "zoomed in" as scale > fit.
+  const currentScaleRef = useRef(1);
+  const baseFitScaleRef = useRef(1);
+  const [showZoomHint, setShowZoomHint] = useState(false);
+  useEffect(() => {
+    if (!isMobileSlide) return;
+    try {
+      if (localStorage.getItem('zoomHintSeen') === '1') return;
+      setShowZoomHint(true);
+      const t1 = setTimeout(() => setShowZoomHint(false), 2200);
+      const t2 = setTimeout(() => { try { localStorage.setItem('zoomHintSeen', '1'); } catch { /* ignore */ } }, 2600);
+      return () => { clearTimeout(t1); clearTimeout(t2); };
+    } catch { /* ignore localStorage errors */ }
+  }, [isMobileSlide]);
+  // Reset scale tracking when the active slide changes. The TransformWrapper
+  // is keyed on currentSlide + fitScale, so it re-mounts back to fitScale.
+  useEffect(() => {
+    currentScaleRef.current = baseFitScaleRef.current || 1;
+  }, [currentSlide]);
+
   // Track if we've loaded initial data (to avoid saving on first load)
   const hasLoadedRef = useRef(false);
   const saveTimeoutRef = useRef(null);
@@ -1284,47 +1404,76 @@ const CaseStudy = () => {
     let touchStartX = 0;
     let touchStartY = 0;
     let touchStartTime = 0;
+    let touchMultiFinger = false;
 
     const handleTouchStart = (e) => {
+      if (e.touches.length > 1) {
+        touchMultiFinger = true;
+        return;
+      }
+      touchMultiFinger = false;
       touchStartX = e.touches[0].clientX;
       touchStartY = e.touches[0].clientY;
       touchStartTime = Date.now();
     };
 
+    const handleTouchMove = (e) => {
+      if (e.touches.length > 1) touchMultiFinger = true;
+    };
+
     const handleTouchEnd = (e) => {
       if (isScrollingRef.current) return;
-      
+
+      // Mobile scaled viewer: arrows only. All touch gestures (single-finger
+      // drag, pinch, double-tap) belong to the zoom library — no swipe-nav.
+      if (isMobileSlide) {
+        touchMultiFinger = false;
+        return;
+      }
+
+      if (touchMultiFinger) {
+        touchMultiFinger = false;
+        return;
+      }
+
       const touchEndX = e.changedTouches[0].clientX;
       const touchEndY = e.changedTouches[0].clientY;
       const diffX = touchStartX - touchEndX;
       const diffY = touchStartY - touchEndY;
       const timeDiff = Date.now() - touchStartTime;
-      
-      // Only register swipe if it was quick enough (under 500ms) and long enough (50px)
+
       if (timeDiff < 500) {
-      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
           goToSlide(diffX > 0 ? 1 : -1);
-      } else if (Math.abs(diffY) > 50) {
+        } else if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 50) {
           goToSlide(diffY > 0 ? 1 : -1);
         }
       }
     };
 
+    const handleTouchCancel = () => {
+      touchMultiFinger = false;
+    };
+
     container.addEventListener('wheel', handleWheel, { passive: false });
     container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: true });
     container.addEventListener('touchend', handleTouchEnd, { passive: true });
+    container.addEventListener('touchcancel', handleTouchCancel, { passive: true });
     window.addEventListener('keydown', handleKeyDown);
-    
+
     return () => {
       container.removeEventListener('wheel', handleWheel);
       container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
       container.removeEventListener('touchend', handleTouchEnd);
+      container.removeEventListener('touchcancel', handleTouchCancel);
       window.removeEventListener('keydown', handleKeyDown);
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
       // Reset scrolling lock so navigation isn't stuck after editMode toggle
       isScrollingRef.current = false;
     };
-  }, [totalSlides, editMode]);
+  }, [totalSlides, editMode, isMobileSlide]);
 
   const goToSlide = useCallback((direction) => {
     if (isScrollingRef.current) return;
@@ -1377,15 +1526,28 @@ const CaseStudy = () => {
     return () => window.removeEventListener('wheel', onWheelHideNav, { passive: true });
   }, [editMode]);
 
-  // Click on slide inner → next slide (skip links, buttons, inputs, images)
+  // Click on slide inner → advance / navigate slides (skip interactive targets).
+  // Desktop: click anywhere advances to next (legacy behavior).
+  // Mobile: left 30% = prev, right 30% = next, middle does nothing (so pinch/
+  // double-tap don't accidentally step slides). Zoomed-in taps also no-op —
+  // the library owns positional gestures.
   const handleSlideAreaClick = useCallback((e) => {
     if (editMode || totalSlides <= 1) return;
     if (e.target.closest('a, button, input, select, textarea, [contenteditable="true"], [data-no-slide-advance]')) return;
-    // Click navigation bypasses scroll debounce for reliable response
     isScrollingRef.current = false;
     if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+
+    if (isMobileSlide) {
+      if (currentScaleRef.current > baseFitScaleRef.current * 1.05) return;
+      const vw = window.innerWidth || document.documentElement.clientWidth || 375;
+      const x = e.clientX;
+      if (x < vw * 0.3) goToSlide(-1);
+      else if (x > vw * 0.7) goToSlide(1);
+      return;
+    }
+
     goToSlide(1);
-  }, [editMode, totalSlides, goToSlide]);
+  }, [editMode, totalSlides, goToSlide, isMobileSlide]);
 
   // Edit mode functions
   const updateSlide = useCallback((slideIndex, updates) => {
@@ -6562,18 +6724,40 @@ My instructions: `;
         onMouseLeave={hideSlideNavAfterDelay}
       >
         <div className="slides-container" onClick={handleSlideAreaClick}>
-          <motion.div 
-            className="slides-track"
+          <motion.div
+            className={`slides-track${isMobileSlide ? ' slides-track--mobile-scaled' : ''}`}
             animate={{ x: `-${currentSlide * 100}%` }}
             transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
           >
             {project.slides.map((slide, index) => (
               <SlideErrorBoundary key={`error-${index}`}>
-                {renderSlide(slide, index)}
+                <SlideContainer
+                  isMobile={isMobileSlide}
+                  transformKey={`zoom-${index}-${currentSlide === index ? 'active' : 'idle'}`}
+                  onScaleChange={(scale, fitScale) => {
+                    if (index === currentSlide) {
+                      currentScaleRef.current = scale;
+                      baseFitScaleRef.current = fitScale;
+                    }
+                  }}
+                >
+                  {renderSlide(slide, index)}
+                </SlideContainer>
               </SlideErrorBoundary>
             ))}
           </motion.div>
         </div>
+        {isMobileSlide && showZoomHint && (
+          <div className="zoom-hint" role="status" aria-live="polite">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="M21 21l-4.3-4.3" />
+              <path d="M8 11h6" />
+              <path d="M11 8v6" />
+            </svg>
+            <span>Pinch or double-tap to zoom</span>
+          </div>
+        )}
 
         {!editMode && totalSlides > 1 && (
           <>
@@ -6601,6 +6785,11 @@ My instructions: `;
                 <path d="M12 4L8 10L12 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
+            {isMobileSlide && (
+              <span className="slide-nav-pill-counter" aria-live="polite">
+                {String(currentSlide + 1).padStart(2, '0')} / {String(totalSlides).padStart(2, '0')}
+              </span>
+            )}
             <span className="slide-nav-pill-divider" aria-hidden="true" />
             <button
               type="button"

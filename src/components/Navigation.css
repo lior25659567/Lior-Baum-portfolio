@@ -423,6 +423,43 @@
   }
 }
 
+/* ===== Mobile responsiveness overrides (≤767px only) ===== */
+@media (max-width: 767px) {
+  /* 44×44 minimum tap target for hamburger across all phone sizes */
+  .hamburger {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* Raise CTA font to ≥14px floor on mobile */
+  .nav-cta-btn {
+    font-size: 0.9375rem !important;
+    padding: 0.6875rem 1.125rem !important;
+  }
+
+  /* Ensure mobile nav links hit the 48px tap target */
+  .mobile-nav-link {
+    min-height: 48px;
+    padding: var(--spacing-sm) 0;
+    align-items: center;
+  }
+
+  /* Mobile social links — readable + tappable */
+  .mobile-social-links a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 var(--spacing-xs);
+  }
+
+  /* CV link popover must not overflow viewport */
+  .cv-link-input-wrapper {
+    min-width: 0;
+    width: min(calc(100vw - 2 * var(--spacing-md)), 320px);
+    right: 0;
+  }
+}
+
 /* Very small screens */
 @media (max-width: 360px) {
   .navigation {
