@@ -8,12 +8,12 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
-    // Explicit HMR config — avoids the client falling back to 443/polling when
-    // served through Cursor's preview proxy, which was causing "connection
-    // lost → refresh" loops during editing.
+    // Listen on LAN so you can open http://<your-mac-ip>:5173 on a phone (same Wi‑Fi).
+    host: true,
+    // Explicit HMR — omit `host` so the client uses the page hostname (localhost *or* LAN IP).
+    // Pinning localhost breaks phone testing (WS would target the phone itself).
     hmr: {
       protocol: 'ws',
-      host: 'localhost',
       port: 5173,
       overlay: true,
     },

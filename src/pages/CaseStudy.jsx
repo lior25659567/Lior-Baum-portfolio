@@ -6,6 +6,7 @@ import AnimatedButton from '../components/AnimatedButton';
 import { useEdit } from '../context/EditContext';
 import { getCaseStudyData, getCaseStudyDataAsync, saveCaseStudyData, resetCaseStudyData, listSavedCaseStudies, slideTemplates, templateCategories, compressImage, defaultCaseStudies, contactDefaults } from '../data/caseStudyData';
 import { slideTemplateDocs } from '../data/slideTemplateDocs';
+import { IFRAME_FILES } from '../iframes';
 import './CaseStudy.css';
 
 // Inline matchMedia hook — avoids adding another dependency.
@@ -541,6 +542,32 @@ const toYouTubeEmbedUrl = (input) => {
   return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&rel=0&modestbranding=1&playsinline=1`;
 };
 
+// Module-level raw-iframe source helper — accepts full <iframe> HTML or a path/URL.
+// Why bare strings need normalization: in a React SPA, any unknown path falls back to
+// index.html, so a src like "timeline.html" or "example.com" would load the portfolio
+// itself inside the iframe. We rewrite:
+//   - "example.com/page" / "www.site.com" → "https://example.com/page" (domain detected)
+//   - bare filename "foo.html"            → "/iframes/foo.html" (convention: HTML embeds live in public/iframes/)
+//   - "folder/x.pdf"                      → "/folder/x.pdf"
+// Already-absolute URLs, protocol-relative "//…", and "/…" paths pass through unchanged.
+const toIframeSrc = (input) => {
+  if (!input || typeof input !== 'string') return null;
+  const trimmed = input.trim();
+  if (!trimmed) return null;
+  const iframeMatch = trimmed.match(/<iframe[^>]+src=["']([^"']+)["']/i);
+  let src = (iframeMatch ? iframeMatch[1] : trimmed).trim();
+  if (!src) return null;
+  if (/^([a-z][a-z0-9+\-.]*:|\/\/)/i.test(src)) return src;
+  if (src.startsWith('/')) return src;
+  const firstSeg = src.split(/[/?#]/)[0];
+  const looksLikeDomain = /^[a-z0-9][a-z0-9-]*(\.[a-z0-9-]+)+$/i.test(firstSeg);
+  const isLocalFileExt = /\.(html?|pdf|php|aspx?|jsp|css|js|json|xml|txt|md|svg|png|jpe?g|gif|webp|mp4|webm|ogg|mp3|wav)$/i.test(firstSeg);
+  if (looksLikeDomain && !isLocalFileExt) return 'https://' + src;
+  const cleaned = src.replace(/^\.\//, '');
+  if (!cleaned.includes('/')) return '/iframes/' + cleaned;
+  return '/' + cleaned;
+};
+
 // Shared helper — used by ComparisonSlide and CaseStudy's getSplitStyle
 const getSplitStyleModule = (slide) => {
   const ratio = slide.splitRatio || 50;
@@ -843,9 +870,9 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
                   {tabEmbed ? (
                     <div className="ps-img-wrap ps-img-contain">
                       <div className="ps-img-inner ps-embed-inner">
-                        <iframe src={tabEmbed} title={tab.embedType === 'site' ? 'Site Embed' : 'Figma Embed'} allowFullScreen className={tab.embedType === 'site' ? 'site-embed-iframe' : 'figma-embed-iframe'} />
+                        <iframe src={tabEmbed} title={tab.embedType === 'site' ? 'Site Embed' : tab.embedType === 'iframe' ? 'Embedded iframe' : 'Figma Embed'} allowFullScreen className={tab.embedType === 'site' ? 'site-embed-iframe' : tab.embedType === 'iframe' ? 'iframe-embed-iframe' : 'figma-embed-iframe'} />
                       </div>
-                      {editMode && <div className="ps-img-controls"><button type="button" className="ps-remove-img" onClick={() => updatePsTab(tabIdx, { embedUrl: '' })}>× Remove embed</button></div>}
+                      {editMode && <div className="ps-img-controls"><button type="button" className="ps-remove-img" onClick={() => updatePsTab(tabIdx, { embedUrl: '', embedType: 'figma' })}>⇄ Change media</button><button type="button" className="ps-remove-img" onClick={() => updatePsTab(tabIdx, { embedUrl: '', embedType: 'figma' })}>× Remove embed</button></div>}
                     </div>
                   ) : tabSrc ? (
                     <div className="ps-img-wrap ps-img-contain">
@@ -859,10 +886,28 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
                     <div className="ps-media-type-picker">
                       {psEmbedInput.tabIdx === tabIdx ? (
                         <div className="figma-embed-input">
+                          {psEmbedInput.type === 'iframe' && IFRAME_FILES.length > 0 && (
+                            <select
+                              className="iframe-file-picker"
+                              value=""
+                              onChange={(e) => {
+                                const picked = e.target.value;
+                                if (!picked) return;
+                                const src = toIframeSrc(picked);
+                                if (src) { updatePsTab(tabIdx, { embedUrl: src, embedType: 'iframe', image: '' }); setPsEmbedInput({ tabIdx: null, draft: '', type: 'figma' }); }
+                              }}
+                              title="Pick a file from public/iframes/"
+                            >
+                              <option value="">Pick from /public/iframes…</option>
+                              {IFRAME_FILES.map(f => (
+                                <option key={f.path} value={f.path}>{f.label}</option>
+                              ))}
+                            </select>
+                          )}
                           <input
                             type="text"
                             className="editable-field figma-url-input"
-                            placeholder={psEmbedInput.type === 'site' ? 'Paste website URL to embed...' : 'Paste Figma URL or <iframe> embed code...'}
+                            placeholder={psEmbedInput.type === 'site' ? 'Paste website URL to embed...' : psEmbedInput.type === 'iframe' ? `<iframe src="iframes/your-file.html" …> or https://…` : 'Paste Figma URL or <iframe> embed code...'}
                             value={psEmbedInput.draft}
                             onChange={(e) => setPsEmbedInput({ ...psEmbedInput, draft: e.target.value })}
                             onKeyDown={(e) => {
@@ -871,9 +916,13 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
                                 const url = psEmbedInput.draft.trim();
                                 if (url && /^https?:\/\/.+/i.test(url)) { updatePsTab(tabIdx, { embedUrl: url, embedType: 'site', image: '' }); setPsEmbedInput({ tabIdx: null, draft: '', type: 'figma' }); }
                                 else alert('Please enter a valid URL (starting with http:// or https://)');
+                              } else if (psEmbedInput.type === 'iframe') {
+                                const src = toIframeSrc(psEmbedInput.draft);
+                                if (src) { updatePsTab(tabIdx, { embedUrl: src, embedType: 'iframe', image: '' }); setPsEmbedInput({ tabIdx: null, draft: '', type: 'figma' }); }
+                                else alert('Please paste an <iframe> tag or a path/URL');
                               } else {
                                 const converted = toFigmaEmbedUrlModule(psEmbedInput.draft);
-                                if (converted) { updatePsTab(tabIdx, { embedUrl: converted, image: '' }); setPsEmbedInput({ tabIdx: null, draft: '', type: 'figma' }); }
+                                if (converted) { updatePsTab(tabIdx, { embedUrl: converted, embedType: 'figma', image: '' }); setPsEmbedInput({ tabIdx: null, draft: '', type: 'figma' }); }
                                 else alert('Please enter a valid Figma URL or <iframe> embed code');
                               }
                             }}
@@ -884,9 +933,13 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
                               const url = psEmbedInput.draft.trim();
                               if (url && /^https?:\/\/.+/i.test(url)) { updatePsTab(tabIdx, { embedUrl: url, embedType: 'site', image: '' }); setPsEmbedInput({ tabIdx: null, draft: '', type: 'figma' }); }
                               else alert('Please enter a valid URL (starting with http:// or https://)');
+                            } else if (psEmbedInput.type === 'iframe') {
+                              const src = toIframeSrc(psEmbedInput.draft);
+                              if (src) { updatePsTab(tabIdx, { embedUrl: src, embedType: 'iframe', image: '' }); setPsEmbedInput({ tabIdx: null, draft: '', type: 'figma' }); }
+                              else alert('Please paste an <iframe> tag or a path/URL');
                             } else {
                               const converted = toFigmaEmbedUrlModule(psEmbedInput.draft);
-                              if (converted) { updatePsTab(tabIdx, { embedUrl: converted, image: '' }); setPsEmbedInput({ tabIdx: null, draft: '', type: 'figma' }); }
+                              if (converted) { updatePsTab(tabIdx, { embedUrl: converted, embedType: 'figma', image: '' }); setPsEmbedInput({ tabIdx: null, draft: '', type: 'figma' }); }
                               else alert('Please enter a valid Figma URL or <iframe> embed code');
                             }
                           }}>Embed</button>
@@ -897,6 +950,7 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
                           <button type="button" className="media-type-btn" onClick={() => openFileForPsTab(tabIdx)}><span className="media-type-icon">+</span><span>Upload Image</span></button>
                           <button type="button" className="media-type-btn media-type-figma" onClick={() => setPsEmbedInput({ tabIdx, draft: '', type: 'figma' })}><span className="media-type-icon">◈</span><span>Embed Figma</span></button>
                           <button type="button" className="media-type-btn media-type-site" onClick={() => setPsEmbedInput({ tabIdx, draft: '', type: 'site' })}><span className="media-type-icon">⧉</span><span>Embed Site</span></button>
+                          <button type="button" className="media-type-btn media-type-iframe" onClick={() => setPsEmbedInput({ tabIdx, draft: '', type: 'iframe' })}><span className="media-type-icon">⟨⟩</span><span>Embed iframe</span></button>
                         </div>
                       )}
                     </div>
@@ -3707,16 +3761,25 @@ My instructions: `;
                     <>
                       <iframe
                         src={imgData.embedUrl}
-                        title={imgData.embedType === 'youtube' ? 'YouTube Video' : imgData.embedType === 'site' ? 'Site Embed' : 'Figma Embed'}
+                        title={imgData.embedType === 'youtube' ? 'YouTube Video' : imgData.embedType === 'site' ? 'Site Embed' : imgData.embedType === 'iframe' ? 'Embedded iframe' : 'Figma Embed'}
                         allowFullScreen
                         allow={imgData.embedType === 'youtube' ? 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' : undefined}
                         loading={imgData.embedType === 'youtube' ? 'lazy' : undefined}
-                        className={imgData.embedType === 'youtube' ? 'youtube-embed-iframe' : imgData.embedType === 'site' ? 'site-embed-iframe' : 'figma-embed-iframe'}
+                        className={imgData.embedType === 'youtube' ? 'youtube-embed-iframe' : imgData.embedType === 'site' ? 'site-embed-iframe' : imgData.embedType === 'iframe' ? 'iframe-embed-iframe' : 'figma-embed-iframe'}
                       />
                       {editMode && (
-                        <div className="embed-edit-controls" onClick={(e) => e.stopPropagation()}>
-                          <button type="button" className="embed-remove-btn" onClick={() => updateImage(imgIndex, { embedUrl: '' })} title="Remove embed">× Remove</button>
-                        </div>
+                        <>
+                          <div className="embed-edit-controls" onClick={(e) => e.stopPropagation()}>
+                            <button type="button" className="embed-remove-btn embed-change-btn" onClick={() => updateImage(imgIndex, { embedUrl: '', embedType: undefined })} title="Change to another media type">⇄ Change media</button>
+                            <button type="button" className="embed-remove-btn" onClick={() => updateImage(imgIndex, { embedUrl: '', embedType: undefined })} title="Remove embed">× Remove</button>
+                          </div>
+                          <div className="media-fit-inline media-fit-inline-embed" onClick={(e) => e.stopPropagation()}>
+                            <button type="button" className={`fit-inline-btn ${imgFit === 'cover' ? 'active' : ''}`} onClick={() => updateImage(imgIndex, 'fit', 'cover')} title="Fill - iframe covers the entire area">Fill</button>
+                            <button type="button" className={`fit-inline-btn ${imgFit === 'contain' ? 'active' : ''}`} onClick={() => updateImage(imgIndex, 'fit', 'contain')} title="Fit - iframe sits inside with a margin">Fit</button>
+                            <span className="fit-inline-divider" />
+                            <button type="button" className={`fit-inline-btn ${wrapperBg ? 'active' : ''}`} onClick={() => updateImage(imgIndex, 'wrapperBg', !wrapperBg)} title={wrapperBg ? 'Background on — click to remove' : 'Background off — click to add'}>BG</button>
+                          </div>
+                        </>
                       )}
                     </>
                   ) : imgData.src ? (
@@ -3869,10 +3932,32 @@ My instructions: `;
                     <div className="media-type-picker">
                       {embedInputIndex === imgIndex ? (
                         <div className="figma-embed-input" onClick={(e) => e.stopPropagation()}>
+                          {embedInputType === 'iframe' && IFRAME_FILES.length > 0 && (
+                            <select
+                              className="iframe-file-picker"
+                              value=""
+                              onChange={(e) => {
+                                const picked = e.target.value;
+                                if (!picked) return;
+                                const src = toIframeSrc(picked);
+                                if (src) {
+                                  updateImage(imgIndex, { embedUrl: src, embedType: 'iframe' });
+                                  setEmbedDraft('');
+                                  setEmbedInputIndex(null);
+                                }
+                              }}
+                              title="Pick a file from public/iframes/"
+                            >
+                              <option value="">Pick from /public/iframes…</option>
+                              {IFRAME_FILES.map(f => (
+                                <option key={f.path} value={f.path}>{f.label}</option>
+                              ))}
+                            </select>
+                          )}
                           <input
                             type="text"
                             className="editable-field figma-url-input"
-                            placeholder={embedInputType === 'figma' ? "Paste Figma URL or <iframe> embed code..." : embedInputType === 'youtube' ? "Paste YouTube URL or <iframe> embed code..." : "Paste website URL to embed..."}
+                            placeholder={embedInputType === 'figma' ? "Paste Figma URL or <iframe> embed code..." : embedInputType === 'youtube' ? "Paste YouTube URL or <iframe> embed code..." : embedInputType === 'iframe' ? `<iframe src="iframes/your-file.html" …> or https://…` : "Paste website URL to embed..."}
                             value={embedDraft}
                             onChange={(e) => setEmbedDraft(e.target.value)}
                             onKeyDown={(e) => {
@@ -3894,6 +3979,15 @@ My instructions: `;
                                     setEmbedInputIndex(null);
                                   } else {
                                     alert('Please enter a valid YouTube URL or <iframe> embed code');
+                                  }
+                                } else if (embedInputType === 'iframe') {
+                                  const src = toIframeSrc(embedDraft);
+                                  if (src) {
+                                    updateImage(imgIndex, { embedUrl: src, embedType: 'iframe' });
+                                    setEmbedDraft('');
+                                    setEmbedInputIndex(null);
+                                  } else {
+                                    alert('Please paste an <iframe> tag or a path/URL');
                                   }
                                 } else {
                                   const url = embedDraft.trim();
@@ -3928,6 +4022,15 @@ My instructions: `;
                               } else {
                                 alert('Please enter a valid YouTube URL or <iframe> embed code');
                               }
+                            } else if (embedInputType === 'iframe') {
+                              const src = toIframeSrc(embedDraft);
+                              if (src) {
+                                updateImage(imgIndex, { embedUrl: src, embedType: 'iframe' });
+                                setEmbedDraft('');
+                                setEmbedInputIndex(null);
+                              } else {
+                                alert('Please paste an <iframe> tag or a path/URL');
+                              }
                             } else {
                               const url = embedDraft.trim();
                               if (url && /^https?:\/\/.+/i.test(url)) {
@@ -3958,6 +4061,10 @@ My instructions: `;
                           <button type="button" className="media-type-btn media-type-youtube" onClick={(e) => { e.stopPropagation(); setEmbedInputType('youtube'); setEmbedInputIndex(imgIndex); setEmbedDraft(''); }}>
                             <span className="media-type-icon">▶</span>
                             <span>YouTube</span>
+                          </button>
+                          <button type="button" className="media-type-btn media-type-iframe" onClick={(e) => { e.stopPropagation(); setEmbedInputType('iframe'); setEmbedInputIndex(imgIndex); setEmbedDraft(''); }}>
+                            <span className="media-type-icon">⟨⟩</span>
+                            <span>Embed iframe</span>
                           </button>
                         </div>
                       )}

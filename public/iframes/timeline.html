@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design tools timeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f9f4;
+    --card: #ffffff;
+    --fg: #1A1815;
+    --fg-2: #595552;
+    --fg-3: #8B8680;
+    --coral-deep: #712B13;
+    --coral-soft: #F0E2D4;
+    --border: rgba(26,24,21,0.07);
+    --border-hover: rgba(26,24,21,0.14);
+    --shadow-rest: 0 1px 2px rgba(26,24,21,0.035), 0 0 0 0.5px rgba(26,24,21,0.025);
+    --shadow-hover: 0 10px 28px -10px rgba(26,24,21,0.14), 0 2px 6px rgba(26,24,21,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { background: var(--bg); }
+
+  body {
+    color: var(--fg);
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding: clamp(8px, min(2.8vw, 3vh), 48px) clamp(10px, 2.4vw, 28px);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .tl {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(4px, min(1vw, 1.2vh), 12px);
+  }
+
+  .tlrow {
+    display: grid;
+    grid-template-columns:
+      clamp(38px, 6vw, 60px)
+      clamp(56px, 8.5vw, 84px)
+      1fr;
+    gap: clamp(10px, 1.7vw, 20px);
+    align-items: center;
+    padding: clamp(8px, min(1.6vw, 2vh), 20px) clamp(12px, 1.8vw, 22px);
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-rest);
+    position: relative;
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+    animation: cardIn 0.75s cubic-bezier(0.22,0.9,0.3,1) forwards;
+    transition:
+      border-color 0.25s ease,
+      box-shadow 0.35s cubic-bezier(0.22,0.9,0.3,1),
+      transform 0.35s cubic-bezier(0.22,0.9,0.3,1);
+  }
+
+  .tlrow:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+  }
+
+  .tlrow.t1 { animation-delay: 0.08s; }
+  .tlrow.t2 { animation-delay: 0.20s; }
+  .tlrow.t3 { animation-delay: 0.32s; }
+  .tlrow.t4 { animation-delay: 0.44s; }
+  .tlrow.t5 { animation-delay: 0.56s; }
+
+  @keyframes cardIn {
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .year {
+    font-size: clamp(10px, 1.05vw, 13px);
+    font-weight: 500;
+    color: var(--fg-3);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.4px;
+    transition: color 0.25s ease;
+  }
+  .tlrow:hover .year { color: var(--fg-2); }
+
+  .icn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+    height: clamp(32px, min(6.4vw, 8vh), 60px);
+  }
+  .icn > svg { width: auto; max-width: 100%; height: 85%; }
+  .icn > * {
+    transition: transform 0.4s cubic-bezier(0.22,0.9,0.3,1);
+    animation: iconPop 0.7s cubic-bezier(0.34,1.4,0.5,1) both;
+  }
+  .tlrow.t1 .icn > * { animation-delay: 0.28s; }
+  .tlrow.t2 .icn > * { animation-delay: 0.40s; }
+  .tlrow.t3 .icn > * { animation-delay: 0.52s; }
+  .tlrow.t4 .icn > * { animation-delay: 0.64s; }
+  .tlrow.t5 .icn > * { animation-delay: 0.76s; }
+  .tlrow:hover .icn > * { transform: scale(1.08); }
+
+  @keyframes iconPop {
+    from { opacity: 0; transform: scale(0.55); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .meta { min-width: 0; }
+
+  .name {
+    font-size: clamp(12px, min(1.5vw, 2.2vh), 17px);
+    font-weight: 500;
+    color: var(--fg);
+    display: flex;
+    align-items: center;
+    gap: clamp(6px, 1vw, 10px);
+    flex-wrap: wrap;
+    line-height: 1.2;
+  }
+  .era {
+    font-size: clamp(10px, min(1.15vw, 1.7vh), 14px);
+    color: var(--fg-2);
+    margin-top: clamp(1px, 0.3vw, 4px);
+    line-height: 1.4;
+  }
+
+  .nowchip {
+    background: var(--coral-soft);
+    color: var(--coral-deep);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+
+  /* Pills stack fits inside the icon column — small, centered, no overflow. */
+  .pills {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+  }
+  .pill {
+    background: var(--coral-soft);
+    color: var(--coral-deep);
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: clamp(8px, 0.8vw, 10px);
+    font-weight: 500;
+    line-height: 1.4;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .aiicons { display: flex; gap: 8px; align-items: center; justify-content: center; }
+
+  @media print {
+    * { animation: none !important; opacity: 1 !important; transform: none !important; }
+    .tlrow { box-shadow: none; border-color: rgba(26,24,21,0.15); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01s !important; transition-duration: 0.01s !important; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="tl">
+
+    <div class="tlrow t1">
+      <span class="year">1990</span>
+      <div class="icn">
+        <svg width="52" height="52" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#001E36"/><text x="24" y="33" text-anchor="middle" fill="#31A8FF" font-family="Arial Black,Arial" font-size="20" font-weight="900">Ps</text></svg>
+      </div>
+      <div class="meta">
+        <div class="name">Photoshop</div>
+        <div class="era">Pixels and layers — design as pictures of pages</div>
+      </div>
+    </div>
+
+    <div class="tlrow t2">
+      <span class="year">2010</span>
+      <div class="icn">
+        <svg width="52" height="52" viewBox="0 0 48 48"><polygon points="24,4 44,18 24,44 4,18" fill="#FDB300"/><polygon points="14,18 24,4 34,18" fill="#FECB3F"/><polygon points="4,18 14,18 24,44" fill="#FDAD00"/><polygon points="24,44 34,18 44,18" fill="#FDB300"/></svg>
+      </div>
+      <div class="meta">
+        <div class="name">Sketch</div>
+        <div class="era">Vector-first interfaces, native and lightweight</div>
+      </div>
+    </div>
+
+    <div class="tlrow t3">
+      <span class="year">2016</span>
+      <div class="icn">
+        <svg width="46" height="52" viewBox="0 0 48 48"><circle cx="17" cy="11" r="6.5" fill="#F24E1E"/><circle cx="31" cy="11" r="6.5" fill="#A259FF"/><circle cx="17" cy="24" r="6.5" fill="#FF7262"/><circle cx="31" cy="24" r="6.5" fill="#1ABCFE"/><circle cx="17" cy="37" r="6.5" fill="#0ACF83"/></svg>
+      </div>
+      <div class="meta">
+        <div class="name">Figma</div>
+        <div class="era">Multiplayer design in the browser — the file became a URL</div>
+      </div>
+    </div>
+
+    <div class="tlrow t4">
+      <span class="year">2020</span>
+      <div class="icn">
+        <div class="pills">
+          <span class="pill">Styles</span>
+          <span class="pill">Variables</span>
+          <span class="pill">Tokens</span>
+        </div>
+      </div>
+      <div class="meta">
+        <div class="name">Tokens &amp; systems</div>
+        <div class="era">Design as data — a single source of truth</div>
+      </div>
+    </div>
+
+    <div class="tlrow t5">
+      <span class="year">2024</span>
+      <div class="icn">
+        <div class="aiicons">
+          <svg width="26" height="26" viewBox="-14 -14 28 28"><path d="M0 -12 L2.4 -2.4 L12 0 L2.4 2.4 L0 12 L-2.4 2.4 L-12 0 L-2.4 -2.4 Z" fill="#D97757"/></svg>
+          <svg width="26" height="26" viewBox="0 0 28 28"><rect width="28" height="28" rx="5" fill="#FF4785"/><text x="14" y="20" text-anchor="middle" fill="#fff" font-size="16" font-weight="700" font-family="Arial">S</text></svg>
+        </div>
+      </div>
+      <div class="meta">
+        <div class="name">AI-assisted design <span class="nowchip">Now</span></div>
+        <div class="era">Prompt-to-component, code-aware tooling, living previews</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+</body>
+</html>

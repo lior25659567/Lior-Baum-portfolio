@@ -12904,7 +12904,8 @@ textarea.editable-field {
 
 .figma-embed-iframe,
 .site-embed-iframe,
-.youtube-embed-iframe {
+.youtube-embed-iframe,
+.iframe-embed-iframe {
   display: block;
   width: 100%;
   height: 100%;
@@ -12930,17 +12931,81 @@ textarea.editable-field {
 /* Iframe always fits full width of its container */
 .dynamic-image-wrapper.has-embed .figma-embed-iframe,
 .dynamic-image-wrapper.has-embed .site-embed-iframe,
-.dynamic-image-wrapper.has-embed .youtube-embed-iframe {
+.dynamic-image-wrapper.has-embed .youtube-embed-iframe,
+.dynamic-image-wrapper.has-embed .iframe-embed-iframe {
   width: 100%;
   height: 100%;
   border: none;
 }
 
-/* Override img-fit-contain styles when it's an embed (not an image) */
+/* Embed + Fit mode: iframe sits inside the wrapper with breathing room.
+   Padding stays regardless of BG, so the slide's own background can show through when BG is off. */
 .dynamic-image-item.img-fit-contain .dynamic-image-wrapper.has-embed {
-  background: var(--color-bg-secondary) !important;
-  border-radius: var(--radius-lg) !important;
-  overflow: hidden !important;
+  padding: 14px;
+  box-sizing: border-box;
+  border-radius: var(--radius-lg);
+}
+
+.dynamic-image-item.img-fit-contain .dynamic-image-wrapper.has-embed iframe {
+  border-radius: calc(var(--radius-lg) - 6px);
+}
+
+/* Embed + Fill mode: edge-to-edge */
+.dynamic-image-item.img-fit-cover .dynamic-image-wrapper.has-embed {
+  padding: 0;
+}
+
+/* Embed + BG off: transparent wrapper (no forced solid fill) */
+.dynamic-image-item.no-wrapper-bg .dynamic-image-wrapper.has-embed {
+  background: transparent;
+}
+
+/* Fit-inline control sitting on top of an embed */
+.media-fit-inline-embed {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: auto;
+  transform: none;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  padding: 4px 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  pointer-events: auto;
+}
+
+.media-fit-inline-embed .fit-inline-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
+  padding: 3px 9px;
+  font-size: 0.72rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.media-fit-inline-embed .fit-inline-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.media-fit-inline-embed .fit-inline-btn.active {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.media-fit-inline-embed .fit-inline-divider {
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.25);
+  margin: 0 2px;
 }
 
 /* Override size presets for embeds — always fill available space */
@@ -12953,27 +13018,41 @@ textarea.editable-field {
 
 .embed-edit-controls {
   position: absolute;
-  bottom: 8px;
+  top: 8px;
   right: 8px;
-  z-index: 5;
+  z-index: 10;
   display: flex;
-  gap: 0.1rem;
+  gap: 6px;
+  pointer-events: auto;
 }
 
 .embed-remove-btn {
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.82);
   color: #fff;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 0.75rem;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
   cursor: pointer;
-  backdrop-filter: blur(4px);
-  transition: background 0.15s;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  transition: background 0.15s, border-color 0.15s;
+  pointer-events: auto;
 }
 
 .embed-remove-btn:hover {
-  background: rgba(220, 50, 50, 0.8);
+  background: rgba(220, 50, 50, 0.9);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.embed-change-btn {
+  background: rgba(30, 30, 30, 0.82);
+}
+
+.embed-change-btn:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 /* Media type picker (empty state in edit mode) */
@@ -13034,6 +13113,12 @@ textarea.editable-field {
   color: #ff0000;
 }
 
+.media-type-iframe .media-type-icon {
+  font-size: 1rem;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, monospace);
+  letter-spacing: -0.05em;
+}
+
 /* Figma embed URL input row */
 .figma-embed-input {
   display: flex;
@@ -13041,6 +13126,28 @@ textarea.editable-field {
   gap: 0.1rem;
   width: 100%;
   padding: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* File picker dropdown inside iframe embed input */
+.iframe-file-picker {
+  flex: 0 0 auto;
+  max-width: 220px;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.78rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-text);
+  outline: none;
+  cursor: pointer;
+  margin-right: 0.35rem;
+  transition: border-color 0.15s;
+}
+
+.iframe-file-picker:focus,
+.iframe-file-picker:hover {
+  border-color: var(--color-accent);
 }
 
 .figma-url-input {
@@ -13101,7 +13208,8 @@ textarea.editable-field {
 
 .ps-embed-inner .figma-embed-iframe,
 .ps-embed-inner .site-embed-iframe,
-.ps-embed-inner .youtube-embed-iframe {
+.ps-embed-inner .youtube-embed-iframe,
+.ps-embed-inner .iframe-embed-iframe {
   width: 100%;
   height: 100%;
 }
@@ -13380,10 +13488,10 @@ textarea.editable-field {
     min-width: 0 !important;
   }
 
-  .slide-design .dynamic-image-wrapper:not(.has-embed),
-  .slide-design .dynamic-image-item.img-size-small .dynamic-image-wrapper:not(.has-embed),
-  .slide-design .dynamic-image-item.img-size-medium .dynamic-image-wrapper:not(.has-embed),
-  .slide-design .dynamic-image-item.img-size-large .dynamic-image-wrapper:not(.has-embed),
+  .slide-design .dynamic-image-wrapper,
+  .slide-design .dynamic-image-item.img-size-small .dynamic-image-wrapper,
+  .slide-design .dynamic-image-item.img-size-medium .dynamic-image-wrapper,
+  .slide-design .dynamic-image-item.img-size-large .dynamic-image-wrapper,
   .slide-design .split-image,
   .slide-design .intro-image {
     width: 100% !important;
