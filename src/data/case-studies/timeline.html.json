@@ -1,0 +1,328 @@
+{
+  "dataVersion": 2,
+  "title": "iTero\nScan & View",
+  "subtitle": "Redesigning a live clinical scanning experience",
+  "category": "Clinical UX & System Design",
+  "year": "2024",
+  "color": "#E8847C",
+  "slides": [
+    {
+      "type": "intro",
+      "title": "iTero\nScan & View",
+      "description": "Redesigning a live clinical scanning experience",
+      "clientLabel": "Client",
+      "client": "Align Technology",
+      "focusLabel": "Focus",
+      "focus": "Clinical UX & System Design"
+    },
+    {
+      "type": "context",
+      "label": "Background",
+      "title": "What is Align Technology",
+      "content": "Align Technology develops digital systems used by clinicians during live dental procedures.\niTero is a real-time intraoral scanner designed for use while the patient is in the chair.",
+      "highlight": "The platform supports scanning, validation, and review within a single clinical session. Accuracy and speed are equally critical.",
+      "image": ""
+    },
+    {
+      "type": "context",
+      "label": "Context",
+      "title": "Scanning is a high-pressure environment",
+      "content": "iTero is used in moments where clinicians must act quickly and confidently.",
+      "bullets": [
+        "The scanner is held in one hand",
+        "Attention shifts between patient and screen",
+        "Adjustments happen in real time",
+        "Delays increase chair time"
+      ],
+      "highlight": "The interface must support flow without demanding attention.",
+      "image": ""
+    },
+    {
+      "type": "problem",
+      "label": "The Breakdown",
+      "title": "When incremental improvements stopped working",
+      "content": "Over time, new tools and capabilities were added.",
+      "issues": [
+        "Additional scan types",
+        "Expanded post-scan tools",
+        "More review options"
+      ],
+      "conclusion": "Each feature solved a specific need. Together, they created a fragmented experience. Scanning, editing, and reviewing no longer felt like one connected process.",
+      "image": ""
+    },
+    {
+      "type": "context",
+      "label": "Research & Insight",
+      "title": "What clinicians struggled with",
+      "content": "From interviews and live walkthroughs, one theme repeated:\n\nThis was not a usability issue in isolation. It was a structural breakdown in the overall flow.",
+      "highlight": "\"I'm never fully sure where I am — scanning, editing, or reviewing.\"",
+      "bulletsTitle": "Key issues:",
+      "bullets": [
+        "Unclear system state",
+        "Tools scattered across the interface",
+        "Fear of making irreversible changes"
+      ]
+    },
+    {
+      "type": "goals",
+      "label": "Goals & KPIs",
+      "title": "Defining success before redesign",
+      "description": [
+        "Before redesigning, success criteria were clearly defined."
+      ],
+      "goals": [
+        {
+          "number": "1",
+          "title": "Unified Experience",
+          "description": "Create a unified Scan and View experience"
+        },
+        {
+          "number": "2",
+          "title": "Reduce Cognitive Load",
+          "description": "Reduce cognitive load during live procedures"
+        },
+        {
+          "number": "3",
+          "title": "Enable Complexity",
+          "description": "Enable complex workflows without confusion"
+        },
+        {
+          "number": "4",
+          "title": "Scalable Structure",
+          "description": "Build a scalable structure for future tools"
+        }
+      ],
+      "kpis": [
+        "Tool selection time",
+        "Overall scan duration",
+        "Misclick rate",
+        "Adoption of advanced features"
+      ]
+    },
+    {
+      "type": "chapter",
+      "number": "01",
+      "title": "Foundation",
+      "subtitle": "Icon System"
+    },
+    {
+      "type": "problem",
+      "label": "The Problem",
+      "title": "Icons that worked individually failed as a system",
+      "content": "As the toolset grew, icon inconsistencies became more visible.",
+      "issues": [
+        "Mixed stroke weights",
+        "Uneven visual balance",
+        "Conflicting metaphors"
+      ],
+      "conclusion": "When grouped together, they created visual noise and hesitation.",
+      "image": ""
+    },
+    {
+      "type": "context",
+      "label": "The Solution",
+      "title": "Creating a scalable icon language",
+      "content": "The icon system was redesigned before adjusting layout.\n\nChanges included unified grid and stroke rules, balanced visual weight, and simplified metaphors.\n\nThis created a visual foundation capable of scaling.",
+      "image": ""
+    },
+    {
+      "type": "chapter",
+      "number": "02",
+      "title": "Live Scanning",
+      "subtitle": "Structure"
+    },
+    {
+      "type": "problem",
+      "label": "The Problem",
+      "title": "Tools without a predictable structure",
+      "content": "Even with aligned icons, tools were problematic.",
+      "issues": [
+        "Spread across the interface",
+        "Difficult to reach with one hand",
+        "Competing with the scan canvas"
+      ],
+      "conclusion": "Clinicians searched mid-scan.",
+      "image": ""
+    },
+    {
+      "type": "testing",
+      "label": "Exploration",
+      "title": "Testing toolbar positions",
+      "content": "Multiple toolbar layouts were tested. Each was evaluated for reachability, obstruction, and speed.",
+      "layouts": [
+        "Vertical",
+        "Bottom",
+        "Top"
+      ],
+      "image": ""
+    },
+    {
+      "type": "context",
+      "label": "The Solution",
+      "title": "Defining a single home for scanning actions",
+      "content": "The horizontal top toolbar proved most stable.\n\nPredictable reach, minimal obstruction, and strong muscle memory.\n\nThis became the structural anchor of the Scan page.",
+      "image": ""
+    },
+    {
+      "type": "context",
+      "label": "The Problem",
+      "title": "One static toolbar couldn't support all moments",
+      "content": "Different clinicians had different needs.\n\nExperts wanted speed. Others wanted reassurance. Icons alone were not always sufficient."
+    },
+    {
+      "type": "context",
+      "label": "The Solution",
+      "title": "An adaptive toolbar for speed and clarity",
+      "content": "The toolbar supports two states: collapsed (icons only) and expanded (icons with labels).\n\nClinicians can switch states without interrupting scanning.",
+      "image": ""
+    },
+    {
+      "type": "chapter",
+      "number": "03",
+      "title": "Clinical Tools",
+      "subtitle": "Redesigning core interactions"
+    },
+    {
+      "type": "problem",
+      "label": "Prep Review — Problem",
+      "title": "Validation felt like technical editing",
+      "content": "The legacy Prep Review required manual adjustments.",
+      "issues": [
+        "Clinicians focused on correcting instead of validating"
+      ],
+      "image": ""
+    },
+    {
+      "type": "context",
+      "label": "Prep Review — Solution",
+      "title": "Turning validation into a decision checkpoint",
+      "content": "Prep Review was reframed as a binary decision: Select, or Erase and Rescan.\n\nAI validates. The clinician confirms.",
+      "image": ""
+    },
+    {
+      "type": "problem",
+      "label": "Margin Line — Problem",
+      "title": "AI existed but was not central",
+      "content": "AI detection was hidden behind secondary actions.",
+      "issues": [
+        "Clinicians manually drew margins, increasing fatigue and error"
+      ],
+      "image": ""
+    },
+    {
+      "type": "context",
+      "label": "Margin Line — Solution",
+      "title": "Making AI the primary path",
+      "content": "The tool was redesigned around AI-first detection.\n\nDetect as the main action. Visible tooth context. Review instead of draw.",
+      "image": ""
+    },
+    {
+      "type": "problem",
+      "label": "Trim Tool — Problem",
+      "title": "Precision interaction under pressure",
+      "content": "The old Trim tool required small, precise taps.",
+      "issues": [
+        "This increased open-mouth time and fatigue"
+      ],
+      "image": ""
+    },
+    {
+      "type": "context",
+      "label": "Trim Tool — Solution",
+      "title": "A touch-native confirm loop",
+      "content": "Trim was redesigned for one-handed interaction.\n\nLarge gesture trimming. Clear Confirm and Undo. Stage-based flow.",
+      "image": ""
+    },
+    {
+      "type": "chapter",
+      "number": "04",
+      "title": "Multi-Scan",
+      "subtitle": "Workflows"
+    },
+    {
+      "type": "problem",
+      "label": "The Problem",
+      "title": "A system built for one scan",
+      "content": "Real clinical cases require multiple interactions.",
+      "issues": [
+        "Additional scans",
+        "Revisions",
+        "Bite scans",
+        "Pre and post comparison"
+      ],
+      "conclusion": "The previous structure did not support this clearly."
+    },
+    {
+      "type": "context",
+      "label": "The Solution",
+      "title": "Structuring multiple scans as one session",
+      "content": "Multi-scan support was introduced with a clear structure.\n\nTab-based structure. Clear scan labeling. Safe switching.",
+      "image": ""
+    },
+    {
+      "type": "chapter",
+      "number": "05",
+      "title": "Review Panel",
+      "subtitle": "Control and confidence"
+    },
+    {
+      "type": "problem",
+      "label": "The Problem",
+      "title": "Reviewing felt fragile",
+      "content": "Clinicians feared making mistakes during review.",
+      "issues": [
+        "Accidental changes",
+        "Losing context",
+        "Incorrect comparisons"
+      ]
+    },
+    {
+      "type": "context",
+      "label": "The Solution",
+      "title": "A dedicated review panel for control",
+      "content": "A structured View panel allows clinicians to review with confidence.\n\nShow and hide layers. Adjust opacity. Compare safely.",
+      "image": ""
+    },
+    {
+      "type": "chapter",
+      "number": "06",
+      "title": "Outcome",
+      "subtitle": "Impact and reflection"
+    },
+    {
+      "type": "outcomes",
+      "label": "Results",
+      "title": "From hesitation to confidence",
+      "outcomes": [
+        {
+          "title": "Faster Tool Selection",
+          "description": "Predictable placement reduced time to select tools during live scanning."
+        },
+        {
+          "title": "Reduced Hesitation",
+          "description": "Clear system state eliminated guesswork during procedures."
+        },
+        {
+          "title": "Increased Adoption",
+          "description": "Advanced features saw higher usage with a discoverable structure."
+        },
+        {
+          "title": "Safer Multi-Scan Workflows",
+          "description": "Tab-based structure enabled confident switching between scans."
+        }
+      ]
+    },
+    {
+      "type": "testimonial",
+      "label": "Key Takeaway",
+      "quote": "Designing for clarity under pressure",
+      "context": "In live clinical environments, structure reduces cognitive load, visible state builds confidence, and predictability drives adoption. Redesigning the system — not just the interface — made the difference."
+    },
+    {
+      "type": "end",
+      "title": "Thank You",
+      "subtitle": "Want to work together on your next project?",
+      "cta": "Get in touch"
+    }
+  ]
+}
