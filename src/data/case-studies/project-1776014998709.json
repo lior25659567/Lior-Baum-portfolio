@@ -17,7 +17,7 @@
       "image": [
         {
           "position": "center center",
-          "size": "large",
+          "size": "medium",
           "fit": "contain",
           "wrapperBg": false,
           "embedUrl": "",
@@ -87,7 +87,8 @@
       ],
       "bullets": [],
       "cardHeight": "100",
-      "gridColumns": 2
+      "gridColumns": 2,
+      "cardVariant": "soft"
     },
     {
       "type": "goals",

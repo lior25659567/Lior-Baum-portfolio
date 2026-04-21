@@ -69,16 +69,17 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "cover",
+          "fit": "contain",
           "wrapperBg": false,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776617213367/img-94n2fmhkw0.png",
+          "embedUrl": "/iframes/techno_chronicles_moodboard_mono.html",
+          "src": "",
           "caption": "Mood and direction",
           "isVideo": false,
-          "embedType": ""
+          "embedType": "iframe",
+          "isGif": false
         }
       ],
-      "splitRatio": 40,
+      "splitRatio": 30,
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },

@@ -188,11 +188,12 @@
           "size": "large",
           "fit": "contain",
           "wrapperBg": false,
-          "embedUrl": "",
-          "src": "[[MEDIA]]",
+          "embedUrl": "/iframes/collaboration (1).html",
+          "src": "",
           "caption": "Designer and AI — a structured collaboration",
           "isVideo": false,
-          "embedType": ""
+          "embedType": "iframe",
+          "isGif": false
         }
       ],
       "splitRatio": 45,
