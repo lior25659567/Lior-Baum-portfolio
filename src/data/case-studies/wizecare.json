@@ -18,18 +18,42 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "contain",
-          "wrapperBg": false,
+          "fit": "cover",
+          "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-1nl1prxhoc.png",
+          "src": "/case-studies/wizecare/img-3e9ywkzxfk.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-4oykmxaws0.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/wizecare/img-ehylbk97xs.png",
           "caption": "",
           "isVideo": false,
           "embedType": ""
         }
       ],
       "gridCols": 1,
-      "imageDisplayMode": "grid",
-      "splitRatio": 60
+      "imageDisplayMode": "carousel",
+      "splitRatio": 40,
+      "imageCarouselFit": "contain",
+      "imageCarouselInterval": 1500
     },
     {
       "type": "problem",
