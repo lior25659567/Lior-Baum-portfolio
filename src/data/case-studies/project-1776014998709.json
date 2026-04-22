@@ -260,7 +260,7 @@
           "position": "center center",
           "size": "large",
           "fit": "contain",
-          "wrapperBg": false,
+          "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/project-1776014998709/vid-47ggf6tvc0.mp4",
           "caption": "New — Share Report modal with access control and multi-channel delivery",
