@@ -17,20 +17,55 @@
       "image": [
         {
           "position": "center center",
-          "size": "medium",
-          "fit": "contain",
-          "wrapperBg": false,
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-9t2u8o8w.svg",
-          "caption": "New patient report UI",
+          "src": "/case-studies/project-1776014998709/img-2xjw0pwaio.png",
+          "caption": "",
           "isVideo": false,
-          "isGif": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-b4gk9toqg0.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-6y3e4fy8w0.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-bgbf9kr1q0.png",
+          "caption": "",
+          "isVideo": false,
           "embedType": ""
         }
       ],
       "gridCols": 1,
-      "imageDisplayMode": "grid",
-      "splitRatio": 50
+      "imageDisplayMode": "carousel",
+      "splitRatio": 30,
+      "imageCarouselBg": true,
+      "imageCarouselFit": "contain",
+      "imageCarouselInterval": 1500
     },
     {
       "type": "problem",
