@@ -21,20 +21,43 @@
           "fit": "contain",
           "wrapperBg": false,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-5gudl7g6j0.svg",
+          "src": "/case-studies/itero-scan-workflow/img-5jzxqvcqfs.png",
           "caption": "",
           "isVideo": false,
           "isGif": false,
           "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-b7q2i3k38c.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-pzwf0mxz40.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
         }
       ],
       "gridCols": 1,
-      "imageDisplayMode": "grid",
-      "splitRatio": 50,
+      "imageDisplayMode": "carousel",
+      "splitRatio": 30,
       "introHeaderMode": "both",
       "logo": "",
       "logoIsVideo": false,
-      "logoIsGif": false
+      "logoIsGif": false,
+      "imageCarouselFit": "contain"
     },
     {
       "type": "problem",
