@@ -112,10 +112,158 @@ const DEFAULT_CV = {
 
 const STORAGE_KEY = 'portfolio_cv_builder';
 
+// Displayed in the "JSON Structure Reference" block and used by its Copy
+// button so both always show exactly the same text.
+const CV_JSON_SCHEMA_REFERENCE = `{
+  "fullName": "Jane Doe",
+  "title": "Product Designer",
+  "email": "jane@example.com",
+  "phone": "050-123-4567",
+  "location": "Tel Aviv, Israel",
+  "portfolio": "https://janedoe.com",
+  "linkedin": "linkedin.com/in/janedoe",
+
+  "summary": "A short professional summary paragraph.",
+
+  "experience": [
+    {
+      "company": "Company Name",
+      "role": "Job Title",
+      "period": "Jan 2023 – Present",
+      "location": "Remote",
+      "bullets": [
+        "Achievement or responsibility",
+        "Another bullet point"
+      ]
+    }
+  ],
+
+  "education": [
+    {
+      "institution": "University Name",
+      "degree": "BA in Design",
+      "period": "2019 – 2023",
+      "details": "Honors, relevant coursework"
+    }
+  ],
+
+  "skillCategories": [
+    {
+      "name": "Tools",
+      "skills": "Figma, Sketch, Photoshop",
+      "display": "badges"
+    },
+    {
+      "name": "Skills",
+      "skills": "UX Research, Prototyping, Design Systems",
+      "display": "list"
+    }
+  ],
+
+  "projects": [
+    {
+      "name": "Project Name",
+      "description": "What you did",
+      "impact": "Measurable result"
+    }
+  ],
+
+  "certifications": [
+    { "name": "Cert Name", "issuer": "Organization", "year": "2024" }
+  ],
+
+  "languages": [
+    { "language": "English", "level": "Native" },
+    { "language": "Hebrew", "level": "Fluent" }
+  ],
+
+  "awards": [
+    { "title": "Award Name", "issuer": "Organization", "year": "2024" }
+  ],
+
+  "volunteer": "Description of volunteer work or side projects.",
+
+  "fontSize": 9,
+  "contentWidth": 180,
+
+  "showSummary": true,
+  "showExperience": true,
+  "showEducation": true,
+  "showSkills": true,
+  "showProjects": false,
+  "showCertifications": false,
+  "showLanguages": false,
+  "showAwards": false,
+  "showVolunteer": false
+}`;
+
+// Prompt shipped verbatim to an AI. Contains the schema, editing rules, and
+// the user's current CV so the model can return a valid JSON patch ready to
+// paste back into the "Apply JSON" textarea.
+const buildAiPrompt = (cv) => `You are helping me edit my CV. I will paste a JSON object that represents my CV. Return a SINGLE valid JSON object in the same shape — nothing else, no prose, no markdown fences — so I can paste it directly back into the editor.
+
+RULES
+- Keep the top-level keys the same: fullName, title, email, phone, location, portfolio, linkedin, summary, experience, education, skillCategories, projects, certifications, languages, awards, volunteer, fontSize, contentWidth, showSummary, showExperience, showEducation, showSkills, showProjects, showCertifications, showLanguages, showAwards, showVolunteer.
+- Any field you don't change: leave exactly as-is.
+- Only include fields you want to change (the editor merges your output into the current state), OR return the whole object with edits applied. Both are fine. Never invent new top-level keys.
+- Arrays (experience, education, skillCategories, projects, certifications, languages, awards): include the FULL array if you touch it — missing entries will be treated as "keep unchanged" only if you omit the whole key.
+- experience[].bullets is an array of strings. Prefer quantified, outcome-oriented bullets. Start with a strong verb (Led, Shipped, Reduced, Built, Launched). Include a metric whenever possible.
+- skillCategories[].display is "badges" (comma-separated chips) or "list" (bulleted list).
+- Dates: "Mon YYYY – Mon YYYY" or "Mon YYYY – Present" (en-dash).
+- Keep the tone concise and evidence-first. No clichés ("team player", "results-driven"). No emoji.
+- Output pure JSON — no leading/trailing text, no \`\`\`json fences.
+
+SCHEMA REFERENCE
+{
+  "fullName": "Jane Doe",
+  "title": "Product Designer",
+  "email": "jane@example.com",
+  "phone": "050-123-4567",
+  "location": "Tel Aviv, Israel",
+  "portfolio": "https://janedoe.com",
+  "linkedin": "linkedin.com/in/janedoe",
+  "summary": "A short professional summary paragraph.",
+  "experience": [
+    { "company": "Company", "role": "Title", "period": "Jan 2023 – Present", "location": "Remote", "bullets": ["Achievement with metric", "Another achievement"] }
+  ],
+  "education": [
+    { "institution": "University", "degree": "BA in Design", "period": "2019 – 2023", "details": "Honours, relevant coursework" }
+  ],
+  "skillCategories": [
+    { "name": "Tools", "skills": "Figma, Sketch, Photoshop", "display": "badges" }
+  ],
+  "projects":       [ { "name": "", "description": "", "impact": "" } ],
+  "certifications": [ { "name": "", "issuer": "", "year": "" } ],
+  "languages":      [ { "language": "", "level": "" } ],
+  "awards":         [ { "title": "", "issuer": "", "year": "" } ],
+  "volunteer": "",
+  "fontSize": 9,
+  "contentWidth": 180,
+  "showSummary": true, "showExperience": true, "showEducation": true,
+  "showSkills": true, "showProjects": false, "showCertifications": false,
+  "showLanguages": false, "showAwards": false, "showVolunteer": false
+}
+
+MY CURRENT CV
+${JSON.stringify(cv, null, 2)}
+
+WHAT TO DO
+[Write here what you want the AI to change. Examples: "Tighten every experience bullet to one sentence.", "Rewrite the summary to target a senior IC role at a B2B SaaS company.", "Translate everything to Hebrew.", "Add a new experience entry for [Company]."]
+`;
+
 const CV_STYLES = [
   { id: 'default', label: 'Default' },
   { id: 'minimal', label: 'Minimal' },
+  { id: 'editorial', label: 'Editorial' },
+  { id: 'minimal-ats', label: 'Minimal ATS' },
+  { id: 'classic', label: 'Classic' },
+  { id: 'modernist', label: 'Modernist' },
 ];
+
+// The editorial family shares a single-column "paper" layout and differs
+// only in theme variables (colors + fonts). Keep the ids in sync with
+// CV_STYLES above and the CSS in CVBuilder.css.
+const EDITORIAL_THEMES = new Set(['editorial', 'minimal-ats', 'classic', 'modernist']);
 
 const CVBuilder = () => {
   const [cv, setCv] = useState(() => {
@@ -131,6 +279,9 @@ const CVBuilder = () => {
   const [activeSection, setActiveSection] = useState('personal');
   const [jsonDraft, setJsonDraft] = useState('');
   const [jsonStatus, setJsonStatus] = useState('');
+  const [copyJsonStatus, setCopyJsonStatus] = useState('');
+  const [copyAiStatus, setCopyAiStatus] = useState('');
+  const [copySchemaStatus, setCopySchemaStatus] = useState('');
   const printRef = useRef(null);
 
   useEffect(() => {
@@ -582,13 +733,13 @@ const CVBuilder = () => {
 
           {activeSection === 'json' && (
             <div className="cv-form-section cv-json-section">
-              <h3>Import from JSON</h3>
-              <p className="cv-hint">Paste a JSON object below to populate your CV. It will merge with the current data — only the fields you include will be overwritten.</p>
+              <h3>Edit the full JSON</h3>
+              <p className="cv-hint">Paste or edit the JSON directly. Applying it merges into the current CV — only the fields you include get overwritten. Use <strong>Load Current CV</strong> to start from what's on the page now.</p>
               <textarea
                 className="cv-json-textarea"
                 value={jsonDraft}
                 onChange={e => { setJsonDraft(e.target.value); setJsonStatus(''); }}
-                placeholder="Paste your JSON here..."
+                placeholder="Paste your JSON here — or click Load Current CV to start editing what's on the page."
                 spellCheck={false}
               />
               <div className="cv-json-actions">
@@ -615,93 +766,67 @@ const CVBuilder = () => {
                 >
                   Load Current CV
                 </button>
+                <button
+                  className="cv-json-current-btn"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(JSON.stringify(cv, null, 2));
+                      setCopyJsonStatus('copied');
+                    } catch {
+                      setCopyJsonStatus('error');
+                    }
+                    setTimeout(() => setCopyJsonStatus(''), 2500);
+                  }}
+                >
+                  {copyJsonStatus === 'copied' ? '✓ Copied' : copyJsonStatus === 'error' ? 'Copy failed' : 'Copy JSON'}
+                </button>
+              </div>
+
+              {/* AI-assist panel: copy a ready-made prompt containing the
+                  schema + current CV JSON so the user can paste straight into
+                  Claude/ChatGPT and ask for edits. */}
+              <div className="cv-ai-panel">
+                <h4>Ask an AI to edit your CV</h4>
+                <p className="cv-hint">Copy the block below into any chat (Claude, ChatGPT, Cursor). It contains the full JSON schema, your current CV, and editing rules the AI should follow. Paste what the AI returns back into the textarea above and click <strong>Apply JSON</strong>.</p>
+                <pre className="cv-json-example cv-ai-prompt">{buildAiPrompt(cv)}</pre>
+                <div className="cv-json-actions">
+                  <button
+                    className="cv-json-apply-btn"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(buildAiPrompt(cv));
+                        setCopyAiStatus('copied');
+                      } catch {
+                        setCopyAiStatus('error');
+                      }
+                      setTimeout(() => setCopyAiStatus(''), 2500);
+                    }}
+                  >
+                    {copyAiStatus === 'copied' ? '✓ Copied prompt' : copyAiStatus === 'error' ? 'Copy failed' : 'Copy prompt for AI'}
+                  </button>
+                </div>
               </div>
 
               <div className="cv-json-reference">
-                <h4>JSON Structure Reference</h4>
-                <p className="cv-hint">Include only the fields you want to set. All fields are optional.</p>
-                <pre className="cv-json-example">{`{
-  "fullName": "Jane Doe",
-  "title": "Product Designer",
-  "email": "jane@example.com",
-  "phone": "050-123-4567",
-  "location": "Tel Aviv, Israel",
-  "portfolio": "https://janedoe.com",
-  "linkedin": "linkedin.com/in/janedoe",
-
-  "summary": "A short professional summary paragraph.",
-
-  "experience": [
-    {
-      "company": "Company Name",
-      "role": "Job Title",
-      "period": "Jan 2023 – Present",
-      "location": "Remote",
-      "bullets": [
-        "Achievement or responsibility",
-        "Another bullet point"
-      ]
-    }
-  ],
-
-  "education": [
-    {
-      "institution": "University Name",
-      "degree": "BA in Design",
-      "period": "2019 – 2023",
-      "details": "Honors, relevant coursework"
-    }
-  ],
-
-  "skillCategories": [
-    {
-      "name": "Tools",
-      "skills": "Figma, Sketch, Photoshop",
-      "display": "badges"
-    },
-    {
-      "name": "Skills",
-      "skills": "UX Research, Prototyping, Design Systems",
-      "display": "list"
-    }
-  ],
-
-  "projects": [
-    {
-      "name": "Project Name",
-      "description": "What you did",
-      "impact": "Measurable result"
-    }
-  ],
-
-  "certifications": [
-    { "name": "Cert Name", "issuer": "Organization", "year": "2024" }
-  ],
-
-  "languages": [
-    { "language": "English", "level": "Native" },
-    { "language": "Hebrew", "level": "Fluent" }
-  ],
-
-  "awards": [
-    { "title": "Award Name", "issuer": "Organization", "year": "2024" }
-  ],
-
-  "volunteer": "Description of volunteer work or side projects.",
-
-  "fontSize": 9,
-  "contentWidth": 180,
-
-  "showSummary": true,
-  "showExperience": true,
-  "showEducation": true,
-  "showSkills": true,
-  "showProjects": false,
-  "showCertifications": false,
-  "showLanguages": false,
-  "showAwards": false,
-  "showVolunteer": false
-}`}</pre>
+                <h4>Your CV as JSON</h4>
+                <p className="cv-hint">Live view of what's currently on the page. Updates as you edit.</p>
+                <pre className="cv-json-example">{JSON.stringify(cv, null, 2)}</pre>
+                <div className="cv-json-actions">
+                  <button
+                    className="cv-json-current-btn"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(JSON.stringify(cv, null, 2));
+                        setCopySchemaStatus('copied');
+                      } catch {
+                        setCopySchemaStatus('error');
+                      }
+                      setTimeout(() => setCopySchemaStatus(''), 2500);
+                    }}
+                  >
+                    {copySchemaStatus === 'copied' ? '✓ Copied' : copySchemaStatus === 'error' ? 'Copy failed' : 'Copy JSON'}
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -710,6 +835,9 @@ const CVBuilder = () => {
 
       {/* CV Preview / Print Target */}
       <div className="cv-preview-wrapper">
+        {EDITORIAL_THEMES.has(cvStyle) ? (
+          <EditorialCV cv={cv} theme={cvStyle} innerRef={printRef} />
+        ) : (
         <div className={`cv-preview cv-style-${cvStyle}`} ref={printRef} style={{ '--cv-font-size': `${cv.fontSize || 9}pt`, '--cv-content-width': `${cv.contentWidth || 180}mm` }}>
           {/* Header */}
           <header className="cv-doc-header">
@@ -861,7 +989,125 @@ const CVBuilder = () => {
             </div>
           </div>
         </div>
+        )}
       </div>
+    </div>
+  );
+};
+
+// Editorial-family layout — single column, Fraunces/DM Sans, timeline-style
+// entries, chip-grouped skills. The `theme` prop sets data-cv-theme on the
+// root so the CSS can swap palette + fonts per variant (editorial / classic
+// / modernist). Reuses the same cv data model as the default layout.
+const EditorialIcon = ({ name }) => {
+  const common = { width: 12, height: 12, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' };
+  switch (name) {
+    case 'portfolio':
+      return <svg {...common}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>;
+    case 'linkedin':
+      return <svg {...common}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>;
+    case 'email':
+      return <svg {...common}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>;
+    case 'phone':
+      return <svg {...common}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>;
+    default:
+      return null;
+  }
+};
+
+const EditorialCV = ({ cv, theme, innerRef }) => {
+  const bullets = (exp) => (exp.bullets || []).filter(Boolean);
+  const skills = (cv.skillCategories || []).filter(c => c.name || c.skills);
+  const hasExperience = cv.showExperience !== false && (cv.experience || []).some(e => e.company || e.role || bullets(e).length);
+  const hasEducation = cv.showEducation !== false && (cv.education || []).some(e => e.institution || e.degree);
+  const hasSkills = cv.showSkills !== false && skills.length > 0;
+  return (
+    <div
+      ref={innerRef}
+      className="cv-preview cv-preview-editorial"
+      data-cv-theme={theme}
+      style={{ '--cv-font-size': `${cv.fontSize || 9}pt`, '--cv-content-width': `${cv.contentWidth || 180}mm` }}
+    >
+      <header className="ed-header">
+        <div className="ed-header-left">
+          <h1 className="ed-name">{cv.fullName || 'Your Name'}</h1>
+          {cv.title && <p className="ed-tagline">{cv.title}</p>}
+        </div>
+        <div className="ed-contact">
+          {cv.portfolio && <div className="ed-contact-row"><EditorialIcon name="portfolio" /><span>{cv.portfolio}</span></div>}
+          {cv.email && <div className="ed-contact-row"><EditorialIcon name="email" /><span>{cv.email}</span></div>}
+          {cv.phone && <div className="ed-contact-row"><EditorialIcon name="phone" /><span>{cv.phone}</span></div>}
+          {cv.linkedin && <div className="ed-contact-row"><EditorialIcon name="linkedin" /><span>{cv.linkedin}</span></div>}
+        </div>
+      </header>
+
+      {cv.showSummary !== false && cv.summary && (
+        <section className="ed-section">
+          <h2 className="ed-section-title">Summary</h2>
+          <p className="ed-summary">{cv.summary}</p>
+        </section>
+      )}
+
+      {hasExperience && (
+        <section className="ed-section">
+          <h2 className="ed-section-title">Experience</h2>
+          {cv.experience.filter(e => e.company || e.role || bullets(e).length).map((exp, i) => (
+            <div key={i} className="ed-entry">
+              <div className="ed-entry-head">
+                <h3 className="ed-entry-title">{exp.role || exp.company}</h3>
+                {exp.period && <span className="ed-entry-dates">{exp.period}</span>}
+              </div>
+              {(exp.company || exp.location) && (
+                <p className="ed-entry-meta">
+                  {exp.role && exp.company && <span>{exp.company}</span>}
+                  {exp.role && exp.company && exp.location && <span className="ed-sep">·</span>}
+                  {exp.location && <span className="ed-loc">{exp.location}</span>}
+                </p>
+              )}
+              {bullets(exp).length > 0 && (
+                <ul className="ed-bullets">
+                  {bullets(exp).map((b, j) => <li key={j}>{b}</li>)}
+                </ul>
+              )}
+            </div>
+          ))}
+        </section>
+      )}
+
+      {hasEducation && (
+        <section className="ed-section">
+          <h2 className="ed-section-title">Education</h2>
+          {cv.education.filter(e => e.institution || e.degree).map((edu, i) => (
+            <div key={i} className="ed-entry">
+              <div className="ed-entry-head">
+                <h3 className="ed-entry-title">{edu.degree || edu.institution}</h3>
+                {edu.period && <span className="ed-entry-dates">{edu.period}</span>}
+              </div>
+              {edu.degree && edu.institution && (
+                <p className="ed-entry-meta"><span>{edu.institution}</span></p>
+              )}
+              {edu.details && (
+                <ul className="ed-bullets"><li>{edu.details}</li></ul>
+              )}
+            </div>
+          ))}
+        </section>
+      )}
+
+      {hasSkills && (
+        <section className="ed-section">
+          {skills.map((cat, i) => (
+            <div key={i} className="ed-skills-group">
+              <div className="ed-skills-label">{cat.name}</div>
+              <div className="ed-chips">
+                {(cat.skills || '').split(',').map(s => s.trim()).filter(Boolean).map((s, j) => (
+                  <span key={j} className="ed-chip">{s}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+      )}
     </div>
   );
 };

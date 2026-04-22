@@ -233,25 +233,46 @@ const About = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline();
-      tl.fromTo(labelRef.current, { y: 18, opacity: 0, filter: 'blur(4px)' }, { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.6, ease: 'power2.out' })
-        .fromTo(line1Ref.current, { y: 60, opacity: 0, filter: 'blur(4px)' }, { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'back.out(1.4)' }, '-=0.3')
-        .fromTo(line2Ref.current, { y: 60, opacity: 0, filter: 'blur(4px)' }, { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.8, ease: 'back.out(1.4)' }, '-=0.5');
+      // Intro timeline — same shape/timing/easing as the home hero: label
+      // fades in with a slight blur, title lines rise from below with a
+      // gentle overshoot, slightly overlapped so they feel connected.
+      const tl = gsap.timeline({ delay: 0.15 });
+      tl.fromTo(labelRef.current,
+        { y: 18, opacity: 0, filter: 'blur(4px)' },
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.6, ease: 'power2.out' }
+      );
+      if (line1Ref.current) {
+        tl.fromTo(line1Ref.current,
+          { yPercent: 120, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 0.8, ease: 'back.out(1.4)' },
+          '-=0.35'
+        );
+      }
+      if (line2Ref.current) {
+        tl.fromTo(line2Ref.current,
+          { yPercent: 120, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 0.8, ease: 'back.out(1.4)' },
+          '-=0.55'
+        );
+      }
 
+      // Scroll-away / scroll-back — mirrors the home hero exactly:
+      // discrete in/out on threshold crossings instead of a scrubbed blur,
+      // so the motion feels identical in both places.
+      const elements = [labelRef, line1Ref, line2Ref]
+        .map(r => r.current).filter(Boolean);
       ScrollTrigger.create({
         trigger: heroRef.current,
         start: 'top top',
-        end: 'bottom top',
-        scrub: 0.5,
-        onUpdate: (self) => {
-          const progress = self.progress;
-          gsap.to(labelRef.current, { y: progress * 30, opacity: 1 - progress * 0.6, filter: `blur(${progress * 4}px)`, duration: 0.1 });
-          gsap.to(line1Ref.current, { y: progress * 60, opacity: 1 - progress * 0.7, filter: `blur(${progress * 4}px)`, duration: 0.1 });
-          gsap.to(line2Ref.current, { y: progress * 80, opacity: 1 - progress * 0.7, filter: `blur(${progress * 4}px)`, duration: 0.1 });
-        }
+        end: 'bottom 20%',
+        onLeave: () =>
+          gsap.to(elements, { y: -50, opacity: 0, duration: 0.35, stagger: 0.025, ease: 'power2.in' }),
+        onEnterBack: () =>
+          gsap.to(elements, { y: 0, opacity: 1, duration: 0.5, stagger: 0.04, ease: 'power3.out' }),
       });
     }, heroRef);
-    return () => ctx.revert();
+    const t = setTimeout(() => ScrollTrigger.refresh(), 100);
+    return () => { clearTimeout(t); ctx.revert(); };
   }, []);
 
   useEffect(() => {
@@ -355,6 +376,7 @@ const About = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
+            style={{ alignSelf: about.bioAlign === 'center' ? 'center' : 'start' }}
           >
             <Editable tag="h2" className="bio-heading" value={about.bioHeading || 'Hello!'} onChange={(v) => updateAbout('bioHeading', v)} />
             {(about.bio || []).map((text, i) => (
@@ -383,6 +405,23 @@ const About = () => {
                   Email:
                   <input type="text" value={about.email || ''} onChange={(e) => updateAbout('email', e.target.value)} className="about-inline-input" />
                 </label>
+                <div className="about-align-toggle" role="group" aria-label="Bio vertical alignment">
+                  <span className="about-align-label">Align bio:</span>
+                  <button
+                    type="button"
+                    className={`about-align-btn${(about.bioAlign || 'start') === 'start' ? ' is-active' : ''}`}
+                    onClick={() => updateAbout('bioAlign', 'start')}
+                  >
+                    Top
+                  </button>
+                  <button
+                    type="button"
+                    className={`about-align-btn${about.bioAlign === 'center' ? ' is-active' : ''}`}
+                    onClick={() => updateAbout('bioAlign', 'center')}
+                  >
+                    Center
+                  </button>
+                </div>
               </div>
             )}
           </motion.div>

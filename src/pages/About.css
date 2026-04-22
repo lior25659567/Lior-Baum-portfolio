@@ -717,6 +717,44 @@
   color: var(--color-text);
 }
 
+.about-align-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.about-align-label {
+  margin-right: 0.25rem;
+}
+
+.about-align-btn {
+  appearance: none;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+}
+
+.about-align-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.about-align-btn.is-active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast, #fff);
+}
+
 .about-inline-input:focus {
   outline: none;
   border-color: var(--color-accent);
