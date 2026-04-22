@@ -21,20 +21,66 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776617213367/img-jnygmlukc.jpg",
+          "src": "/case-studies/project-1776617213367/img-eyoq27u91s.png",
           "caption": "Final site",
           "isVideo": false,
           "isGif": false,
           "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776617213367/img-1znfkza5l4g.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776617213367/img-2lt52tm5560.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776617213367/img-3i5po6odme8.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776617213367/img-2p1elo7esi0.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
         }
       ],
       "gridCols": 1,
-      "imageDisplayMode": "grid",
+      "imageDisplayMode": "carousel",
       "splitRatio": 40,
       "cta": {
         "label": "View Project",
         "url": "https://technoh.webflow.io/"
-      }
+      },
+      "imageCarouselInterval": 1500,
+      "imageCarouselFit": "contain"
     },
     {
       "type": "problem",
