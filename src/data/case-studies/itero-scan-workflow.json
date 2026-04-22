@@ -30,7 +30,11 @@
       ],
       "gridCols": 1,
       "imageDisplayMode": "grid",
-      "splitRatio": 50
+      "splitRatio": 50,
+      "introHeaderMode": "both",
+      "logo": "",
+      "logoIsVideo": false,
+      "logoIsGif": false
     },
     {
       "type": "problem",
@@ -50,18 +54,6 @@
           "size": "large",
           "fit": "contain",
           "wrapperBg": false,
-          "embedUrl": "/iframes/scan-workflow.html",
-          "src": "",
-          "caption": "The three phases — RX → Scan → View",
-          "isVideo": false,
-          "embedType": "iframe",
-          "isGif": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "wrapperBg": false,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-wvhziz51co.png",
           "caption": "",
@@ -70,7 +62,7 @@
         }
       ],
       "splitRatio": 40,
-      "gridCols": 2,
+      "gridCols": 1,
       "imageDisplayMode": "grid"
     },
     {
@@ -195,13 +187,14 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "cover",
+          "fit": "contain",
           "wrapperBg": false,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-d49102m1c.webp",
+          "embedUrl": "/iframes/claudecode-iframe.html",
+          "src": "",
           "caption": "Interactive prototype built with Claude Code",
           "isVideo": false,
-          "embedType": ""
+          "embedType": "iframe",
+          "isGif": false
         }
       ],
       "splitRatio": 40,
