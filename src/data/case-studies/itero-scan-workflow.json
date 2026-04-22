@@ -57,7 +57,8 @@
       "logo": "",
       "logoIsVideo": false,
       "logoIsGif": false,
-      "imageCarouselFit": "contain"
+      "imageCarouselFit": "contain",
+      "imageCarouselInterval": 1500
     },
     {
       "type": "problem",
