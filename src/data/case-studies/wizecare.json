@@ -137,7 +137,8 @@
       "gridColumns": 2,
       "cardHeight": "100",
       "kpisGridColumns": 4,
-      "showKpisSection": true
+      "showKpisSection": true,
+      "goalsCardVariant": "minimal"
     },
     {
       "type": "chapter",

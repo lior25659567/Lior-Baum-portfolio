@@ -113,29 +113,30 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "",
+          "src": "/case-studies/project-1776628169716/vid-2dg3iypq800.mp4",
           "caption": "Tokens, components, and variants",
-          "isVideo": false,
-          "embedType": ""
+          "isVideo": true,
+          "embedType": "",
+          "isGif": false
         }
       ],
-      "splitRatio": 45,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },
     {
       "type": "problem",
-      "label": "04 · Multi-Platform · Scanner and Web",
-      "title": "Same component. Two contexts.",
-      "content": "Scanner is used with gloves, at arm's length — it needs bigger targets and touch-first interactions. Web is compact and mouse-driven. One library, a platform switch scales every component.",
+      "label": "04 · Surfaces & Themes",
+      "title": "Same component. Every surface, every theme.",
+      "content": "Scanner is used with gloves, at arm's length — it needs bigger targets and touch-first interactions. Web is compact and mouse-driven. Dark and light mode aren't separate builds — just the same component responding to the token layer. One library, every context.",
       "issuesTitle": "How it works",
       "issues": [
         "Scanner mode — bigger targets, touch-first, gloved hands",
         "Web mode — compact, dense, keyboard and mouse",
-        "Same tokens and behaviour underneath",
-        "Switching is a platform flag — not a rebuild"
+        "Dark and light mode handled at the token layer",
+        "Switching platform or theme is a flag — not a rebuild"
       ],
-      "highlight": "One system, two shapes — same logic underneath.",
+      "highlight": "One system. Two platforms. Every theme. Same logic underneath.",
       "image": [
         {
           "position": "center center",
@@ -143,36 +144,14 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "[[MEDIA]]",
-          "caption": "Same button — scanner (touch) and web (mouse)",
-          "isVideo": false,
-          "embedType": ""
+          "src": "/case-studies/project-1776628169716/vid-1ozwu5z4y4o.mp4",
+          "caption": "Same components — scanner, web, dark, light",
+          "isVideo": true,
+          "embedType": "",
+          "isGif": false
         }
       ],
-      "splitRatio": 45,
-      "gridCols": 1,
-      "imageDisplayMode": "grid"
-    },
-    {
-      "type": "problem",
-      "label": "05 · Theming · Dark and Light Mode",
-      "title": "One component. Every theme.",
-      "content": "Every component reads from the token layer — dark and light aren't separate builds, just the same component responding to a theme change.",
-      "highlight": "Theming stopped being a project. It became a property of the system.",
-      "image": [
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "[[MEDIA]]",
-          "caption": "Same components — dark and light themes",
-          "isVideo": false,
-          "embedType": ""
-        }
-      ],
-      "splitRatio": 45,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },
