@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useRef, useState, useEffect, useCallback, Component, memo, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
@@ -907,7 +907,7 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
                           <input
                             type="text"
                             className="editable-field figma-url-input"
-                            placeholder={psEmbedInput.type === 'site' ? 'Paste website URL to embed...' : psEmbedInput.type === 'iframe' ? `<iframe src="iframes/your-file.html" …> or https://…` : 'Paste Figma URL or <iframe> embed code...'}
+                            placeholder={psEmbedInput.type === 'site' ? 'Paste website URL to embed...' : psEmbedInput.type === 'iframe' ? 'Paste iframe tag, URL, or filename' : 'Paste Figma URL or <iframe> embed code...'}
                             value={psEmbedInput.draft}
                             onChange={(e) => setPsEmbedInput({ ...psEmbedInput, draft: e.target.value })}
                             onKeyDown={(e) => {
@@ -1048,7 +1048,8 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
 
 const CaseStudy = () => {
   const { projectId } = useParams();
-  const { editMode, setEditMode, setShowPanel } = useEdit(); // Use global edit mode from context
+  const navigate = useNavigate();
+  const { editMode, setEditMode, setShowPanel, content } = useEdit(); // Use global edit mode from context
   const [project, setProject] = useState(() => getCaseStudyData(projectId));
   const containerRef = useRef(null);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -3767,10 +3768,105 @@ My instructions: `;
                         loading={imgData.embedType === 'youtube' ? 'lazy' : undefined}
                         className={imgData.embedType === 'youtube' ? 'youtube-embed-iframe' : imgData.embedType === 'site' ? 'site-embed-iframe' : imgData.embedType === 'iframe' ? 'iframe-embed-iframe' : 'figma-embed-iframe'}
                       />
-                      {editMode && (
+                      {editMode && embedInputIndex === imgIndex ? (
+                        // Inline edit panel overlayed on the iframe — the old
+                        // "Change media" wiped the embed first, which hid the
+                        // iframe before you could see what you were replacing.
+                        // Now the iframe stays visible while you pick the new
+                        // one; Cancel leaves it untouched.
+                        (() => {
+                          const currentIframeOption = (embedInputType === 'iframe' && imgData.embedUrl)
+                            ? imgData.embedUrl.replace(/^\//, '')
+                            : '';
+                          return (
+                            <div className="embed-change-overlay" onClick={(e) => e.stopPropagation()}>
+                              <div className="figma-embed-input embed-change-input">
+                                {embedInputType === 'iframe' && IFRAME_FILES.length > 0 && (
+                                  <select
+                                    className="iframe-file-picker"
+                                    value={currentIframeOption}
+                                    onChange={(e) => {
+                                      const picked = e.target.value;
+                                      if (!picked) return;
+                                      const src = toIframeSrc(picked);
+                                      if (src) {
+                                        updateImage(imgIndex, { embedUrl: src, embedType: 'iframe' });
+                                        setEmbedDraft('');
+                                        setEmbedInputIndex(null);
+                                      }
+                                    }}
+                                    title="Pick a file from public/iframes/"
+                                  >
+                                    <option value="">Pick from /public/iframes…</option>
+                                    {IFRAME_FILES.map(f => (
+                                      <option key={f.path} value={f.path}>{f.label}</option>
+                                    ))}
+                                  </select>
+                                )}
+                                <input
+                                  type="text"
+                                  className="editable-field figma-url-input"
+                                  placeholder={embedInputType === 'figma' ? "Paste Figma URL or <iframe> embed code..." : embedInputType === 'youtube' ? "Paste YouTube URL or <iframe> embed code..." : embedInputType === 'iframe' ? 'Paste iframe tag, URL, or filename' : "Paste website URL to embed..."}
+                                  value={embedDraft}
+                                  onChange={(e) => setEmbedDraft(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key !== 'Enter') return;
+                                    if (embedInputType === 'iframe') {
+                                      const src = toIframeSrc(embedDraft);
+                                      if (src) { updateImage(imgIndex, { embedUrl: src, embedType: 'iframe' }); setEmbedDraft(''); setEmbedInputIndex(null); }
+                                      else alert('Please paste an <iframe> tag or a path/URL');
+                                    } else if (embedInputType === 'figma') {
+                                      const converted = toFigmaEmbedUrl(embedDraft);
+                                      if (converted) { updateImage(imgIndex, { embedUrl: converted, embedType: 'figma' }); setEmbedDraft(''); setEmbedInputIndex(null); }
+                                      else alert('Please enter a valid Figma URL or <iframe> embed code');
+                                    } else if (embedInputType === 'youtube') {
+                                      const converted = toYouTubeEmbedUrl(embedDraft);
+                                      if (converted) { updateImage(imgIndex, { embedUrl: converted, embedType: 'youtube' }); setEmbedDraft(''); setEmbedInputIndex(null); }
+                                      else alert('Please enter a valid YouTube URL or <iframe> embed code');
+                                    } else {
+                                      const url = embedDraft.trim();
+                                      if (url && /^https?:\/\/.+/i.test(url)) { updateImage(imgIndex, { embedUrl: url, embedType: 'site' }); setEmbedDraft(''); setEmbedInputIndex(null); }
+                                      else alert('Please enter a valid URL (starting with http:// or https://)');
+                                    }
+                                  }}
+                                  autoFocus
+                                />
+                                <button type="button" className="figma-embed-confirm" onClick={() => {
+                                  if (embedInputType === 'iframe') {
+                                    const src = toIframeSrc(embedDraft);
+                                    if (src) { updateImage(imgIndex, { embedUrl: src, embedType: 'iframe' }); setEmbedDraft(''); setEmbedInputIndex(null); }
+                                    else alert('Please paste an <iframe> tag or a path/URL');
+                                  } else if (embedInputType === 'figma') {
+                                    const converted = toFigmaEmbedUrl(embedDraft);
+                                    if (converted) { updateImage(imgIndex, { embedUrl: converted, embedType: 'figma' }); setEmbedDraft(''); setEmbedInputIndex(null); }
+                                    else alert('Please enter a valid Figma URL or <iframe> embed code');
+                                  } else if (embedInputType === 'youtube') {
+                                    const converted = toYouTubeEmbedUrl(embedDraft);
+                                    if (converted) { updateImage(imgIndex, { embedUrl: converted, embedType: 'youtube' }); setEmbedDraft(''); setEmbedInputIndex(null); }
+                                    else alert('Please enter a valid YouTube URL or <iframe> embed code');
+                                  } else {
+                                    const url = embedDraft.trim();
+                                    if (url && /^https?:\/\/.+/i.test(url)) { updateImage(imgIndex, { embedUrl: url, embedType: 'site' }); setEmbedDraft(''); setEmbedInputIndex(null); }
+                                    else alert('Please enter a valid URL (starting with http:// or https://)');
+                                  }
+                                }}>Apply</button>
+                                <button type="button" className="figma-embed-cancel" onClick={() => { setEmbedInputIndex(null); setEmbedDraft(''); }}>Cancel</button>
+                              </div>
+                            </div>
+                          );
+                        })()
+                      ) : editMode ? (
                         <>
                           <div className="embed-edit-controls" onClick={(e) => e.stopPropagation()}>
-                            <button type="button" className="embed-remove-btn embed-change-btn" onClick={() => updateImage(imgIndex, { embedUrl: '', embedType: undefined })} title="Change to another media type">⇄ Change media</button>
+                            <button type="button" className="embed-remove-btn embed-change-btn" onClick={() => {
+                              // Open the picker with the current iframe's values
+                              // pre-filled, without wiping the embed. The user
+                              // can see the iframe it's replacing and can
+                              // Cancel out.
+                              setEmbedInputType(imgData.embedType || 'iframe');
+                              setEmbedDraft(imgData.embedUrl || '');
+                              setEmbedInputIndex(imgIndex);
+                            }} title="Change to another media type">⇄ Change media</button>
                             <button type="button" className="embed-remove-btn" onClick={() => updateImage(imgIndex, { embedUrl: '', embedType: undefined })} title="Remove embed">× Remove</button>
                           </div>
                           <div className="media-fit-inline media-fit-inline-embed" onClick={(e) => e.stopPropagation()}>
@@ -3780,7 +3876,7 @@ My instructions: `;
                             <button type="button" className={`fit-inline-btn ${wrapperBg ? 'active' : ''}`} onClick={() => updateImage(imgIndex, 'wrapperBg', !wrapperBg)} title={wrapperBg ? 'Background on — click to remove' : 'Background off — click to add'}>BG</button>
                           </div>
                         </>
-                      )}
+                      ) : null}
                     </>
                   ) : imgData.src ? (
                     <>
@@ -3957,7 +4053,7 @@ My instructions: `;
                           <input
                             type="text"
                             className="editable-field figma-url-input"
-                            placeholder={embedInputType === 'figma' ? "Paste Figma URL or <iframe> embed code..." : embedInputType === 'youtube' ? "Paste YouTube URL or <iframe> embed code..." : embedInputType === 'iframe' ? `<iframe src="iframes/your-file.html" …> or https://…` : "Paste website URL to embed..."}
+                            placeholder={embedInputType === 'figma' ? "Paste Figma URL or <iframe> embed code..." : embedInputType === 'youtube' ? "Paste YouTube URL or <iframe> embed code..." : embedInputType === 'iframe' ? 'Paste iframe tag, URL, or filename' : "Paste website URL to embed..."}
                             value={embedDraft}
                             onChange={(e) => setEmbedDraft(e.target.value)}
                             onKeyDown={(e) => {
@@ -5548,22 +5644,57 @@ My instructions: `;
                   onChange={(v) => updateSlide(index, { subtitle: v })}
                 />
               </p>
-              <div className="end-cta-group">
-                <AnimatedButton
-                  href={slide.buttons?.[0]?.link || "mailto:lior@example.com"}
-                  variant="primary"
-                  icon="→"
-                >
-                  {slide.cta || slide.buttons?.[0]?.text || 'Get in touch'}
-                </AnimatedButton>
-                <AnimatedButton
-                  href={slide.buttons?.[1]?.link || "/"}
-                  variant="outline"
-                  icon="←"
-                >
-                  {slide.buttons?.[1]?.text || 'Back to projects'}
-                </AnimatedButton>
-              </div>
+              {(() => {
+                // Next project mirrors the home page project order, so
+                // reordering on Home automatically changes what comes next.
+                const items = content?.projects?.items || [];
+                const removedIds = content?.projects?.removedIds || [];
+                const ordered = items.filter(p => !removedIds.includes(p.id));
+                const curIdx = ordered.findIndex(p => p.id === projectId);
+                const next = ordered.length > 0
+                  ? ordered[((curIdx >= 0 ? curIdx : -1) + 1 + ordered.length) % ordered.length]
+                  : null;
+                // Client-side nav keeps the CaseStudy mounted so the
+                // `case-study-active` body class stays on — without it the
+                // footer would flash during the route transition.
+                //
+                // Resetting slide index + swapping in the next project's sync
+                // data before `navigate()` avoids the flash of the current
+                // project's end slide (currentSlide persists across route
+                // param changes because the component doesn't unmount).
+                const go = (to) => (e) => {
+                  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+                  e.preventDefault();
+                  if (to.startsWith('/project/')) {
+                    const nextId = to.slice('/project/'.length);
+                    const data = getCaseStudyData(nextId);
+                    if (data) setProject(data);
+                  }
+                  setCurrentSlide(0);
+                  navigate(to);
+                };
+                const nextHref = next ? `/project/${next.id}` : '/';
+                return (
+                  <div className="end-cta-group">
+                    <AnimatedButton
+                      href={nextHref}
+                      onClick={go(nextHref)}
+                      variant="primary"
+                      icon="→"
+                    >
+                      Next project
+                    </AnimatedButton>
+                    <AnimatedButton
+                      href="/"
+                      onClick={go('/')}
+                      variant="outline"
+                      icon="←"
+                    >
+                      Back to home
+                    </AnimatedButton>
+                  </div>
+                );
+              })()}
               {(() => {
                 // Fallback pattern: when a slide-level contact field is undefined
                 // (existing slides that predate the defaults), fall back to the

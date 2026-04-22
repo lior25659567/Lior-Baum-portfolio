@@ -1,0 +1,336 @@
+<iframe
+  srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot;>
+<title>Patient Report</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    min-height: 100vh; min-height: 100dvh;
+    background: #F4F7FA;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .stage {
+    width: 100%; height: 100%;
+    min-height: 100vh; min-height: 100dvh;
+    min-height: -webkit-fill-available;
+    display: flex; flex-direction: column;
+  }
+  .report-canvas { width: 100%; height: 100%; display: block; }
+
+  /* 12s four-phase cycle */
+  .ph1, .ph2, .ph3, .ph4 { opacity: 0; }
+  .ph1 { animation: ph1 12s infinite; }
+  .ph2 { animation: ph2 12s infinite; }
+  .ph3 { animation: ph3 12s infinite; }
+  .ph4 { animation: ph4 12s infinite; }
+  @keyframes ph1 { 0%, 24% { opacity: 1; } 27%, 100% { opacity: 0; } }
+  @keyframes ph2 { 0%, 24% { opacity: 0; } 25%, 49% { opacity: 1; } 52%, 100% { opacity: 0; } }
+  @keyframes ph3 { 0%, 49% { opacity: 0; } 50%, 74% { opacity: 1; } 77%, 100% { opacity: 0; } }
+  @keyframes ph4 { 0%, 74% { opacity: 0; } 75%, 99% { opacity: 1; } 100% { opacity: 0; } }
+
+  /* Sidebar step dim/highlight */
+  .step { opacity: 0.35; }
+  .st1 { animation: st1 12s infinite; }
+  .st2 { animation: st2 12s infinite; }
+  .st3 { animation: st3 12s infinite; }
+  .st4 { animation: st4 12s infinite; }
+  @keyframes st1 { 0%, 24% { opacity: 1; } 27%, 100% { opacity: 0.35; } }
+  @keyframes st2 { 0%, 24% { opacity: 0.35; } 25%, 49% { opacity: 1; } 52%, 100% { opacity: 0.35; } }
+  @keyframes st3 { 0%, 49% { opacity: 0.35; } 50%, 74% { opacity: 1; } 77%, 100% { opacity: 0.35; } }
+  @keyframes st4 { 0%, 74% { opacity: 0.35; } 75%, 99% { opacity: 1; } 100% { opacity: 0.35; } }
+
+  /* Animated underline in preview header */
+  .header-line { animation: hline 12s infinite; }
+  @keyframes hline { 0%, 49% { opacity: 0.2; } 50%, 100% { opacity: 1; } }
+
+  /* Content lines drawing in */
+  .draw { transform-box: fill-box; transform-origin: left; animation: draw 1.6s ease-out infinite; }
+  .draw.d2 { animation-delay: 0.25s; }
+  .draw.d3 { animation-delay: 0.5s; }
+  .draw.d4 { animation-delay: 0.75s; }
+  .draw.d5 { animation-delay: 1.0s; }
+  @keyframes draw { 0% { transform: scaleX(0); } 80%, 100% { transform: scaleX(1); } }
+
+  /* Template card pulse */
+  .tcard { animation: tcard 2s ease-in-out infinite; }
+  .tcard.t2 { animation-delay: 0.2s; }
+  .tcard.t3 { animation-delay: 0.4s; }
+  .tcard.t4 { animation-delay: 0.6s; }
+  .tcard.t5 { animation-delay: 0.8s; }
+  @keyframes tcard { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+  /* Upload box dashed dash-offset */
+  .upload-box { animation: dash 1.5s linear infinite; }
+  @keyframes dash { to { stroke-dashoffset: -20; } }
+
+  /* Checkmark pop on finalize */
+  .check-pop { transform-box: fill-box; transform-origin: center; animation: cpop 1.4s cubic-bezier(0.34,1.56,0.64,1) infinite; }
+  @keyframes cpop { 0%, 20% { opacity: 0; transform: scale(0); } 55%, 100% { opacity: 1; transform: scale(1); } }
+
+  /* Badge */
+  .badge { animation: badge 2s ease-in-out infinite; }
+  @keyframes badge { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+</head>
+<body>
+<div class=&quot;stage&quot;>
+<svg class=&quot;report-canvas&quot; viewBox=&quot;0 0 680 520&quot; preserveAspectRatio=&quot;xMinYMin meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
+  <rect width=&quot;680&quot; height=&quot;520&quot; fill=&quot;#F4F7FA&quot;/>
+
+  <!-- ── LEFT PANEL shell ── -->
+  <rect x=&quot;12&quot; y=&quot;12&quot; width=&quot;210&quot; height=&quot;496&quot; rx=&quot;10&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+
+  <!-- ── RIGHT PANEL shell ── -->
+  <rect x=&quot;234&quot; y=&quot;12&quot; width=&quot;434&quot; height=&quot;496&quot; rx=&quot;10&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+
+  <!-- ═══════ PHASE 1 — Template selection ═══════ -->
+  <g class=&quot;ph1&quot;>
+    <!-- Left: Templates header -->
+    <text x=&quot;28&quot; y=&quot;46&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Templates</text>
+
+    <!-- 5 template cards in 2×2 + 1 grid -->
+    <g class=&quot;tcard&quot;>
+      <rect x=&quot;26&quot; y=&quot;60&quot; width=&quot;86&quot; height=&quot;72&quot; rx=&quot;6&quot; fill=&quot;#F9FAFB&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+      <text x=&quot;38&quot; y=&quot;82&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>+ Start from</text>
+      <text x=&quot;38&quot; y=&quot;94&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Scratch</text>
+    </g>
+    <g class=&quot;tcard t2&quot;>
+      <rect x=&quot;122&quot; y=&quot;60&quot; width=&quot;86&quot; height=&quot;72&quot; rx=&quot;6&quot; fill=&quot;#F9FAFB&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+      <rect x=&quot;134&quot; y=&quot;72&quot; width=&quot;12&quot; height=&quot;10&quot; rx=&quot;1&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1&quot;/>
+      <line x1=&quot;134&quot; y1=&quot;76&quot; x2=&quot;146&quot; y2=&quot;76&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;0.6&quot;/>
+      <text x=&quot;134&quot; y=&quot;97&quot; font-size=&quot;7.5&quot; fill=&quot;#0F2F44&quot;>General Scan</text>
+      <text x=&quot;134&quot; y=&quot;107&quot; font-size=&quot;7.5&quot; fill=&quot;#0F2F44&quot;>Report</text>
+    </g>
+    <g class=&quot;tcard t3&quot;>
+      <rect x=&quot;26&quot; y=&quot;142&quot; width=&quot;86&quot; height=&quot;72&quot; rx=&quot;6&quot; fill=&quot;#F9FAFB&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+      <line x1=&quot;38&quot; y1=&quot;164&quot; x2=&quot;50&quot; y2=&quot;172&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1&quot;/>
+      <circle cx=&quot;46&quot; cy=&quot;174&quot; r=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1&quot;/>
+      <text x=&quot;38&quot; y=&quot;197&quot; font-size=&quot;7.5&quot; fill=&quot;#0F2F44&quot;>Implant Planning</text>
+    </g>
+    <g class=&quot;tcard t4&quot;>
+      <rect x=&quot;122&quot; y=&quot;142&quot; width=&quot;86&quot; height=&quot;72&quot; rx=&quot;6&quot; fill=&quot;#F9FAFB&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+      <rect x=&quot;132&quot; y=&quot;158&quot; width=&quot;8&quot; height=&quot;11&quot; rx=&quot;1&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1&quot;/>
+      <text x=&quot;134&quot; y=&quot;197&quot; font-size=&quot;7.5&quot; fill=&quot;#0F2F44&quot;>Crown Prep</text>
+    </g>
+    <g class=&quot;tcard t5&quot;>
+      <rect x=&quot;26&quot; y=&quot;224&quot; width=&quot;86&quot; height=&quot;72&quot; rx=&quot;6&quot; fill=&quot;#F9FAFB&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+      <circle cx=&quot;38&quot; cy=&quot;264&quot; r=&quot;5&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1&quot;/>
+      <line x1=&quot;38&quot; y1=&quot;258&quot; x2=&quot;38&quot; y2=&quot;252&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1&quot;/>
+      <text x=&quot;38&quot; y=&quot;285&quot; font-size=&quot;7.5&quot; fill=&quot;#0F2F44&quot;>Follow-up Visit</text>
+    </g>
+
+    <!-- Right: empty report shell -->
+    <text x=&quot;258&quot; y=&quot;46&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#9CA3AF&quot;>Select a template to begin...</text>
+    <rect x=&quot;258&quot; y=&quot;60&quot; width=&quot;390&quot; height=&quot;420&quot; rx=&quot;6&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;1&quot; stroke-dasharray=&quot;4 4&quot;/>
+  </g>
+
+  <!-- ═══════ PHASE 2 — Template chosen, content builder ═══════ -->
+  <g class=&quot;ph2&quot;>
+    <!-- Left: Content header -->
+    <text x=&quot;28&quot; y=&quot;46&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Content</text>
+    <text x=&quot;176&quot; y=&quot;46&quot; text-anchor=&quot;end&quot; font-size=&quot;10&quot; fill=&quot;#00AED6&quot;>1 section</text>
+
+    <!-- Image section block -->
+    <rect x=&quot;20&quot; y=&quot;56&quot; width=&quot;194&quot; height=&quot;130&quot; rx=&quot;6&quot; fill=&quot;#F9FAFB&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;32&quot; y=&quot;74&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Image 1</text>
+
+    <!-- Upload box -->
+    <rect x=&quot;30&quot; y=&quot;82&quot; width=&quot;174&quot; height=&quot;46&quot; rx=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;#D1D5DB&quot; stroke-width=&quot;1.2&quot; stroke-dasharray=&quot;5 3&quot; class=&quot;upload-box&quot;/>
+    <text x=&quot;117&quot; y=&quot;109&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#9CA3AF&quot;>↑  Upload from device</text>
+    <text x=&quot;117&quot; y=&quot;122&quot; text-anchor=&quot;middle&quot; font-size=&quot;8&quot; fill=&quot;#C4C8D0&quot;>or  Choose from gallery</text>
+
+    <!-- Teeth tag -->
+    <text x=&quot;32&quot; y=&quot;154&quot; font-size=&quot;9&quot; fill=&quot;#6B7280&quot;>Teeth</text>
+    <rect x=&quot;32&quot; y=&quot;160&quot; width=&quot;78&quot; height=&quot;18&quot; rx=&quot;9&quot; fill=&quot;none&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1&quot;/>
+    <text x=&quot;71&quot; y=&quot;172&quot; text-anchor=&quot;middle&quot; font-size=&quot;8.5&quot; fill=&quot;#00AED6&quot;>+ Select teeth</text>
+
+    <!-- Notes -->
+    <text x=&quot;32&quot; y=&quot;202&quot; font-size=&quot;9&quot; fill=&quot;#6B7280&quot;>Notes</text>
+    <rect x=&quot;32&quot; y=&quot;208&quot; width=&quot;174&quot; height=&quot;24&quot; rx=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;42&quot; y=&quot;223&quot; font-size=&quot;8.5&quot; fill=&quot;#D1D5DB&quot;>Add notes…</text>
+
+    <!-- Add Section button -->
+    <rect x=&quot;20&quot; y=&quot;440&quot; width=&quot;194&quot; height=&quot;28&quot; rx=&quot;6&quot; fill=&quot;none&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;117&quot; y=&quot;458&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#6B7280&quot;>+ Add Section</text>
+
+    <!-- Right: Report preview with General Scan template -->
+    <!-- Logo row -->
+    <rect x=&quot;258&quot; y=&quot;28&quot; width=&quot;66&quot; height=&quot;22&quot; rx=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;#D1D5DB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;291&quot; y=&quot;43&quot; text-anchor=&quot;middle&quot; font-size=&quot;8&quot; fill=&quot;#C4C8D0&quot;>Your Logo</text>
+    <text x=&quot;640&quot; y=&quot;44&quot; text-anchor=&quot;end&quot; font-size=&quot;13&quot; font-weight=&quot;300&quot; fill=&quot;#0F2F44&quot; letter-spacing=&quot;1&quot;>align</text>
+
+    <!-- Title -->
+    <text x=&quot;258&quot; y=&quot;72&quot; font-size=&quot;14&quot; font-weight=&quot;700&quot; fill=&quot;#0F2F44&quot;>Patient Report</text>
+    <line class=&quot;header-line&quot; x1=&quot;258&quot; y1=&quot;78&quot; x2=&quot;648&quot; y2=&quot;78&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.5&quot;/>
+
+    <!-- Info row -->
+    <rect x=&quot;258&quot; y=&quot;86&quot; width=&quot;390&quot; height=&quot;48&quot; rx=&quot;5&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;274&quot; y=&quot;104&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Doctor</text>
+    <text x=&quot;274&quot; y=&quot;116&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Dr. Smith</text>
+    <text x=&quot;432&quot; y=&quot;104&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Clinic</text>
+    <text x=&quot;432&quot; y=&quot;116&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Bright Smile Clinic</text>
+    <text x=&quot;570&quot; y=&quot;104&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Patient</text>
+    <text x=&quot;570&quot; y=&quot;116&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>John Doe</text>
+
+    <!-- Image placeholder -->
+    <rect x=&quot;258&quot; y=&quot;144&quot; width=&quot;390&quot; height=&quot;160&quot; rx=&quot;5&quot; fill=&quot;#F9FAFB&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <rect x=&quot;418&quot; y=&quot;200&quot; width=&quot;40&quot; height=&quot;30&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#D1D5DB&quot; stroke-width=&quot;1.2&quot;/>
+    <path d=&quot;M 422 222 L 430 214 L 436 220 L 440 216 L 446 224&quot; fill=&quot;none&quot; stroke=&quot;#D1D5DB&quot; stroke-width=&quot;1&quot; stroke-linecap=&quot;round&quot;/>
+    <circle cx=&quot;426&quot; cy=&quot;211&quot; r=&quot;2.5&quot; fill=&quot;#D1D5DB&quot;/>
+
+    <!-- Powered by -->
+    <text x=&quot;453&quot; y=&quot;440&quot; text-anchor=&quot;middle&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Powered by</text>
+    <text x=&quot;430&quot; y=&quot;456&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot; letter-spacing=&quot;-0.5&quot;>iTero</text>
+    <text x=&quot;430&quot; y=&quot;467&quot; font-size=&quot;7&quot; fill=&quot;#9CA3AF&quot;>™</text>
+    <text x=&quot;476&quot; y=&quot;456&quot; font-size=&quot;12&quot; font-weight=&quot;300&quot; fill=&quot;#0F2F44&quot; letter-spacing=&quot;0.5&quot;>invisalign</text>
+    <text x=&quot;476&quot; y=&quot;467&quot; font-size=&quot;7&quot; fill=&quot;#9CA3AF&quot;>®</text>
+  </g>
+
+  <!-- ═══════ PHASE 3 — Content filling in ═══════ -->
+  <g class=&quot;ph3&quot;>
+    <text x=&quot;28&quot; y=&quot;46&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Content</text>
+    <text x=&quot;176&quot; y=&quot;46&quot; text-anchor=&quot;end&quot; font-size=&quot;10&quot; fill=&quot;#00AED6&quot;>2 sections</text>
+
+    <!-- Section 1 -->
+    <rect x=&quot;20&quot; y=&quot;56&quot; width=&quot;194&quot; height=&quot;100&quot; rx=&quot;6&quot; fill=&quot;#F9FAFB&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1&quot;/>
+    <text x=&quot;32&quot; y=&quot;74&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Image 1</text>
+    <!-- Filled upload area -->
+    <rect x=&quot;30&quot; y=&quot;82&quot; width=&quot;174&quot; height=&quot;46&quot; rx=&quot;4&quot; fill=&quot;#E8F5FA&quot;/>
+    <text x=&quot;117&quot; y=&quot;111&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#00AED6&quot;>scan_upper.jpg  ✓</text>
+
+    <!-- Teeth tag filled -->
+    <text x=&quot;32&quot; y=&quot;148&quot; font-size=&quot;9&quot; fill=&quot;#6B7280&quot;>Teeth</text>
+    <rect x=&quot;32&quot; y=&quot;154&quot; width=&quot;58&quot; height=&quot;18&quot; rx=&quot;9&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1&quot;/>
+    <text x=&quot;61&quot; y=&quot;166&quot; text-anchor=&quot;middle&quot; font-size=&quot;8&quot; fill=&quot;#00AED6&quot;>21 · 22 · 23</text>
+
+    <!-- Section 2 -->
+    <rect x=&quot;20&quot; y=&quot;188&quot; width=&quot;194&quot; height=&quot;80&quot; rx=&quot;6&quot; fill=&quot;#F9FAFB&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;32&quot; y=&quot;206&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Notes 1</text>
+    <line class=&quot;draw&quot; x1=&quot;32&quot; y1=&quot;222&quot; x2=&quot;188&quot; y2=&quot;222&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+    <line class=&quot;draw d2&quot; x1=&quot;32&quot; y1=&quot;234&quot; x2=&quot;172&quot; y2=&quot;234&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+    <line class=&quot;draw d3&quot; x1=&quot;32&quot; y1=&quot;246&quot; x2=&quot;180&quot; y2=&quot;246&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+
+    <!-- Add Section -->
+    <rect x=&quot;20&quot; y=&quot;440&quot; width=&quot;194&quot; height=&quot;28&quot; rx=&quot;6&quot; fill=&quot;none&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;117&quot; y=&quot;458&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#6B7280&quot;>+ Add Section</text>
+
+    <!-- Right panel: filling with content -->
+    <rect x=&quot;258&quot; y=&quot;28&quot; width=&quot;66&quot; height=&quot;22&quot; rx=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;#D1D5DB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;291&quot; y=&quot;43&quot; text-anchor=&quot;middle&quot; font-size=&quot;8&quot; fill=&quot;#C4C8D0&quot;>Your Logo</text>
+    <text x=&quot;640&quot; y=&quot;44&quot; text-anchor=&quot;end&quot; font-size=&quot;13&quot; font-weight=&quot;300&quot; fill=&quot;#0F2F44&quot; letter-spacing=&quot;1&quot;>align</text>
+    <text x=&quot;258&quot; y=&quot;72&quot; font-size=&quot;14&quot; font-weight=&quot;700&quot; fill=&quot;#0F2F44&quot;>Patient Report</text>
+    <line x1=&quot;258&quot; y1=&quot;78&quot; x2=&quot;648&quot; y2=&quot;78&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.5&quot;/>
+    <rect x=&quot;258&quot; y=&quot;86&quot; width=&quot;390&quot; height=&quot;48&quot; rx=&quot;5&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;274&quot; y=&quot;104&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Doctor</text>
+    <text x=&quot;274&quot; y=&quot;116&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Dr. Smith</text>
+    <text x=&quot;432&quot; y=&quot;104&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Clinic</text>
+    <text x=&quot;432&quot; y=&quot;116&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Bright Smile Clinic</text>
+    <text x=&quot;570&quot; y=&quot;104&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Patient</text>
+    <text x=&quot;570&quot; y=&quot;116&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>John Doe</text>
+
+    <!-- Filled image -->
+    <rect x=&quot;258&quot; y=&quot;144&quot; width=&quot;390&quot; height=&quot;130&quot; rx=&quot;5&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;453&quot; y=&quot;218&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#00AED6&quot;>scan_upper.jpg</text>
+
+    <!-- Teeth tags on preview -->
+    <rect x=&quot;270&quot; y=&quot;283&quot; width=&quot;40&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;290&quot; y=&quot;295&quot; text-anchor=&quot;middle&quot; font-size=&quot;7.5&quot; fill=&quot;#00AED6&quot;>21</text>
+    <rect x=&quot;318&quot; y=&quot;283&quot; width=&quot;40&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;338&quot; y=&quot;295&quot; text-anchor=&quot;middle&quot; font-size=&quot;7.5&quot; fill=&quot;#00AED6&quot;>22</text>
+    <rect x=&quot;366&quot; y=&quot;283&quot; width=&quot;40&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;386&quot; y=&quot;295&quot; text-anchor=&quot;middle&quot; font-size=&quot;7.5&quot; fill=&quot;#00AED6&quot;>23</text>
+
+    <!-- Notes section -->
+    <line class=&quot;draw&quot; x1=&quot;258&quot; y1=&quot;320&quot; x2=&quot;590&quot; y2=&quot;320&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+    <line class=&quot;draw d2&quot; x1=&quot;258&quot; y1=&quot;334&quot; x2=&quot;560&quot; y2=&quot;334&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+    <line class=&quot;draw d3&quot; x1=&quot;258&quot; y1=&quot;348&quot; x2=&quot;574&quot; y2=&quot;348&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+
+    <text x=&quot;453&quot; y=&quot;440&quot; text-anchor=&quot;middle&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Powered by</text>
+    <text x=&quot;430&quot; y=&quot;456&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot; letter-spacing=&quot;-0.5&quot;>iTero</text>
+    <text x=&quot;476&quot; y=&quot;456&quot; font-size=&quot;12&quot; font-weight=&quot;300&quot; fill=&quot;#0F2F44&quot; letter-spacing=&quot;0.5&quot;>invisalign</text>
+  </g>
+
+  <!-- ═══════ PHASE 4 — Finalized ═══════ -->
+  <g class=&quot;ph4&quot;>
+    <!-- Left panel: complete -->
+    <text x=&quot;28&quot; y=&quot;46&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Content</text>
+    <text x=&quot;176&quot; y=&quot;46&quot; text-anchor=&quot;end&quot; font-size=&quot;10&quot; fill=&quot;#00AED6&quot;>2 sections</text>
+
+    <rect x=&quot;20&quot; y=&quot;56&quot; width=&quot;194&quot; height=&quot;92&quot; rx=&quot;6&quot; fill=&quot;#F9FAFB&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;32&quot; y=&quot;74&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Image 1</text>
+    <rect x=&quot;30&quot; y=&quot;82&quot; width=&quot;174&quot; height=&quot;36&quot; rx=&quot;4&quot; fill=&quot;#E8F5FA&quot;/>
+    <text x=&quot;117&quot; y=&quot;105&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#00AED6&quot;>scan_upper.jpg  ✓</text>
+
+    <rect x=&quot;20&quot; y=&quot;158&quot; width=&quot;194&quot; height=&quot;72&quot; rx=&quot;6&quot; fill=&quot;#F9FAFB&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;32&quot; y=&quot;176&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Notes 1</text>
+    <line x1=&quot;32&quot; y1=&quot;192&quot; x2=&quot;188&quot; y2=&quot;192&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+    <line x1=&quot;32&quot; y1=&quot;204&quot; x2=&quot;172&quot; y2=&quot;204&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+    <line x1=&quot;32&quot; y1=&quot;216&quot; x2=&quot;180&quot; y2=&quot;216&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+
+    <!-- Saved badge + action buttons -->
+    <text x=&quot;117&quot; y=&quot;370&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#00AED6&quot; class=&quot;badge&quot;>✓ Saved</text>
+
+    <rect x=&quot;20&quot; y=&quot;382&quot; width=&quot;90&quot; height=&quot;26&quot; rx=&quot;6&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;65&quot; y=&quot;399&quot; text-anchor=&quot;middle&quot; font-size=&quot;9.5&quot; fill=&quot;#0F2F44&quot;>Preview</text>
+    <rect x=&quot;122&quot; y=&quot;382&quot; width=&quot;92&quot; height=&quot;26&quot; rx=&quot;6&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;168&quot; y=&quot;399&quot; text-anchor=&quot;middle&quot; font-size=&quot;9.5&quot; fill=&quot;#0F2F44&quot;>↑ Share</text>
+
+    <rect x=&quot;20&quot; y=&quot;418&quot; width=&quot;194&quot; height=&quot;30&quot; rx=&quot;8&quot; fill=&quot;#00AED6&quot;/>
+    <text x=&quot;117&quot; y=&quot;437&quot; text-anchor=&quot;middle&quot; font-size=&quot;10.5&quot; font-weight=&quot;500&quot; fill=&quot;#FFFFFF&quot;>↓ Export PDF</text>
+
+    <!-- Right panel: finished report -->
+    <rect x=&quot;258&quot; y=&quot;28&quot; width=&quot;66&quot; height=&quot;22&quot; rx=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;#D1D5DB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;291&quot; y=&quot;43&quot; text-anchor=&quot;middle&quot; font-size=&quot;8&quot; fill=&quot;#C4C8D0&quot;>Your Logo</text>
+    <text x=&quot;640&quot; y=&quot;44&quot; text-anchor=&quot;end&quot; font-size=&quot;13&quot; font-weight=&quot;300&quot; fill=&quot;#0F2F44&quot; letter-spacing=&quot;1&quot;>align</text>
+    <text x=&quot;258&quot; y=&quot;72&quot; font-size=&quot;14&quot; font-weight=&quot;700&quot; fill=&quot;#0F2F44&quot;>Patient Report</text>
+    <line x1=&quot;258&quot; y1=&quot;78&quot; x2=&quot;648&quot; y2=&quot;78&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;2&quot;/>
+    <rect x=&quot;258&quot; y=&quot;86&quot; width=&quot;390&quot; height=&quot;48&quot; rx=&quot;5&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;274&quot; y=&quot;104&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Doctor</text>
+    <text x=&quot;274&quot; y=&quot;116&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Dr. Smith</text>
+    <text x=&quot;432&quot; y=&quot;104&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Clinic</text>
+    <text x=&quot;432&quot; y=&quot;116&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Bright Smile Clinic</text>
+    <text x=&quot;570&quot; y=&quot;104&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Patient</text>
+    <text x=&quot;570&quot; y=&quot;116&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>John Doe</text>
+    <rect x=&quot;258&quot; y=&quot;144&quot; width=&quot;390&quot; height=&quot;130&quot; rx=&quot;5&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;453&quot; y=&quot;218&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#00AED6&quot;>scan_upper.jpg</text>
+    <rect x=&quot;270&quot; y=&quot;283&quot; width=&quot;40&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;290&quot; y=&quot;295&quot; text-anchor=&quot;middle&quot; font-size=&quot;7.5&quot; fill=&quot;#00AED6&quot;>21</text>
+    <rect x=&quot;318&quot; y=&quot;283&quot; width=&quot;40&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;338&quot; y=&quot;295&quot; text-anchor=&quot;middle&quot; font-size=&quot;7.5&quot; fill=&quot;#00AED6&quot;>22</text>
+    <rect x=&quot;366&quot; y=&quot;283&quot; width=&quot;40&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;386&quot; y=&quot;295&quot; text-anchor=&quot;middle&quot; font-size=&quot;7.5&quot; fill=&quot;#00AED6&quot;>23</text>
+    <line x1=&quot;258&quot; y1=&quot;320&quot; x2=&quot;590&quot; y2=&quot;320&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+    <line x1=&quot;258&quot; y1=&quot;334&quot; x2=&quot;560&quot; y2=&quot;334&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+    <line x1=&quot;258&quot; y1=&quot;348&quot; x2=&quot;574&quot; y2=&quot;348&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;453&quot; y=&quot;440&quot; text-anchor=&quot;middle&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Powered by</text>
+    <text x=&quot;430&quot; y=&quot;456&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot; letter-spacing=&quot;-0.5&quot;>iTero</text>
+    <text x=&quot;476&quot; y=&quot;456&quot; font-size=&quot;12&quot; font-weight=&quot;300&quot; fill=&quot;#0F2F44&quot; letter-spacing=&quot;0.5&quot;>invisalign</text>
+
+    <!-- Checkmark badge -->
+    <g class=&quot;check-pop&quot;>
+      <circle cx=&quot;620&quot; cy=&quot;80&quot; r=&quot;22&quot; fill=&quot;#00AED6&quot; opacity=&quot;0.12&quot;/>
+      <circle cx=&quot;620&quot; cy=&quot;80&quot; r=&quot;14&quot; fill=&quot;#00AED6&quot;/>
+      <path d=&quot;M 613 80 L 618 85 L 628 73&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;2.5&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    </g>
+  </g>
+
+</svg>
+</div>
+</body>
+</html>
+"
+  width="100%"
+  height="100%"
+  scrolling="no"
+  frameborder="0"
+  style="border:0; display:block; width: 100%; height: 100%; min-height: 100vh; background:#F4F7FA; overflow:hidden;"
+  loading="lazy"
+  title="Patient Report Redesign">
+</iframe>

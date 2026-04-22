@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Patient report flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  /* Aligned with scan case study (coral) + iTero UI chrome (cyan) */
+  :root {
+    --bg: #f4f7fa;
+    --bg2: #f0f2eb;
+    --fg: #0f2f44;
+    --fg-muted: #6b7280;
+    /* Clinical Scanning Workflow accent */
+    --coral: #e8847c;
+    --coral-soft: rgba(232, 132, 124, 0.2);
+    /* RX/Scan/View product UI (itero-iframe) */
+    --ui: #00aed6;
+    --ui-soft: rgba(0, 174, 214, 0.18);
+    --card: #fff;
+    --line: #e5e7eb;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: var(--bg);
+  }
+  body {
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(14px, 3vw, 28px) clamp(12px, 2.5vw, 24px);
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 720px;
+    position: relative;
+  }
+  .wrap::before {
+    content: '';
+    position: absolute;
+    inset: -12% -8% 30% -8%;
+    background:
+      radial-gradient(ellipse 65% 50% at 20% 40%, var(--coral-soft), transparent 58%),
+      radial-gradient(ellipse 55% 45% at 88% 70%, var(--ui-soft), transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .flow {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+  }
+
+  .node {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 220px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: in 0.65s cubic-bezier(0.22, 0.9, 0.3, 1) forwards;
+  }
+  .node.n1 { animation-delay: 0.08s; }
+  .node.n2 { animation-delay: 0.2s; }
+  .node.n3 { animation-delay: 0.32s; }
+
+  .icon-ring {
+    width: clamp(76px, 20vw, 110px);
+    height: clamp(76px, 20vw, 110px);
+    border-radius: 24%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card);
+    box-shadow: 0 0 0 1px rgba(15, 47, 68, 0.06), 0 8px 26px -8px rgba(15, 47, 68, 0.12);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .node:hover .icon-ring {
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 1px var(--coral-soft), 0 12px 32px -10px rgba(0, 174, 214, 0.25);
+  }
+  .n2 .icon-ring {
+    background: linear-gradient(160deg, #fff 0%, #f8fdff 100%);
+  }
+
+  .icon-ring svg {
+    width: 48%;
+    height: 48%;
+    color: var(--fg);
+  }
+  .n1 .icon-ring svg { color: var(--coral); }
+  .n2 .icon-ring svg { color: var(--ui); }
+  .n3 .icon-ring svg { color: var(--coral); }
+
+  .label {
+    font-size: clamp(0.68rem, 1.4vw, 0.78rem);
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fg);
+  }
+
+  .sub {
+    font-size: clamp(0.65rem, 1.2vw, 0.72rem);
+    font-weight: 500;
+    color: var(--fg-muted);
+    letter-spacing: 0.02em;
+    text-align: center;
+    line-height: 1.3;
+    max-width: 11em;
+  }
+
+  .bridge {
+    flex: 0 0 clamp(18px, 4vw, 36px);
+    color: var(--ui);
+    opacity: 0.55;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .bridge svg { width: 100%; max-width: 32px; height: auto; }
+  .bridge path {
+    stroke-dasharray: 5 4;
+    animation: dash 1.2s linear infinite;
+  }
+  @keyframes dash { to { stroke-dashoffset: -18; } }
+
+  @keyframes in {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 520px) {
+    .flow { flex-direction: column; }
+    .bridge { transform: rotate(90deg); min-height: 0.5rem; padding: 0.1rem 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .node { animation: none; opacity: 1; transform: none; }
+    .bridge path { animation: none; stroke-dasharray: none; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="flow" role="list">
+    <div class="node n1" role="listitem">
+      <div class="icon-ring" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="8" width="28" height="32" rx="3" stroke="currentColor" stroke-width="1.8"/>
+          <rect x="14" y="12" width="20" height="2.2" rx="0.5" fill="currentColor" opacity="0.35"/>
+          <rect x="14" y="18" width="16" height="1.5" rx="0.4" fill="currentColor" opacity="0.2"/>
+          <rect x="14" y="22" width="20" height="1.5" rx="0.4" fill="currentColor" opacity="0.2"/>
+          <rect x="14" y="30" width="20" height="5" rx="1" fill="currentColor" opacity="0.12"/>
+        </svg>
+      </div>
+      <span class="label">Template</span>
+      <span class="sub">Start from procedure blocks — not a blank page</span>
+    </div>
+
+    <div class="bridge" aria-hidden="true">
+      <svg viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 10h20m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" pathLength="100"/>
+      </svg>
+    </div>
+
+    <div class="node n2" role="listitem">
+      <div class="icon-ring" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="10" width="36" height="28" rx="2.5" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M6 32h36" stroke="currentColor" stroke-width="0.8" opacity="0.3"/>
+          <circle cx="18" cy="21" r="3.2" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M24 20l3 1.5 4-1.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+          <text x="30" y="25" font-size="6" font-weight="600" fill="currentColor" opacity="0.5">12</text>
+        </svg>
+      </div>
+      <span class="label">Annotate</span>
+      <span class="sub">Image context, tooth tags, findings in line</span>
+    </div>
+
+    <div class="bridge" aria-hidden="true">
+      <svg viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 10h20m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" pathLength="100"/>
+      </svg>
+    </div>
+
+    <div class="node n3" role="listitem">
+      <div class="icon-ring" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 32 L40 8 L22 20 L8 32 Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="var(--coral-soft)"/>
+          <path d="M8 32l8-2M22 20l-2.5-8" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" opacity="0.4"/>
+        </svg>
+      </div>
+      <span class="label">Share</span>
+      <span class="sub">Patient-ready output, permissions, channels</span>
+    </div>
+  </div>
+</main>
+</body>
+</html>

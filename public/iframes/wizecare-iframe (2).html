@@ -1,0 +1,332 @@
+<iframe
+  srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot;>
+<title>WizeCare</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    min-height: 100vh; min-height: 100dvh;
+    background: #F7F7F7;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .stage { width: 100%; height: 100%; }
+  .canvas { width: 100%; height: 100%; display: block; }
+
+  /* Two screens — 12s */
+  .sc1 { animation: sc1 12s infinite; }
+  .sc2 { animation: sc2 12s infinite; }
+  @keyframes sc1 { 0%,45%  { opacity:1 } 50%,100% { opacity:0 } }
+  @keyframes sc2 { 0%,45%  { opacity:0 } 50%,100% { opacity:1 } }
+
+  /* Session tile highlight pulse */
+  .tile-active { animation: tileP 2s ease-in-out infinite; }
+  @keyframes tileP { 0%,100%{opacity:.85} 50%{opacity:1} }
+
+  /* Calendar day highlight */
+  .cal-day { animation: calP 2s ease-in-out infinite; }
+  @keyframes calP { 0%,100%{opacity:.8} 50%{opacity:1} }
+
+  /* Checkbox checked */
+  .chk { animation: chkPop .4s cubic-bezier(.34,1.56,.64,1) both; }
+
+  @media (prefers-reduced-motion: reduce) { * { animation:none!important } }
+</style>
+</head>
+<body>
+<div class=&quot;stage&quot;>
+<svg class=&quot;canvas&quot; viewBox=&quot;0 0 760 500&quot; preserveAspectRatio=&quot;xMinYMin meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
+
+  <!-- ═══════════════════════════════
+       SCREEN 1 — PATIENT PROFILE
+       ═══════════════════════════════ -->
+  <g class=&quot;sc1&quot;>
+    <rect width=&quot;760&quot; height=&quot;500&quot; fill=&quot;#FFFFFF&quot;/>
+
+    <!-- Left nav -->
+    <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;56&quot; height=&quot;500&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;1&quot;/>
+    <!-- WizeCare logo mark -->
+    <rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;24&quot; height=&quot;24&quot; rx=&quot;6&quot; fill=&quot;#00B4A6&quot; opacity=&quot;0.15&quot;/>
+    <path d=&quot;M 22 28 L 28 22 L 34 28 L 28 34 Z&quot; fill=&quot;none&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;2&quot; stroke-linejoin=&quot;round&quot;/>
+    <!-- Nav icons -->
+    <circle cx=&quot;28&quot; cy=&quot;68&quot; r=&quot;14&quot; fill=&quot;#00B4A6&quot; opacity=&quot;0.12&quot;/>
+    <text x=&quot;28&quot; y=&quot;73&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; font-weight=&quot;700&quot; fill=&quot;#00B4A6&quot;>LB</text>
+    <!-- Active nav item -->
+    <rect x=&quot;8&quot; y=&quot;240&quot; width=&quot;40&quot; height=&quot;40&quot; rx=&quot;8&quot; fill=&quot;#00B4A6&quot; opacity=&quot;0.1&quot;/>
+    <g transform=&quot;translate(16,250)&quot; fill=&quot;none&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot;>
+      <circle cx=&quot;12&quot; cy=&quot;8&quot; r=&quot;4&quot;/>
+      <path d=&quot;M 2 20 Q 4 14 12 14 Q 20 14 22 20&quot;/>
+      <circle cx=&quot;20&quot; cy=&quot;8&quot; r=&quot;4&quot; opacity=&quot;0.5&quot;/>
+    </g>
+    <!-- Other nav icons -->
+    <g transform=&quot;translate(16,300)&quot; fill=&quot;none&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.4&quot; stroke-linecap=&quot;round&quot;>
+      <line x1=&quot;4&quot; y1=&quot;4&quot; x2=&quot;20&quot; y2=&quot;4&quot;/><line x1=&quot;4&quot; y1=&quot;10&quot; x2=&quot;20&quot; y2=&quot;10&quot;/><line x1=&quot;4&quot; y1=&quot;16&quot; x2=&quot;20&quot; y2=&quot;16&quot;/>
+    </g>
+    <g transform=&quot;translate(16,346)&quot; fill=&quot;none&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.4&quot; stroke-linecap=&quot;round&quot;>
+      <rect x=&quot;0&quot; y=&quot;4&quot; width=&quot;24&quot; height=&quot;14&quot; rx=&quot;2&quot;/><line x1=&quot;7&quot; y1=&quot;4&quot; x2=&quot;7&quot; y2=&quot;0&quot;/><line x1=&quot;17&quot; y1=&quot;4&quot; x2=&quot;17&quot; y2=&quot;0&quot;/>
+    </g>
+
+    <!-- Main content -->
+    <!-- Header -->
+    <text x=&quot;76&quot; y=&quot;40&quot; font-size=&quot;16&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>Profile</text>
+    <text x=&quot;76&quot; y=&quot;58&quot; font-size=&quot;10&quot; fill=&quot;#AAAAAA&quot;>Patient  ·  Patient profile</text>
+    <line x1=&quot;56&quot; y1=&quot;68&quot; x2=&quot;760&quot; y2=&quot;68&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;1&quot;/>
+
+    <!-- Patient info -->
+    <text x=&quot;76&quot; y=&quot;100&quot; font-size=&quot;14&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>Amir Shapira</text>
+    <text x=&quot;76&quot; y=&quot;118&quot; font-size=&quot;10&quot; fill=&quot;#AAAAAA&quot;>amir.shapira@gmail.com</text>
+    <!-- Action buttons -->
+    <g fill=&quot;none&quot; stroke=&quot;#BBBBBB&quot; stroke-width=&quot;1.2&quot;>
+      <circle cx=&quot;580&quot; cy=&quot;107&quot; r=&quot;7&quot;/>
+      <path d=&quot;M 576 107 Q 580 103 584 107&quot;/>
+    </g>
+    <text x=&quot;592&quot; y=&quot;111&quot; font-size=&quot;10&quot; fill=&quot;#AAAAAA&quot;>Send Message</text>
+    <g fill=&quot;none&quot; stroke=&quot;#BBBBBB&quot; stroke-width=&quot;1.2&quot;>
+      <rect x=&quot;648&quot; y=&quot;100&quot; width=&quot;16&quot; height=&quot;14&quot; rx=&quot;2&quot;/>
+      <path d=&quot;M 664 104 L 668 101 L 668 113 L 664 110&quot;/>
+    </g>
+    <text x=&quot;672&quot; y=&quot;111&quot; font-size=&quot;10&quot; fill=&quot;#AAAAAA&quot;>Video Call</text>
+
+    <line x1=&quot;76&quot; y1=&quot;128&quot; x2=&quot;740&quot; y2=&quot;128&quot; stroke=&quot;#F5F5F5&quot; stroke-width=&quot;1&quot;/>
+
+    <!-- Care Plan section -->
+    <circle cx=&quot;84&quot; cy=&quot;155&quot; r=&quot;7&quot; fill=&quot;none&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;1.8&quot;/>
+    <text x=&quot;98&quot; y=&quot;160&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>Shoulder Program</text>
+    <text x=&quot;98&quot; y=&quot;176&quot; font-size=&quot;9.5&quot; fill=&quot;#BBBBBB&quot;>Assigned 19/4  ·  Avg adherence: 0%  ·  0/4 sessions to complete</text>
+
+    <!-- Edit Care Plan button -->
+    <rect x=&quot;622&quot; y=&quot;144&quot; width=&quot;108&quot; height=&quot;28&quot; rx=&quot;14&quot; fill=&quot;#111111&quot;/>
+    <text x=&quot;676&quot; y=&quot;162&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#FFFFFF&quot;>Edit Care Plan</text>
+
+    <!-- Alert -->
+    <text x=&quot;98&quot; y=&quot;208&quot; font-size=&quot;11&quot; fill=&quot;#EF4444&quot;>The user does not meet the care plan requirements</text>
+    <text x=&quot;98&quot; y=&quot;224&quot; font-size=&quot;9.5&quot; fill=&quot;#BBBBBB&quot;>Send a reminder to the user or update their care plan</text>
+    <rect x=&quot;588&quot; y=&quot;198&quot; width=&quot;72&quot; height=&quot;22&quot; rx=&quot;11&quot; fill=&quot;none&quot; stroke=&quot;#EF4444&quot; stroke-width=&quot;1.2&quot;/>
+    <text x=&quot;624&quot; y=&quot;213&quot; text-anchor=&quot;middle&quot; font-size=&quot;9.5&quot; fill=&quot;#EF4444&quot;>Terminate</text>
+
+    <!-- Session tiles -->
+    <g class=&quot;tile-active&quot;>
+      <rect x=&quot;98&quot; y=&quot;236&quot; width=&quot;64&quot; height=&quot;40&quot; rx=&quot;8&quot; fill=&quot;#00B4A6&quot;/>
+      <text x=&quot;130&quot; y=&quot;251&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#FFFFFF&quot;>21/3</text>
+      <text x=&quot;130&quot; y=&quot;266&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; font-weight=&quot;700&quot; fill=&quot;#FFFFFF&quot;>12%</text>
+    </g>
+    <g class=&quot;tile-active&quot; style=&quot;animation-delay:.2s&quot;>
+      <rect x=&quot;170&quot; y=&quot;236&quot; width=&quot;64&quot; height=&quot;40&quot; rx=&quot;8&quot; fill=&quot;#00B4A6&quot; opacity=&quot;0.8&quot;/>
+      <text x=&quot;202&quot; y=&quot;251&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#FFFFFF&quot;>27/3</text>
+      <text x=&quot;202&quot; y=&quot;266&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; font-weight=&quot;700&quot; fill=&quot;#FFFFFF&quot;>23%</text>
+    </g>
+    <g class=&quot;tile-active&quot; style=&quot;animation-delay:.4s&quot;>
+      <rect x=&quot;242&quot; y=&quot;236&quot; width=&quot;64&quot; height=&quot;40&quot; rx=&quot;8&quot; fill=&quot;#00B4A6&quot; opacity=&quot;0.6&quot;/>
+      <text x=&quot;274&quot; y=&quot;251&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#FFFFFF&quot;>3/4</text>
+      <text x=&quot;274&quot; y=&quot;266&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; font-weight=&quot;700&quot; fill=&quot;#FFFFFF&quot;>19%</text>
+    </g>
+    <rect x=&quot;314&quot; y=&quot;236&quot; width=&quot;64&quot; height=&quot;40&quot; rx=&quot;8&quot; fill=&quot;#F5F5F5&quot; stroke=&quot;#EBEBEB&quot; stroke-width=&quot;1&quot;/>
+    <text x=&quot;346&quot; y=&quot;251&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#AAAAAA&quot;>10/4</text>
+    <text x=&quot;346&quot; y=&quot;266&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; fill=&quot;#CCCCCC&quot;>0%</text>
+
+    <!-- Protocol insights -->
+    <line x1=&quot;76&quot; y1=&quot;300&quot; x2=&quot;740&quot; y2=&quot;300&quot; stroke=&quot;#F5F5F5&quot; stroke-width=&quot;1&quot;/>
+    <circle cx=&quot;84&quot; cy=&quot;320&quot; r=&quot;7&quot; fill=&quot;none&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;1.8&quot;/>
+    <text x=&quot;98&quot; y=&quot;325&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>Protocol insights</text>
+    <text x=&quot;698&quot; y=&quot;325&quot; font-size=&quot;9.5&quot; fill=&quot;#00B4A6&quot;>Show more  ↑</text>
+
+    <!-- Right: Activity panel -->
+    <line x1=&quot;740&quot; y1=&quot;68&quot; x2=&quot;740&quot; y2=&quot;500&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;1&quot;/>
+    <!-- (no right panel in this layout — it's all full width) -->
+
+    <!-- ── Activity Calendar (right side of screen, as in reference) ── -->
+    <!-- Render in rightmost 200px region -->
+    <text x=&quot;560&quot; y=&quot;302&quot; font-size=&quot;11&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>Activity</text>
+    <text x=&quot;560&quot; y=&quot;316&quot; font-size=&quot;9&quot; fill=&quot;#AAAAAA&quot;>September 2023</text>
+
+    <!-- 5×7 calendar grid of &quot;30&quot; numbers -->
+    <g font-size=&quot;9&quot; fill=&quot;#CCCCCC&quot; text-anchor=&quot;middle&quot;>
+      <!-- Row 1 -->
+      <text x=&quot;572&quot; y=&quot;340&quot;>30</text><text x=&quot;598&quot; y=&quot;340&quot;>30</text><text x=&quot;624&quot; y=&quot;340&quot;>30</text><text x=&quot;650&quot; y=&quot;340&quot;>30</text><text x=&quot;676&quot; y=&quot;340&quot;>30</text><text x=&quot;702&quot; y=&quot;340&quot;>30</text><text x=&quot;728&quot; y=&quot;340&quot;>30</text>
+      <!-- Row 2 -->
+      <text x=&quot;572&quot; y=&quot;364&quot;>30</text><text x=&quot;598&quot; y=&quot;364&quot;>30</text><text x=&quot;624&quot; y=&quot;364&quot;>30</text><text x=&quot;650&quot; y=&quot;364&quot;>30</text><text x=&quot;676&quot; y=&quot;364&quot;>30</text><text x=&quot;702&quot; y=&quot;364&quot;>30</text><text x=&quot;728&quot; y=&quot;364&quot;>30</text>
+      <!-- Row 3 — one teal highlight -->
+      <text x=&quot;572&quot; y=&quot;388&quot;>30</text><text x=&quot;598&quot; y=&quot;388&quot;>30</text><text x=&quot;624&quot; y=&quot;388&quot;>30</text><text x=&quot;650&quot; y=&quot;388&quot;>30</text><text x=&quot;676&quot; y=&quot;388&quot;>30</text>
+      <rect class=&quot;cal-day&quot; x=&quot;690&quot; y=&quot;376&quot; width=&quot;24&quot; height=&quot;24&quot; rx=&quot;6&quot; fill=&quot;#00B4A6&quot;/>
+      <text x=&quot;702&quot; y=&quot;392&quot; font-weight=&quot;700&quot; fill=&quot;#FFFFFF&quot;>30</text>
+      <text x=&quot;728&quot; y=&quot;388&quot;>30</text>
+      <!-- Row 4 -->
+      <text x=&quot;572&quot; y=&quot;412&quot;>30</text><text x=&quot;598&quot; y=&quot;412&quot;>30</text><text x=&quot;624&quot; y=&quot;412&quot;>30</text><text x=&quot;650&quot; y=&quot;412&quot;>30</text><text x=&quot;676&quot; y=&quot;412&quot;>30</text><text x=&quot;702&quot; y=&quot;412&quot;>30</text><text x=&quot;728&quot; y=&quot;412&quot;>30</text>
+      <!-- Row 5 — one teal highlight -->
+      <text x=&quot;572&quot; y=&quot;436&quot;>30</text><text x=&quot;598&quot; y=&quot;436&quot;>30</text><text x=&quot;624&quot; y=&quot;436&quot;>30</text>
+      <rect class=&quot;cal-day&quot; x=&quot;638&quot; y=&quot;424&quot; width=&quot;24&quot; height=&quot;24&quot; rx=&quot;6&quot; fill=&quot;#00B4A6&quot;/>
+      <text x=&quot;650&quot; y=&quot;440&quot; font-weight=&quot;700&quot; fill=&quot;#FFFFFF&quot;>30</text>
+      <text x=&quot;676&quot; y=&quot;436&quot;>30</text><text x=&quot;702&quot; y=&quot;436&quot;>30</text><text x=&quot;728&quot; y=&quot;436&quot;>30</text>
+    </g>
+    <!-- Legend -->
+    <rect x=&quot;560&quot; y=&quot;460&quot; width=&quot;60&quot; height=&quot;18&quot; rx=&quot;9&quot; fill=&quot;#00B4A6&quot;/>
+    <text x=&quot;590&quot; y=&quot;472&quot; text-anchor=&quot;middle&quot; font-size=&quot;8.5&quot; fill=&quot;#FFFFFF&quot;>🚶 Trained</text>
+    <rect x=&quot;628&quot; y=&quot;460&quot; width=&quot;58&quot; height=&quot;18&quot; rx=&quot;9&quot; fill=&quot;#111111&quot;/>
+    <text x=&quot;657&quot; y=&quot;472&quot; text-anchor=&quot;middle&quot; font-size=&quot;8.5&quot; fill=&quot;#FFFFFF&quot;>📅 Visited</text>
+  </g>
+
+  <!-- ═══════════════════════════════
+       SCREEN 2 — EDIT CARE PLAN
+       ═══════════════════════════════ -->
+  <g class=&quot;sc2&quot;>
+    <rect width=&quot;760&quot; height=&quot;500&quot; fill=&quot;#FFFFFF&quot;/>
+
+    <!-- Left nav (same) -->
+    <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;56&quot; height=&quot;500&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;1&quot;/>
+    <rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;24&quot; height=&quot;24&quot; rx=&quot;6&quot; fill=&quot;#00B4A6&quot; opacity=&quot;0.15&quot;/>
+    <path d=&quot;M 22 28 L 28 22 L 34 28 L 28 34 Z&quot; fill=&quot;none&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;2&quot; stroke-linejoin=&quot;round&quot;/>
+    <circle cx=&quot;28&quot; cy=&quot;68&quot; r=&quot;14&quot; fill=&quot;#00B4A6&quot; opacity=&quot;0.12&quot;/>
+    <text x=&quot;28&quot; y=&quot;73&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; font-weight=&quot;700&quot; fill=&quot;#00B4A6&quot;>LB</text>
+    <rect x=&quot;8&quot; y=&quot;240&quot; width=&quot;40&quot; height=&quot;40&quot; rx=&quot;8&quot; fill=&quot;#00B4A6&quot; opacity=&quot;0.1&quot;/>
+    <g transform=&quot;translate(16,250)&quot; fill=&quot;none&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot;>
+      <circle cx=&quot;12&quot; cy=&quot;8&quot; r=&quot;4&quot;/>
+      <path d=&quot;M 2 20 Q 4 14 12 14 Q 20 14 22 20&quot;/>
+    </g>
+    <g transform=&quot;translate(16,300)&quot; fill=&quot;none&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.4&quot; stroke-linecap=&quot;round&quot;>
+      <line x1=&quot;4&quot; y1=&quot;4&quot; x2=&quot;20&quot; y2=&quot;4&quot;/><line x1=&quot;4&quot; y1=&quot;10&quot; x2=&quot;20&quot; y2=&quot;10&quot;/><line x1=&quot;4&quot; y1=&quot;16&quot; x2=&quot;20&quot; y2=&quot;16&quot;/>
+    </g>
+
+    <!-- Divider -->
+    <line x1=&quot;430&quot; y1=&quot;68&quot; x2=&quot;430&quot; y2=&quot;500&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;1&quot;/>
+
+    <!-- Header -->
+    <text x=&quot;76&quot; y=&quot;40&quot; font-size=&quot;16&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>Edit Care Plan</text>
+    <text x=&quot;76&quot; y=&quot;58&quot; font-size=&quot;10&quot; fill=&quot;#AAAAAA&quot;>Shoulder Program  ·  Amir Shapira</text>
+    <line x1=&quot;56&quot; y1=&quot;68&quot; x2=&quot;760&quot; y2=&quot;68&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;1&quot;/>
+
+    <!-- LEFT: exercise list -->
+    <rect x=&quot;76&quot; y=&quot;78&quot; width=&quot;166&quot; height=&quot;28&quot; rx=&quot;7&quot; fill=&quot;#F7F7F7&quot; stroke=&quot;#EBEBEB&quot; stroke-width=&quot;1&quot;/>
+    <circle cx=&quot;90&quot; cy=&quot;92&quot; r=&quot;5&quot; fill=&quot;none&quot; stroke=&quot;#BBBBBB&quot; stroke-width=&quot;1.2&quot;/>
+    <line x1=&quot;94&quot; y1=&quot;96&quot; x2=&quot;96&quot; y2=&quot;98&quot; stroke=&quot;#BBBBBB&quot; stroke-width=&quot;1.2&quot; stroke-linecap=&quot;round&quot;/>
+    <text x=&quot;100&quot; y=&quot;96&quot; font-size=&quot;10&quot; fill=&quot;#BBBBBB&quot;>Search exercises</text>
+
+    <!-- Filter chips -->
+    <rect x=&quot;76&quot; y=&quot;114&quot; width=&quot;72&quot; height=&quot;20&quot; rx=&quot;10&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;1&quot;/>
+    <text x=&quot;112&quot; y=&quot;127&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#00B4A6&quot;>Shoulders ✕</text>
+    <rect x=&quot;156&quot; y=&quot;114&quot; width=&quot;46&quot; height=&quot;20&quot; rx=&quot;10&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;1&quot;/>
+    <text x=&quot;179&quot; y=&quot;127&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#00B4A6&quot;>Basic ✕</text>
+    <text x=&quot;212&quot; y=&quot;126&quot; font-size=&quot;9&quot; fill=&quot;#BBBBBB&quot;>A–Z ▾</text>
+    <line x1=&quot;76&quot; y1=&quot;142&quot; x2=&quot;418&quot; y2=&quot;142&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;1&quot;/>
+
+    <!-- Exercise rows — 3 checked, 2 not -->
+    <!-- Row 1 checked -->
+    <rect x=&quot;78&quot; y=&quot;152&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;#00B4A6&quot;/>
+    <path d=&quot;M 81 160 L 84 163 L 91 155&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.8&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    <rect x=&quot;100&quot; y=&quot;148&quot; width=&quot;48&quot; height=&quot;48&quot; rx=&quot;5&quot; fill=&quot;#F0F0F0&quot;/>
+    <circle cx=&quot;124&quot; cy=&quot;158&quot; r=&quot;5.5&quot; fill=&quot;#CCCCCC&quot;/>
+    <line x1=&quot;124&quot; y1=&quot;163&quot; x2=&quot;124&quot; y2=&quot;176&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <line x1=&quot;118&quot; y1=&quot;168&quot; x2=&quot;130&quot; y2=&quot;168&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <line x1=&quot;124&quot; y1=&quot;176&quot; x2=&quot;119&quot; y2=&quot;185&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <line x1=&quot;124&quot; y1=&quot;176&quot; x2=&quot;129&quot; y2=&quot;185&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <text x=&quot;155&quot; y=&quot;169&quot; font-size=&quot;11&quot; font-weight=&quot;500&quot; fill=&quot;#111111&quot;>Spinal Stretch, Sitting</text>
+    <line x1=&quot;76&quot; y1=&quot;204&quot; x2=&quot;418&quot; y2=&quot;204&quot; stroke=&quot;#F5F5F5&quot; stroke-width=&quot;1&quot;/>
+
+    <!-- Row 2 checked -->
+    <rect x=&quot;78&quot; y=&quot;214&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;#00B4A6&quot;/>
+    <path d=&quot;M 81 222 L 84 225 L 91 217&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.8&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    <rect x=&quot;100&quot; y=&quot;210&quot; width=&quot;48&quot; height=&quot;48&quot; rx=&quot;5&quot; fill=&quot;#F0F0F0&quot;/>
+    <circle cx=&quot;124&quot; cy=&quot;220&quot; r=&quot;5.5&quot; fill=&quot;#CCCCCC&quot;/>
+    <line x1=&quot;124&quot; y1=&quot;225&quot; x2=&quot;124&quot; y2=&quot;238&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <line x1=&quot;117&quot; y1=&quot;230&quot; x2=&quot;131&quot; y2=&quot;234&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <line x1=&quot;124&quot; y1=&quot;238&quot; x2=&quot;119&quot; y2=&quot;247&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <line x1=&quot;124&quot; y1=&quot;238&quot; x2=&quot;129&quot; y2=&quot;247&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <text x=&quot;155&quot; y=&quot;231&quot; font-size=&quot;11&quot; font-weight=&quot;500&quot; fill=&quot;#111111&quot;>Shoulder Flexion</text>
+    <line x1=&quot;76&quot; y1=&quot;266&quot; x2=&quot;418&quot; y2=&quot;266&quot; stroke=&quot;#F5F5F5&quot; stroke-width=&quot;1&quot;/>
+
+    <!-- Row 3 checked -->
+    <rect x=&quot;78&quot; y=&quot;276&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;#00B4A6&quot;/>
+    <path d=&quot;M 81 284 L 84 287 L 91 279&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.8&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    <rect x=&quot;100&quot; y=&quot;272&quot; width=&quot;48&quot; height=&quot;48&quot; rx=&quot;5&quot; fill=&quot;#F0F0F0&quot;/>
+    <circle cx=&quot;124&quot; cy=&quot;282&quot; r=&quot;5.5&quot; fill=&quot;#CCCCCC&quot;/>
+    <line x1=&quot;124&quot; y1=&quot;287&quot; x2=&quot;124&quot; y2=&quot;300&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <line x1=&quot;116&quot; y1=&quot;292&quot; x2=&quot;132&quot; y2=&quot;296&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <line x1=&quot;124&quot; y1=&quot;300&quot; x2=&quot;119&quot; y2=&quot;309&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <line x1=&quot;124&quot; y1=&quot;300&quot; x2=&quot;129&quot; y2=&quot;309&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <text x=&quot;155&quot; y=&quot;293&quot; font-size=&quot;11&quot; font-weight=&quot;500&quot; fill=&quot;#111111&quot;>Shoulder Retraction</text>
+    <line x1=&quot;76&quot; y1=&quot;328&quot; x2=&quot;418&quot; y2=&quot;328&quot; stroke=&quot;#F5F5F5&quot; stroke-width=&quot;1&quot;/>
+
+    <!-- Row 4 unchecked -->
+    <rect x=&quot;78&quot; y=&quot;338&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.5&quot;/>
+    <rect x=&quot;100&quot; y=&quot;334&quot; width=&quot;48&quot; height=&quot;48&quot; rx=&quot;5&quot; fill=&quot;#F0F0F0&quot;/>
+    <circle cx=&quot;124&quot; cy=&quot;344&quot; r=&quot;5.5&quot; fill=&quot;#CCCCCC&quot;/>
+    <line x1=&quot;124&quot; y1=&quot;349&quot; x2=&quot;124&quot; y2=&quot;362&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <line x1=&quot;118&quot; y1=&quot;354&quot; x2=&quot;130&quot; y2=&quot;354&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <line x1=&quot;124&quot; y1=&quot;362&quot; x2=&quot;119&quot; y2=&quot;371&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <line x1=&quot;124&quot; y1=&quot;362&quot; x2=&quot;129&quot; y2=&quot;371&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <text x=&quot;155&quot; y=&quot;355&quot; font-size=&quot;11&quot; font-weight=&quot;500&quot; fill=&quot;#AAAAAA&quot;>Shoulder Extension</text>
+    <line x1=&quot;76&quot; y1=&quot;390&quot; x2=&quot;418&quot; y2=&quot;390&quot; stroke=&quot;#F5F5F5&quot; stroke-width=&quot;1&quot;/>
+
+    <!-- Row 5 unchecked -->
+    <rect x=&quot;78&quot; y=&quot;400&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.5&quot;/>
+    <rect x=&quot;100&quot; y=&quot;396&quot; width=&quot;48&quot; height=&quot;48&quot; rx=&quot;5&quot; fill=&quot;#F0F0F0&quot;/>
+    <circle cx=&quot;124&quot; cy=&quot;406&quot; r=&quot;5.5&quot; fill=&quot;#CCCCCC&quot;/>
+    <line x1=&quot;124&quot; y1=&quot;411&quot; x2=&quot;124&quot; y2=&quot;424&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <line x1=&quot;118&quot; y1=&quot;416&quot; x2=&quot;130&quot; y2=&quot;416&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <line x1=&quot;124&quot; y1=&quot;424&quot; x2=&quot;119&quot; y2=&quot;433&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <line x1=&quot;124&quot; y1=&quot;424&quot; x2=&quot;129&quot; y2=&quot;433&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.8&quot;/>
+    <text x=&quot;155&quot; y=&quot;417&quot; font-size=&quot;11&quot; font-weight=&quot;500&quot; fill=&quot;#AAAAAA&quot;>Spine Flexion Extension</text>
+
+    <!-- RIGHT: selected exercises panel -->
+    <text x=&quot;446&quot; y=&quot;90&quot; font-size=&quot;13&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;><tspan font-size=&quot;16&quot; fill=&quot;#00B4A6&quot;>3 </tspan>Exercises selected</text>
+
+    <!-- Toggle -->
+    <rect x=&quot;446&quot; y=&quot;100&quot; width=&quot;34&quot; height=&quot;20&quot; rx=&quot;10&quot; fill=&quot;#00B4A6&quot;/>
+    <circle cx=&quot;472&quot; cy=&quot;110&quot; r=&quot;8&quot; fill=&quot;#FFFFFF&quot;/>
+    <text x=&quot;486&quot; y=&quot;114&quot; font-size=&quot;10&quot; fill=&quot;#111111&quot;>Automatic ordering is on</text>
+    <line x1=&quot;446&quot; y1=&quot;128&quot; x2=&quot;736&quot; y2=&quot;128&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;1&quot;/>
+
+    <!-- Card 1 -->
+    <rect x=&quot;446&quot; y=&quot;136&quot; width=&quot;282&quot; height=&quot;84&quot; rx=&quot;8&quot; fill=&quot;#F8F8F8&quot;/>
+    <rect x=&quot;446&quot; y=&quot;136&quot; width=&quot;68&quot; height=&quot;84&quot; rx=&quot;8&quot; fill=&quot;#E8E8E8&quot;/>
+    <circle cx=&quot;480&quot; cy=&quot;162&quot; r=&quot;9&quot; fill=&quot;#C0C0C0&quot;/>
+    <line x1=&quot;480&quot; y1=&quot;171&quot; x2=&quot;480&quot; y2=&quot;184&quot; stroke=&quot;#C0C0C0&quot; stroke-width=&quot;2.2&quot;/>
+    <line x1=&quot;473&quot; y1=&quot;176&quot; x2=&quot;487&quot; y2=&quot;176&quot; stroke=&quot;#C0C0C0&quot; stroke-width=&quot;2.2&quot;/>
+    <line x1=&quot;480&quot; y1=&quot;184&quot; x2=&quot;474&quot; y2=&quot;194&quot; stroke=&quot;#C0C0C0&quot; stroke-width=&quot;2.2&quot;/>
+    <line x1=&quot;480&quot; y1=&quot;184&quot; x2=&quot;486&quot; y2=&quot;194&quot; stroke=&quot;#C0C0C0&quot; stroke-width=&quot;2.2&quot;/>
+    <text x=&quot;524&quot; y=&quot;158&quot; font-size=&quot;11&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>Spinal Stretch, Sitting</text>
+    <text x=&quot;522&quot; y=&quot;176&quot; font-size=&quot;9.5&quot; fill=&quot;#999999&quot;>Sets  <tspan font-weight=&quot;700&quot; fill=&quot;#111111&quot;>5</tspan>   Reps  <tspan font-weight=&quot;700&quot; fill=&quot;#111111&quot;>10</tspan>   Rest  <tspan font-weight=&quot;700&quot; fill=&quot;#111111&quot;>30s</tspan></text>
+
+    <!-- Card 2 -->
+    <rect x=&quot;446&quot; y=&quot;228&quot; width=&quot;282&quot; height=&quot;84&quot; rx=&quot;8&quot; fill=&quot;#F8F8F8&quot;/>
+    <rect x=&quot;446&quot; y=&quot;228&quot; width=&quot;68&quot; height=&quot;84&quot; rx=&quot;8&quot; fill=&quot;#E8E8E8&quot;/>
+    <circle cx=&quot;480&quot; cy=&quot;254&quot; r=&quot;9&quot; fill=&quot;#C0C0C0&quot;/>
+    <line x1=&quot;480&quot; y1=&quot;263&quot; x2=&quot;480&quot; y2=&quot;276&quot; stroke=&quot;#C0C0C0&quot; stroke-width=&quot;2.2&quot;/>
+    <line x1=&quot;472&quot; y1=&quot;268&quot; x2=&quot;488&quot; y2=&quot;272&quot; stroke=&quot;#C0C0C0&quot; stroke-width=&quot;2.2&quot;/>
+    <line x1=&quot;480&quot; y1=&quot;276&quot; x2=&quot;474&quot; y2=&quot;286&quot; stroke=&quot;#C0C0C0&quot; stroke-width=&quot;2.2&quot;/>
+    <line x1=&quot;480&quot; y1=&quot;276&quot; x2=&quot;486&quot; y2=&quot;286&quot; stroke=&quot;#C0C0C0&quot; stroke-width=&quot;2.2&quot;/>
+    <text x=&quot;524&quot; y=&quot;250&quot; font-size=&quot;11&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>Shoulder Flexion</text>
+    <text x=&quot;522&quot; y=&quot;268&quot; font-size=&quot;9.5&quot; fill=&quot;#999999&quot;>Sets  <tspan font-weight=&quot;700&quot; fill=&quot;#111111&quot;>5</tspan>   Reps  <tspan font-weight=&quot;700&quot; fill=&quot;#111111&quot;>10</tspan>   Rest  <tspan font-weight=&quot;700&quot; fill=&quot;#111111&quot;>30s</tspan></text>
+
+    <!-- Card 3 -->
+    <rect x=&quot;446&quot; y=&quot;320&quot; width=&quot;282&quot; height=&quot;84&quot; rx=&quot;8&quot; fill=&quot;#F8F8F8&quot;/>
+    <rect x=&quot;446&quot; y=&quot;320&quot; width=&quot;68&quot; height=&quot;84&quot; rx=&quot;8&quot; fill=&quot;#E8E8E8&quot;/>
+    <circle cx=&quot;480&quot; cy=&quot;346&quot; r=&quot;9&quot; fill=&quot;#C0C0C0&quot;/>
+    <line x1=&quot;480&quot; y1=&quot;355&quot; x2=&quot;480&quot; y2=&quot;368&quot; stroke=&quot;#C0C0C0&quot; stroke-width=&quot;2.2&quot;/>
+    <line x1=&quot;472&quot; y1=&quot;360&quot; x2=&quot;490&quot; y2=&quot;364&quot; stroke=&quot;#C0C0C0&quot; stroke-width=&quot;2.2&quot;/>
+    <line x1=&quot;480&quot; y1=&quot;368&quot; x2=&quot;474&quot; y2=&quot;378&quot; stroke=&quot;#C0C0C0&quot; stroke-width=&quot;2.2&quot;/>
+    <line x1=&quot;480&quot; y1=&quot;368&quot; x2=&quot;486&quot; y2=&quot;378&quot; stroke=&quot;#C0C0C0&quot; stroke-width=&quot;2.2&quot;/>
+    <text x=&quot;524&quot; y=&quot;342&quot; font-size=&quot;11&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>Shoulder Retraction</text>
+    <text x=&quot;522&quot; y=&quot;360&quot; font-size=&quot;9.5&quot; fill=&quot;#999999&quot;>Sets  <tspan font-weight=&quot;700&quot; fill=&quot;#111111&quot;>4</tspan>   Reps  <tspan font-weight=&quot;700&quot; fill=&quot;#111111&quot;>12</tspan>   Rest  <tspan font-weight=&quot;700&quot; fill=&quot;#111111&quot;>30s</tspan></text>
+
+    <!-- CTA -->
+    <rect x=&quot;446&quot; y=&quot;446&quot; width=&quot;282&quot; height=&quot;38&quot; rx=&quot;10&quot; fill=&quot;#00B4A6&quot;/>
+    <text x=&quot;587&quot; y=&quot;469&quot; text-anchor=&quot;middle&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#FFFFFF&quot;>Update Care Plan</text>
+  </g>
+
+</svg>
+</div>
+</body>
+</html>
+"
+  width="100%"
+  height="100%"
+  scrolling="no"
+  frameborder="0"
+  style="border:0; display:block; width: 100%; height: 100%; min-height: 100vh; background:#FFFFFF; overflow:hidden;"
+  loading="lazy"
+  title="WizeCare patient profile and edit care plan">
+</iframe>

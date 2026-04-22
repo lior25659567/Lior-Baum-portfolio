@@ -1,0 +1,267 @@
+<iframe
+  srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot;>
+<title>Patient Report Redesign</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: #F4F7FA;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .stage {
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 0;
+    margin: 0;
+  }
+  .report-canvas {
+    width: 100%;
+    max-width: none;
+    height: auto;
+    display: block;
+  }
+
+  /* 12s cycle — four steps: Blank → Templates → Data → Finalized */
+  .step-blank, .step-template, .step-data, .step-final { opacity: 0; }
+  .step-blank { animation: s1 12s infinite; }
+  .step-template { animation: s2 12s infinite; }
+  .step-data { animation: s3 12s infinite; }
+  .step-final { animation: s4 12s infinite; }
+  @keyframes s1 { 0%, 25% { opacity: 1; } 28%, 100% { opacity: 0; } }
+  @keyframes s2 { 0%, 24% { opacity: 0; } 25%, 50% { opacity: 1; } 53%, 100% { opacity: 0; } }
+  @keyframes s3 { 0%, 49% { opacity: 0; } 50%, 75% { opacity: 1; } 78%, 100% { opacity: 0; } }
+  @keyframes s4 { 0%, 74% { opacity: 0; } 75%, 99% { opacity: 1; } 100% { opacity: 0; } }
+
+  .pill-rx-on, .pill-scan-on, .pill-view-on, .pill-send-on { opacity: 0; }
+  .pill-rx-on { animation: pillRx 12s infinite; }
+  .pill-scan-on { animation: pillScan 12s infinite; }
+  .pill-view-on { animation: pillView 12s infinite; }
+  .pill-send-on { animation: pillSend 12s infinite; }
+  @keyframes pillRx { 0%, 25% { opacity: 1; } 28%, 100% { opacity: 0; } }
+  @keyframes pillScan { 0%, 24% { opacity: 0; } 25%, 50% { opacity: 1; } 53%, 100% { opacity: 0; } }
+  @keyframes pillView { 0%, 49% { opacity: 0; } 50%, 75% { opacity: 1; } 78%, 100% { opacity: 0; } }
+  @keyframes pillSend { 0%, 74% { opacity: 0; } 75%, 99% { opacity: 1; } 100% { opacity: 0; } }
+
+  /* Sidebar step animations */
+  .sidebar-step { opacity: 0.4; }
+  .sb1 { animation: sbStep1 12s infinite; }
+  .sb2 { animation: sbStep2 12s infinite; }
+  .sb3 { animation: sbStep3 12s infinite; }
+  .sb4 { animation: sbStep4 12s infinite; }
+  @keyframes sbStep1 { 0%, 25% { opacity: 1; } 28%, 100% { opacity: 0.35; } }
+  @keyframes sbStep2 { 0%, 24% { opacity: 0.35; } 25%, 50% { opacity: 1; } 53%, 100% { opacity: 0.35; } }
+  @keyframes sbStep3 { 0%, 49% { opacity: 0.35; } 50%, 75% { opacity: 1; } 78%, 100% { opacity: 0.35; } }
+  @keyframes sbStep4 { 0%, 74% { opacity: 0.35; } 75%, 99% { opacity: 1; } 100% { opacity: 0.35; } }
+
+  /* Document content animations */
+  .doc-line { transform-box: fill-box; animation: lineAppear 1.5s ease-out infinite; }
+  @keyframes lineAppear { 0% { transform: scaleX(0); opacity: 0; } 60%, 100% { transform: scaleX(1); opacity: 1; } }
+  
+  .template-box { animation: boxPulse 2s ease-in-out infinite; }
+  @keyframes boxPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+  .checkmark-icon { animation: checkPop 1.2s cubic-bezier(0.34,1.56,0.64,1) infinite; }
+  @keyframes checkPop { 0% { opacity: 0; transform: scale(0); } 50%, 100% { opacity: 1; transform: scale(1); } }
+
+  .entrance { opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.22,0.9,0.3,1) forwards; }
+  .d1 { animation-delay: 0.15s; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+  <div class=&quot;stage&quot;>
+  <svg class=&quot;report-canvas&quot; viewBox=&quot;0 0 680 560&quot; preserveAspectRatio=&quot;xMinYMin meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; role=&quot;img&quot; aria-label=&quot;Patient Report Redesign: from blank to finalized&quot;>
+  <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;680&quot; height=&quot;560&quot; fill=&quot;#F4F7FA&quot;/>
+
+  <!-- HEADER BAR -->
+  <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;680&quot; height=&quot;64&quot; fill=&quot;#FFFFFF&quot;/>
+  <line x1=&quot;0&quot; y1=&quot;64&quot; x2=&quot;680&quot; y2=&quot;64&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.5&quot;/>
+
+  <text x=&quot;28&quot; y=&quot;41&quot; font-size=&quot;15&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot; letter-spacing=&quot;-0.4&quot;>Report<tspan font-size=&quot;10&quot; fill=&quot;#94A3B8&quot; font-weight=&quot;400&quot;> Builder</tspan></text>
+
+  <g class=&quot;header-stepper&quot;>
+  <line x1=&quot;140&quot; y1=&quot;32&quot; x2=&quot;200&quot; y2=&quot;32&quot; stroke=&quot;#D1D5DB&quot; stroke-width=&quot;1&quot;/>
+  <line x1=&quot;280&quot; y1=&quot;32&quot; x2=&quot;340&quot; y2=&quot;32&quot; stroke=&quot;#D1D5DB&quot; stroke-width=&quot;1&quot;/>
+  <line x1=&quot;420&quot; y1=&quot;32&quot; x2=&quot;480&quot; y2=&quot;32&quot; stroke=&quot;#D1D5DB&quot; stroke-width=&quot;1&quot;/>
+
+  <g transform=&quot;translate(80, 18)&quot;>
+    <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;60&quot; height=&quot;28&quot; rx=&quot;14&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#D1D5DB&quot; stroke-width=&quot;1&quot;/>
+    <text x=&quot;30&quot; y=&quot;18&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#6B7280&quot;>Blank</text>
+    <g class=&quot;pill-rx-on&quot;>
+      <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;60&quot; height=&quot;28&quot; rx=&quot;14&quot; fill=&quot;#00AED6&quot;/>
+      <text x=&quot;30&quot; y=&quot;18&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#FFFFFF&quot;>Blank</text>
+    </g>
+  </g>
+  <g transform=&quot;translate(200, 18)&quot;>
+    <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;80&quot; height=&quot;28&quot; rx=&quot;14&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#D1D5DB&quot; stroke-width=&quot;1&quot;/>
+    <text x=&quot;40&quot; y=&quot;18&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#6B7280&quot;>Templates</text>
+    <g class=&quot;pill-scan-on&quot;>
+      <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;80&quot; height=&quot;28&quot; rx=&quot;14&quot; fill=&quot;#00AED6&quot;/>
+      <text x=&quot;40&quot; y=&quot;18&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#FFFFFF&quot;>Templates</text>
+    </g>
+  </g>
+  <g transform=&quot;translate(340, 18)&quot;>
+    <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;80&quot; height=&quot;28&quot; rx=&quot;14&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#D1D5DB&quot; stroke-width=&quot;1&quot;/>
+    <text x=&quot;40&quot; y=&quot;18&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#6B7280&quot;>Data</text>
+    <g class=&quot;pill-view-on&quot;>
+      <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;80&quot; height=&quot;28&quot; rx=&quot;14&quot; fill=&quot;#00AED6&quot;/>
+      <text x=&quot;40&quot; y=&quot;18&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#FFFFFF&quot;>Data</text>
+    </g>
+  </g>
+  <g transform=&quot;translate(480, 18)&quot;>
+    <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;80&quot; height=&quot;28&quot; rx=&quot;14&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#D1D5DB&quot; stroke-width=&quot;1&quot;/>
+    <text x=&quot;40&quot; y=&quot;18&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#6B7280&quot;>Report</text>
+    <g class=&quot;pill-send-on&quot;>
+      <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;80&quot; height=&quot;28&quot; rx=&quot;14&quot; fill=&quot;#00AED6&quot;/>
+      <text x=&quot;40&quot; y=&quot;18&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#FFFFFF&quot;>Report</text>
+    </g>
+  </g>
+  </g>
+
+  <!-- Icons on right -->
+  <g transform=&quot;translate(596, 23)&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;>
+    <rect x=&quot;0&quot; y=&quot;4&quot; width=&quot;12&quot; height=&quot;10&quot; rx=&quot;1.5&quot;/>
+    <path d=&quot;M 3 4 V 2 Q 3 0 6 0 Q 9 0 9 2 V 4&quot;/>
+    <g transform=&quot;translate(20, 4)&quot;><rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;16&quot; height=&quot;10&quot; rx=&quot;1.5&quot;/><rect x=&quot;17&quot; y=&quot;3&quot; width=&quot;2&quot; height=&quot;4&quot; fill=&quot;#9CA3AF&quot; rx=&quot;0.5&quot; stroke=&quot;none&quot;/><rect x=&quot;1.5&quot; y=&quot;1.5&quot; width=&quot;9&quot; height=&quot;7&quot; rx=&quot;0.5&quot; fill=&quot;#9CA3AF&quot; stroke=&quot;none&quot;/></g>
+    <g transform=&quot;translate(44, 3)&quot;><path d=&quot;M 7 0 V 1 Q 2 1 2 6 V 9 L 0 11 H 14 L 12 9 V 6 Q 12 1 7 1 M 5 12 Q 7 14 9 12&quot;/></g>
+    <g transform=&quot;translate(64, 4)&quot;><circle cx=&quot;6&quot; cy=&quot;6&quot; r=&quot;2.5&quot;/><path d=&quot;M 6 0 V 2 M 6 10 V 12 M 0 6 H 2 M 10 6 H 12&quot;/></g>
+  </g>
+
+  <!-- DIVIDER LINE -->
+  <line x1=&quot;190&quot; y1=&quot;100&quot; x2=&quot;190&quot; y2=&quot;480&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+
+  <!-- LEFT SIDEBAR: Step checklist -->
+  <g class=&quot;entrance d1&quot;>
+    <!-- Step 1: Blank -->
+    <g class=&quot;sb1 sidebar-step&quot;>
+      <circle cx=&quot;70&quot; cy=&quot;140&quot; r=&quot;18&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.5&quot;/>
+      <text x=&quot;70&quot; y=&quot;146&quot; text-anchor=&quot;middle&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#00AED6&quot;>1</text>
+      <text x=&quot;110&quot; y=&quot;150&quot; font-size=&quot;12&quot; font-weight=&quot;500&quot; fill=&quot;#0F2F44&quot;>Blank Page</text>
+      <line x1=&quot;50&quot; y1=&quot;165&quot; x2=&quot;170&quot; y2=&quot;165&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.5&quot;/>
+    </g>
+
+    <!-- Step 2: Templates -->
+    <g class=&quot;sb2 sidebar-step&quot;>
+      <circle cx=&quot;70&quot; cy=&quot;220&quot; r=&quot;18&quot; fill=&quot;#F3F4F6&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1.5&quot;/>
+      <text x=&quot;70&quot; y=&quot;226&quot; text-anchor=&quot;middle&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#9CA3AF&quot;>2</text>
+      <text x=&quot;110&quot; y=&quot;230&quot; font-size=&quot;12&quot; font-weight=&quot;400&quot; fill=&quot;#6B7280&quot;>Choose Template</text>
+      <line x1=&quot;50&quot; y1=&quot;245&quot; x2=&quot;170&quot; y2=&quot;245&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.5&quot;/>
+    </g>
+
+    <!-- Step 3: Data -->
+    <g class=&quot;sb3 sidebar-step&quot;>
+      <circle cx=&quot;70&quot; cy=&quot;300&quot; r=&quot;18&quot; fill=&quot;#F3F4F6&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1.5&quot;/>
+      <text x=&quot;70&quot; y=&quot;306&quot; text-anchor=&quot;middle&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#9CA3AF&quot;>3</text>
+      <text x=&quot;110&quot; y=&quot;310&quot; font-size=&quot;12&quot; font-weight=&quot;400&quot; fill=&quot;#6B7280&quot;>Fill in Data</text>
+      <line x1=&quot;50&quot; y1=&quot;325&quot; x2=&quot;170&quot; y2=&quot;325&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.5&quot;/>
+    </g>
+
+    <!-- Step 4: Final -->
+    <g class=&quot;sb4 sidebar-step&quot;>
+      <circle cx=&quot;70&quot; cy=&quot;380&quot; r=&quot;18&quot; fill=&quot;#F3F4F6&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1.5&quot;/>
+      <text x=&quot;70&quot; y=&quot;386&quot; text-anchor=&quot;middle&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#9CA3AF&quot;>4</text>
+      <text x=&quot;110&quot; y=&quot;390&quot; font-size=&quot;12&quot; font-weight=&quot;400&quot; fill=&quot;#6B7280&quot;>Finalize Report</text>
+    </g>
+  </g>
+
+  <!-- RIGHT SIDE: Document preview evolving -->
+  
+  <!-- STATE 1: Blank page -->
+  <g class=&quot;step-blank&quot;>
+    <rect x=&quot;230&quot; y=&quot;120&quot; width=&quot;410&quot; height=&quot;320&quot; rx=&quot;12&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;2&quot;/>
+    <text x=&quot;435&quot; y=&quot;280&quot; text-anchor=&quot;middle&quot; font-size=&quot;18&quot; fill=&quot;#D1D5DB&quot; font-weight=&quot;500&quot;>Blank Document</text>
+  </g>
+
+  <!-- STATE 2: Template layout appears -->
+  <g class=&quot;step-template&quot;>
+    <rect x=&quot;230&quot; y=&quot;120&quot; width=&quot;410&quot; height=&quot;320&quot; rx=&quot;12&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;2&quot;/>
+    <!-- Header area -->
+    <rect class=&quot;template-box&quot; x=&quot;250&quot; y=&quot;140&quot; width=&quot;370&quot; height=&quot;30&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.5&quot; rx=&quot;4&quot;/>
+    <text x=&quot;435&quot; y=&quot;160&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; fill=&quot;#00AED6&quot; font-weight=&quot;600&quot;>Patient Report Template</text>
+    <!-- Body sections -->
+    <g style=&quot;animation-delay: 0.3s&quot;>
+      <rect class=&quot;template-box&quot; x=&quot;250&quot; y=&quot;185&quot; width=&quot;120&quot; height=&quot;8&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;0.5&quot; rx=&quot;2&quot;/>
+      <rect class=&quot;template-box&quot; x=&quot;250&quot; y=&quot;202&quot; width=&quot;370&quot; height=&quot;40&quot; fill=&quot;#F3F4F6&quot; stroke=&quot;#D1D5DB&quot; stroke-width=&quot;0.8&quot; rx=&quot;2&quot;/>
+    </g>
+    <!-- Footer -->
+    <g style=&quot;animation-delay: 0.6s&quot;>
+      <rect class=&quot;template-box&quot; x=&quot;250&quot; y=&quot;255&quot; width=&quot;370&quot; height=&quot;8&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;0.5&quot; rx=&quot;2&quot;/>
+      <rect class=&quot;template-box&quot; x=&quot;250&quot; y=&quot;280&quot; width=&quot;370&quot; height=&quot;50&quot; fill=&quot;#F3F4F6&quot; stroke=&quot;#D1D5DB&quot; stroke-width=&quot;0.8&quot; rx=&quot;2&quot;/>
+    </g>
+  </g>
+
+  <!-- STATE 3: Data fills in -->
+  <g class=&quot;step-data&quot;>
+    <rect x=&quot;230&quot; y=&quot;120&quot; width=&quot;410&quot; height=&quot;320&quot; rx=&quot;12&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;2&quot;/>
+    <!-- Header -->
+    <rect x=&quot;250&quot; y=&quot;140&quot; width=&quot;370&quot; height=&quot;30&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.5&quot; rx=&quot;4&quot;/>
+    <text x=&quot;435&quot; y=&quot;160&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; fill=&quot;#00AED6&quot; font-weight=&quot;600&quot;>Patient Report Template</text>
+    <!-- Body with text lines -->
+    <g transform=&quot;translate(260, 195)&quot;>
+      <text x=&quot;0&quot; y=&quot;0&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Patient Information</text>
+      <line class=&quot;doc-line&quot; x1=&quot;0&quot; y1=&quot;12&quot; x2=&quot;110&quot; y2=&quot;12&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.2&quot;/>
+      <line class=&quot;doc-line&quot; x1=&quot;0&quot; y1=&quot;24&quot; x2=&quot;140&quot; y2=&quot;24&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot; style=&quot;animation-delay: 0.2s&quot;/>
+      <line class=&quot;doc-line&quot; x1=&quot;0&quot; y1=&quot;34&quot; x2=&quot;130&quot; y2=&quot;34&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot; style=&quot;animation-delay: 0.4s&quot;/>
+      <text x=&quot;0&quot; y=&quot;54&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Diagnosis</text>
+      <line class=&quot;doc-line&quot; x1=&quot;0&quot; y1=&quot;66&quot; x2=&quot;150&quot; y2=&quot;66&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot; style=&quot;animation-delay: 0.6s&quot;/>
+      <text x=&quot;0&quot; y=&quot;86&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Recommendations</text>
+      <line class=&quot;doc-line&quot; x1=&quot;0&quot; y1=&quot;98&quot; x2=&quot;140&quot; y2=&quot;98&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot; style=&quot;animation-delay: 0.8s&quot;/>
+    </g>
+  </g>
+
+  <!-- STATE 4: Finalized with checkmark -->
+  <g class=&quot;step-final&quot;>
+    <rect x=&quot;230&quot; y=&quot;120&quot; width=&quot;410&quot; height=&quot;320&quot; rx=&quot;12&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;2.5&quot;/>
+    <!-- Header -->
+    <rect x=&quot;250&quot; y=&quot;140&quot; width=&quot;370&quot; height=&quot;30&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.5&quot; rx=&quot;4&quot;/>
+    <text x=&quot;435&quot; y=&quot;160&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; fill=&quot;#00AED6&quot; font-weight=&quot;600&quot;>Patient Report Template</text>
+    <!-- Body with content -->
+    <g transform=&quot;translate(260, 195)&quot;>
+      <text x=&quot;0&quot; y=&quot;0&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Patient Information</text>
+      <line x1=&quot;0&quot; y1=&quot;12&quot; x2=&quot;110&quot; y2=&quot;12&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.2&quot;/>
+      <line x1=&quot;0&quot; y1=&quot;24&quot; x2=&quot;140&quot; y2=&quot;24&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+      <line x1=&quot;0&quot; y1=&quot;34&quot; x2=&quot;130&quot; y2=&quot;34&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+      <text x=&quot;0&quot; y=&quot;54&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Diagnosis</text>
+      <line x1=&quot;0&quot; y1=&quot;66&quot; x2=&quot;150&quot; y2=&quot;66&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+      <text x=&quot;0&quot; y=&quot;86&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Recommendations</text>
+      <line x1=&quot;0&quot; y1=&quot;98&quot; x2=&quot;140&quot; y2=&quot;98&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;0.8&quot;/>
+    </g>
+    <!-- Checkmark overlay -->
+    <circle class=&quot;checkmark-icon&quot; cx=&quot;600&quot; cy=&quot;180&quot; r=&quot;28&quot; fill=&quot;#00AED6&quot; opacity=&quot;0.15&quot;/>
+    <path class=&quot;checkmark-icon&quot; d=&quot;M 588 180 L 596 188 L 612 172&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;4&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    <!-- Professional stamp -->
+    <text x=&quot;600&quot; y=&quot;425&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; font-weight=&quot;600&quot; fill=&quot;#00AED6&quot;>Professional</text>
+    <text x=&quot;600&quot; y=&quot;442&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; font-weight=&quot;600&quot; fill=&quot;#00AED6&quot;>Report Ready</text>
+  </g>
+  </svg>
+  </div>
+</body>
+</html>
+"
+  width="100%"
+  height="100%"
+  scrolling="no"
+  frameborder="0"
+  style="border:0; display:block; width: 100%; height: 100%; min-height: 100vh; background:#F4F7FA; overflow:hidden;"
+  loading="lazy"
+  title="Patient Report Redesign workflow">
+</iframe>

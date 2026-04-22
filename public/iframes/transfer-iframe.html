@@ -1,0 +1,215 @@
+<iframe
+  srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot;>
+<title>Transfer</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    min-height: 100vh; min-height: 100dvh;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .stage { width: 100%; height: 100%; }
+  .canvas { width: 100%; height: 100%; display: block; }
+
+  /* 3 states: empty (4s), typing (4s), confirmed (4s) */
+  .s1,.s2,.s3 { opacity: 0; }
+  .s1 { animation: s1 12s infinite; }
+  .s2 { animation: s2 12s infinite; }
+  .s3 { animation: s3 12s infinite; }
+  @keyframes s1 { 0%,30%  { opacity:1 } 34%,100% { opacity:0 } }
+  @keyframes s2 { 0%,31%  { opacity:0 } 34%,64%  { opacity:1 } 68%,100% { opacity:0 } }
+  @keyframes s3 { 0%,65%  { opacity:0 } 68%,97%  { opacity:1 } 100%    { opacity:0 } }
+
+  /* Amount number types in */
+  .amount-type { animation: typeIn 3s steps(8,end) infinite; }
+  @keyframes typeIn { from{clip-path:inset(0 100% 0 0)} to{clip-path:inset(0 0% 0 0)} }
+
+  /* Cursor blink in state 1 */
+  .cursor { animation: blink 1s steps(2) infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* Bottom detail row slide up */
+  .slide-up { animation: slideUp .6s cubic-bezier(.22,.9,.3,1) both; }
+  @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  /* Confirm checkmark pop */
+  .check-pop { transform-box:fill-box; transform-origin:center; animation: cpop 1s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes cpop { 0%{opacity:0;transform:scale(0)} 60%,100%{opacity:1;transform:scale(1)} }
+
+  /* Subtle card float */
+  .float { animation: floatY 4s ease-in-out infinite; }
+  .float2 { animation: floatY 4s ease-in-out infinite; animation-delay: .8s; }
+  .float3 { animation: floatY 4s ease-in-out infinite; animation-delay: 1.6s; }
+  @keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+
+  @media (prefers-reduced-motion: reduce) { * { animation:none!important } }
+</style>
+</head>
+<body>
+<div class=&quot;stage&quot;>
+<svg class=&quot;canvas&quot; viewBox=&quot;0 0 480 600&quot; preserveAspectRatio=&quot;xMidYMid meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
+  <defs>
+    <!-- Main background gradient matching reference -->
+    <linearGradient id=&quot;bg&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;>
+      <stop offset=&quot;0%&quot; stop-color=&quot;#A8E6E2&quot;/>
+      <stop offset=&quot;40%&quot; stop-color=&quot;#C4EEDA&quot;/>
+      <stop offset=&quot;70%&quot; stop-color=&quot;#B8D8F0&quot;/>
+      <stop offset=&quot;100%&quot; stop-color=&quot;#C8B8F0&quot;/>
+    </linearGradient>
+    <!-- Soft orb top -->
+    <radialGradient id=&quot;orb1&quot; cx=&quot;50%&quot; cy=&quot;0%&quot; r=&quot;60%&quot;>
+      <stop offset=&quot;0%&quot; stop-color=&quot;#DFFAF0&quot; stop-opacity=&quot;.7&quot;/>
+      <stop offset=&quot;100%&quot; stop-color=&quot;#DFFAF0&quot; stop-opacity=&quot;0&quot;/>
+    </radialGradient>
+    <!-- Soft orb bottom -->
+    <radialGradient id=&quot;orb2&quot; cx=&quot;80%&quot; cy=&quot;100%&quot; r=&quot;50%&quot;>
+      <stop offset=&quot;0%&quot; stop-color=&quot;#D4C8F8&quot; stop-opacity=&quot;.6&quot;/>
+      <stop offset=&quot;100%&quot; stop-color=&quot;#D4C8F8&quot; stop-opacity=&quot;0&quot;/>
+    </radialGradient>
+    <!-- Card shadow filter -->
+    <filter id=&quot;shadow&quot; x=&quot;-10%&quot; y=&quot;-10%&quot; width=&quot;120%&quot; height=&quot;130%&quot;>
+      <feDropShadow dx=&quot;0&quot; dy=&quot;6&quot; stdDeviation=&quot;16&quot; flood-color=&quot;#00000012&quot;/>
+    </filter>
+    <filter id=&quot;shadow-sm&quot; x=&quot;-5%&quot; y=&quot;-5%&quot; width=&quot;110%&quot; height=&quot;120%&quot;>
+      <feDropShadow dx=&quot;0&quot; dy=&quot;3&quot; stdDeviation=&quot;8&quot; flood-color=&quot;#0000000D&quot;/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width=&quot;480&quot; height=&quot;600&quot; fill=&quot;url(#bg)&quot;/>
+  <rect width=&quot;480&quot; height=&quot;600&quot; fill=&quot;url(#orb1)&quot;/>
+  <rect width=&quot;480&quot; height=&quot;600&quot; fill=&quot;url(#orb2)&quot;/>
+
+  <!-- ═══════════ STATE 1 — Empty / cursor blinking ═══════════ -->
+  <g class=&quot;s1&quot;>
+    <!-- Card 1: You send -->
+    <g class=&quot;float&quot; filter=&quot;url(#shadow)&quot;>
+      <rect x=&quot;52&quot; y=&quot;140&quot; width=&quot;376&quot; height=&quot;110&quot; rx=&quot;22&quot; fill=&quot;white&quot; opacity=&quot;.92&quot;/>
+      <text x=&quot;78&quot; y=&quot;175&quot; font-size=&quot;13&quot; fill=&quot;#9CA3AF&quot;>You send exactly</text>
+      <!-- Cursor -->
+      <rect class=&quot;cursor&quot; x=&quot;78&quot; y=&quot;190&quot; width=&quot;3&quot; height=&quot;38&quot; rx=&quot;1.5&quot; fill=&quot;#111111&quot;/>
+      <!-- Currency pill -->
+      <rect x=&quot;320&quot; y=&quot;180&quot; width=&quot;90&quot; height=&quot;40&quot; rx=&quot;20&quot; fill=&quot;#F3F4F6&quot;/>
+      <circle cx=&quot;338&quot; cy=&quot;200&quot; r=&quot;12&quot; fill=&quot;#0EA5E9&quot; opacity=&quot;.2&quot;/>
+      <text x=&quot;338&quot; y=&quot;204&quot; text-anchor=&quot;middle&quot; font-size=&quot;8&quot; font-weight=&quot;700&quot; fill=&quot;#0EA5E9&quot;>₮</text>
+      <text x=&quot;356&quot; y=&quot;204&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>USDT</text>
+      <text x=&quot;396&quot; y=&quot;204&quot; font-size=&quot;10&quot; fill=&quot;#999999&quot;>∨</text>
+    </g>
+
+    <!-- Card 2: Recipient gets -->
+    <g class=&quot;float2&quot; filter=&quot;url(#shadow)&quot;>
+      <rect x=&quot;52&quot; y=&quot;268&quot; width=&quot;376&quot; height=&quot;110&quot; rx=&quot;22&quot; fill=&quot;white&quot; opacity=&quot;.92&quot;/>
+      <text x=&quot;78&quot; y=&quot;303&quot; font-size=&quot;13&quot; fill=&quot;#9CA3AF&quot;>Recipient gets</text>
+      <text x=&quot;78&quot; y=&quot;348&quot; font-size=&quot;36&quot; font-weight=&quot;700&quot; fill=&quot;#D1D5DB&quot;>—</text>
+      <rect x=&quot;320&quot; y=&quot;308&quot; width=&quot;90&quot; height=&quot;40&quot; rx=&quot;20&quot; fill=&quot;#F3F4F6&quot;/>
+      <text x=&quot;339&quot; y=&quot;332&quot; text-anchor=&quot;middle&quot; font-size=&quot;16&quot;>🇺🇸</text>
+      <text x=&quot;362&quot; y=&quot;332&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>USD</text>
+      <text x=&quot;396&quot; y=&quot;332&quot; font-size=&quot;10&quot; fill=&quot;#999999&quot;>∨</text>
+    </g>
+
+    <!-- Card 3: bottom details (faded) -->
+    <g class=&quot;float3&quot; filter=&quot;url(#shadow)&quot;>
+      <rect x=&quot;52&quot; y=&quot;396&quot; width=&quot;376&quot; height=&quot;118&quot; rx=&quot;22&quot; fill=&quot;white&quot; opacity=&quot;.88&quot;/>
+      <rect x=&quot;68&quot; y=&quot;412&quot; width=&quot;36&quot; height=&quot;36&quot; rx=&quot;10&quot; fill=&quot;#F3F4F6&quot;/>
+      <text x=&quot;86&quot; y=&quot;435&quot; text-anchor=&quot;middle&quot; font-size=&quot;16&quot;>🏛</text>
+      <text x=&quot;118&quot; y=&quot;435&quot; font-size=&quot;13&quot; font-weight=&quot;500&quot; fill=&quot;#CCCCCC&quot;>Connected bank account (ACH)</text>
+      <!-- Two info boxes -->
+      <rect x=&quot;68&quot; y=&quot;456&quot; width=&quot;160&quot; height=&quot;44&quot; rx=&quot;10&quot; fill=&quot;#F9FAFB&quot;/>
+      <line x1=&quot;248&quot; y1=&quot;456&quot; x2=&quot;248&quot; y2=&quot;500&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+      <rect x=&quot;248&quot; y=&quot;456&quot; width=&quot;164&quot; height=&quot;44&quot; rx=&quot;10&quot; fill=&quot;#F9FAFB&quot;/>
+      <text x=&quot;148&quot; y=&quot;473&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#CCCCCC&quot;>Includes fees</text>
+      <text x=&quot;148&quot; y=&quot;490&quot; text-anchor=&quot;middle&quot; font-size=&quot;13&quot; font-weight=&quot;700&quot; fill=&quot;#CCCCCC&quot;>—</text>
+      <text x=&quot;330&quot; y=&quot;473&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#CCCCCC&quot;>Should arrive</text>
+      <text x=&quot;330&quot; y=&quot;490&quot; text-anchor=&quot;middle&quot; font-size=&quot;13&quot; font-weight=&quot;700&quot; fill=&quot;#CCCCCC&quot;>—</text>
+    </g>
+  </g>
+
+  <!-- ═══════════ STATE 2 — Amount entered ═══════════ -->
+  <g class=&quot;s2&quot;>
+    <!-- Card 1: You send -->
+    <g class=&quot;float&quot; filter=&quot;url(#shadow)&quot;>
+      <rect x=&quot;52&quot; y=&quot;140&quot; width=&quot;376&quot; height=&quot;110&quot; rx=&quot;22&quot; fill=&quot;white&quot; opacity=&quot;.95&quot;/>
+      <text x=&quot;78&quot; y=&quot;175&quot; font-size=&quot;13&quot; fill=&quot;#9CA3AF&quot;>You send exactly</text>
+      <text x=&quot;78&quot; y=&quot;230&quot; font-size=&quot;42&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>$2,249.78</text>
+      <!-- Currency pill -->
+      <rect x=&quot;320&quot; y=&quot;180&quot; width=&quot;90&quot; height=&quot;40&quot; rx=&quot;20&quot; fill=&quot;#111111&quot;/>
+      <circle cx=&quot;338&quot; cy=&quot;200&quot; r=&quot;12&quot; fill=&quot;#0EA5E9&quot; opacity=&quot;.3&quot;/>
+      <text x=&quot;338&quot; y=&quot;204&quot; text-anchor=&quot;middle&quot; font-size=&quot;8&quot; font-weight=&quot;700&quot; fill=&quot;#FFFFFF&quot;>₮</text>
+      <text x=&quot;356&quot; y=&quot;204&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#FFFFFF&quot;>USDT</text>
+      <text x=&quot;396&quot; y=&quot;204&quot; font-size=&quot;10&quot; fill=&quot;#AAAAAA&quot;>∨</text>
+    </g>
+
+    <!-- Card 2: Recipient gets -->
+    <g class=&quot;float2&quot; filter=&quot;url(#shadow)&quot;>
+      <rect x=&quot;52&quot; y=&quot;268&quot; width=&quot;376&quot; height=&quot;110&quot; rx=&quot;22&quot; fill=&quot;white&quot; opacity=&quot;.95&quot;/>
+      <text x=&quot;78&quot; y=&quot;303&quot; font-size=&quot;13&quot; fill=&quot;#9CA3AF&quot;>Recipient gets</text>
+      <!-- Whole number solid, decimals faded (matching reference) -->
+      <text x=&quot;78&quot; y=&quot;348&quot; font-size=&quot;42&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>$2,249.</text>
+      <text x=&quot;283&quot; y=&quot;348&quot; font-size=&quot;42&quot; font-weight=&quot;700&quot; fill=&quot;#CCCCCC&quot;>63</text>
+      <rect x=&quot;320&quot; y=&quot;308&quot; width=&quot;90&quot; height=&quot;40&quot; rx=&quot;20&quot; fill=&quot;#F3F4F6&quot;/>
+      <text x=&quot;339&quot; y=&quot;332&quot; text-anchor=&quot;middle&quot; font-size=&quot;16&quot;>🇺🇸</text>
+      <text x=&quot;362&quot; y=&quot;332&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>USD</text>
+      <text x=&quot;396&quot; y=&quot;332&quot; font-size=&quot;10&quot; fill=&quot;#999999&quot;>∨</text>
+    </g>
+
+    <!-- Card 3: bottom details filled -->
+    <g class=&quot;float3 slide-up&quot; filter=&quot;url(#shadow)&quot;>
+      <rect x=&quot;52&quot; y=&quot;396&quot; width=&quot;376&quot; height=&quot;118&quot; rx=&quot;22&quot; fill=&quot;white&quot; opacity=&quot;.95&quot;/>
+      <rect x=&quot;68&quot; y=&quot;412&quot; width=&quot;36&quot; height=&quot;36&quot; rx=&quot;10&quot; fill=&quot;#F3F4F6&quot;/>
+      <text x=&quot;86&quot; y=&quot;435&quot; text-anchor=&quot;middle&quot; font-size=&quot;16&quot;>🏛</text>
+      <text x=&quot;118&quot; y=&quot;435&quot; font-size=&quot;13&quot; font-weight=&quot;500&quot; fill=&quot;#111111&quot;>Connected bank account (ACH)</text>
+      <text x=&quot;395&quot; y=&quot;435&quot; font-size=&quot;10&quot; fill=&quot;#999999&quot;>∨</text>
+      <!-- Two info boxes -->
+      <rect x=&quot;68&quot; y=&quot;456&quot; width=&quot;160&quot; height=&quot;44&quot; rx=&quot;10&quot; fill=&quot;#F9FAFB&quot;/>
+      <line x1=&quot;248&quot; y1=&quot;460&quot; x2=&quot;248&quot; y2=&quot;496&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+      <rect x=&quot;248&quot; y=&quot;456&quot; width=&quot;164&quot; height=&quot;44&quot; rx=&quot;10&quot; fill=&quot;#F9FAFB&quot;/>
+      <text x=&quot;148&quot; y=&quot;473&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#9CA3AF&quot;>Includes fees ⓘ</text>
+      <text x=&quot;148&quot; y=&quot;491&quot; text-anchor=&quot;middle&quot; font-size=&quot;14&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>15.28 USD</text>
+      <text x=&quot;330&quot; y=&quot;473&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#9CA3AF&quot;>Should arrive</text>
+      <text x=&quot;330&quot; y=&quot;491&quot; text-anchor=&quot;middle&quot; font-size=&quot;14&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>In seconds</text>
+    </g>
+  </g>
+
+  <!-- ═══════════ STATE 3 — Confirmed ═══════════ -->
+  <g class=&quot;s3&quot;>
+    <!-- Confirmation hero card -->
+    <g class=&quot;float&quot; filter=&quot;url(#shadow)&quot;>
+      <rect x=&quot;52&quot; y=&quot;160&quot; width=&quot;376&quot; height=&quot;280&quot; rx=&quot;28&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+
+      <!-- Big check -->
+      <g class=&quot;check-pop&quot;>
+        <circle cx=&quot;240&quot; cy=&quot;240&quot; r=&quot;44&quot; fill=&quot;#ECFDF5&quot;/>
+        <path d=&quot;M 218 240 L 232 254 L 264 222&quot; stroke=&quot;#10B981&quot; stroke-width=&quot;4&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+      </g>
+
+      <text x=&quot;240&quot; y=&quot;306&quot; text-anchor=&quot;middle&quot; font-size=&quot;15&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>Transfer initiated</text>
+      <text x=&quot;240&quot; y=&quot;328&quot; text-anchor=&quot;middle&quot; font-size=&quot;12&quot; fill=&quot;#9CA3AF&quot;>$2,249.78 USDT → $2,249.63 USD</text>
+
+      <!-- Mini details row -->
+      <line x1=&quot;88&quot; y1=&quot;352&quot; x2=&quot;392&quot; y2=&quot;352&quot; stroke=&quot;#F3F4F6&quot; stroke-width=&quot;1&quot;/>
+      <text x=&quot;132&quot; y=&quot;378&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#9CA3AF&quot;>Fees</text>
+      <text x=&quot;132&quot; y=&quot;395&quot; text-anchor=&quot;middle&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>15.28 USD</text>
+      <line x1=&quot;240&quot; y1=&quot;356&quot; x2=&quot;240&quot; y2=&quot;402&quot; stroke=&quot;#F3F4F6&quot; stroke-width=&quot;1&quot;/>
+      <text x=&quot;350&quot; y=&quot;378&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#9CA3AF&quot;>Arrives</text>
+      <text x=&quot;350&quot; y=&quot;395&quot; text-anchor=&quot;middle&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#10B981&quot;>In seconds</text>
+    </g>
+  </g>
+
+</svg>
+</div>
+</body>
+</html>
+"
+  width="100%"
+  height="100%"
+  scrolling="no"
+  frameborder="0"
+  style="border:0; display:block; width: 100%; height: 100%; min-height: 100vh; overflow:hidden;"
+  loading="lazy"
+  title="Transfer flow">
+</iframe>

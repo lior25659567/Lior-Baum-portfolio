@@ -124,6 +124,22 @@
     to   { opacity: 1; transform: scale(1); }
   }
 
+  /* Idle motion — each row's icon CELL bobs on its own phase so the column
+     feels alive. Runs on .icn (the wrapper) while iconPop keeps running on the
+     inner content, so entrance + idle don't fight over the `animation` prop. */
+  .tlrow.t1 .icn { animation: bobA 5.2s ease-in-out infinite 1.2s; }
+  .tlrow.t2 .icn { animation: bobB 4.6s ease-in-out infinite 1.5s; }
+  .tlrow.t3 .icn { animation: bobA 5.6s ease-in-out infinite 1.8s; }
+  .tlrow.t5 .icn { animation: bobB 4.8s ease-in-out infinite 2.1s; }
+  @keyframes bobA {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-3px) rotate(-1.5deg); }
+  }
+  @keyframes bobB {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-3px) rotate(1.5deg); }
+  }
+
   .meta { min-width: 0; }
 
   .name {
@@ -151,6 +167,28 @@
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.2px;
+    position: relative;
+    animation: nowPulse 2.2s ease-in-out infinite;
+  }
+  /* Ripple ring radiating out from the "Now" chip — signals the current era. */
+  .nowchip::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    border: 1.5px solid var(--coral-deep);
+    opacity: 0;
+    animation: nowRing 2.2s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes nowPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(113,43,19,0.25); }
+    50%      { box-shadow: 0 0 0 6px rgba(113,43,19,0);    }
+  }
+  @keyframes nowRing {
+    0%   { transform: scale(0.95); opacity: 0.6; }
+    80%  { transform: scale(1.45); opacity: 0;   }
+    100% { transform: scale(1.45); opacity: 0;   }
   }
 
   /* Pills stack fits inside the icon column — small, centered, no overflow. */
@@ -174,6 +212,15 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    animation: pillGlow 3.6s ease-in-out infinite;
+  }
+  /* Staggered glow so the three pills breathe in sequence — "tokens resolving". */
+  .pills .pill:nth-child(1) { animation-delay: 0s; }
+  .pills .pill:nth-child(2) { animation-delay: 0.4s; }
+  .pills .pill:nth-child(3) { animation-delay: 0.8s; }
+  @keyframes pillGlow {
+    0%, 100% { transform: translateX(0); opacity: 0.9; }
+    50%      { transform: translateX(2px); opacity: 1;   }
   }
 
   .aiicons { display: flex; gap: 8px; align-items: center; justify-content: center; }

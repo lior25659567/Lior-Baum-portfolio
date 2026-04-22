@@ -50,6 +50,18 @@
           "size": "large",
           "fit": "contain",
           "wrapperBg": false,
+          "embedUrl": "/iframes/scan-workflow.html",
+          "src": "",
+          "caption": "The three phases — RX → Scan → View",
+          "isVideo": false,
+          "embedType": "iframe",
+          "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-wvhziz51co.png",
           "caption": "",
@@ -58,7 +70,7 @@
         }
       ],
       "splitRatio": 40,
-      "gridCols": 1,
+      "gridCols": 2,
       "imageDisplayMode": "grid"
     },
     {

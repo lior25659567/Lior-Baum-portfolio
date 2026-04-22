@@ -1,0 +1,268 @@
+<iframe
+  srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot;>
+<title>Techno Chronicles</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    min-height: 100vh; min-height: 100dvh;
+    overflow: hidden;
+    font-family: 'Courier New', Courier, monospace;
+    background: linear-gradient(135deg, #A8E6E2 0%, #C4EEDA 35%, #B8D8F0 65%, #C8B8F0 100%);
+  }
+  .stage { width: 100%; height: 100%; }
+  .canvas { width: 100%; height: 100%; display: block; }
+
+  .s1,.s2 { opacity:0; }
+  .s1 { animation: s1 13s infinite; }
+  .s2 { animation: s2 13s infinite; }
+  @keyframes s1 { 0%,44%  { opacity:1 } 48%,100% { opacity:0 } }
+  @keyframes s2 { 0%,48%  { opacity:0 } 52%,97%  { opacity:1 } 100% { opacity:0 } }
+
+  .f1 { animation: fy 5s ease-in-out infinite; }
+  .f2 { animation: fy 5s ease-in-out infinite; animation-delay:1s; }
+  @keyframes fy { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+  .ring { stroke-dasharray:1200; stroke-dashoffset:1200; animation: ringDraw 13s infinite; }
+  @keyframes ringDraw { 0%,2%{stroke-dashoffset:1200} 22%,44%{stroke-dashoffset:0} 48%,100%{stroke-dashoffset:1200} }
+
+  .gl1  { animation: gl 13s infinite; animation-delay:0.3s }
+  .gl2  { animation: gl 13s infinite; animation-delay:0.6s }
+  .gl3  { animation: gl 13s infinite; animation-delay:0.9s }
+  .gl4  { animation: gl 13s infinite; animation-delay:1.2s }
+  .gl5  { animation: gl 13s infinite; animation-delay:1.5s }
+  .gl6  { animation: gl 13s infinite; animation-delay:1.8s }
+  .gl7  { animation: gl 13s infinite; animation-delay:2.1s }
+  .gl8  { animation: gl 13s infinite; animation-delay:2.4s }
+  .gl9  { animation: gl 13s infinite; animation-delay:2.7s }
+  .gl10 { animation: gl 13s infinite; animation-delay:3.0s }
+  @keyframes gl { 0%,4%{opacity:0;transform:translateY(6px)} 11%,44%{opacity:1;transform:translateY(0)} 48%,100%{opacity:0} }
+
+  .ac1 { opacity:0; animation: acIn 13s infinite; }
+  .ac2 { opacity:0; animation: acIn 13s infinite; animation-delay:.3s; }
+  @keyframes acIn { 0%,50%{opacity:0;transform:translateY(8px)} 57%,97%{opacity:1;transform:translateY(0)} 100%{opacity:0} }
+
+  .wl { stroke-dasharray:300; stroke-dashoffset:300; }
+  .wl1  { animation: wd 13s infinite; animation-delay:0.00s }
+  .wl2  { animation: wd 13s infinite; animation-delay:0.07s }
+  .wl3  { animation: wd 13s infinite; animation-delay:0.14s }
+  .wl4  { animation: wd 13s infinite; animation-delay:0.21s }
+  .wl5  { animation: wd 13s infinite; animation-delay:0.28s }
+  .wl6  { animation: wd 13s infinite; animation-delay:0.35s }
+  .wl7  { animation: wd 13s infinite; animation-delay:0.42s }
+  .wl8  { animation: wd 13s infinite; animation-delay:0.49s }
+  .wl9  { animation: wd 13s infinite; animation-delay:0.56s }
+  .wl10 { animation: wd 13s infinite; animation-delay:0.63s }
+  .wl11 { animation: wd 13s infinite; animation-delay:0.70s }
+  .wl12 { animation: wd 13s infinite; animation-delay:0.77s }
+  .wl13 { animation: wd 13s infinite; animation-delay:0.84s }
+  .wl14 { animation: wd 13s infinite; animation-delay:0.91s }
+  .wl15 { animation: wd 13s infinite; animation-delay:0.98s }
+  .wl16 { animation: wd 13s infinite; animation-delay:1.05s }
+  .wl17 { animation: wd 13s infinite; animation-delay:1.12s }
+  .wl18 { animation: wd 13s infinite; animation-delay:1.19s }
+  @keyframes wd { 0%,52%{stroke-dashoffset:300} 69%,97%{stroke-dashoffset:0} 100%{stroke-dashoffset:300} }
+
+  .wr1  { animation: wd2 13s infinite; animation-delay:0.10s }
+  .wr2  { animation: wd2 13s infinite; animation-delay:0.17s }
+  .wr3  { animation: wd2 13s infinite; animation-delay:0.24s }
+  .wr4  { animation: wd2 13s infinite; animation-delay:0.31s }
+  .wr5  { animation: wd2 13s infinite; animation-delay:0.38s }
+  .wr6  { animation: wd2 13s infinite; animation-delay:0.45s }
+  .wr7  { animation: wd2 13s infinite; animation-delay:0.52s }
+  .wr8  { animation: wd2 13s infinite; animation-delay:0.59s }
+  .wr9  { animation: wd2 13s infinite; animation-delay:0.66s }
+  .wr10 { animation: wd2 13s infinite; animation-delay:0.73s }
+  .wr11 { animation: wd2 13s infinite; animation-delay:0.80s }
+  .wr12 { animation: wd2 13s infinite; animation-delay:0.87s }
+  .wr13 { animation: wd2 13s infinite; animation-delay:0.94s }
+  .wr14 { animation: wd2 13s infinite; animation-delay:1.01s }
+  .wr15 { animation: wd2 13s infinite; animation-delay:1.08s }
+  .wr16 { animation: wd2 13s infinite; animation-delay:1.15s }
+  .wr17 { animation: wd2 13s infinite; animation-delay:1.22s }
+  .wr18 { animation: wd2 13s infinite; animation-delay:1.29s }
+  @keyframes wd2 { 0%,54%{stroke-dashoffset:300} 71%,97%{stroke-dashoffset:0} 100%{stroke-dashoffset:300} }
+
+  .bio { opacity:0; animation: bioIn 13s infinite; }
+  @keyframes bioIn { 0%,65%{opacity:0} 71%,97%{opacity:1} 100%{opacity:0} }
+
+  @media (prefers-reduced-motion:reduce) { *{animation:none!important} }
+</style>
+</head>
+<body>
+<div class=&quot;stage&quot;>
+<svg class=&quot;canvas&quot; viewBox=&quot;0 0 480 600&quot; preserveAspectRatio=&quot;xMidYMid meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
+  <defs>
+    <filter id=&quot;sh&quot;><feDropShadow dx=&quot;0&quot; dy=&quot;6&quot; stdDeviation=&quot;18&quot; flood-color=&quot;#00000018&quot;/></filter>
+  </defs>
+
+
+  <!-- STATE 1: Genre Taxonomy -->
+  <g class=&quot;s1&quot;>
+    <g filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;20&quot; y=&quot;20&quot; width=&quot;440&quot; height=&quot;560&quot; rx=&quot;20&quot; fill=&quot;#141414&quot; opacity=&quot;.97&quot;/>
+    </g>
+
+    <text x=&quot;40&quot; y=&quot;58&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;9&quot; letter-spacing=&quot;4&quot; fill=&quot;#444&quot;>THE TECHNO CHRONICLES</text>
+    <line x1=&quot;40&quot; y1=&quot;65&quot; x2=&quot;440&quot; y2=&quot;65&quot; stroke=&quot;#232323&quot; stroke-width=&quot;1&quot;/>
+    <text x=&quot;40&quot; y=&quot;81&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;8&quot; letter-spacing=&quot;3&quot; fill=&quot;#303030&quot;>GENRE TAXONOMY</text>
+
+    <!-- Oval -->
+    <ellipse class=&quot;ring&quot; cx=&quot;240&quot; cy=&quot;430&quot; rx=&quot;185&quot; ry=&quot;68&quot; fill=&quot;none&quot; stroke=&quot;#c8c8c8&quot; stroke-width=&quot;1&quot;/>
+
+    <g class=&quot;gl1&quot;>
+      <line x1=&quot;72&quot;  y1=&quot;430&quot; x2=&quot;72&quot;  y2=&quot;246&quot; stroke=&quot;#2e2e2e&quot; stroke-width=&quot;.8&quot;/>
+      <rect x=&quot;66&quot;  y=&quot;238&quot; width=&quot;7&quot; height=&quot;7&quot; fill=&quot;#4a4a4a&quot;/>
+      <text font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;2&quot; fill=&quot;#888&quot; transform=&quot;translate(76,230) rotate(-90)&quot;>DETROIT</text>
+    </g>
+    <g class=&quot;gl2&quot;>
+      <line x1=&quot;112&quot; y1=&quot;430&quot; x2=&quot;112&quot; y2=&quot;210&quot; stroke=&quot;#2e2e2e&quot; stroke-width=&quot;.8&quot;/>
+      <rect x=&quot;106&quot; y=&quot;202&quot; width=&quot;7&quot; height=&quot;7&quot; fill=&quot;#555&quot;/>
+      <text font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;2&quot; fill=&quot;#888&quot; transform=&quot;translate(116,194) rotate(-90)&quot;>MINIMAL</text>
+    </g>
+    <g class=&quot;gl3&quot;>
+      <line x1=&quot;152&quot; y1=&quot;430&quot; x2=&quot;152&quot; y2=&quot;270&quot; stroke=&quot;#2e2e2e&quot; stroke-width=&quot;.8&quot;/>
+      <rect x=&quot;146&quot; y=&quot;262&quot; width=&quot;7&quot; height=&quot;7&quot; fill=&quot;#555&quot;/>
+      <text font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;2&quot; fill=&quot;#888&quot; transform=&quot;translate(156,254) rotate(-90)&quot;>ACID</text>
+    </g>
+    <g class=&quot;gl4&quot;>
+      <line x1=&quot;192&quot; y1=&quot;430&quot; x2=&quot;192&quot; y2=&quot;185&quot; stroke=&quot;#2e2e2e&quot; stroke-width=&quot;.8&quot;/>
+      <rect x=&quot;186&quot; y=&quot;177&quot; width=&quot;7&quot; height=&quot;7&quot; fill=&quot;#555&quot;/>
+      <text font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;2&quot; fill=&quot;#888&quot; transform=&quot;translate(196,169) rotate(-90)&quot;>ALGORITHM</text>
+    </g>
+    <g class=&quot;gl5&quot;>
+      <line x1=&quot;240&quot; y1=&quot;430&quot; x2=&quot;240&quot; y2=&quot;310&quot; stroke=&quot;#555&quot; stroke-width=&quot;1&quot;/>
+      <rect x=&quot;234&quot; y=&quot;302&quot; width=&quot;7&quot; height=&quot;7&quot; fill=&quot;#aaa&quot;/>
+      <text font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;2&quot; fill=&quot;#ddd&quot; transform=&quot;translate(244,294) rotate(-90)&quot;>AMBIENT</text>
+    </g>
+    <g class=&quot;gl6&quot;>
+      <line x1=&quot;280&quot; y1=&quot;430&quot; x2=&quot;280&quot; y2=&quot;285&quot; stroke=&quot;#2e2e2e&quot; stroke-width=&quot;.8&quot;/>
+      <rect x=&quot;274&quot; y=&quot;277&quot; width=&quot;7&quot; height=&quot;7&quot; fill=&quot;#555&quot;/>
+      <text font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;2&quot; fill=&quot;#888&quot; transform=&quot;translate(284,269) rotate(-90)&quot;>HARD</text>
+    </g>
+    <g class=&quot;gl7&quot;>
+      <line x1=&quot;316&quot; y1=&quot;430&quot; x2=&quot;316&quot; y2=&quot;210&quot; stroke=&quot;#2e2e2e&quot; stroke-width=&quot;.8&quot;/>
+      <rect x=&quot;310&quot; y=&quot;202&quot; width=&quot;7&quot; height=&quot;7&quot; fill=&quot;#555&quot;/>
+      <text font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;2&quot; fill=&quot;#888&quot; transform=&quot;translate(320,194) rotate(-90)&quot;>INDUSTRIAL</text>
+    </g>
+    <g class=&quot;gl8&quot;>
+      <line x1=&quot;352&quot; y1=&quot;430&quot; x2=&quot;352&quot; y2=&quot;250&quot; stroke=&quot;#2e2e2e&quot; stroke-width=&quot;.8&quot;/>
+      <rect x=&quot;346&quot; y=&quot;242&quot; width=&quot;7&quot; height=&quot;7&quot; fill=&quot;#555&quot;/>
+      <text font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;2&quot; fill=&quot;#888&quot; transform=&quot;translate(356,234) rotate(-90)&quot;>DEEP</text>
+    </g>
+    <g class=&quot;gl9&quot;>
+      <line x1=&quot;388&quot; y1=&quot;430&quot; x2=&quot;388&quot; y2=&quot;270&quot; stroke=&quot;#2e2e2e&quot; stroke-width=&quot;.8&quot;/>
+      <rect x=&quot;382&quot; y=&quot;262&quot; width=&quot;7&quot; height=&quot;7&quot; fill=&quot;#555&quot;/>
+      <text font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;2&quot; fill=&quot;#888&quot; transform=&quot;translate(392,254) rotate(-90)&quot;>MELODIC</text>
+    </g>
+    <g class=&quot;gl10&quot;>
+      <line x1=&quot;420&quot; y1=&quot;430&quot; x2=&quot;420&quot; y2=&quot;230&quot; stroke=&quot;#2e2e2e&quot; stroke-width=&quot;.8&quot;/>
+      <rect x=&quot;414&quot; y=&quot;222&quot; width=&quot;7&quot; height=&quot;7&quot; fill=&quot;#4a4a4a&quot;/>
+      <text font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;2&quot; fill=&quot;#888&quot; transform=&quot;translate(424,214) rotate(-90)&quot;>BERLIN</text>
+    </g>
+
+    <text x=&quot;240&quot; y=&quot;548&quot; text-anchor=&quot;middle&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;3&quot; fill=&quot;#2e2e2e&quot;>ORIGIN TO EVOLUTION · DETROIT 1985–BERLIN 2000</text>
+  </g>
+
+
+  <!-- STATE 2: Waveform Portraits -->
+  <g class=&quot;s2&quot;>
+
+    <!-- LEFT: Derrick May -->
+    <g class=&quot;ac1 f1&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;20&quot; y=&quot;20&quot; width=&quot;212&quot; height=&quot;560&quot; rx=&quot;20&quot; fill=&quot;#141414&quot; opacity=&quot;.98&quot;/>
+      <g stroke=&quot;#d0d0d0&quot; stroke-width=&quot;.9&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot;>
+        <path class=&quot;wl wl1&quot;  d=&quot;M36,80  Q70,78  95,80  Q120,82 145,80  Q165,78 196,80&quot;/>
+        <path class=&quot;wl wl2&quot;  d=&quot;M34,91  Q60,87  85,92  Q115,97 140,92  Q165,87 196,91&quot;/>
+        <path class=&quot;wl wl3&quot;  d=&quot;M33,102 Q55,96  80,103 Q115,111 143,103 Q168,96 196,102&quot;/>
+        <path class=&quot;wl wl4&quot;  d=&quot;M33,113 Q52,104 76,114 Q106,124 137,117 Q162,111 196,113&quot;/>
+        <path class=&quot;wl wl5&quot;  d=&quot;M33,124 Q54,112 76,125 Q100,138 128,130 Q156,122 196,124&quot;/>
+        <path class=&quot;wl wl6&quot;  d=&quot;M34,135 Q56,119 80,136 Q104,152 130,141 Q158,130 196,135&quot;/>
+        <path class=&quot;wl wl7&quot;  d=&quot;M35,146 Q58,126 83,147 Q100,161 120,153 Q142,144 162,147 Q182,150 196,146&quot;/>
+        <path class=&quot;wl wl8&quot;  d=&quot;M36,157 Q60,133 87,158 Q106,173 124,164 Q144,155 164,158 Q183,161 196,157&quot;/>
+        <path class=&quot;wl wl9&quot;  d=&quot;M37,168 Q62,148 90,169 Q108,181 126,173 Q146,164 167,168 Q185,171 196,168&quot;/>
+        <path class=&quot;wl wl10&quot; d=&quot;M38,179 Q64,160 92,180 Q112,192 130,183 Q150,174 170,179 Q186,182 196,179&quot;/>
+        <path class=&quot;wl wl11&quot; d=&quot;M39,190 Q66,172 94,191 Q113,202 132,194 Q152,185 172,190 Q187,193 196,190&quot;/>
+        <path class=&quot;wl wl12&quot; d=&quot;M40,201 Q68,184 96,202 Q114,212 133,205 Q153,197 173,201 Q188,204 196,201&quot;/>
+        <path class=&quot;wl wl13&quot; d=&quot;M41,212 Q70,196 98,213 Q115,222 134,215 Q154,208 174,212 Q189,215 196,212&quot;/>
+        <path class=&quot;wl wl14&quot; d=&quot;M43,223 Q73,208 101,224 Q117,232 136,226 Q155,219 175,223 Q190,225 196,223&quot;/>
+        <path class=&quot;wl wl15&quot; d=&quot;M48,234 Q78,221 105,235 Q120,242 138,236 Q157,230 176,234 Q190,236 196,234&quot;/>
+        <path class=&quot;wl wl16&quot; d=&quot;M56,245 Q85,234 110,246 Q124,252 141,247 Q159,241 177,245 Q191,247 196,245&quot;/>
+        <path class=&quot;wl wl17&quot; d=&quot;M70,256 Q96,247 118,257 Q131,262 146,257 Q163,252 179,256 Q191,258 196,256&quot;/>
+        <path class=&quot;wl wl18&quot; d=&quot;M90,267 Q112,260 130,267 Q143,272 156,267 Q170,262 185,266 Q192,267 196,267&quot;/>
+      </g>
+      <g class=&quot;bio&quot;>
+        <line x1=&quot;36&quot; y1=&quot;286&quot; x2=&quot;196&quot; y2=&quot;286&quot; stroke=&quot;#1e1e1e&quot; stroke-width=&quot;1&quot;/>
+        <text x=&quot;36&quot; y=&quot;312&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;15&quot; font-weight=&quot;700&quot; fill=&quot;#e8e8e8&quot;>DERRICK</text>
+        <text x=&quot;36&quot; y=&quot;330&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;15&quot; font-weight=&quot;700&quot; fill=&quot;#e8e8e8&quot;>MAY</text>
+        <text x=&quot;36&quot; y=&quot;348&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7.5&quot; letter-spacing=&quot;1.5&quot; fill=&quot;#3e3e3e&quot;>b.1963 · BELLEVILLE, MI</text>
+        <line x1=&quot;36&quot; y1=&quot;360&quot; x2=&quot;196&quot; y2=&quot;360&quot; stroke=&quot;#1c1c1c&quot; stroke-width=&quot;1&quot;/>
+        <text x=&quot;36&quot; y=&quot;378&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7.5&quot; fill=&quot;#3a3a3a&quot;>Called the Kennedy</text>
+        <text x=&quot;36&quot; y=&quot;391&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7.5&quot; fill=&quot;#3a3a3a&quot;>Warhol of the clique.</text>
+        <text x=&quot;36&quot; y=&quot;404&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7.5&quot; fill=&quot;#3a3a3a&quot;>Conceptualist. Figure.</text>
+        <rect x=&quot;36&quot;  y=&quot;420&quot; width=&quot;50&quot; height=&quot;17&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#282828&quot; stroke-width=&quot;1&quot;/>
+        <text x=&quot;61&quot;  y=&quot;432&quot; text-anchor=&quot;middle&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;1&quot; fill=&quot;#4a4a4a&quot;>DETROIT</text>
+        <rect x=&quot;92&quot;  y=&quot;420&quot; width=&quot;54&quot; height=&quot;17&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#282828&quot; stroke-width=&quot;1&quot;/>
+        <text x=&quot;119&quot; y=&quot;432&quot; text-anchor=&quot;middle&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;1&quot; fill=&quot;#4a4a4a&quot;>MINIMAL</text>
+      </g>
+    </g>
+
+    <!-- RIGHT: Juan Atkins -->
+    <g class=&quot;ac2 f2&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;248&quot; y=&quot;20&quot; width=&quot;212&quot; height=&quot;560&quot; rx=&quot;20&quot; fill=&quot;#141414&quot; opacity=&quot;.98&quot;/>
+      <g stroke=&quot;#c4c4c4&quot; stroke-width=&quot;.9&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot;>
+        <path class=&quot;wl wr1&quot;  d=&quot;M264,80  Q295,78  320,80  Q348,82  373,80  Q390,78  424,80&quot;/>
+        <path class=&quot;wl wr2&quot;  d=&quot;M262,91  Q288,87  313,92  Q342,97  368,92  Q390,87  424,91&quot;/>
+        <path class=&quot;wl wr3&quot;  d=&quot;M261,102 Q282,96  306,103 Q340,112 368,103 Q392,95  424,102&quot;/>
+        <path class=&quot;wl wr4&quot;  d=&quot;M261,113 Q280,104 304,114 Q330,125 360,118 Q383,111 424,113&quot;/>
+        <path class=&quot;wl wr5&quot;  d=&quot;M261,124 Q282,112 305,125 Q328,138 356,131 Q380,123 424,124&quot;/>
+        <path class=&quot;wl wr6&quot;  d=&quot;M262,135 Q284,118 308,136 Q332,153 360,142 Q385,131 424,135&quot;/>
+        <path class=&quot;wl wr7&quot;  d=&quot;M263,146 Q286,126 310,147 Q328,162 348,154 Q370,144 390,147 Q410,150 424,146&quot;/>
+        <path class=&quot;wl wr8&quot;  d=&quot;M264,157 Q288,133 314,158 Q333,174 352,165 Q374,155 393,158 Q412,162 424,157&quot;/>
+        <path class=&quot;wl wr9&quot;  d=&quot;M265,168 Q290,148 317,169 Q336,182 354,174 Q375,165 395,168 Q413,171 424,168&quot;/>
+        <path class=&quot;wl wr10&quot; d=&quot;M266,179 Q292,160 319,180 Q338,193 357,184 Q377,175 397,179 Q414,183 424,179&quot;/>
+        <path class=&quot;wl wr11&quot; d=&quot;M267,190 Q294,172 322,191 Q340,203 359,195 Q379,186 399,190 Q415,194 424,190&quot;/>
+        <path class=&quot;wl wr12&quot; d=&quot;M268,201 Q296,184 324,202 Q341,213 360,206 Q380,198 400,201 Q416,204 424,201&quot;/>
+        <path class=&quot;wl wr13&quot; d=&quot;M269,212 Q298,196 326,213 Q342,222 361,216 Q381,209 401,212 Q416,215 424,212&quot;/>
+        <path class=&quot;wl wr14&quot; d=&quot;M271,223 Q300,208 328,224 Q344,232 363,226 Q382,220 402,223 Q417,226 424,223&quot;/>
+        <path class=&quot;wl wr15&quot; d=&quot;M275,234 Q305,220 332,235 Q347,243 365,237 Q384,230 403,234 Q418,236 424,234&quot;/>
+        <path class=&quot;wl wr16&quot; d=&quot;M282,245 Q311,232 337,246 Q350,253 367,247 Q386,241 404,245 Q418,247 424,245&quot;/>
+        <path class=&quot;wl wr17&quot; d=&quot;M294,256 Q320,247 344,257 Q356,262 371,257 Q389,251 406,256 Q419,258 424,256&quot;/>
+        <path class=&quot;wl wr18&quot; d=&quot;M312,267 Q334,260 354,267 Q366,272 380,267 Q397,261 410,266 Q420,267 424,267&quot;/>
+      </g>
+      <g class=&quot;bio&quot;>
+        <line x1=&quot;264&quot; y1=&quot;286&quot; x2=&quot;424&quot; y2=&quot;286&quot; stroke=&quot;#1e1e1e&quot; stroke-width=&quot;1&quot;/>
+        <text x=&quot;264&quot; y=&quot;312&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;15&quot; font-weight=&quot;700&quot; fill=&quot;#e8e8e8&quot;>JUAN</text>
+        <text x=&quot;264&quot; y=&quot;330&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;15&quot; font-weight=&quot;700&quot; fill=&quot;#e8e8e8&quot;>ATKINS</text>
+        <text x=&quot;264&quot; y=&quot;348&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7.5&quot; letter-spacing=&quot;1.5&quot; fill=&quot;#3e3e3e&quot;>b.1962 · DETROIT, MI</text>
+        <line x1=&quot;264&quot; y1=&quot;360&quot; x2=&quot;424&quot; y2=&quot;360&quot; stroke=&quot;#1c1c1c&quot; stroke-width=&quot;1&quot;/>
+        <text x=&quot;264&quot; y=&quot;378&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7.5&quot; fill=&quot;#3a3a3a&quot;>True inventor of techno.</text>
+        <text x=&quot;264&quot; y=&quot;391&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7.5&quot; fill=&quot;#3a3a3a&quot;>Merged electro hip-hop</text>
+        <text x=&quot;264&quot; y=&quot;404&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7.5&quot; fill=&quot;#3a3a3a&quot;>with futurist house music.</text>
+        <rect x=&quot;264&quot; y=&quot;420&quot; width=&quot;54&quot; height=&quot;17&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#282828&quot; stroke-width=&quot;1&quot;/>
+        <text x=&quot;291&quot; y=&quot;432&quot; text-anchor=&quot;middle&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;1&quot; fill=&quot;#4a4a4a&quot;>ORIGINAL</text>
+        <rect x=&quot;324&quot; y=&quot;420&quot; width=&quot;52&quot; height=&quot;17&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#282828&quot; stroke-width=&quot;1&quot;/>
+        <text x=&quot;350&quot; y=&quot;432&quot; text-anchor=&quot;middle&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;1&quot; fill=&quot;#4a4a4a&quot;>PIONEER</text>
+      </g>
+    </g>
+
+    <text x=&quot;240&quot; y=&quot;594&quot; text-anchor=&quot;middle&quot; font-family=&quot;'Courier New',monospace&quot; font-size=&quot;7&quot; letter-spacing=&quot;3&quot; fill=&quot;rgba(0,0,0,.2)&quot;>BELLEVILLE THREE · DETROIT · 1988</text>
+  </g>
+
+</svg>
+</div>
+</body>
+</html>
+"
+  width="100%"
+  height="100%"
+  scrolling="no"
+  frameborder="0"
+  style="border:0; display:block; width: 100%; height: 100%; min-height: 100vh; overflow:hidden;"
+  loading="lazy"
+  title="Techno Chronicles">
+</iframe>

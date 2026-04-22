@@ -112,6 +112,17 @@
 .about-image.editable {
   cursor: pointer;
   transition: border-color var(--transition-fast);
+  display: block;
+}
+
+/* Visually hide the file input while keeping it clickable via the label. */
+.about-image-file-input {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
 }
 
 .about-image.editable:hover {

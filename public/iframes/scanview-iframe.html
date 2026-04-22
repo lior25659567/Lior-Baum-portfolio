@@ -1,0 +1,291 @@
+<iframe
+  srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot;>
+<title>Scan Flow</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    min-height: 100vh; min-height: 100dvh;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #A8E6E2 0%, #C4EEDA 35%, #B8D8F0 65%, #C8B8F0 100%);
+  }
+  .stage { width: 100%; height: 100%; }
+  .canvas { width: 100%; height: 100%; display: block; }
+
+  /* 2 states × 6s */
+  .s1,.s2 { opacity:0; }
+  .s1 { animation: s1 12s infinite; }
+  .s2 { animation: s2 12s infinite; }
+  @keyframes s1 { 0%,46%  { opacity:1 } 50%,100% { opacity:0 } }
+  @keyframes s2 { 0%,48%  { opacity:0 } 52%,97%  { opacity:1 } 100%   { opacity:0 } }
+
+  /* Gentle card float */
+  .f1 { animation: fy 4s ease-in-out infinite; }
+  .f2 { animation: fy 4s ease-in-out infinite; animation-delay:.7s; }
+  .f3 { animation: fy 4s ease-in-out infinite; animation-delay:1.3s; }
+  @keyframes fy { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+  /* Tooth pulse when selected */
+  .t-sel { animation: tpulse 2s ease-in-out infinite; }
+  .t-sel:nth-child(2){animation-delay:.2s}
+  .t-sel:nth-child(3){animation-delay:.4s}
+  .t-sel:nth-child(4){animation-delay:.6s}
+  @keyframes tpulse { 0%,100%{opacity:.88} 50%{opacity:1} }
+
+  /* Pill pop in sequence */
+  .pill { opacity:0; animation: pillPop .5s cubic-bezier(.34,1.56,.64,1) forwards; }
+  .p1{animation-delay:.1s} .p2{animation-delay:.25s} .p3{animation-delay:.4s}
+  .p4{animation-delay:.55s} .p5{animation-delay:.7s}  .p6{animation-delay:.85s}
+  .p7{animation-delay:1.0s} .p8{animation-delay:1.15s} .p9{animation-delay:1.3s}
+  @keyframes pillPop { from{opacity:0;transform:scale(.8)} to{opacity:1;transform:scale(1)} }
+
+  /* Scan beam sweep */
+  .beam { transform-box:fill-box; animation: beamSw 2.2s ease-in-out infinite; }
+  @keyframes beamSw { 0%,100%{transform:translateY(-80px);opacity:.4} 50%{transform:translateY(80px);opacity:1} }
+
+  /* Mesh dots */
+  .md { animation: mdot 2.2s infinite; }
+  .md:nth-child(1){animation-delay:.00s} .md:nth-child(2){animation-delay:.12s}
+  .md:nth-child(3){animation-delay:.24s} .md:nth-child(4){animation-delay:.36s}
+  .md:nth-child(5){animation-delay:.48s} .md:nth-child(6){animation-delay:.60s}
+  .md:nth-child(7){animation-delay:.72s} .md:nth-child(8){animation-delay:.84s}
+  .md:nth-child(9){animation-delay:.96s} .md:nth-child(10){animation-delay:1.08s}
+  .md:nth-child(11){animation-delay:1.20s}.md:nth-child(12){animation-delay:1.32s}
+  @keyframes mdot { 0%,15%{opacity:0} 40%,75%{opacity:1} 100%{opacity:0} }
+
+  /* Progress bar */
+  .pfill { transform-box:fill-box; transform-origin:left; animation: pfill 3s ease-out infinite; }
+  @keyframes pfill { 0%{transform:scaleX(0)} 80%,100%{transform:scaleX(1)} }
+
+  /* Slide up */
+  .slide { animation: slideUp .5s cubic-bezier(.22,.9,.3,1) both; }
+  @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  @media (prefers-reduced-motion: reduce) { * { animation:none!important } }
+</style>
+</head>
+<body>
+<div class=&quot;stage&quot;>
+<svg class=&quot;canvas&quot; viewBox=&quot;0 0 480 600&quot; preserveAspectRatio=&quot;xMidYMid meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
+  <defs>
+    <filter id=&quot;sh&quot;>
+      <feDropShadow dx=&quot;0&quot; dy=&quot;6&quot; stdDeviation=&quot;18&quot; flood-color=&quot;#00000012&quot;/>
+    </filter>
+    <filter id=&quot;sh-sm&quot;>
+      <feDropShadow dx=&quot;0&quot; dy=&quot;3&quot; stdDeviation=&quot;8&quot; flood-color=&quot;#0000000E&quot;/>
+    </filter>
+    <filter id=&quot;sh-glow&quot;>
+      <feDropShadow dx=&quot;0&quot; dy=&quot;0&quot; stdDeviation=&quot;6&quot; flood-color=&quot;#0EA5E920&quot;/>
+    </filter>
+  </defs>
+
+  <!-- ══════════════════════════════
+       STATE 1 — Tooth selector
+       Killer feature: dental chart + colored procedure pills
+       ══════════════════════════════ -->
+  <g class=&quot;s1&quot;>
+
+    <!-- Hero tooth chart card -->
+    <g class=&quot;f1&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;32&quot; y=&quot;52&quot; width=&quot;416&quot; height=&quot;320&quot; rx=&quot;24&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+
+      <!-- Header -->
+      <text x=&quot;56&quot; y=&quot;90&quot; font-size=&quot;14&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>Select teeth and assign procedures</text>
+      <!-- 4 selected badge -->
+      <rect x=&quot;56&quot; y=&quot;102&quot; width=&quot;72&quot; height=&quot;22&quot; rx=&quot;11&quot; fill=&quot;#DBEAFE&quot;/>
+      <text x=&quot;92&quot; y=&quot;117&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#2563EB&quot;>4 selected</text>
+      <text x=&quot;138&quot; y=&quot;117&quot; font-size=&quot;10&quot; fill=&quot;#9CA3AF&quot;>Clear</text>
+
+      <!-- Upper tooth row — 10 teeth simplified -->
+      <!-- Unselected teeth: small white rect with rounded top, slightly curved -->
+      <!-- Tooth shape: rounded top (root) narrowing, wider crown at bottom — simplified -->
+      <g>
+        <!-- Teeth 18,17,16,15,14 — unselected -->
+        <g fill=&quot;#F0F5FF&quot; stroke=&quot;#CBD5E1&quot; stroke-width=&quot;0.8&quot;>
+          <!-- 18 -->
+          <path d=&quot;M 52 136 Q 50 130 54 126 Q 58 122 64 122 Q 70 122 74 126 Q 78 130 76 136 L 76 152 Q 76 156 72 156 L 56 156 Q 52 156 52 152 Z&quot;/>
+          <!-- 17 -->
+          <path d=&quot;M 82 136 Q 80 130 84 126 Q 88 122 94 122 Q 100 122 104 126 Q 108 130 106 136 L 106 152 Q 106 156 102 156 L 86 156 Q 82 156 82 152 Z&quot;/>
+          <!-- 16 -->
+          <path d=&quot;M 112 136 Q 110 130 114 126 Q 118 122 124 122 Q 130 122 134 126 Q 138 130 136 136 L 136 152 Q 136 156 132 156 L 116 156 Q 112 156 112 152 Z&quot;/>
+          <!-- 15 -->
+          <path d=&quot;M 142 136 Q 141 130 144 127 Q 147 124 152 124 Q 157 124 160 127 Q 163 130 162 136 L 162 150 Q 162 154 158 154 L 146 154 Q 142 154 142 150 Z&quot;/>
+          <!-- 14 -->
+          <path d=&quot;M 168 136 Q 167 130 170 127 Q 173 124 178 124 Q 183 124 186 127 Q 189 130 188 136 L 188 150 Q 188 154 184 154 L 172 154 Q 168 154 168 150 Z&quot;/>
+        </g>
+        <g font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot; text-anchor=&quot;middle&quot;>
+          <text x=&quot;64&quot; y=&quot;168&quot;>18</text><text x=&quot;94&quot; y=&quot;168&quot;>17</text><text x=&quot;124&quot; y=&quot;168&quot;>16</text>
+          <text x=&quot;152&quot; y=&quot;167&quot;>15</text><text x=&quot;178&quot; y=&quot;167&quot;>14</text>
+        </g>
+
+        <!-- Teeth 13,12,11,21 — SELECTED, blue highlight -->
+        <g class=&quot;t-sel&quot; fill=&quot;#DBEAFE&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;1.4&quot;>
+          <!-- 13 -->
+          <path d=&quot;M 193 134 Q 192 128 195 125 Q 198 122 203 122 Q 208 122 211 125 Q 214 128 213 134 L 213 148 Q 213 152 209 152 L 197 152 Q 193 152 193 148 Z&quot;/>
+          <!-- 12 -->
+          <path d=&quot;M 218 134 Q 217 128 220 125 Q 223 122 228 122 Q 233 122 236 125 Q 239 128 238 134 L 238 148 Q 238 152 234 152 L 222 152 Q 218 152 218 148 Z&quot;/>
+          <!-- 11 -->
+          <path d=&quot;M 243 134 Q 242 128 245 125 Q 248 122 253 122 Q 258 122 261 125 Q 264 128 263 134 L 263 148 Q 263 152 259 152 L 247 152 Q 243 152 243 148 Z&quot;/>
+          <!-- 21 -->
+          <path d=&quot;M 268 134 Q 267 128 270 125 Q 273 122 278 122 Q 283 122 286 125 Q 289 128 288 134 L 288 148 Q 288 152 284 152 L 272 152 Q 268 152 268 148 Z&quot;/>
+        </g>
+        <g font-size=&quot;8&quot; font-weight=&quot;700&quot; fill=&quot;#2563EB&quot; text-anchor=&quot;middle&quot;>
+          <text x=&quot;203&quot; y=&quot;164&quot;>13</text><text x=&quot;228&quot; y=&quot;164&quot;>12</text>
+          <text x=&quot;253&quot; y=&quot;164&quot;>11</text><text x=&quot;278&quot; y=&quot;164&quot;>21</text>
+        </g>
+
+        <!-- Teeth 22,23,24,25,26 — unselected -->
+        <g fill=&quot;#F0F5FF&quot; stroke=&quot;#CBD5E1&quot; stroke-width=&quot;0.8&quot;>
+          <path d=&quot;M 293 136 Q 292 130 295 127 Q 298 124 303 124 Q 308 124 311 127 Q 314 130 313 136 L 313 150 Q 313 154 309 154 L 297 154 Q 293 154 293 150 Z&quot;/>
+          <path d=&quot;M 318 136 Q 317 130 320 127 Q 323 124 328 124 Q 333 124 336 127 Q 339 130 338 136 L 338 150 Q 338 154 334 154 L 322 154 Q 318 154 318 150 Z&quot;/>
+          <path d=&quot;M 343 136 Q 341 130 344 126 Q 348 122 354 122 Q 360 122 364 126 Q 367 130 366 136 L 366 152 Q 366 156 362 156 L 346 156 Q 343 156 343 152 Z&quot;/>
+          <path d=&quot;M 370 136 Q 368 130 372 126 Q 376 122 382 122 Q 388 122 392 126 Q 395 130 394 136 L 394 152 Q 394 156 390 156 L 374 156 Q 370 156 370 152 Z&quot;/>
+          <path d=&quot;M 398 136 Q 396 130 400 126 Q 404 122 410 122 Q 416 122 420 126 Q 423 130 422 136 L 422 152 Q 422 156 418 156 L 402 156 Q 398 156 398 152 Z&quot;/>
+        </g>
+        <g font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot; text-anchor=&quot;middle&quot;>
+          <text x=&quot;303&quot; y=&quot;167&quot;>22</text><text x=&quot;328&quot; y=&quot;167&quot;>23</text><text x=&quot;354&quot; y=&quot;168&quot;>24</text>
+          <text x=&quot;382&quot; y=&quot;168&quot;>25</text><text x=&quot;410&quot; y=&quot;168&quot;>26</text>
+        </g>
+      </g>
+
+      <!-- Lower tooth row — simplified, shorter -->
+      <g fill=&quot;#F0F5FF&quot; stroke=&quot;#CBD5E1&quot; stroke-width=&quot;0.8&quot;>
+        <path d=&quot;M 52 193 Q 50 187 54 183 Q 58 179 64 179 Q 70 179 74 183 Q 78 187 76 193 L 76 207 Q 76 211 72 211 L 56 211 Q 52 211 52 207 Z&quot;/>
+        <path d=&quot;M 82 192 Q 80 187 84 183 Q 88 180 94 180 Q 100 180 104 183 Q 108 187 106 192 L 106 206 Q 106 210 102 210 L 86 210 Q 82 210 82 206 Z&quot;/>
+        <path d=&quot;M 112 191 Q 110 186 114 182 Q 118 179 124 179 Q 130 179 134 182 Q 138 186 136 191 L 136 205 Q 136 209 132 209 L 116 209 Q 112 209 112 205 Z&quot;/>
+        <path d=&quot;M 142 191 Q 141 186 144 183 Q 147 180 152 180 Q 157 180 160 183 Q 163 186 162 191 L 162 203 Q 162 207 158 207 L 146 207 Q 142 207 142 203 Z&quot;/>
+        <path d=&quot;M 168 191 Q 167 186 170 183 Q 173 180 178 180 Q 183 180 186 183 Q 189 186 188 191 L 188 203 Q 188 207 184 207 L 172 207 Q 168 207 168 203 Z&quot;/>
+        <!-- 43 selected -->
+      </g>
+      <g class=&quot;t-sel&quot; fill=&quot;#DBEAFE&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;1.2&quot;>
+        <path d=&quot;M 193 191 Q 192 186 195 183 Q 198 180 203 180 Q 208 180 211 183 Q 214 186 213 191 L 213 203 Q 213 207 209 207 L 197 207 Q 193 207 193 203 Z&quot;/>
+      </g>
+      <g fill=&quot;#F0F5FF&quot; stroke=&quot;#CBD5E1&quot; stroke-width=&quot;0.8&quot;>
+        <path d=&quot;M 218 191 Q 217 186 220 183 Q 223 180 228 180 Q 233 180 236 183 Q 239 186 238 191 L 238 203 Q 238 207 234 207 L 222 207 Q 218 207 218 203 Z&quot;/>
+        <path d=&quot;M 243 191 Q 242 186 245 183 Q 248 180 253 180 Q 258 180 261 183 Q 264 186 263 191 L 263 203 Q 263 207 259 207 L 247 207 Q 243 207 243 203 Z&quot;/>
+        <path d=&quot;M 268 191 Q 267 186 270 183 Q 273 180 278 180 Q 283 180 286 183 Q 289 186 288 191 L 288 203 Q 288 207 284 207 L 272 207 Q 268 207 268 203 Z&quot;/>
+        <path d=&quot;M 293 191 Q 292 186 295 183 Q 298 180 303 180 Q 308 180 311 183 Q 314 186 313 191 L 313 203 Q 313 207 309 207 L 297 207 Q 293 207 293 203 Z&quot;/>
+        <path d=&quot;M 318 191 Q 317 186 320 183 Q 323 180 328 180 Q 333 180 336 183 Q 339 186 338 191 L 338 203 Q 338 207 334 207 L 322 207 Q 318 207 318 203 Z&quot;/>
+        <path d=&quot;M 343 191 Q 341 186 344 183 Q 348 180 354 180 Q 360 180 364 183 Q 367 186 366 191 L 366 204 Q 366 208 362 208 L 346 208 Q 343 208 343 204 Z&quot;/>
+        <path d=&quot;M 370 191 Q 368 186 372 183 Q 376 180 382 180 Q 388 180 392 183 Q 395 186 394 191 L 394 204 Q 394 208 390 208 L 374 208 Q 370 208 370 204 Z&quot;/>
+      </g>
+      <!-- Lower row numbers (abbreviated) -->
+      <g font-size=&quot;7.5&quot; fill=&quot;#9CA3AF&quot; text-anchor=&quot;middle&quot;>
+        <text x=&quot;64&quot; y=&quot;223&quot;>48</text><text x=&quot;94&quot; y=&quot;223&quot;>47</text><text x=&quot;124&quot; y=&quot;222&quot;>46</text>
+        <text x=&quot;152&quot; y=&quot;220&quot;>45</text><text x=&quot;178&quot; y=&quot;220&quot;>44</text>
+      </g>
+      <text x=&quot;203&quot; y=&quot;220&quot; text-anchor=&quot;middle&quot; font-size=&quot;7.5&quot; font-weight=&quot;700&quot; fill=&quot;#2563EB&quot;>43</text>
+      <g font-size=&quot;7.5&quot; fill=&quot;#9CA3AF&quot; text-anchor=&quot;middle&quot;>
+        <text x=&quot;228&quot; y=&quot;220&quot;>42</text><text x=&quot;253&quot; y=&quot;220&quot;>41</text><text x=&quot;278&quot; y=&quot;220&quot;>31</text>
+        <text x=&quot;303&quot; y=&quot;220&quot;>32</text><text x=&quot;328&quot; y=&quot;220&quot;>33</text><text x=&quot;354&quot; y=&quot;221&quot;>34</text>
+        <text x=&quot;382&quot; y=&quot;221&quot;>35</text>
+      </g>
+
+      <!-- Divider -->
+      <line x1=&quot;56&quot; y1=&quot;238&quot; x2=&quot;424&quot; y2=&quot;238&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;1&quot;/>
+
+      <!-- Assign procedure header -->
+      <text x=&quot;56&quot; y=&quot;260&quot; font-size=&quot;12&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>Assign procedure to 4 teeth</text>
+
+      <!-- Colored procedure pills — THE KILLER FEATURE -->
+      <g>
+        <g class=&quot;pill p1&quot;><rect x=&quot;56&quot; y=&quot;272&quot; width=&quot;68&quot; height=&quot;26&quot; rx=&quot;13&quot; fill=&quot;white&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/><circle cx=&quot;72&quot; cy=&quot;285&quot; r=&quot;5&quot; fill=&quot;#9333EA&quot;/><text x=&quot;104&quot; y=&quot;289&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#111&quot;>Crown</text></g>
+        <g class=&quot;pill p2&quot;><rect x=&quot;132&quot; y=&quot;272&quot; width=&quot;68&quot; height=&quot;26&quot; rx=&quot;13&quot; fill=&quot;white&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/><circle cx=&quot;148&quot; cy=&quot;285&quot; r=&quot;5&quot; fill=&quot;#10B981&quot;/><text x=&quot;180&quot; y=&quot;289&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#111&quot;>Bridge</text></g>
+        <g class=&quot;pill p3&quot;><rect x=&quot;208&quot; y=&quot;272&quot; width=&quot;68&quot; height=&quot;26&quot; rx=&quot;13&quot; fill=&quot;white&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/><circle cx=&quot;224&quot; cy=&quot;285&quot; r=&quot;5&quot; fill=&quot;#F59E0B&quot;/><text x=&quot;256&quot; y=&quot;289&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#111&quot;>Veneer</text></g>
+        <g class=&quot;pill p4&quot;><rect x=&quot;284&quot; y=&quot;272&quot; width=&quot;54&quot; height=&quot;26&quot; rx=&quot;13&quot; fill=&quot;white&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/><circle cx=&quot;299&quot; cy=&quot;285&quot; r=&quot;5&quot; fill=&quot;#EC4899&quot;/><text x=&quot;325&quot; y=&quot;289&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#111&quot;>Inlay</text></g>
+        <g class=&quot;pill p5&quot;><rect x=&quot;346&quot; y=&quot;272&quot; width=&quot;58&quot; height=&quot;26&quot; rx=&quot;13&quot; fill=&quot;white&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/><circle cx=&quot;361&quot; cy=&quot;285&quot; r=&quot;5&quot; fill=&quot;#8B5CF6&quot;/><text x=&quot;389&quot; y=&quot;289&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#111&quot;>Onlay</text></g>
+
+        <g class=&quot;pill p6&quot;><rect x=&quot;56&quot; y=&quot;306&quot; width=&quot;70&quot; height=&quot;26&quot; rx=&quot;13&quot; fill=&quot;white&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/><circle cx=&quot;72&quot; cy=&quot;319&quot; r=&quot;5&quot; fill=&quot;#3B82F6&quot;/><text x=&quot;105&quot; y=&quot;323&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#111&quot;>Eggshell</text></g>
+        <g class=&quot;pill p7&quot;><rect x=&quot;134&quot; y=&quot;306&quot; width=&quot;64&quot; height=&quot;26&quot; rx=&quot;13&quot; fill=&quot;white&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/><circle cx=&quot;149&quot; cy=&quot;319&quot; r=&quot;5&quot; fill=&quot;#6366F1&quot;/><text x=&quot;180&quot; y=&quot;323&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#111&quot;>Mockup</text></g>
+        <g class=&quot;pill p8&quot;><rect x=&quot;206&quot; y=&quot;306&quot; width=&quot;64&quot; height=&quot;26&quot; rx=&quot;13&quot; fill=&quot;white&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/><circle cx=&quot;221&quot; cy=&quot;319&quot; r=&quot;5&quot; fill=&quot;#9CA3AF&quot;/><text x=&quot;252&quot; y=&quot;323&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#111&quot;>Missing</text></g>
+        <g class=&quot;pill p9&quot;><rect x=&quot;278&quot; y=&quot;306&quot; width=&quot;100&quot; height=&quot;26&quot; rx=&quot;13&quot; fill=&quot;white&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/><circle cx=&quot;293&quot; cy=&quot;319&quot; r=&quot;5&quot; fill=&quot;#EF4444&quot;/><text x=&quot;341&quot; y=&quot;323&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#111&quot;>Implant Based</text></g>
+      </g>
+    </g>
+
+    <!-- Small case card below -->
+    <g class=&quot;f2 slide&quot; filter=&quot;url(#sh-sm)&quot; style=&quot;animation-delay:.2s&quot;>
+      <rect x=&quot;32&quot; y=&quot;392&quot; width=&quot;416&quot; height=&quot;64&quot; rx=&quot;18&quot; fill=&quot;white&quot; opacity=&quot;.93&quot;/>
+      <circle cx=&quot;68&quot; cy=&quot;424&quot; r=&quot;20&quot; fill=&quot;#DBEAFE&quot;/>
+      <text x=&quot;68&quot; y=&quot;429&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;700&quot; fill=&quot;#2563EB&quot;>EJ</text>
+      <text x=&quot;102&quot; y=&quot;418&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#111&quot;>Emma Johnson</text>
+      <text x=&quot;102&quot; y=&quot;436&quot; font-size=&quot;10&quot; fill=&quot;#9CA3AF&quot;>Teeth 11, 12, 13, 21  ·  Crown</text>
+      <circle cx=&quot;376&quot; cy=&quot;424&quot; r=&quot;6&quot; fill=&quot;#DBEAFE&quot;/>
+      <path d=&quot;M 373 424 L 375 426 L 379 421&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;1.5&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    </g>
+  </g>
+
+  <!-- ══════════════════════════════
+       STATE 2 — Live scan viewport
+       Killer feature: real-time dark viewport + beam + mesh
+       ══════════════════════════════ -->
+  <g class=&quot;s2&quot;>
+    <!-- Hero dark scan card -->
+    <g class=&quot;f1&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;32&quot; y=&quot;52&quot; width=&quot;416&quot; height=&quot;340&quot; rx=&quot;24&quot; fill=&quot;#0B1826&quot;/>
+
+      <!-- Corner brackets -->
+      <g stroke=&quot;#0EA5E9&quot; stroke-width=&quot;2&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot;>
+        <path d=&quot;M 60 84 L 60 72 L 72 72&quot;/>
+        <path d=&quot;M 420 72 L 432 72 L 432 84&quot;/>
+        <path d=&quot;M 60 368 L 60 380 L 72 380&quot;/>
+        <path d=&quot;M 420 380 L 432 380 L 432 368&quot;/>
+      </g>
+
+      <!-- LIVE badge -->
+      <circle cx=&quot;76&quot; cy=&quot;98&quot; r=&quot;4&quot; fill=&quot;#0EA5E9&quot; opacity=&quot;.9&quot;/>
+      <circle cx=&quot;76&quot; cy=&quot;98&quot; r=&quot;7&quot; fill=&quot;#0EA5E9&quot; opacity=&quot;.2&quot;/>
+      <text x=&quot;88&quot; y=&quot;102&quot; font-size=&quot;11&quot; font-weight=&quot;600&quot; fill=&quot;#0EA5E9&quot;>LIVE</text>
+
+      <!-- Large tooth being scanned -->
+      <g transform=&quot;translate(240, 222)&quot;>
+        <path d=&quot;M -64 -90 Q -84 -90 -84 -48 L -84 64 Q -72 102 -40 105 L 40 105 Q 72 102 84 64 L 84 -48 Q 84 -90 64 -90 L 52 -100 Q 38 -108 22 -100 L -22 -100 Q -38 -108 -52 -100 Z&quot;
+              fill=&quot;#0F1E2E&quot; stroke=&quot;#0EA5E9&quot; stroke-width=&quot;1.2&quot;/>
+        <!-- Mesh dots -->
+        <g class=&quot;md&quot; fill=&quot;#0EA5E9&quot;><circle cx=&quot;-32&quot; cy=&quot;-58&quot; r=&quot;2.5&quot;/></g>
+        <g class=&quot;md&quot; fill=&quot;#0EA5E9&quot;><circle cx=&quot;0&quot;   cy=&quot;-72&quot; r=&quot;2.5&quot;/></g>
+        <g class=&quot;md&quot; fill=&quot;#0EA5E9&quot;><circle cx=&quot;32&quot;  cy=&quot;-58&quot; r=&quot;2.5&quot;/></g>
+        <g class=&quot;md&quot; fill=&quot;#0EA5E9&quot;><circle cx=&quot;-56&quot; cy=&quot;-24&quot; r=&quot;2.5&quot;/></g>
+        <g class=&quot;md&quot; fill=&quot;#0EA5E9&quot;><circle cx=&quot;-24&quot; cy=&quot;-16&quot; r=&quot;2.5&quot;/></g>
+        <g class=&quot;md&quot; fill=&quot;#0EA5E9&quot;><circle cx=&quot;24&quot;  cy=&quot;-16&quot; r=&quot;2.5&quot;/></g>
+        <g class=&quot;md&quot; fill=&quot;#0EA5E9&quot;><circle cx=&quot;56&quot;  cy=&quot;-24&quot; r=&quot;2.5&quot;/></g>
+        <g class=&quot;md&quot; fill=&quot;#0EA5E9&quot;><circle cx=&quot;-60&quot; cy=&quot;24&quot;  r=&quot;2.5&quot;/></g>
+        <g class=&quot;md&quot; fill=&quot;#0EA5E9&quot;><circle cx=&quot;0&quot;   cy=&quot;28&quot;  r=&quot;2.5&quot;/></g>
+        <g class=&quot;md&quot; fill=&quot;#0EA5E9&quot;><circle cx=&quot;60&quot;  cy=&quot;24&quot;  r=&quot;2.5&quot;/></g>
+        <g class=&quot;md&quot; fill=&quot;#0EA5E9&quot;><circle cx=&quot;-44&quot; cy=&quot;70&quot;  r=&quot;2.5&quot;/></g>
+        <g class=&quot;md&quot; fill=&quot;#0EA5E9&quot;><circle cx=&quot;44&quot;  cy=&quot;70&quot;  r=&quot;2.5&quot;/></g>
+      </g>
+
+      <!-- Scan beam -->
+      <rect class=&quot;beam&quot; x=&quot;44&quot; y=&quot;220&quot; width=&quot;392&quot; height=&quot;3&quot; fill=&quot;#0EA5E9&quot;/>
+      <rect class=&quot;beam&quot; x=&quot;44&quot; y=&quot;215&quot; width=&quot;392&quot; height=&quot;12&quot; fill=&quot;#0EA5E9&quot; opacity=&quot;.1&quot;/>
+    </g>
+
+    <!-- Progress card -->
+    <g class=&quot;f2 slide&quot; filter=&quot;url(#sh-sm)&quot; style=&quot;animation-delay:.1s&quot;>
+      <rect x=&quot;32&quot; y=&quot;412&quot; width=&quot;416&quot; height=&quot;72&quot; rx=&quot;18&quot; fill=&quot;white&quot; opacity=&quot;.95&quot;/>
+      <text x=&quot;56&quot; y=&quot;440&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>Scanning upper arch…</text>
+      <!-- Progress bar -->
+      <rect x=&quot;56&quot; y=&quot;450&quot; width=&quot;340&quot; height=&quot;6&quot; rx=&quot;3&quot; fill=&quot;#F0F0F0&quot;/>
+      <rect class=&quot;pfill&quot; x=&quot;56&quot; y=&quot;450&quot; width=&quot;228&quot; height=&quot;6&quot; rx=&quot;3&quot; fill=&quot;#0EA5E9&quot;/>
+      <text x=&quot;56&quot; y=&quot;472&quot; font-size=&quot;10&quot; fill=&quot;#9CA3AF&quot;>67% complete  ·  Expected in 12 sec</text>
+    </g>
+  </g>
+
+</svg>
+</div>
+</body>
+</html>
+"
+  width="100%"
+  height="100%"
+  scrolling="no"
+  frameborder="0"
+  style="border:0; display:block; width: 100%; height: 100%; min-height: 100vh; overflow:hidden;"
+  loading="lazy"
+  title="Scan and view flow">
+</iframe>

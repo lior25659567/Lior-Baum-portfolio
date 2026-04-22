@@ -1,0 +1,244 @@
+<iframe
+  srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot;>
+<title>Design System</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    min-height: 100vh; min-height: 100dvh;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .stage { width: 100%; height: 100%; }
+  .canvas { width: 100%; height: 100%; display: block; }
+
+  /* 2 states × 6s each = 12s */
+  .s1 { display: none; }
+  .s2,.s3 { opacity:0; }
+  .s2 { animation: s2 12s infinite; }
+  .s3 { animation: s3 12s infinite; }
+  @keyframes s2 { 0%,46%  { opacity:1 } 50%,100% { opacity:0 } }
+  @keyframes s3 { 0%,48%  { opacity:0 } 52%,97%  { opacity:1 } 100%   { opacity:0 } }
+
+  /* Gentle card float — staggered */
+  .f1 { animation: fy 4s ease-in-out infinite; }
+  .f2 { animation: fy 4s ease-in-out infinite; animation-delay:.7s; }
+  .f3 { animation: fy 4s ease-in-out infinite; animation-delay:1.4s; }
+  @keyframes fy { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+  /* Progress bar fill */
+  .fill { transform-box:fill-box; transform-origin:left; animation: fillAnim 3s ease-out infinite; }
+  @keyframes fillAnim { 0%{transform:scaleX(0)} 80%,100%{transform:scaleX(1)} }
+
+  /* Status badge cycle */
+  .badge-1 { animation: b1 4s infinite; }
+  .badge-2 { animation: b2 4s infinite; }
+  .badge-3 { animation: b3 4s infinite; }
+  .badge-4 { animation: b4 4s infinite; }
+  @keyframes b1 { 0%,20%{opacity:1} 25%,100%{opacity:0} }
+  @keyframes b2 { 0%,24%{opacity:0} 25%,45%{opacity:1} 50%,100%{opacity:0} }
+  @keyframes b3 { 0%,49%{opacity:0} 50%,70%{opacity:1} 75%,100%{opacity:0} }
+  @keyframes b4 { 0%,74%{opacity:0} 75%,95%{opacity:1} 100%{opacity:0} }
+
+  /* Number count up feel */
+  .num-pop { animation: numPop .5s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes numPop { from{opacity:0;transform:scale(.88)} to{opacity:1;transform:scale(1)} }
+
+  /* Slide in from bottom */
+  .slide { animation: slideUp .5s cubic-bezier(.22,.9,.3,1) both; }
+  @keyframes slideUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  @media (prefers-reduced-motion: reduce) { * { animation:none!important } }
+</style>
+</head>
+<body>
+<div class=&quot;stage&quot;>
+<svg class=&quot;canvas&quot; viewBox=&quot;0 0 480 600&quot; preserveAspectRatio=&quot;xMidYMid meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
+  <defs>
+    <linearGradient id=&quot;bg&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;>
+      <stop offset=&quot;0%&quot;   stop-color=&quot;#A8E6E2&quot;/>
+      <stop offset=&quot;40%&quot;  stop-color=&quot;#C4EEDA&quot;/>
+      <stop offset=&quot;70%&quot;  stop-color=&quot;#B8D8F0&quot;/>
+      <stop offset=&quot;100%&quot; stop-color=&quot;#C8B8F0&quot;/>
+    </linearGradient>
+    <radialGradient id=&quot;orb1&quot; cx=&quot;50%&quot; cy=&quot;0%&quot; r=&quot;60%&quot;>
+      <stop offset=&quot;0%&quot; stop-color=&quot;#DFFAF0&quot; stop-opacity=&quot;.7&quot;/>
+      <stop offset=&quot;100%&quot; stop-color=&quot;#DFFAF0&quot; stop-opacity=&quot;0&quot;/>
+    </radialGradient>
+    <radialGradient id=&quot;orb2&quot; cx=&quot;80%&quot; cy=&quot;100%&quot; r=&quot;50%&quot;>
+      <stop offset=&quot;0%&quot; stop-color=&quot;#D4C8F8&quot; stop-opacity=&quot;.6&quot;/>
+      <stop offset=&quot;100%&quot; stop-color=&quot;#D4C8F8&quot; stop-opacity=&quot;0&quot;/>
+    </radialGradient>
+    <filter id=&quot;shadow&quot;>
+      <feDropShadow dx=&quot;0&quot; dy=&quot;6&quot; stdDeviation=&quot;18&quot; flood-color=&quot;#00000011&quot;/>
+    </filter>
+    <filter id=&quot;shadow-sm&quot;>
+      <feDropShadow dx=&quot;0&quot; dy=&quot;3&quot; stdDeviation=&quot;8&quot; flood-color=&quot;#0000000D&quot;/>
+    </filter>
+  </defs>
+
+  <rect width=&quot;480&quot; height=&quot;600&quot; fill=&quot;url(#bg)&quot;/>
+  <rect width=&quot;480&quot; height=&quot;600&quot; fill=&quot;url(#orb1)&quot;/>
+  <rect width=&quot;480&quot; height=&quot;600&quot; fill=&quot;url(#orb2)&quot;/>
+
+  <!-- ═══════════════════════════════
+       STATE 1 — Stats: the 3 numbers
+       Hero: 98% floating large
+       ═══════════════════════════════ -->
+  <g class=&quot;s1&quot;>
+    <!-- Big hero stat card -->
+    <g class=&quot;f1&quot; filter=&quot;url(#shadow)&quot;>
+      <rect x=&quot;60&quot; y=&quot;100&quot; width=&quot;360&quot; height=&quot;150&quot; rx=&quot;24&quot; fill=&quot;white&quot; opacity=&quot;.96&quot;/>
+      <text x=&quot;100&quot; y=&quot;158&quot; font-size=&quot;64&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot; class=&quot;num-pop&quot;>98%</text>
+      <text x=&quot;100&quot; y=&quot;186&quot; font-size=&quot;13&quot; fill=&quot;#9CA3AF&quot;>On-time submission</text>
+      <!-- Small indicator bar -->
+      <rect x=&quot;100&quot; y=&quot;200&quot; width=&quot;240&quot; height=&quot;4&quot; rx=&quot;2&quot; fill=&quot;#F0F0F0&quot;/>
+      <rect x=&quot;100&quot; y=&quot;200&quot; width=&quot;235&quot; height=&quot;4&quot; rx=&quot;2&quot; fill=&quot;#0EA5E9&quot;/>
+    </g>
+
+    <!-- Two smaller stat cards -->
+    <g class=&quot;f2&quot; filter=&quot;url(#shadow-sm)&quot;>
+      <rect x=&quot;60&quot; y=&quot;272&quot; width=&quot;168&quot; height=&quot;88&quot; rx=&quot;18&quot; fill=&quot;white&quot; opacity=&quot;.93&quot;/>
+      <text x=&quot;86&quot; y=&quot;322&quot; font-size=&quot;38&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>12</text>
+      <text x=&quot;86&quot; y=&quot;342&quot; font-size=&quot;11&quot; fill=&quot;#9CA3AF&quot;>Active cases</text>
+    </g>
+
+    <g class=&quot;f3&quot; filter=&quot;url(#shadow-sm)&quot;>
+      <rect x=&quot;252&quot; y=&quot;272&quot; width=&quot;168&quot; height=&quot;88&quot; rx=&quot;18&quot; fill=&quot;white&quot; opacity=&quot;.93&quot;/>
+      <text x=&quot;278&quot; y=&quot;322&quot; font-size=&quot;38&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>2</text>
+      <text x=&quot;278&quot; y=&quot;342&quot; font-size=&quot;11&quot; fill=&quot;#9CA3AF&quot;>Scans pending</text>
+    </g>
+
+    <!-- Label below -->
+    <text x=&quot;240&quot; y=&quot;412&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; fill=&quot;rgba(255,255,255,.7)&quot;>Real-time clinic overview</text>
+  </g>
+
+  <!-- ═══════════════════════════════
+       STATE 2 — Status badge system
+       Hero: One case card + badge cycling
+       ═══════════════════════════════ -->
+  <g class=&quot;s2&quot;>
+    <!-- Patient card — hero -->
+    <g class=&quot;f1&quot; filter=&quot;url(#shadow)&quot;>
+      <rect x=&quot;60&quot; y=&quot;90&quot; width=&quot;360&quot; height=&quot;180&quot; rx=&quot;24&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+
+      <!-- Avatar -->
+      <circle cx=&quot;104&quot; cy=&quot;148&quot; r=&quot;24&quot; fill=&quot;#E0F2FE&quot;/>
+      <text x=&quot;104&quot; y=&quot;153&quot; text-anchor=&quot;middle&quot; font-size=&quot;13&quot; font-weight=&quot;700&quot; fill=&quot;#0EA5E9&quot;>EJ</text>
+
+      <text x=&quot;142&quot; y=&quot;138&quot; font-size=&quot;16&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>Emma Johnson</text>
+      <text x=&quot;142&quot; y=&quot;158&quot; font-size=&quot;11&quot; fill=&quot;#9CA3AF&quot;>#AT-09244  ·  Dr. Park</text>
+
+      <!-- Cycling status badge -->
+      <!-- In treatment -->
+      <g class=&quot;badge-1&quot;>
+        <rect x=&quot;142&quot; y=&quot;172&quot; width=&quot;96&quot; height=&quot;26&quot; rx=&quot;13&quot; fill=&quot;#E0F7F4&quot;/>
+        <text x=&quot;190&quot; y=&quot;189&quot; text-anchor=&quot;middle&quot; font-size=&quot;10.5&quot; fill=&quot;#0D9488&quot;>In treatment</text>
+      </g>
+      <!-- Awaiting scan -->
+      <g class=&quot;badge-2&quot;>
+        <rect x=&quot;142&quot; y=&quot;172&quot; width=&quot;98&quot; height=&quot;26&quot; rx=&quot;13&quot; fill=&quot;#FEF3E2&quot;/>
+        <text x=&quot;191&quot; y=&quot;189&quot; text-anchor=&quot;middle&quot; font-size=&quot;10.5&quot; fill=&quot;#D97706&quot;>Awaiting scan</text>
+      </g>
+      <!-- Approved -->
+      <g class=&quot;badge-3&quot;>
+        <rect x=&quot;142&quot; y=&quot;172&quot; width=&quot;80&quot; height=&quot;26&quot; rx=&quot;13&quot; fill=&quot;#F0FDF4&quot;/>
+        <text x=&quot;182&quot; y=&quot;189&quot; text-anchor=&quot;middle&quot; font-size=&quot;10.5&quot; fill=&quot;#16A34A&quot;>Approved</text>
+      </g>
+      <!-- Rejected -->
+      <g class=&quot;badge-4&quot;>
+        <rect x=&quot;142&quot; y=&quot;172&quot; width=&quot;74&quot; height=&quot;26&quot; rx=&quot;13&quot; fill=&quot;#FDF2F8&quot;/>
+        <text x=&quot;179&quot; y=&quot;189&quot; text-anchor=&quot;middle&quot; font-size=&quot;10.5&quot; fill=&quot;#C026D3&quot;>Rejected</text>
+      </g>
+
+      <text x=&quot;86&quot; y=&quot;240&quot; font-size=&quot;11&quot; fill=&quot;#9CA3AF&quot;>Updated 2h ago</text>
+    </g>
+
+    <!-- Three more rows showing badge system -->
+    <g class=&quot;f2 slide&quot; filter=&quot;url(#shadow-sm)&quot; style=&quot;animation-delay:.1s&quot;>
+      <rect x=&quot;60&quot; y=&quot;292&quot; width=&quot;360&quot; height=&quot;56&quot; rx=&quot;16&quot; fill=&quot;white&quot; opacity=&quot;.92&quot;/>
+      <circle cx=&quot;96&quot; cy=&quot;320&quot; r=&quot;18&quot; fill=&quot;#FEF3E2&quot;/>
+      <text x=&quot;96&quot; y=&quot;325&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;700&quot; fill=&quot;#D97706&quot;>NM</text>
+      <text x=&quot;124&quot; y=&quot;318&quot; font-size=&quot;12&quot; font-weight=&quot;500&quot; fill=&quot;#111111&quot;>Noah Miller</text>
+      <text x=&quot;124&quot; y=&quot;333&quot; font-size=&quot;10&quot; fill=&quot;#9CA3AF&quot;>#AT-09240</text>
+      <rect x=&quot;304&quot; y=&quot;308&quot; width=&quot;98&quot; height=&quot;24&quot; rx=&quot;12&quot; fill=&quot;#FEF3E2&quot;/>
+      <text x=&quot;353&quot; y=&quot;324&quot; text-anchor=&quot;middle&quot; font-size=&quot;9.5&quot; fill=&quot;#D97706&quot;>Awaiting scan</text>
+    </g>
+
+    <g class=&quot;f3 slide&quot; filter=&quot;url(#shadow-sm)&quot; style=&quot;animation-delay:.2s&quot;>
+      <rect x=&quot;60&quot; y=&quot;360&quot; width=&quot;360&quot; height=&quot;56&quot; rx=&quot;16&quot; fill=&quot;white&quot; opacity=&quot;.92&quot;/>
+      <circle cx=&quot;96&quot; cy=&quot;388&quot; r=&quot;18&quot; fill=&quot;#F0FDF4&quot;/>
+      <text x=&quot;96&quot; y=&quot;393&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;700&quot; fill=&quot;#16A34A&quot;>SR</text>
+      <text x=&quot;124&quot; y=&quot;386&quot; font-size=&quot;12&quot; font-weight=&quot;500&quot; fill=&quot;#111111&quot;>Sara Reyes</text>
+      <text x=&quot;124&quot; y=&quot;401&quot; font-size=&quot;10&quot; fill=&quot;#9CA3AF&quot;>#AT-09238</text>
+      <rect x=&quot;316&quot; y=&quot;376&quot; width=&quot;80&quot; height=&quot;24&quot; rx=&quot;12&quot; fill=&quot;#F0FDF4&quot;/>
+      <text x=&quot;356&quot; y=&quot;392&quot; text-anchor=&quot;middle&quot; font-size=&quot;9.5&quot; fill=&quot;#16A34A&quot;>Approved</text>
+    </g>
+  </g>
+
+  <!-- ═══════════════════════════════
+       STATE 3 — Treatment progress
+       Hero: Big % + filling bar
+       ═══════════════════════════════ -->
+  <g class=&quot;s3&quot;>
+    <!-- Hero progress card -->
+    <g class=&quot;f1&quot; filter=&quot;url(#shadow)&quot;>
+      <rect x=&quot;60&quot; y=&quot;90&quot; width=&quot;360&quot; height=&quot;200&quot; rx=&quot;24&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+
+      <!-- Patient row -->
+      <circle cx=&quot;100&quot; cy=&quot;138&quot; r=&quot;20&quot; fill=&quot;#E0F2FE&quot;/>
+      <text x=&quot;100&quot; y=&quot;143&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; font-weight=&quot;700&quot; fill=&quot;#0EA5E9&quot;>EJ</text>
+      <text x=&quot;132&quot; y=&quot;132&quot; font-size=&quot;14&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>Emma Johnson</text>
+      <text x=&quot;132&quot; y=&quot;150&quot; font-size=&quot;10.5&quot; fill=&quot;#9CA3AF&quot;>Aligners  ·  14 / 24</text>
+
+      <!-- Big % hero -->
+      <text x=&quot;100&quot; y=&quot;218&quot; font-size=&quot;56&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot; class=&quot;num-pop&quot;>58%</text>
+      <!-- Label -->
+      <text x=&quot;252&quot; y=&quot;200&quot; font-size=&quot;11&quot; fill=&quot;#9CA3AF&quot;>complete</text>
+
+      <!-- Progress bar -->
+      <rect x=&quot;86&quot; y=&quot;248&quot; width=&quot;308&quot; height=&quot;8&quot; rx=&quot;4&quot; fill=&quot;#F0F0F0&quot;/>
+      <rect class=&quot;fill&quot; x=&quot;86&quot; y=&quot;248&quot; width=&quot;179&quot; height=&quot;8&quot; rx=&quot;4&quot; fill=&quot;#0EA5E9&quot;/>
+    </g>
+
+    <!-- Error card + ok card -->
+    <g class=&quot;f2 slide&quot; filter=&quot;url(#shadow-sm)&quot; style=&quot;animation-delay:.15s&quot;>
+      <rect x=&quot;60&quot; y=&quot;314&quot; width=&quot;360&quot; height=&quot;80&quot; rx=&quot;18&quot; fill=&quot;white&quot; opacity=&quot;.93&quot;/>
+      <circle cx=&quot;96&quot; cy=&quot;354&quot; r=&quot;20&quot; fill=&quot;#FEF2F2&quot;/>
+      <text x=&quot;96&quot; y=&quot;359&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;700&quot; fill=&quot;#EF4444&quot;>AC</text>
+      <text x=&quot;128&quot; y=&quot;346&quot; font-size=&quot;12&quot; font-weight=&quot;500&quot; fill=&quot;#111111&quot;>Ava Costa  ·  Upload</text>
+      <!-- Error bar -->
+      <rect x=&quot;128&quot; y=&quot;360&quot; width=&quot;240&quot; height=&quot;6&quot; rx=&quot;3&quot; fill=&quot;#F0F0F0&quot;/>
+      <rect x=&quot;128&quot; y=&quot;360&quot; width=&quot;140&quot; height=&quot;6&quot; rx=&quot;3&quot; fill=&quot;#EF4444&quot;/>
+      <text x=&quot;128&quot; y=&quot;382&quot; font-size=&quot;10&quot; fill=&quot;#EF4444&quot;>Upload failed — retry</text>
+    </g>
+
+    <g class=&quot;f3 slide&quot; filter=&quot;url(#shadow-sm)&quot; style=&quot;animation-delay:.3s&quot;>
+      <rect x=&quot;60&quot; y=&quot;410&quot; width=&quot;360&quot; height=&quot;80&quot; rx=&quot;18&quot; fill=&quot;white&quot; opacity=&quot;.93&quot;/>
+      <circle cx=&quot;96&quot; cy=&quot;450&quot; r=&quot;20&quot; fill=&quot;#E0F2FE&quot;/>
+      <text x=&quot;96&quot; y=&quot;455&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;700&quot; fill=&quot;#0EA5E9&quot;>NM</text>
+      <text x=&quot;128&quot; y=&quot;442&quot; font-size=&quot;12&quot; font-weight=&quot;500&quot; fill=&quot;#111111&quot;>Noah Miller  ·  Scan processing</text>
+      <!-- Progress bar -->
+      <rect x=&quot;128&quot; y=&quot;458&quot; width=&quot;240&quot; height=&quot;6&quot; rx=&quot;3&quot; fill=&quot;#F0F0F0&quot;/>
+      <rect class=&quot;fill&quot; x=&quot;128&quot; y=&quot;458&quot; width=&quot;192&quot; height=&quot;6&quot; rx=&quot;3&quot; fill=&quot;#0EA5E9&quot; style=&quot;animation-delay:.4s&quot;/>
+      <text x=&quot;128&quot; y=&quot;478&quot; font-size=&quot;10&quot; fill=&quot;#9CA3AF&quot;>Expected by 4pm</text>
+    </g>
+  </g>
+
+</svg>
+</div>
+</body>
+</html>
+"
+  width="100%"
+  height="100%"
+  scrolling="no"
+  frameborder="0"
+  style="border:0; display:block; width: 100%; height: 100%; min-height: 100vh; overflow:hidden;"
+  loading="lazy"
+  title="Design system — case management">
+</iframe>

@@ -1,0 +1,414 @@
+<iframe
+  srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot;>
+<title>iTero Info</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    min-height: 100vh; min-height: 100dvh;
+    background: #F4F7FA;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .stage { width: 100%; height: 100%; min-height: 100vh; min-height: 100dvh; min-height: -webkit-fill-available; }
+  .canvas { width: 100%; height: 100%; display: block; }
+
+  /* 16s cycle — 4 states, 4s each */
+  .s1,.s2,.s3,.s4 { opacity: 0; }
+  .s1 { animation: s1 16s infinite; }
+  .s2 { animation: s2 16s infinite; }
+  .s3 { animation: s3 16s infinite; }
+  .s4 { animation: s4 16s infinite; }
+  @keyframes s1 { 0%,23%  { opacity:1; } 26%,100% { opacity:0; } }
+  @keyframes s2 { 0%,24%  { opacity:0; } 25%,48% { opacity:1; } 51%,100% { opacity:0; } }
+  @keyframes s3 { 0%,49%  { opacity:0; } 50%,73% { opacity:1; } 76%,100% { opacity:0; } }
+  @keyframes s4 { 0%,74%  { opacity:0; } 75%,98% { opacity:1; } 100%    { opacity:0; } }
+
+  /* Sidebar procedure type crossfades */
+  .sb1,.sb2,.sb3,.sb4 { opacity:0; }
+  .sb1 { animation: s1 16s infinite; }
+  .sb2 { animation: s2 16s infinite; }
+  .sb3 { animation: s3 16s infinite; }
+  .sb4 { animation: s4 16s infinite; }
+
+  /* Selected card pulse */
+  .sel { animation: selP 2s ease-in-out infinite; }
+  @keyframes selP { 0%,100%{opacity:.88} 50%{opacity:1} }
+
+  /* Tooth select pulse */
+  .tsel { animation: tselP 1.8s ease-in-out infinite; }
+  @keyframes tselP { 0%,100%{opacity:.75} 50%{opacity:1} }
+
+  /* Toggle switch animate on */
+  .tog { animation: togOn 1s ease forwards; }
+  @keyframes togOn { from{transform:translateX(0)} to{transform:translateX(14px)} }
+
+  /* Procedure tag pop */
+  .tagpop { transform-box:fill-box; transform-origin:center; animation: tagP 1.2s cubic-bezier(.34,1.56,.64,1) infinite; }
+  @keyframes tagP { 0%,30%{opacity:0;transform:scale(.8)} 60%,100%{opacity:1;transform:scale(1)} }
+
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+</head>
+<body>
+<div class=&quot;stage&quot;>
+<svg class=&quot;canvas&quot; viewBox=&quot;0 0 680 580&quot; preserveAspectRatio=&quot;xMinYMin meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
+  <rect width=&quot;680&quot; height=&quot;580&quot; fill=&quot;#F4F7FA&quot;/>
+
+  <!-- ── Panels ── -->
+  <rect x=&quot;12&quot; y=&quot;12&quot; width=&quot;466&quot; height=&quot;556&quot; rx=&quot;10&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+  <rect x=&quot;490&quot; y=&quot;12&quot; width=&quot;178&quot; height=&quot;556&quot; rx=&quot;10&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+
+  <!-- ── Sidebar header (always) ── -->
+  <text x=&quot;506&quot; y=&quot;44&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Case Summary</text>
+  <line x1=&quot;498&quot; y1=&quot;56&quot; x2=&quot;660&quot; y2=&quot;56&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.5&quot;/>
+  <text x=&quot;506&quot; y=&quot;76&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#9CA3AF&quot; letter-spacing=&quot;0.8&quot;>PATIENT</text>
+  <text x=&quot;506&quot; y=&quot;94&quot; font-size=&quot;10&quot; fill=&quot;#9CA3AF&quot;>Name</text>
+  <text x=&quot;660&quot; y=&quot;94&quot; text-anchor=&quot;end&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#0F2F44&quot;>Michael Williams</text>
+  <text x=&quot;506&quot; y=&quot;112&quot; font-size=&quot;10&quot; fill=&quot;#9CA3AF&quot;>Chart #</text>
+  <text x=&quot;660&quot; y=&quot;112&quot; text-anchor=&quot;end&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#0F2F44&quot;>CH-003</text>
+  <line x1=&quot;498&quot; y1=&quot;124&quot; x2=&quot;660&quot; y2=&quot;124&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.5&quot;/>
+  <text x=&quot;506&quot; y=&quot;144&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#9CA3AF&quot; letter-spacing=&quot;0.8&quot;>PROCEDURE</text>
+  <text x=&quot;506&quot; y=&quot;162&quot; font-size=&quot;10&quot; fill=&quot;#9CA3AF&quot;>Type</text>
+
+  <!-- Procedure type per state -->
+  <text class=&quot;sb1&quot; x=&quot;660&quot; y=&quot;162&quot; text-anchor=&quot;end&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#0F2F44&quot;>Study Model</text>
+  <text class=&quot;sb2&quot; x=&quot;660&quot; y=&quot;162&quot; text-anchor=&quot;end&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#0F2F44&quot;>Invisalign</text>
+  <text class=&quot;sb3&quot; x=&quot;660&quot; y=&quot;162&quot; text-anchor=&quot;end&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#0F2F44&quot;>Fixed Restorative</text>
+  <text class=&quot;sb4&quot; x=&quot;660&quot; y=&quot;162&quot; text-anchor=&quot;end&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#0F2F44&quot;>Implant Planning</text>
+
+  <!-- s3 teeth tags in sidebar -->
+  <g class=&quot;s3&quot;>
+    <line x1=&quot;498&quot; y1=&quot;174&quot; x2=&quot;660&quot; y2=&quot;174&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.5&quot;/>
+    <text x=&quot;506&quot; y=&quot;194&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#9CA3AF&quot; letter-spacing=&quot;0.8&quot;>TEETH</text>
+    <rect x=&quot;506&quot; y=&quot;202&quot; width=&quot;58&quot; height=&quot;18&quot; rx=&quot;9&quot; fill=&quot;#F3F0FA&quot; stroke=&quot;#8B5CF6&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;535&quot; y=&quot;214&quot; text-anchor=&quot;middle&quot; font-size=&quot;8&quot; fill=&quot;#7C3AED&quot;>11 · Onlay</text>
+    <rect x=&quot;572&quot; y=&quot;202&quot; width=&quot;58&quot; height=&quot;18&quot; rx=&quot;9&quot; fill=&quot;#F3F0FA&quot; stroke=&quot;#8B5CF6&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;601&quot; y=&quot;214&quot; text-anchor=&quot;middle&quot; font-size=&quot;8&quot; fill=&quot;#7C3AED&quot;>12 · Onlay</text>
+    <rect x=&quot;506&quot; y=&quot;226&quot; width=&quot;58&quot; height=&quot;18&quot; rx=&quot;9&quot; fill=&quot;#F3F0FA&quot; stroke=&quot;#8B5CF6&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;535&quot; y=&quot;238&quot; text-anchor=&quot;middle&quot; font-size=&quot;8&quot; fill=&quot;#7C3AED&quot;>13 · Onlay</text>
+  </g>
+
+  <!-- Disabled button always at bottom -->
+  <rect x=&quot;498&quot; y=&quot;518&quot; width=&quot;164&quot; height=&quot;34&quot; rx=&quot;8&quot; fill=&quot;#E8F5FA&quot;/>
+  <text x=&quot;580&quot; y=&quot;539&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; font-weight=&quot;500&quot; fill=&quot;#94A3B8&quot;>Continue to Scan</text>
+  <text x=&quot;580&quot; y=&quot;558&quot; text-anchor=&quot;middle&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Complete all required fields</text>
+
+  <!-- ════════════════════════════════
+       SHARED: Patient card + Procedure header (always visible)
+       ════════════════════════════════ -->
+  <text x=&quot;30&quot; y=&quot;46&quot; font-size=&quot;13&quot; font-weight=&quot;700&quot; fill=&quot;#0F2F44&quot;>Patient</text>
+  <rect x=&quot;22&quot; y=&quot;56&quot; width=&quot;448&quot; height=&quot;54&quot; rx=&quot;8&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+  <circle cx=&quot;52&quot; cy=&quot;83&quot; r=&quot;17&quot; fill=&quot;#E8F5FA&quot;/>
+  <text x=&quot;52&quot; y=&quot;88&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;700&quot; fill=&quot;#00AED6&quot;>MW</text>
+  <text x=&quot;78&quot; y=&quot;78&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Michael Williams</text>
+  <text x=&quot;78&quot; y=&quot;94&quot; font-size=&quot;10&quot; fill=&quot;#9CA3AF&quot;>Male · 47 yrs · CH-003</text>
+  <text x=&quot;456&quot; y=&quot;86&quot; text-anchor=&quot;end&quot; font-size=&quot;10&quot; fill=&quot;#00AED6&quot;>Edit</text>
+
+  <text x=&quot;30&quot; y=&quot;136&quot; font-size=&quot;13&quot; font-weight=&quot;700&quot; fill=&quot;#0F2F44&quot;>Procedure</text>
+
+  <!-- ── 6 procedure cards base layer (always) ── -->
+  <!-- Row 1 -->
+  <rect x=&quot;22&quot;  y=&quot;148&quot; width=&quot;138&quot; height=&quot;82&quot; rx=&quot;7&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+  <rect x=&quot;170&quot; y=&quot;148&quot; width=&quot;138&quot; height=&quot;82&quot; rx=&quot;7&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+  <rect x=&quot;318&quot; y=&quot;148&quot; width=&quot;152&quot; height=&quot;82&quot; rx=&quot;7&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+  <!-- Row 2 -->
+  <rect x=&quot;22&quot;  y=&quot;240&quot; width=&quot;138&quot; height=&quot;82&quot; rx=&quot;7&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+  <rect x=&quot;170&quot; y=&quot;240&quot; width=&quot;138&quot; height=&quot;82&quot; rx=&quot;7&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+  <rect x=&quot;318&quot; y=&quot;240&quot; width=&quot;152&quot; height=&quot;82&quot; rx=&quot;7&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+
+  <!-- Study Model icon + label -->
+  <rect x=&quot;34&quot; y=&quot;160&quot; width=&quot;20&quot; height=&quot;16&quot; rx=&quot;2&quot; fill=&quot;none&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;1.1&quot;/>
+  <line x1=&quot;34&quot; y1=&quot;165&quot; x2=&quot;54&quot; y2=&quot;165&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;0.7&quot;/>
+  <line x1=&quot;34&quot; y1=&quot;170&quot; x2=&quot;54&quot; y2=&quot;170&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;0.7&quot;/>
+  <text x=&quot;34&quot; y=&quot;200&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Study Model</text>
+  <text x=&quot;34&quot; y=&quot;212&quot; font-size=&quot;8.5&quot; fill=&quot;#9CA3AF&quot;>Diagnostic study models</text>
+
+  <!-- Invisalign icon + label -->
+  <path d=&quot;M 183 173 Q 191 163 200 163 Q 209 163 217 173&quot; fill=&quot;none&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;1.4&quot; stroke-linecap=&quot;round&quot;/>
+  <text x=&quot;183&quot; y=&quot;200&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Invisalign</text>
+  <text x=&quot;183&quot; y=&quot;212&quot; font-size=&quot;8.5&quot; fill=&quot;#9CA3AF&quot;>Clear aligner</text>
+
+  <!-- Fixed Restorative icon + label -->
+  <path d=&quot;M 334 176 Q 330 163 336 161 L 344 160 L 350 161 L 356 160 L 362 161 Q 368 163 364 176 Q 360 184 350 184 Q 340 184 334 176 Z&quot; fill=&quot;none&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;1.1&quot;/>
+  <text x=&quot;333&quot; y=&quot;200&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Fixed Restorative</text>
+  <text x=&quot;333&quot; y=&quot;212&quot; font-size=&quot;8.5&quot; fill=&quot;#9CA3AF&quot;>Crowns, bridges, veneers</text>
+
+  <!-- Implant Planning icon + label -->
+  <line x1=&quot;46&quot; y1=&quot;252&quot; x2=&quot;46&quot; y2=&quot;275&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;1.8&quot; stroke-linecap=&quot;round&quot;/>
+  <circle cx=&quot;46&quot; cy=&quot;279&quot; r=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;1.1&quot;/>
+  <text x=&quot;34&quot; y=&quot;302&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Implant Planning</text>
+  <text x=&quot;34&quot; y=&quot;314&quot; font-size=&quot;8.5&quot; fill=&quot;#9CA3AF&quot;>Surgical guide planning</text>
+
+  <!-- Dentures icon + label -->
+  <path d=&quot;M 183 270 Q 183 262 188 260 Q 200 257 212 260 Q 217 262 217 270&quot; fill=&quot;none&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;1.1&quot;/>
+  <circle cx=&quot;191&quot; cy=&quot;264&quot; r=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;0.9&quot;/>
+  <circle cx=&quot;200&quot; cy=&quot;262&quot; r=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;0.9&quot;/>
+  <circle cx=&quot;209&quot; cy=&quot;264&quot; r=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;0.9&quot;/>
+  <text x=&quot;183&quot; y=&quot;302&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Dentures</text>
+  <text x=&quot;183&quot; y=&quot;314&quot; font-size=&quot;8.5&quot; fill=&quot;#9CA3AF&quot;>Full or partial</text>
+
+  <!-- Appliance icon + label -->
+  <path d=&quot;M 333 264 Q 333 258 338 256 L 370 256 Q 375 258 375 264&quot; fill=&quot;none&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;1.1&quot;/>
+  <line x1=&quot;343&quot; y1=&quot;256&quot; x2=&quot;343&quot; y2=&quot;262&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;1&quot;/>
+  <line x1=&quot;354&quot; y1=&quot;256&quot; x2=&quot;354&quot; y2=&quot;263&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;1&quot;/>
+  <line x1=&quot;365&quot; y1=&quot;256&quot; x2=&quot;365&quot; y2=&quot;262&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;1&quot;/>
+  <text x=&quot;333&quot; y=&quot;302&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Appliance</text>
+  <text x=&quot;333&quot; y=&quot;314&quot; font-size=&quot;8.5&quot; fill=&quot;#9CA3AF&quot;>Orthodontic</text>
+
+  <!-- ════════════════════
+       STATE 1 — Study Model selected
+       Shows: Send to + Due date + Scan options toggles
+       ════════════════════ -->
+  <g class=&quot;s1&quot;>
+    <!-- Selected card overlay -->
+    <g class=&quot;sel&quot;>
+      <rect x=&quot;22&quot; y=&quot;148&quot; width=&quot;138&quot; height=&quot;82&quot; rx=&quot;7&quot; fill=&quot;#EBF7FC&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.8&quot;/>
+      <rect x=&quot;34&quot; y=&quot;160&quot; width=&quot;20&quot; height=&quot;16&quot; rx=&quot;2&quot; fill=&quot;none&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.1&quot;/>
+      <line x1=&quot;34&quot; y1=&quot;165&quot; x2=&quot;54&quot; y2=&quot;165&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;0.7&quot;/>
+      <line x1=&quot;34&quot; y1=&quot;170&quot; x2=&quot;54&quot; y2=&quot;170&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;0.7&quot;/>
+      <text x=&quot;34&quot; y=&quot;200&quot; font-size=&quot;10&quot; font-weight=&quot;700&quot; fill=&quot;#00AED6&quot;>Study Model</text>
+      <text x=&quot;34&quot; y=&quot;212&quot; font-size=&quot;8.5&quot; fill=&quot;#00AED6&quot;>Diagnostic study models</text>
+    </g>
+
+    <!-- Send to + Due date row -->
+    <rect x=&quot;22&quot; y=&quot;336&quot; width=&quot;448&quot; height=&quot;74&quot; rx=&quot;8&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;36&quot; y=&quot;358&quot; font-size=&quot;10&quot; fill=&quot;#6B7280&quot;>Send to <tspan fill=&quot;#E53E3E&quot;>*</tspan></text>
+    <rect x=&quot;36&quot; y=&quot;364&quot; width=&quot;196&quot; height=&quot;28&quot; rx=&quot;5&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;48&quot; y=&quot;382&quot; font-size=&quot;10&quot; fill=&quot;#C4C8D0&quot;>Select lab</text>
+    <text x=&quot;224&quot; y=&quot;382&quot; font-size=&quot;10&quot; fill=&quot;#C4C8D0&quot;>▾</text>
+    <text x=&quot;248&quot; y=&quot;358&quot; font-size=&quot;10&quot; fill=&quot;#6B7280&quot;>Due date <tspan fill=&quot;#E53E3E&quot;>*</tspan></text>
+    <rect x=&quot;248&quot; y=&quot;364&quot; width=&quot;196&quot; height=&quot;28&quot; rx=&quot;5&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;260&quot; y=&quot;382&quot; font-size=&quot;10&quot; fill=&quot;#C4C8D0&quot;>Select date</text>
+    <text x=&quot;436&quot; y=&quot;382&quot; font-size=&quot;10&quot; fill=&quot;#C4C8D0&quot;>📅</text>
+
+    <!-- Scan options section -->
+    <rect x=&quot;22&quot; y=&quot;422&quot; width=&quot;448&quot; height=&quot;56&quot; rx=&quot;8&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;36&quot; y=&quot;444&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#6B7280&quot;>Scan options</text>
+    <!-- 4 toggles -->
+    <g transform=&quot;translate(36, 452)&quot;>
+      <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;28&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#E5E7EB&quot;/>
+      <circle cx=&quot;8&quot; cy=&quot;8&quot; r=&quot;6&quot; fill=&quot;#FFFFFF&quot;/>
+      <text x=&quot;34&quot; y=&quot;12&quot; font-size=&quot;9&quot; fill=&quot;#6B7280&quot;>NIRI capture</text>
+    </g>
+    <g transform=&quot;translate(148, 452)&quot;>
+      <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;28&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#E5E7EB&quot;/>
+      <circle cx=&quot;8&quot; cy=&quot;8&quot; r=&quot;6&quot; fill=&quot;#FFFFFF&quot;/>
+      <text x=&quot;34&quot; y=&quot;12&quot; font-size=&quot;9&quot; fill=&quot;#6B7280&quot;>Palatal</text>
+    </g>
+    <g transform=&quot;translate(230, 452)&quot;>
+      <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;28&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#E5E7EB&quot;/>
+      <circle cx=&quot;8&quot; cy=&quot;8&quot; r=&quot;6&quot; fill=&quot;#FFFFFF&quot;/>
+      <text x=&quot;34&quot; y=&quot;12&quot; font-size=&quot;9&quot; fill=&quot;#6B7280&quot;>Gingival feedback</text>
+    </g>
+    <g transform=&quot;translate(370, 452)&quot;>
+      <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;28&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#E5E7EB&quot;/>
+      <circle cx=&quot;8&quot; cy=&quot;8&quot; r=&quot;6&quot; fill=&quot;#FFFFFF&quot;/>
+      <text x=&quot;34&quot; y=&quot;12&quot; font-size=&quot;9&quot; fill=&quot;#6B7280&quot;>Multi bite</text>
+    </g>
+  </g>
+
+  <!-- ════════════════════
+       STATE 2 — Invisalign selected
+       Shows: Send to + Due date + teeth grid (no selection)
+       ════════════════════ -->
+  <g class=&quot;s2&quot;>
+    <g class=&quot;sel&quot;>
+      <rect x=&quot;170&quot; y=&quot;148&quot; width=&quot;138&quot; height=&quot;82&quot; rx=&quot;7&quot; fill=&quot;#EBF7FC&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.8&quot;/>
+      <path d=&quot;M 183 173 Q 191 163 200 163 Q 209 163 217 173&quot; fill=&quot;none&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.4&quot; stroke-linecap=&quot;round&quot;/>
+      <text x=&quot;183&quot; y=&quot;200&quot; font-size=&quot;10&quot; font-weight=&quot;700&quot; fill=&quot;#00AED6&quot;>Invisalign</text>
+      <text x=&quot;183&quot; y=&quot;212&quot; font-size=&quot;8.5&quot; fill=&quot;#00AED6&quot;>Clear aligner orthodontic</text>
+    </g>
+
+    <!-- Send + Due -->
+    <rect x=&quot;22&quot; y=&quot;336&quot; width=&quot;448&quot; height=&quot;74&quot; rx=&quot;8&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;36&quot; y=&quot;358&quot; font-size=&quot;10&quot; fill=&quot;#6B7280&quot;>Send to <tspan fill=&quot;#E53E3E&quot;>*</tspan></text>
+    <rect x=&quot;36&quot; y=&quot;364&quot; width=&quot;196&quot; height=&quot;28&quot; rx=&quot;5&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;48&quot; y=&quot;382&quot; font-size=&quot;10&quot; fill=&quot;#C4C8D0&quot;>Select lab</text>
+    <text x=&quot;224&quot; y=&quot;382&quot; font-size=&quot;10&quot; fill=&quot;#C4C8D0&quot;>▾</text>
+    <text x=&quot;248&quot; y=&quot;358&quot; font-size=&quot;10&quot; fill=&quot;#6B7280&quot;>Due date <tspan fill=&quot;#E53E3E&quot;>*</tspan></text>
+    <rect x=&quot;248&quot; y=&quot;364&quot; width=&quot;196&quot; height=&quot;28&quot; rx=&quot;5&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;260&quot; y=&quot;382&quot; font-size=&quot;10&quot; fill=&quot;#C4C8D0&quot;>Select date</text>
+
+    <!-- Teeth grid (upper row, no selection) -->
+    <rect x=&quot;22&quot; y=&quot;422&quot; width=&quot;448&quot; height=&quot;96&quot; rx=&quot;8&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;36&quot; y=&quot;444&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Select teeth and assign procedures</text>
+    <!-- 16 upper teeth small boxes -->
+    <g fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.7&quot;>
+      <rect x=&quot;32&quot;  y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;58&quot;  y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;84&quot;  y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;110&quot; y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;136&quot; y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;162&quot; y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;188&quot; y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;214&quot; y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;244&quot; y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;270&quot; y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;296&quot; y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;322&quot; y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;348&quot; y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;374&quot; y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;400&quot; y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;426&quot; y=&quot;450&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+    </g>
+    <!-- Tooth numbers -->
+    <g font-size=&quot;7&quot; fill=&quot;#9CA3AF&quot; text-anchor=&quot;middle&quot;>
+      <text x=&quot;43&quot;  y=&quot;484&quot;>18</text><text x=&quot;69&quot;  y=&quot;484&quot;>17</text><text x=&quot;95&quot;  y=&quot;484&quot;>16</text><text x=&quot;121&quot; y=&quot;484&quot;>15</text>
+      <text x=&quot;147&quot; y=&quot;484&quot;>14</text><text x=&quot;173&quot; y=&quot;484&quot;>13</text><text x=&quot;199&quot; y=&quot;484&quot;>12</text><text x=&quot;225&quot; y=&quot;484&quot;>11</text>
+      <text x=&quot;255&quot; y=&quot;484&quot;>21</text><text x=&quot;281&quot; y=&quot;484&quot;>22</text><text x=&quot;307&quot; y=&quot;484&quot;>23</text><text x=&quot;333&quot; y=&quot;484&quot;>24</text>
+      <text x=&quot;359&quot; y=&quot;484&quot;>25</text><text x=&quot;385&quot; y=&quot;484&quot;>26</text><text x=&quot;411&quot; y=&quot;484&quot;>27</text><text x=&quot;437&quot; y=&quot;484&quot;>28</text>
+    </g>
+  </g>
+
+  <!-- ════════════════════
+       STATE 3 — Fixed Restorative selected + teeth 11,12,13 selected + procedure panel
+       ════════════════════ -->
+  <g class=&quot;s3&quot;>
+    <g class=&quot;sel&quot;>
+      <rect x=&quot;318&quot; y=&quot;148&quot; width=&quot;152&quot; height=&quot;82&quot; rx=&quot;7&quot; fill=&quot;#EBF7FC&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.8&quot;/>
+      <path d=&quot;M 334 176 Q 330 163 336 161 L 344 160 L 350 161 L 356 160 L 362 161 Q 368 163 364 176 Q 360 184 350 184 Q 340 184 334 176 Z&quot; fill=&quot;none&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.1&quot;/>
+      <text x=&quot;333&quot; y=&quot;200&quot; font-size=&quot;10&quot; font-weight=&quot;700&quot; fill=&quot;#00AED6&quot;>Fixed Restorative</text>
+      <text x=&quot;333&quot; y=&quot;212&quot; font-size=&quot;8.5&quot; fill=&quot;#00AED6&quot;>Crowns, bridges, veneers, inlays</text>
+    </g>
+
+    <!-- Send + Due -->
+    <rect x=&quot;22&quot; y=&quot;336&quot; width=&quot;448&quot; height=&quot;54&quot; rx=&quot;8&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;36&quot; y=&quot;356&quot; font-size=&quot;10&quot; fill=&quot;#6B7280&quot;>Send to <tspan fill=&quot;#E53E3E&quot;>*</tspan></text>
+    <rect x=&quot;36&quot; y=&quot;362&quot; width=&quot;196&quot; height=&quot;22&quot; rx=&quot;5&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;48&quot; y=&quot;377&quot; font-size=&quot;9.5&quot; fill=&quot;#C4C8D0&quot;>Select lab</text>
+    <text x=&quot;248&quot; y=&quot;356&quot; font-size=&quot;10&quot; fill=&quot;#6B7280&quot;>Due date <tspan fill=&quot;#E53E3E&quot;>*</tspan></text>
+    <rect x=&quot;248&quot; y=&quot;362&quot; width=&quot;196&quot; height=&quot;22&quot; rx=&quot;5&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;260&quot; y=&quot;377&quot; font-size=&quot;9.5&quot; fill=&quot;#C4C8D0&quot;>Select date</text>
+
+    <!-- Teeth grid with selection -->
+    <rect x=&quot;22&quot; y=&quot;402&quot; width=&quot;448&quot; height=&quot;76&quot; rx=&quot;8&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;36&quot; y=&quot;422&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Select teeth and assign procedures</text>
+    <g fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.7&quot;>
+      <rect x=&quot;32&quot;  y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;58&quot;  y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;84&quot;  y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;110&quot; y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;136&quot; y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;162&quot; y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+    </g>
+    <!-- Selected teeth 11, 12, 13 (purple/violet like real UI) -->
+    <g class=&quot;tsel&quot; fill=&quot;#F5F0FF&quot; stroke=&quot;#8B5CF6&quot; stroke-width=&quot;1.4&quot;>
+      <rect x=&quot;188&quot; y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;214&quot; y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;240&quot; y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+    </g>
+    <g fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.7&quot;>
+      <rect x=&quot;266&quot; y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;292&quot; y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;318&quot; y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;344&quot; y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;370&quot; y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;396&quot; y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+      <rect x=&quot;422&quot; y=&quot;428&quot; width=&quot;22&quot; height=&quot;26&quot; rx=&quot;3&quot;/>
+    </g>
+    <g font-size=&quot;7&quot; fill=&quot;#9CA3AF&quot; text-anchor=&quot;middle&quot;>
+      <text x=&quot;43&quot;  y=&quot;462&quot;>18</text><text x=&quot;69&quot;  y=&quot;462&quot;>17</text><text x=&quot;95&quot;  y=&quot;462&quot;>16</text><text x=&quot;121&quot; y=&quot;462&quot;>15</text>
+      <text x=&quot;147&quot; y=&quot;462&quot;>14</text><text x=&quot;173&quot; y=&quot;462&quot;>13</text>
+    </g>
+    <g font-size=&quot;7&quot; fill=&quot;#7C3AED&quot; text-anchor=&quot;middle&quot; font-weight=&quot;600&quot;>
+      <text x=&quot;199&quot; y=&quot;462&quot;>12</text><text x=&quot;225&quot; y=&quot;462&quot;>11</text><text x=&quot;251&quot; y=&quot;462&quot;>21</text>
+    </g>
+    <g font-size=&quot;7&quot; fill=&quot;#9CA3AF&quot; text-anchor=&quot;middle&quot;>
+      <text x=&quot;277&quot; y=&quot;462&quot;>22</text><text x=&quot;303&quot; y=&quot;462&quot;>23</text><text x=&quot;329&quot; y=&quot;462&quot;>24</text>
+      <text x=&quot;355&quot; y=&quot;462&quot;>25</text><text x=&quot;381&quot; y=&quot;462&quot;>26</text><text x=&quot;407&quot; y=&quot;462&quot;>27</text><text x=&quot;433&quot; y=&quot;462&quot;>28</text>
+    </g>
+
+    <!-- Procedure assignment panel -->
+    <rect x=&quot;22&quot; y=&quot;490&quot; width=&quot;448&quot; height=&quot;66&quot; rx=&quot;8&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;36&quot; y=&quot;510&quot; font-size=&quot;10&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Teeth 11, 12, 13</text>
+    <rect x=&quot;118&quot; y=&quot;498&quot; width=&quot;44&quot; height=&quot;18&quot; rx=&quot;9&quot; fill=&quot;#EDE9FE&quot; stroke=&quot;#8B5CF6&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;140&quot; y=&quot;511&quot; text-anchor=&quot;middle&quot; font-size=&quot;8&quot; fill=&quot;#7C3AED&quot;>● Onlay</text>
+    <!-- Procedure type pills -->
+    <g class=&quot;tagpop&quot; font-size=&quot;8.5&quot; text-anchor=&quot;middle&quot;>
+      <rect x=&quot;36&quot;  y=&quot;518&quot; width=&quot;42&quot; height=&quot;22&quot; rx=&quot;11&quot; fill=&quot;#F5F0FF&quot; stroke=&quot;#8B5CF6&quot; stroke-width=&quot;0.8&quot;/>
+      <text x=&quot;57&quot;  y=&quot;533&quot; fill=&quot;#7C3AED&quot;>Crown</text>
+      <rect x=&quot;84&quot;  y=&quot;518&quot; width=&quot;44&quot; height=&quot;22&quot; rx=&quot;11&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+      <text x=&quot;106&quot; y=&quot;533&quot; fill=&quot;#6B7280&quot;>Bridge</text>
+      <rect x=&quot;134&quot; y=&quot;518&quot; width=&quot;46&quot; height=&quot;22&quot; rx=&quot;11&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+      <text x=&quot;157&quot; y=&quot;533&quot; fill=&quot;#6B7280&quot;>Veneer</text>
+      <rect x=&quot;186&quot; y=&quot;518&quot; width=&quot;36&quot; height=&quot;22&quot; rx=&quot;11&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+      <text x=&quot;204&quot; y=&quot;533&quot; fill=&quot;#6B7280&quot;>Inlay</text>
+      <rect x=&quot;228&quot; y=&quot;518&quot; width=&quot;40&quot; height=&quot;22&quot; rx=&quot;11&quot; fill=&quot;#8B5CF6&quot; stroke=&quot;#8B5CF6&quot; stroke-width=&quot;0.8&quot;/>
+      <text x=&quot;248&quot; y=&quot;533&quot; fill=&quot;#FFFFFF&quot;>Onlay</text>
+      <rect x=&quot;274&quot; y=&quot;518&quot; width=&quot;50&quot; height=&quot;22&quot; rx=&quot;11&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+      <text x=&quot;299&quot; y=&quot;533&quot; fill=&quot;#6B7280&quot;>Eggshell</text>
+      <rect x=&quot;330&quot; y=&quot;518&quot; width=&quot;48&quot; height=&quot;22&quot; rx=&quot;11&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+      <text x=&quot;354&quot; y=&quot;533&quot; fill=&quot;#6B7280&quot;>Mockup</text>
+    </g>
+  </g>
+
+  <!-- ════════════════════
+       STATE 4 — Implant Planning selected
+       Shows: Send to + scan options with some toggles ON
+       ════════════════════ -->
+  <g class=&quot;s4&quot;>
+    <g class=&quot;sel&quot;>
+      <rect x=&quot;22&quot; y=&quot;240&quot; width=&quot;138&quot; height=&quot;82&quot; rx=&quot;7&quot; fill=&quot;#EBF7FC&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.8&quot;/>
+      <line x1=&quot;46&quot; y1=&quot;252&quot; x2=&quot;46&quot; y2=&quot;275&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.8&quot; stroke-linecap=&quot;round&quot;/>
+      <circle cx=&quot;46&quot; cy=&quot;279&quot; r=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.1&quot;/>
+      <text x=&quot;34&quot; y=&quot;302&quot; font-size=&quot;10&quot; font-weight=&quot;700&quot; fill=&quot;#00AED6&quot;>Implant Planning</text>
+      <text x=&quot;34&quot; y=&quot;314&quot; font-size=&quot;8.5&quot; fill=&quot;#00AED6&quot;>Surgical guide planning</text>
+    </g>
+
+    <!-- Send + Due -->
+    <rect x=&quot;22&quot; y=&quot;336&quot; width=&quot;448&quot; height=&quot;74&quot; rx=&quot;8&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;36&quot; y=&quot;358&quot; font-size=&quot;10&quot; fill=&quot;#6B7280&quot;>Send to <tspan fill=&quot;#E53E3E&quot;>*</tspan></text>
+    <rect x=&quot;36&quot; y=&quot;364&quot; width=&quot;196&quot; height=&quot;28&quot; rx=&quot;5&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;48&quot; y=&quot;382&quot; font-size=&quot;10&quot; fill=&quot;#C4C8D0&quot;>Select lab</text>
+    <text x=&quot;224&quot; y=&quot;382&quot; font-size=&quot;10&quot; fill=&quot;#C4C8D0&quot;>▾</text>
+    <text x=&quot;248&quot; y=&quot;358&quot; font-size=&quot;10&quot; fill=&quot;#6B7280&quot;>Due date <tspan fill=&quot;#E53E3E&quot;>*</tspan></text>
+    <rect x=&quot;248&quot; y=&quot;364&quot; width=&quot;196&quot; height=&quot;28&quot; rx=&quot;5&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;260&quot; y=&quot;382&quot; font-size=&quot;10&quot; fill=&quot;#C4C8D0&quot;>Select date</text>
+
+    <!-- Scan options — NIRI + Palatal toggled ON -->
+    <rect x=&quot;22&quot; y=&quot;422&quot; width=&quot;448&quot; height=&quot;56&quot; rx=&quot;8&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+    <text x=&quot;36&quot; y=&quot;444&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#6B7280&quot;>Scan options</text>
+    <!-- NIRI ON -->
+    <g transform=&quot;translate(36, 452)&quot;>
+      <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;28&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#00AED6&quot;/>
+      <circle cx=&quot;20&quot; cy=&quot;8&quot; r=&quot;6&quot; fill=&quot;#FFFFFF&quot;/>
+      <text x=&quot;34&quot; y=&quot;12&quot; font-size=&quot;9&quot; fill=&quot;#0F2F44&quot;>NIRI capture</text>
+    </g>
+    <!-- Palatal ON -->
+    <g transform=&quot;translate(148, 452)&quot;>
+      <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;28&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#00AED6&quot;/>
+      <circle cx=&quot;20&quot; cy=&quot;8&quot; r=&quot;6&quot; fill=&quot;#FFFFFF&quot;/>
+      <text x=&quot;34&quot; y=&quot;12&quot; font-size=&quot;9&quot; fill=&quot;#0F2F44&quot;>Palatal</text>
+    </g>
+    <!-- Gingival OFF -->
+    <g transform=&quot;translate(230, 452)&quot;>
+      <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;28&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#E5E7EB&quot;/>
+      <circle cx=&quot;8&quot; cy=&quot;8&quot; r=&quot;6&quot; fill=&quot;#FFFFFF&quot;/>
+      <text x=&quot;34&quot; y=&quot;12&quot; font-size=&quot;9&quot; fill=&quot;#6B7280&quot;>Gingival feedback</text>
+    </g>
+    <!-- Multi bite OFF -->
+    <g transform=&quot;translate(370, 452)&quot;>
+      <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;28&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#E5E7EB&quot;/>
+      <circle cx=&quot;8&quot; cy=&quot;8&quot; r=&quot;6&quot; fill=&quot;#FFFFFF&quot;/>
+      <text x=&quot;34&quot; y=&quot;12&quot; font-size=&quot;9&quot; fill=&quot;#6B7280&quot;>Multi bite</text>
+    </g>
+  </g>
+
+</svg>
+</div>
+</body>
+</html>
+"
+  width="100%"
+  height="100%"
+  scrolling="no"
+  frameborder="0"
+  style="border:0; display:block; width: 100%; height: 100%; min-height: 100vh; background:#F4F7FA; overflow:hidden;"
+  loading="lazy"
+  title="iTero Info page">
+</iframe>

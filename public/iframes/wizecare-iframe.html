@@ -1,0 +1,313 @@
+<iframe
+  srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot;>
+<title>WizeCare</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    min-height: 100vh; min-height: 100dvh;
+    background: #FFFFFF;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .stage { width: 100%; height: 100%; min-height: 100vh; }
+  .canvas { width: 100%; height: 100%; display: block; }
+
+  /* 16s — 4 states, 4s each */
+  .s1,.s2,.s3,.s4 { opacity:0; }
+  .s1 { animation: s1 16s infinite; }
+  .s2 { animation: s2 16s infinite; }
+  .s3 { animation: s3 16s infinite; }
+  .s4 { animation: s4 16s infinite; }
+  @keyframes s1 { 0%,23%  {opacity:1} 26%,100% {opacity:0} }
+  @keyframes s2 { 0%,24%  {opacity:0} 25%,48%  {opacity:1} 51%,100% {opacity:0} }
+  @keyframes s3 { 0%,49%  {opacity:0} 50%,73%  {opacity:1} 76%,100% {opacity:0} }
+  @keyframes s4 { 0%,74%  {opacity:0} 75%,98%  {opacity:1} 100%     {opacity:0} }
+
+  /* Checked box pop */
+  .chk { transform-box: fill-box; transform-origin: center; animation: chkPop 0.4s cubic-bezier(.34,1.56,.64,1) both; }
+
+  /* Exercise card slide into panel */
+  .card-in { animation: cardSlide 0.5s cubic-bezier(.22,.9,.3,1) both; }
+  @keyframes cardSlide { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+  /* Toggle */
+  .tog-on { animation: togOn 0.3s ease forwards; }
+
+  @media (prefers-reduced-motion: reduce) { * { animation:none!important } }
+</style>
+</head>
+<body>
+<div class=&quot;stage&quot;>
+<svg class=&quot;canvas&quot; viewBox=&quot;0 0 680 500&quot; preserveAspectRatio=&quot;xMinYMin meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
+  <rect width=&quot;680&quot; height=&quot;500&quot; fill=&quot;#FFFFFF&quot;/>
+
+  <!-- ── Divider ── -->
+  <line x1=&quot;440&quot; y1=&quot;0&quot; x2=&quot;440&quot; y2=&quot;500&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;1&quot;/>
+
+  <!-- ══════════════
+       LEFT PANEL — always
+       ══════════════ -->
+
+  <!-- Title -->
+  <text x=&quot;20&quot; y=&quot;34&quot; font-size=&quot;14&quot; font-weight=&quot;700&quot; fill=&quot;#1A1A2E&quot;>Shoulder Lior Program</text>
+
+  <!-- Search bar -->
+  <rect x=&quot;20&quot; y=&quot;44&quot; width=&quot;160&quot; height=&quot;28&quot; rx=&quot;6&quot; fill=&quot;#F8F8F8&quot; stroke=&quot;#EBEBEB&quot; stroke-width=&quot;0.8&quot;/>
+  <text x=&quot;38&quot; y=&quot;62&quot; font-size=&quot;9.5&quot; fill=&quot;#BBBBBB&quot;>Search exercises</text>
+  <circle cx=&quot;31&quot; cy=&quot;58&quot; r=&quot;5&quot; fill=&quot;none&quot; stroke=&quot;#BBBBBB&quot; stroke-width=&quot;1.2&quot;/>
+  <line x1=&quot;35&quot; y1=&quot;62&quot; x2=&quot;37&quot; y2=&quot;64&quot; stroke=&quot;#BBBBBB&quot; stroke-width=&quot;1.2&quot;/>
+
+  <!-- Filter chips -->
+  <text x=&quot;20&quot; y=&quot;92&quot; font-size=&quot;9&quot; fill=&quot;#9CA3AF&quot;>Muscles:</text>
+  <rect x=&quot;63&quot; y=&quot;80&quot; width=&quot;66&quot; height=&quot;20&quot; rx=&quot;10&quot; fill=&quot;#F0FAFA&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;0.8&quot;/>
+  <text x=&quot;78&quot; y=&quot;93&quot; font-size=&quot;8.5&quot; fill=&quot;#00B4A6&quot;>Shoulders ✕</text>
+  <text x=&quot;136&quot; y=&quot;92&quot; font-size=&quot;9&quot; fill=&quot;#9CA3AF&quot;>Difficulty</text>
+  <rect x=&quot;186&quot; y=&quot;80&quot; width=&quot;44&quot; height=&quot;20&quot; rx=&quot;10&quot; fill=&quot;#F0FAFA&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;0.8&quot;/>
+  <text x=&quot;200&quot; y=&quot;93&quot; font-size=&quot;8.5&quot; fill=&quot;#00B4A6&quot;>Basic ✕</text>
+
+  <!-- Sort -->
+  <text x=&quot;310&quot; y=&quot;92&quot; font-size=&quot;9&quot; fill=&quot;#9CA3AF&quot;>Sort by: Name A–Z  ▾</text>
+
+  <!-- Divider -->
+  <line x1=&quot;20&quot; y1=&quot;106&quot; x2=&quot;428&quot; y2=&quot;106&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;0.8&quot;/>
+
+  <!-- ── 5 exercise rows (always visible) ── -->
+  <!-- Row 1 -->
+  <rect x=&quot;68&quot; y=&quot;116&quot; width=&quot;52&quot; height=&quot;44&quot; rx=&quot;4&quot; fill=&quot;#F5F5F5&quot;/>
+  <!-- Stick figure placeholder -->
+  <circle cx=&quot;94&quot; cy=&quot;124&quot; r=&quot;5&quot; fill=&quot;#CCCCCC&quot;/>
+  <line x1=&quot;94&quot; y1=&quot;129&quot; x2=&quot;94&quot; y2=&quot;143&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <line x1=&quot;88&quot; y1=&quot;133&quot; x2=&quot;100&quot; y2=&quot;133&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <line x1=&quot;94&quot; y1=&quot;143&quot; x2=&quot;89&quot; y2=&quot;152&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <line x1=&quot;94&quot; y1=&quot;143&quot; x2=&quot;99&quot; y2=&quot;152&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <text x=&quot;128&quot; y=&quot;136&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#1A1A2E&quot;>Spinal Stretch, Sitting</text>
+  <circle cx=&quot;390&quot; cy=&quot;138&quot; r=&quot;6&quot; fill=&quot;none&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1&quot;/>
+  <text x=&quot;393&quot; y=&quot;141&quot; font-size=&quot;8&quot; fill=&quot;#CCCCCC&quot;>i</text>
+
+  <!-- Row 2 -->
+  <rect x=&quot;68&quot; y=&quot;172&quot; width=&quot;52&quot; height=&quot;44&quot; rx=&quot;4&quot; fill=&quot;#F5F5F5&quot;/>
+  <circle cx=&quot;94&quot; cy=&quot;180&quot; r=&quot;5&quot; fill=&quot;#CCCCCC&quot;/>
+  <line x1=&quot;94&quot; y1=&quot;185&quot; x2=&quot;94&quot; y2=&quot;199&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <line x1=&quot;88&quot; y1=&quot;189&quot; x2=&quot;100&quot; y2=&quot;193&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <line x1=&quot;94&quot; y1=&quot;199&quot; x2=&quot;89&quot; y2=&quot;208&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <line x1=&quot;94&quot; y1=&quot;199&quot; x2=&quot;99&quot; y2=&quot;208&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <text x=&quot;128&quot; y=&quot;192&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#1A1A2E&quot;>Shoulder Flexion and Adduction</text>
+  <circle cx=&quot;390&quot; cy=&quot;194&quot; r=&quot;6&quot; fill=&quot;none&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1&quot;/>
+  <text x=&quot;393&quot; y=&quot;197&quot; font-size=&quot;8&quot; fill=&quot;#CCCCCC&quot;>i</text>
+
+  <!-- Row 3 -->
+  <rect x=&quot;68&quot; y=&quot;228&quot; width=&quot;52&quot; height=&quot;44&quot; rx=&quot;4&quot; fill=&quot;#F5F5F5&quot;/>
+  <circle cx=&quot;94&quot; cy=&quot;236&quot; r=&quot;5&quot; fill=&quot;#CCCCCC&quot;/>
+  <line x1=&quot;94&quot; y1=&quot;241&quot; x2=&quot;94&quot; y2=&quot;255&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <line x1=&quot;86&quot; y1=&quot;245&quot; x2=&quot;102&quot; y2=&quot;249&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <line x1=&quot;94&quot; y1=&quot;255&quot; x2=&quot;89&quot; y2=&quot;264&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <line x1=&quot;94&quot; y1=&quot;255&quot; x2=&quot;99&quot; y2=&quot;264&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <text x=&quot;128&quot; y=&quot;248&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#1A1A2E&quot;>Shoulder Retraction with Elbow</text>
+  <circle cx=&quot;390&quot; cy=&quot;250&quot; r=&quot;6&quot; fill=&quot;none&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1&quot;/>
+  <text x=&quot;393&quot; y=&quot;253&quot; font-size=&quot;8&quot; fill=&quot;#CCCCCC&quot;>i</text>
+
+  <!-- Row 4 -->
+  <rect x=&quot;68&quot; y=&quot;284&quot; width=&quot;52&quot; height=&quot;44&quot; rx=&quot;4&quot; fill=&quot;#F5F5F5&quot;/>
+  <circle cx=&quot;94&quot; cy=&quot;292&quot; r=&quot;5&quot; fill=&quot;#CCCCCC&quot;/>
+  <line x1=&quot;94&quot; y1=&quot;297&quot; x2=&quot;94&quot; y2=&quot;311&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <line x1=&quot;88&quot; y1=&quot;301&quot; x2=&quot;100&quot; y2=&quot;301&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <line x1=&quot;94&quot; y1=&quot;311&quot; x2=&quot;89&quot; y2=&quot;320&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <line x1=&quot;94&quot; y1=&quot;311&quot; x2=&quot;99&quot; y2=&quot;320&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <text x=&quot;128&quot; y=&quot;304&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#1A1A2E&quot;>Shoulder Extension with a Stick</text>
+  <circle cx=&quot;390&quot; cy=&quot;306&quot; r=&quot;6&quot; fill=&quot;none&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1&quot;/>
+  <text x=&quot;393&quot; y=&quot;309&quot; font-size=&quot;8&quot; fill=&quot;#CCCCCC&quot;>i</text>
+
+  <!-- Row 5 -->
+  <rect x=&quot;68&quot; y=&quot;340&quot; width=&quot;52&quot; height=&quot;44&quot; rx=&quot;4&quot; fill=&quot;#F5F5F5&quot;/>
+  <circle cx=&quot;94&quot; cy=&quot;348&quot; r=&quot;5&quot; fill=&quot;#CCCCCC&quot;/>
+  <line x1=&quot;94&quot; y1=&quot;353&quot; x2=&quot;94&quot; y2=&quot;367&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <line x1=&quot;88&quot; y1=&quot;357&quot; x2=&quot;100&quot; y2=&quot;357&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <line x1=&quot;94&quot; y1=&quot;367&quot; x2=&quot;89&quot; y2=&quot;376&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <line x1=&quot;94&quot; y1=&quot;367&quot; x2=&quot;99&quot; y2=&quot;376&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1.5&quot;/>
+  <text x=&quot;128&quot; y=&quot;360&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#1A1A2E&quot;>Spine Flexion Extension, Sitting</text>
+  <circle cx=&quot;390&quot; cy=&quot;362&quot; r=&quot;6&quot; fill=&quot;none&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1&quot;/>
+  <text x=&quot;393&quot; y=&quot;365&quot; font-size=&quot;8&quot; fill=&quot;#CCCCCC&quot;>i</text>
+
+  <!-- Row lines -->
+  <line x1=&quot;20&quot; y1=&quot;166&quot; x2=&quot;428&quot; y2=&quot;166&quot; stroke=&quot;#F5F5F5&quot; stroke-width=&quot;0.8&quot;/>
+  <line x1=&quot;20&quot; y1=&quot;222&quot; x2=&quot;428&quot; y2=&quot;222&quot; stroke=&quot;#F5F5F5&quot; stroke-width=&quot;0.8&quot;/>
+  <line x1=&quot;20&quot; y1=&quot;278&quot; x2=&quot;428&quot; y2=&quot;278&quot; stroke=&quot;#F5F5F5&quot; stroke-width=&quot;0.8&quot;/>
+  <line x1=&quot;20&quot; y1=&quot;334&quot; x2=&quot;428&quot; y2=&quot;334&quot; stroke=&quot;#F5F5F5&quot; stroke-width=&quot;0.8&quot;/>
+
+  <!-- ══════════════
+       RIGHT PANEL — always header
+       ══════════════ -->
+  <text x=&quot;454&quot; y=&quot;34&quot; font-size=&quot;11&quot; font-weight=&quot;600&quot; fill=&quot;#9CA3AF&quot;>
+    <tspan class=&quot;s1&quot;>0</tspan>
+    <tspan class=&quot;s2&quot;>1</tspan>
+    <tspan class=&quot;s3&quot;>2</tspan>
+    <tspan class=&quot;s4&quot;>3</tspan>
+  </text>
+
+  <!-- Count badge -->
+  <g class=&quot;s1&quot;><text x=&quot;454&quot; y=&quot;34&quot; font-size=&quot;11&quot; font-weight=&quot;600&quot; fill=&quot;#9CA3AF&quot;>0  Exercise selected</text></g>
+  <g class=&quot;s2&quot;><text x=&quot;454&quot; y=&quot;34&quot; font-size=&quot;13&quot; font-weight=&quot;700&quot; fill=&quot;#1A1A2E&quot;><tspan font-size=&quot;15&quot; fill=&quot;#00B4A6&quot;>1 </tspan>Exercise selected</text></g>
+  <g class=&quot;s3&quot;><text x=&quot;454&quot; y=&quot;34&quot; font-size=&quot;13&quot; font-weight=&quot;700&quot; fill=&quot;#1A1A2E&quot;><tspan font-size=&quot;15&quot; fill=&quot;#00B4A6&quot;>2 </tspan>Exercises selected</text></g>
+  <g class=&quot;s4&quot;><text x=&quot;454&quot; y=&quot;34&quot; font-size=&quot;13&quot; font-weight=&quot;700&quot; fill=&quot;#1A1A2E&quot;><tspan font-size=&quot;15&quot; fill=&quot;#00B4A6&quot;>3 </tspan>Exercises selected</text></g>
+
+  <!-- ══════════════ STATE 1 — nothing selected ══════════════ -->
+  <g class=&quot;s1&quot;>
+    <!-- all checkboxes empty -->
+    <rect x=&quot;22&quot; y=&quot;128&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.2&quot;/>
+    <rect x=&quot;22&quot; y=&quot;184&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.2&quot;/>
+    <rect x=&quot;22&quot; y=&quot;240&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.2&quot;/>
+    <rect x=&quot;22&quot; y=&quot;296&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.2&quot;/>
+    <rect x=&quot;22&quot; y=&quot;352&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.2&quot;/>
+
+    <!-- Empty state in right panel -->
+    <text x=&quot;554&quot; y=&quot;220&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#CCCCCC&quot;>No exercises selected</text>
+    <text x=&quot;554&quot; y=&quot;238&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#DDDDDD&quot;>Check exercises from the list</text>
+  </g>
+
+  <!-- ══════════════ STATE 2 — 1 selected (Spinal Stretch) ══════════════ -->
+  <g class=&quot;s2&quot;>
+    <!-- checkbox 1 checked -->
+    <rect x=&quot;22&quot; y=&quot;128&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;#00B4A6&quot;/>
+    <path d=&quot;M 25 136 L 29 140 L 37 131&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.8&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    <!-- rest unchecked -->
+    <rect x=&quot;22&quot; y=&quot;184&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.2&quot;/>
+    <rect x=&quot;22&quot; y=&quot;240&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.2&quot;/>
+    <rect x=&quot;22&quot; y=&quot;296&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.2&quot;/>
+    <rect x=&quot;22&quot; y=&quot;352&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.2&quot;/>
+
+    <!-- Toggle auto ordering -->
+    <rect x=&quot;454&quot; y=&quot;44&quot; width=&quot;30&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#00B4A6&quot;/>
+    <circle cx=&quot;476&quot; cy=&quot;52&quot; r=&quot;6&quot; fill=&quot;#FFFFFF&quot;/>
+    <text x=&quot;490&quot; y=&quot;56&quot; font-size=&quot;9&quot; fill=&quot;#1A1A2E&quot;>Automatic ordering is on</text>
+    <line x1=&quot;454&quot; y1=&quot;68&quot; x2=&quot;660&quot; y2=&quot;68&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;0.8&quot;/>
+
+    <!-- Exercise card 1 -->
+    <rect x=&quot;454&quot; y=&quot;76&quot; width=&quot;200&quot; height=&quot;78&quot; rx=&quot;7&quot; fill=&quot;#F8F8F8&quot;/>
+    <rect x=&quot;454&quot; y=&quot;76&quot; width=&quot;52&quot; height=&quot;78&quot; rx=&quot;7&quot; fill=&quot;#ECECEC&quot;/>
+    <circle cx=&quot;480&quot; cy=&quot;100&quot; r=&quot;7&quot; fill=&quot;#CCCCCC&quot;/>
+    <line x1=&quot;480&quot; y1=&quot;107&quot; x2=&quot;480&quot; y2=&quot;120&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;2&quot;/>
+    <line x1=&quot;474&quot; y1=&quot;112&quot; x2=&quot;486&quot; y2=&quot;112&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;2&quot;/>
+    <text x=&quot;514&quot; y=&quot;94&quot; font-size=&quot;9.5&quot; font-weight=&quot;500&quot; fill=&quot;#1A1A2E&quot;>Spinal Stretch, Sitting</text>
+    <!-- delete icon -->
+    <rect x=&quot;634&quot; y=&quot;88&quot; width=&quot;14&quot; height=&quot;14&quot; rx=&quot;2&quot; fill=&quot;none&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1&quot;/>
+    <line x1=&quot;637&quot; y1=&quot;93&quot; x2=&quot;645&quot; y2=&quot;99&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;1&quot;/>
+
+    <text x=&quot;462&quot; y=&quot;120&quot; font-size=&quot;8.5&quot; fill=&quot;#9CA3AF&quot;>🚶 Sets</text>
+    <text x=&quot;510&quot; y=&quot;120&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#1A1A2E&quot;>5</text>
+    <text x=&quot;462&quot; y=&quot;136&quot; font-size=&quot;8.5&quot; fill=&quot;#9CA3AF&quot;>↺ Reps</text>
+    <text x=&quot;510&quot; y=&quot;136&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#1A1A2E&quot;>10</text>
+    <text x=&quot;462&quot; y=&quot;150&quot; font-size=&quot;8.5&quot; fill=&quot;#9CA3AF&quot;>⏱ Rest</text>
+    <text x=&quot;510&quot; y=&quot;150&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#1A1A2E&quot;>30 sec</text>
+  </g>
+
+  <!-- ══════════════ STATE 3 — 2 selected ══════════════ -->
+  <g class=&quot;s3&quot;>
+    <rect x=&quot;22&quot; y=&quot;128&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;#00B4A6&quot;/>
+    <path d=&quot;M 25 136 L 29 140 L 37 131&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.8&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    <rect x=&quot;22&quot; y=&quot;184&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;#00B4A6&quot;/>
+    <path d=&quot;M 25 192 L 29 196 L 37 187&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.8&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    <rect x=&quot;22&quot; y=&quot;240&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.2&quot;/>
+    <rect x=&quot;22&quot; y=&quot;296&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.2&quot;/>
+    <rect x=&quot;22&quot; y=&quot;352&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.2&quot;/>
+
+    <rect x=&quot;454&quot; y=&quot;44&quot; width=&quot;30&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#00B4A6&quot;/>
+    <circle cx=&quot;476&quot; cy=&quot;52&quot; r=&quot;6&quot; fill=&quot;#FFFFFF&quot;/>
+    <text x=&quot;490&quot; y=&quot;56&quot; font-size=&quot;9&quot; fill=&quot;#1A1A2E&quot;>Automatic ordering is on</text>
+    <line x1=&quot;454&quot; y1=&quot;68&quot; x2=&quot;660&quot; y2=&quot;68&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;0.8&quot;/>
+
+    <!-- Card 1 -->
+    <rect x=&quot;454&quot; y=&quot;76&quot; width=&quot;200&quot; height=&quot;78&quot; rx=&quot;7&quot; fill=&quot;#F8F8F8&quot;/>
+    <rect x=&quot;454&quot; y=&quot;76&quot; width=&quot;52&quot; height=&quot;78&quot; rx=&quot;7&quot; fill=&quot;#ECECEC&quot;/>
+    <circle cx=&quot;480&quot; cy=&quot;100&quot; r=&quot;7&quot; fill=&quot;#CCCCCC&quot;/>
+    <line x1=&quot;480&quot; y1=&quot;107&quot; x2=&quot;480&quot; y2=&quot;120&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;2&quot;/>
+    <line x1=&quot;474&quot; y1=&quot;112&quot; x2=&quot;486&quot; y2=&quot;112&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;2&quot;/>
+    <text x=&quot;514&quot; y=&quot;94&quot; font-size=&quot;9.5&quot; font-weight=&quot;500&quot; fill=&quot;#1A1A2E&quot;>Spinal Stretch, Sitting</text>
+    <text x=&quot;462&quot; y=&quot;120&quot; font-size=&quot;8.5&quot; fill=&quot;#9CA3AF&quot;>🚶 Sets</text>
+    <text x=&quot;510&quot; y=&quot;120&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#1A1A2E&quot;>5</text>
+    <text x=&quot;462&quot; y=&quot;134&quot; font-size=&quot;8.5&quot; fill=&quot;#9CA3AF&quot;>↺ Reps</text>
+    <text x=&quot;510&quot; y=&quot;134&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#1A1A2E&quot;>10</text>
+    <text x=&quot;462&quot; y=&quot;148&quot; font-size=&quot;8.5&quot; fill=&quot;#9CA3AF&quot;>⏱ Rest</text>
+    <text x=&quot;510&quot; y=&quot;148&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#1A1A2E&quot;>30 sec</text>
+
+    <!-- Card 2 -->
+    <rect x=&quot;454&quot; y=&quot;164&quot; width=&quot;200&quot; height=&quot;78&quot; rx=&quot;7&quot; fill=&quot;#F8F8F8&quot;/>
+    <rect x=&quot;454&quot; y=&quot;164&quot; width=&quot;52&quot; height=&quot;78&quot; rx=&quot;7&quot; fill=&quot;#ECECEC&quot;/>
+    <circle cx=&quot;480&quot; cy=&quot;188&quot; r=&quot;7&quot; fill=&quot;#CCCCCC&quot;/>
+    <line x1=&quot;480&quot; y1=&quot;195&quot; x2=&quot;480&quot; y2=&quot;208&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;2&quot;/>
+    <line x1=&quot;472&quot; y1=&quot;200&quot; x2=&quot;488&quot; y2=&quot;204&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;2&quot;/>
+    <text x=&quot;514&quot; y=&quot;182&quot; font-size=&quot;9.5&quot; font-weight=&quot;500&quot; fill=&quot;#1A1A2E&quot;>Shoulder Flexion</text>
+    <text x=&quot;514&quot; y=&quot;194&quot; font-size=&quot;9.5&quot; font-weight=&quot;500&quot; fill=&quot;#1A1A2E&quot;>and Adduction</text>
+    <text x=&quot;462&quot; y=&quot;210&quot; font-size=&quot;8.5&quot; fill=&quot;#9CA3AF&quot;>🚶 Sets</text>
+    <text x=&quot;510&quot; y=&quot;210&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#1A1A2E&quot;>5</text>
+    <text x=&quot;462&quot; y=&quot;224&quot; font-size=&quot;8.5&quot; fill=&quot;#9CA3AF&quot;>↺ Reps</text>
+    <text x=&quot;510&quot; y=&quot;224&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#1A1A2E&quot;>10</text>
+    <text x=&quot;462&quot; y=&quot;238&quot; font-size=&quot;8.5&quot; fill=&quot;#9CA3AF&quot;>⏱ Rest</text>
+    <text x=&quot;510&quot; y=&quot;238&quot; font-size=&quot;9&quot; font-weight=&quot;600&quot; fill=&quot;#1A1A2E&quot;>30 sec</text>
+  </g>
+
+  <!-- ══════════════ STATE 4 — 3 selected + CTA ══════════════ -->
+  <g class=&quot;s4&quot;>
+    <rect x=&quot;22&quot; y=&quot;128&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;#00B4A6&quot;/>
+    <path d=&quot;M 25 136 L 29 140 L 37 131&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.8&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    <rect x=&quot;22&quot; y=&quot;184&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;#00B4A6&quot;/>
+    <path d=&quot;M 25 192 L 29 196 L 37 187&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.8&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    <rect x=&quot;22&quot; y=&quot;240&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;#00B4A6&quot;/>
+    <path d=&quot;M 25 248 L 29 252 L 37 243&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;1.8&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    <rect x=&quot;22&quot; y=&quot;296&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.2&quot;/>
+    <rect x=&quot;22&quot; y=&quot;352&quot; width=&quot;16&quot; height=&quot;16&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#DDDDDD&quot; stroke-width=&quot;1.2&quot;/>
+
+    <rect x=&quot;454&quot; y=&quot;44&quot; width=&quot;30&quot; height=&quot;16&quot; rx=&quot;8&quot; fill=&quot;#00B4A6&quot;/>
+    <circle cx=&quot;476&quot; cy=&quot;52&quot; r=&quot;6&quot; fill=&quot;#FFFFFF&quot;/>
+    <text x=&quot;490&quot; y=&quot;56&quot; font-size=&quot;9&quot; fill=&quot;#1A1A2E&quot;>Automatic ordering is on</text>
+    <line x1=&quot;454&quot; y1=&quot;68&quot; x2=&quot;660&quot; y2=&quot;68&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;0.8&quot;/>
+
+    <!-- Card 1 -->
+    <rect x=&quot;454&quot; y=&quot;76&quot; width=&quot;200&quot; height=&quot;70&quot; rx=&quot;7&quot; fill=&quot;#F8F8F8&quot;/>
+    <rect x=&quot;454&quot; y=&quot;76&quot; width=&quot;48&quot; height=&quot;70&quot; rx=&quot;7&quot; fill=&quot;#ECECEC&quot;/>
+    <circle cx=&quot;478&quot; cy=&quot;96&quot; r=&quot;6&quot; fill=&quot;#CCCCCC&quot;/>
+    <line x1=&quot;478&quot; y1=&quot;102&quot; x2=&quot;478&quot; y2=&quot;114&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;2&quot;/>
+    <line x1=&quot;473&quot; y1=&quot;106&quot; x2=&quot;483&quot; y2=&quot;106&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;2&quot;/>
+    <text x=&quot;510&quot; y=&quot;92&quot; font-size=&quot;9&quot; font-weight=&quot;500&quot; fill=&quot;#1A1A2E&quot;>Spinal Stretch, Sitting</text>
+    <text x=&quot;462&quot; y=&quot;110&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Sets 5  ·  Reps 10  ·  Rest 30s</text>
+
+    <!-- Card 2 -->
+    <rect x=&quot;454&quot; y=&quot;154&quot; width=&quot;200&quot; height=&quot;70&quot; rx=&quot;7&quot; fill=&quot;#F8F8F8&quot;/>
+    <rect x=&quot;454&quot; y=&quot;154&quot; width=&quot;48&quot; height=&quot;70&quot; rx=&quot;7&quot; fill=&quot;#ECECEC&quot;/>
+    <circle cx=&quot;478&quot; cy=&quot;174&quot; r=&quot;6&quot; fill=&quot;#CCCCCC&quot;/>
+    <line x1=&quot;478&quot; y1=&quot;180&quot; x2=&quot;478&quot; y2=&quot;192&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;2&quot;/>
+    <line x1=&quot;470&quot; y1=&quot;185&quot; x2=&quot;486&quot; y2=&quot;188&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;2&quot;/>
+    <text x=&quot;510&quot; y=&quot;170&quot; font-size=&quot;9&quot; font-weight=&quot;500&quot; fill=&quot;#1A1A2E&quot;>Shoulder Flexion</text>
+    <text x=&quot;462&quot; y=&quot;188&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Sets 5  ·  Reps 10  ·  Rest 30s</text>
+
+    <!-- Card 3 -->
+    <rect x=&quot;454&quot; y=&quot;232&quot; width=&quot;200&quot; height=&quot;70&quot; rx=&quot;7&quot; fill=&quot;#F8F8F8&quot;/>
+    <rect x=&quot;454&quot; y=&quot;232&quot; width=&quot;48&quot; height=&quot;70&quot; rx=&quot;7&quot; fill=&quot;#ECECEC&quot;/>
+    <circle cx=&quot;478&quot; cy=&quot;252&quot; r=&quot;6&quot; fill=&quot;#CCCCCC&quot;/>
+    <line x1=&quot;478&quot; y1=&quot;258&quot; x2=&quot;478&quot; y2=&quot;270&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;2&quot;/>
+    <line x1=&quot;473&quot; y1=&quot;262&quot; x2=&quot;483&quot; y2=&quot;262&quot; stroke=&quot;#CCCCCC&quot; stroke-width=&quot;2&quot;/>
+    <text x=&quot;510&quot; y=&quot;248&quot; font-size=&quot;9&quot; font-weight=&quot;500&quot; fill=&quot;#1A1A2E&quot;>Shoulder Retraction</text>
+    <text x=&quot;462&quot; y=&quot;266&quot; font-size=&quot;8&quot; fill=&quot;#9CA3AF&quot;>Sets 4  ·  Reps 12  ·  Rest 30s</text>
+
+    <!-- Update Care Plan CTA -->
+    <rect x=&quot;454&quot; y=&quot;440&quot; width=&quot;200&quot; height=&quot;36&quot; rx=&quot;8&quot; fill=&quot;#00B4A6&quot;/>
+    <text x=&quot;554&quot; y=&quot;462&quot; text-anchor=&quot;middle&quot; font-size=&quot;11&quot; font-weight=&quot;600&quot; fill=&quot;#FFFFFF&quot;>Update Care Plan</text>
+  </g>
+
+</svg>
+</div>
+</body>
+</html>
+"
+  width="100%"
+  height="100%"
+  scrolling="no"
+  frameborder="0"
+  style="border:0; display:block; width: 100%; height: 100%; min-height: 100vh; background:#FFFFFF; overflow:hidden;"
+  loading="lazy"
+  title="WizeCare exercise program builder">
+</iframe>

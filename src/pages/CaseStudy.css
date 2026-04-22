@@ -2031,7 +2031,7 @@ body.case-study-active .footer {
 .outcome-metric {
   font-family: var(--font-body);
   font-size: clamp(1.3rem, 2.5vw, 2rem);
-  font-weight: 500;
+  font-weight: var(--fw-body);
   line-height: 1;
   color: var(--color-accent);
   margin: 0 0 var(--spacing-sm);
@@ -13055,6 +13055,33 @@ textarea.editable-field {
   border-color: var(--color-accent);
 }
 
+/* "Change media" picker rendered over a live iframe — the embed stays
+   visible underneath so you can see what's being replaced. */
+.embed-change-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+  pointer-events: auto;
+}
+
+.embed-change-overlay .embed-change-input {
+  width: min(92%, 520px);
+  background: rgba(20, 20, 22, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+}
+
 /* Media type picker (empty state in edit mode) */
 .media-type-picker,
 .ps-media-type-picker {
@@ -13129,19 +13156,24 @@ textarea.editable-field {
   flex-wrap: wrap;
 }
 
-/* File picker dropdown inside iframe embed input */
+/* File picker dropdown inside iframe embed input.
+   Takes its own row above the input so long filenames aren't clipped, and the
+   placeholder text below stays fully visible on narrow image columns. */
 .iframe-file-picker {
-  flex: 0 0 auto;
-  max-width: 220px;
-  padding: 0.45rem 0.6rem;
-  font-size: 0.78rem;
+  flex: 1 1 100%;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.8rem;
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-bg);
   color: var(--color-text);
   outline: none;
   cursor: pointer;
-  margin-right: 0.35rem;
+  margin: 0 0 0.45rem 0;
+  text-overflow: ellipsis;
   transition: border-color 0.15s;
 }
 

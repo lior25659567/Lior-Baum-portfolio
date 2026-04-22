@@ -306,6 +306,33 @@ export function saveCaseStudyPlugin() {
         return { path: `/about/${filename}` };
       }));
 
+      // Direct-serve fallback for /about/*. Vite's public-dir middleware is
+      // registered once at startup; if public/about/ didn't exist then, new
+      // files written there won't be served even though they're on disk. This
+      // middleware re-reads from disk per request so uploads work without a
+      // dev-server restart.
+      server.middlewares.use('/about', (req, res, next) => {
+        if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+        const urlPath = req.url.split('?')[0];
+        const safe = path.posix.normalize(urlPath).replace(/^\/+/, '');
+        if (safe.startsWith('..')) return next();
+        const abs = path.resolve('public', 'about', safe);
+        fsp.stat(abs).then((stat) => {
+          if (!stat.isFile()) return next();
+          const ext = path.extname(abs).toLowerCase();
+          const mime = {
+            '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
+            '.gif': 'image/gif', '.webp': 'image/webp', '.svg': 'image/svg+xml',
+            '.avif': 'image/avif',
+          }[ext] || 'application/octet-stream';
+          res.setHeader('Content-Type', mime);
+          res.setHeader('Content-Length', stat.size);
+          res.setHeader('Cache-Control', 'no-cache');
+          if (req.method === 'HEAD') { res.end(); return; }
+          fs.createReadStream(abs).pipe(res);
+        }).catch(() => next());
+      });
+
       server.middlewares.use('/api/save-about-content', wrap('/api/save-about-content', async (req) => {
         assertMethod(req, 'POST');
         const data = await readJson(req);

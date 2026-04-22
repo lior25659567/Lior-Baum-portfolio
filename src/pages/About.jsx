@@ -11,6 +11,23 @@ import './HomePublishBar.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+let savedAboutData = null;
+try {
+  const mod = import.meta.glob('../data/about-content.json', { eager: true });
+  const key = Object.keys(mod)[0];
+  if (key) savedAboutData = mod[key].default || mod[key];
+} catch { /* file doesn't exist yet */ }
+
+const isPersistableImage = (v) => !!v && !v.startsWith('data:');
+
+// Append a timestamp so the browser won't reuse a cached 404 for the same
+// path the API just wrote (common cause of the "upload → broken icon" flash
+// when the <img> had tried the URL before the file existed).
+const withCacheBuster = (url) => {
+  if (!url || url.startsWith('data:')) return url;
+  return url.includes('?') ? url : `${url}?t=${Date.now()}`;
+};
+
 // Lightweight inline editable text for the About page
 const Editable = ({ value, onChange, tag: Tag = 'span', className, multiline = false, placeholder = 'Edit...' }) => {
   const { editMode } = useEdit();
@@ -59,7 +76,10 @@ const About = () => {
   const skillsRef = useRef(null);
   const experienceRef = useRef(null);
   const [profileImage, setProfileImage] = useState(() => {
-    return localStorage.getItem('aboutProfileImage') || '';
+    const stored = localStorage.getItem('aboutProfileImage');
+    if (isPersistableImage(stored)) return withCacheBuster(stored);
+    const fromJson = savedAboutData?.profileImage;
+    return isPersistableImage(fromJson) ? withCacheBuster(fromJson) : '';
   });
   const [publishStatus, setPublishStatus] = useState('');
 
@@ -138,43 +158,44 @@ const About = () => {
 
   const handleImageUpload = (e) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = async (event) => {
-        const imageData = event.target?.result;
-        setProfileImage(imageData);
-        localStorage.setItem('aboutProfileImage', imageData);
-        try {
-          const ext = file.name.split('.').pop() || 'jpg';
-          const base64data = imageData.split(',')[1];
-          await fetch('/api/save-about-image', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filename: `profile.${ext}`, base64data }),
-          });
-          const filePath = `/about/profile.${ext}`;
-          setProfileImage(filePath);
-          localStorage.setItem('aboutProfileImage', filePath);
-        } catch (err) {
-          console.warn('[About] Could not save image to filesystem:', err);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleImageClick = () => {
-    if (editMode) {
-      fileInputRef.current?.click();
-    }
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const imageData = event.target?.result;
+      // Keep the data URL in state for the rest of the session — always
+      // renders, and skips the race where the browser requests the file
+      // path before the API has finished writing it (which caches a 404
+      // that then shows as a broken icon).
+      setProfileImage(imageData);
+      try {
+        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+        const base64data = imageData.split(',')[1];
+        const res = await fetch('/api/save-about-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: `profile.${ext}`, base64data }),
+        });
+        if (!res.ok) throw new Error(`save failed (${res.status})`);
+        // localStorage holds the disk path so next page load can render
+        // straight from the URL without re-reading the data URL.
+        localStorage.setItem('aboutProfileImage', `/about/profile.${ext}`);
+      } catch (err) {
+        console.warn('[About] Could not save image to filesystem:', err);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const saveAboutToCode = async () => {
+    // `profileImage` state is a data URL in-session, so read the persisted
+    // disk path (set after a successful upload) from localStorage instead.
+    const storedPath = localStorage.getItem('aboutProfileImage') || '';
+    const pathOnly = storedPath.split('?')[0];
     const res = await fetch('/api/save-about-content', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        profileImage: profileImage,
+        profileImage: isPersistableImage(pathOnly) ? pathOnly : '',
         about: content.about,
       }),
     });
@@ -294,19 +315,38 @@ const About = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <div className={`about-image ${editMode ? 'editable' : ''}`} onClick={handleImageClick}>
-              {profileImage ? (
-                <>
+            {editMode ? (
+              <label htmlFor="about-profile-image-input" className="about-image editable">
+                {profileImage ? (
+                  <>
+                    <img src={profileImage} alt="Profile" />
+                    <div className="image-edit-overlay">Click to change</div>
+                  </>
+                ) : (
+                  <div className="image-placeholder">
+                    <span>Click to upload</span>
+                  </div>
+                )}
+              </label>
+            ) : (
+              <div className="about-image">
+                {profileImage ? (
                   <img src={profileImage} alt="Profile" />
-                  {editMode && <div className="image-edit-overlay">Click to change</div>}
-                </>
-              ) : (
-                <div className="image-placeholder">
-                  <span>{editMode ? 'Click to upload' : 'Your Photo'}</span>
-                </div>
-              )}
-            </div>
-            <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" style={{ display: 'none' }} />
+                ) : (
+                  <div className="image-placeholder">
+                    <span>Your Photo</span>
+                  </div>
+                )}
+              </div>
+            )}
+            <input
+              id="about-profile-image-input"
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImageUpload}
+              accept="image/*"
+              className="about-image-file-input"
+            />
             <div className="image-decoration" />
           </motion.div>
 

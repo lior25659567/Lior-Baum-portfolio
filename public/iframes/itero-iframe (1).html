@@ -1,0 +1,158 @@
+<iframe
+  srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>iTero workflow</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    background: #F4F7FA;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  svg { width: 100%; height: 100%; display: block; }
+
+  /* 9s cycle — each card is &quot;active&quot; for ~1/3 of it */
+  .c1-active, .c2-active, .c3-active { opacity: 0; }
+  .c1-active { animation: c1On 9s infinite; }
+  .c2-active { animation: c2On 9s infinite; }
+  .c3-active { animation: c3On 9s infinite; }
+  @keyframes c1On { 0%, 31% { opacity: 1; } 34%, 100% { opacity: 0; } }
+  @keyframes c2On { 0%, 30% { opacity: 0; } 34%, 63% { opacity: 1; } 67%, 100% { opacity: 0; } }
+  @keyframes c3On { 0%, 63% { opacity: 0; } 67%, 98% { opacity: 1; } 100% { opacity: 0; } }
+
+  /* Card lifts a few pixels when active */
+  .c1 { transform-box: fill-box; animation: lift1 9s infinite; }
+  .c2 { transform-box: fill-box; animation: lift2 9s infinite; }
+  .c3 { transform-box: fill-box; animation: lift3 9s infinite; }
+  @keyframes lift1 { 0%, 31% { transform: translateY(-4px); } 34%, 100% { transform: translateY(0); } }
+  @keyframes lift2 { 0%, 30% { transform: translateY(0); } 34%, 63% { transform: translateY(-4px); } 67%, 100% { transform: translateY(0); } }
+  @keyframes lift3 { 0%, 63% { transform: translateY(0); } 67%, 98% { transform: translateY(-4px); } 100% { transform: translateY(0); } }
+
+  /* Label darkens &amp; thickens when that card is active */
+  .label-1 { animation: lab1 9s infinite; }
+  .label-2 { animation: lab2 9s infinite; }
+  .label-3 { animation: lab3 9s infinite; }
+  @keyframes lab1 { 0%, 31% { fill: #0F2F44; font-weight: 600; } 34%, 100% { fill: #94A3B8; font-weight: 500; } }
+  @keyframes lab2 { 0%, 30% { fill: #94A3B8; font-weight: 500; } 34%, 63% { fill: #0F2F44; font-weight: 600; } 67%, 100% { fill: #94A3B8; font-weight: 500; } }
+  @keyframes lab3 { 0%, 63% { fill: #94A3B8; font-weight: 500; } 67%, 98% { fill: #0F2F44; font-weight: 600; } 100% { fill: #94A3B8; font-weight: 500; } }
+
+  /* Flow dot slides along the line at each handoff */
+  .dot-a { opacity: 0; animation: dotA 9s infinite; }
+  .dot-b { opacity: 0; animation: dotB 9s infinite; }
+  @keyframes dotA {
+    0%, 26% { transform: translateX(0); opacity: 0; }
+    28% { opacity: 1; }
+    33% { transform: translateX(100px); opacity: 1; }
+    35%, 100% { opacity: 0; }
+  }
+  @keyframes dotB {
+    0%, 58% { transform: translateX(0); opacity: 0; }
+    60% { opacity: 1; }
+    65% { transform: translateX(100px); opacity: 1; }
+    67%, 100% { opacity: 0; }
+  }
+
+  /* The scan card's beam sweeps continuously */
+  .beam-sweep { transform-box: fill-box; animation: beamSw 2.4s infinite ease-in-out; }
+  @keyframes beamSw {
+    0%, 100% { transform: translateY(-20px); opacity: 0.55; }
+    50% { transform: translateY(20px); opacity: 1; }
+  }
+
+  /* The view card's tooth rotates continuously */
+  .tooth-rotate { transform-box: fill-box; transform-origin: center; animation: rot 8s linear infinite; }
+  @keyframes rot { to { transform: rotate(360deg); } }
+
+  /* Entrance */
+  .entrance { opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.22,0.9,0.3,1) forwards; }
+  .d1 { animation-delay: 0.15s; }
+  .d2 { animation-delay: 0.3s; }
+  .d3 { animation-delay: 0.45s; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+</head>
+<body>
+<svg viewBox=&quot;0 0 680 260&quot; preserveAspectRatio=&quot;xMidYMid meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
+  <rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;680&quot; height=&quot;260&quot; fill=&quot;#F4F7FA&quot;/>
+
+  <!-- Thin connector line behind the cards -->
+  <line x1=&quot;180&quot; y1=&quot;120&quot; x2=&quot;500&quot; y2=&quot;120&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+
+  <!-- Flow dot A (card 1 → card 2) -->
+  <circle class=&quot;dot-a&quot; cx=&quot;180&quot; cy=&quot;120&quot; r=&quot;8&quot; fill=&quot;#00AED6&quot; opacity=&quot;0.18&quot;/>
+  <circle class=&quot;dot-a&quot; cx=&quot;180&quot; cy=&quot;120&quot; r=&quot;3.5&quot; fill=&quot;#00AED6&quot;/>
+
+  <!-- Flow dot B (card 2 → card 3) -->
+  <circle class=&quot;dot-b&quot; cx=&quot;400&quot; cy=&quot;120&quot; r=&quot;8&quot; fill=&quot;#00AED6&quot; opacity=&quot;0.18&quot;/>
+  <circle class=&quot;dot-b&quot; cx=&quot;400&quot; cy=&quot;120&quot; r=&quot;3.5&quot; fill=&quot;#00AED6&quot;/>
+
+  <!-- Card 1 · Info -->
+  <g class=&quot;entrance d1&quot;>
+    <g class=&quot;c1&quot;>
+      <rect x=&quot;60&quot; y=&quot;60&quot; width=&quot;120&quot; height=&quot;120&quot; rx=&quot;14&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+      <rect class=&quot;c1-active&quot; x=&quot;60&quot; y=&quot;60&quot; width=&quot;120&quot; height=&quot;120&quot; rx=&quot;14&quot; fill=&quot;none&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.8&quot;/>
+
+      <!-- Three little teeth, middle one selected -->
+      <g transform=&quot;translate(120, 120)&quot;>
+        <path d=&quot;M -28 -14 Q -32 -14 -32 -6 L -32 12 Q -30 18 -24 18 L -18 18 Q -12 18 -12 12 L -12 -6 Q -12 -14 -16 -14 Z&quot; fill=&quot;#F3F4F6&quot; stroke=&quot;#CBD5E1&quot; stroke-width=&quot;0.8&quot;/>
+        <path d=&quot;M -6 -16 Q -9 -16 -9 -6 L -9 14 Q -6 20 0 20 L 6 20 Q 9 20 9 14 L 9 -6 Q 9 -16 6 -16 Z&quot; fill=&quot;#E8F5FA&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.2&quot;/>
+        <circle cx=&quot;0&quot; cy=&quot;2&quot; r=&quot;1.6&quot; fill=&quot;#00AED6&quot;/>
+        <path d=&quot;M 16 -14 Q 12 -14 12 -6 L 12 12 Q 14 18 20 18 L 26 18 Q 32 18 32 12 L 32 -6 Q 32 -14 28 -14 Z&quot; fill=&quot;#F3F4F6&quot; stroke=&quot;#CBD5E1&quot; stroke-width=&quot;0.8&quot;/>
+      </g>
+    </g>
+    <text class=&quot;label-1&quot; x=&quot;120&quot; y=&quot;216&quot; text-anchor=&quot;middle&quot; font-size=&quot;14&quot; letter-spacing=&quot;0.2&quot;>Info</text>
+  </g>
+
+  <!-- Card 2 · Scan -->
+  <g class=&quot;entrance d2&quot;>
+    <g class=&quot;c2&quot;>
+      <rect x=&quot;280&quot; y=&quot;60&quot; width=&quot;120&quot; height=&quot;120&quot; rx=&quot;14&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+      <rect class=&quot;c2-active&quot; x=&quot;280&quot; y=&quot;60&quot; width=&quot;120&quot; height=&quot;120&quot; rx=&quot;14&quot; fill=&quot;none&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.8&quot;/>
+
+      <!-- Single tooth with a scanning beam -->
+      <g transform=&quot;translate(340, 120)&quot;>
+        <path d=&quot;M -18 -26 Q -24 -26 -24 -12 L -24 18 Q -20 28 -10 28 L 10 28 Q 20 28 24 18 L 24 -12 Q 24 -26 18 -26 L 14 -30 Q 10 -32 6 -30 L -6 -30 Q -10 -32 -14 -30 Z&quot; fill=&quot;#F8FAFB&quot; stroke=&quot;#94A3B8&quot; stroke-width=&quot;1&quot;/>
+        <rect class=&quot;beam-sweep&quot; x=&quot;-34&quot; y=&quot;-2&quot; width=&quot;68&quot; height=&quot;5&quot; fill=&quot;#00AED6&quot; opacity=&quot;0.22&quot;/>
+        <rect class=&quot;beam-sweep&quot; x=&quot;-34&quot; y=&quot;-1&quot; width=&quot;68&quot; height=&quot;1.5&quot; fill=&quot;#00AED6&quot;/>
+      </g>
+    </g>
+    <text class=&quot;label-2&quot; x=&quot;340&quot; y=&quot;216&quot; text-anchor=&quot;middle&quot; font-size=&quot;14&quot; letter-spacing=&quot;0.2&quot;>Scan</text>
+  </g>
+
+  <!-- Card 3 · View -->
+  <g class=&quot;entrance d3&quot;>
+    <g class=&quot;c3&quot;>
+      <rect x=&quot;500&quot; y=&quot;60&quot; width=&quot;120&quot; height=&quot;120&quot; rx=&quot;14&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;0.8&quot;/>
+      <rect class=&quot;c3-active&quot; x=&quot;500&quot; y=&quot;60&quot; width=&quot;120&quot; height=&quot;120&quot; rx=&quot;14&quot; fill=&quot;none&quot; stroke=&quot;#00AED6&quot; stroke-width=&quot;1.8&quot;/>
+
+      <!-- 3D tooth rotating -->
+      <g transform=&quot;translate(560, 120)&quot;>
+        <g class=&quot;tooth-rotate&quot;>
+          <path d=&quot;M -18 -26 Q -24 -26 -24 -12 L -24 18 Q -20 28 -10 28 L 10 28 Q 20 28 24 18 L 24 -12 Q 24 -26 18 -26 L 14 -30 Q 10 -32 6 -30 L -6 -30 Q -10 -32 -14 -30 Z&quot; fill=&quot;#FFFFFF&quot; stroke=&quot;#0F2F44&quot; stroke-width=&quot;1.1&quot;/>
+          <path d=&quot;M -16 -16 Q -8 -14 0 -16 Q 8 -14 16 -16&quot; fill=&quot;none&quot; stroke=&quot;#CBD5E1&quot; stroke-width=&quot;0.7&quot;/>
+          <path d=&quot;M -20 -2 Q -10 0 0 -2 Q 10 0 20 -2&quot; fill=&quot;none&quot; stroke=&quot;#CBD5E1&quot; stroke-width=&quot;0.7&quot;/>
+          <path d=&quot;M -18 14 Q -9 16 0 14 Q 9 16 18 14&quot; fill=&quot;none&quot; stroke=&quot;#CBD5E1&quot; stroke-width=&quot;0.7&quot;/>
+          <path d=&quot;M 14 -30 L 18 -26 Q 24 -26 24 -12 L 24 18 Q 20 28 10 28 L 10 -30 Z&quot; fill=&quot;#0F2F44&quot; opacity=&quot;0.05&quot;/>
+        </g>
+      </g>
+    </g>
+    <text class=&quot;label-3&quot; x=&quot;560&quot; y=&quot;216&quot; text-anchor=&quot;middle&quot; font-size=&quot;14&quot; letter-spacing=&quot;0.2&quot;>View</text>
+  </g>
+</svg>
+</body>
+</html>
+"
+  width="100%"
+  height="260"
+  scrolling="no"
+  frameborder="0"
+  style="border:0; display:block; aspect-ratio: 680 / 260; width: 100%; max-width: 100%; background:#F4F7FA; overflow:hidden;"
+  loading="lazy"
+  title="iTero clinical scanning workflow">
+</iframe>

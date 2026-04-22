@@ -1,0 +1,237 @@
+<iframe
+  srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot;>
+<title>Patient Report</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    min-height: 100vh; min-height: 100dvh;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #A8E6E2 0%, #C4EEDA 35%, #B8D8F0 65%, #C8B8F0 100%);
+  }
+  .stage { width: 100%; height: 100%; }
+  .canvas { width: 100%; height: 100%; display: block; }
+
+  /* 2 states */
+  .s1,.s2,.s3 { opacity:0; }
+  .s1 { animation: s1 13s infinite; }
+  .s2 { animation: s2 13s infinite; }
+  @keyframes s1 { 0%,46%  { opacity:1 } 50%,100% { opacity:0 } }
+  @keyframes s2 { 0%,48%  { opacity:0 } 52%,97%  { opacity:1 } 100%   { opacity:0 } }
+
+  .f1 { animation: fy 4s ease-in-out infinite; }
+  .f2 { animation: fy 4s ease-in-out infinite; animation-delay:.8s; }
+  @keyframes fy { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+  /* Template cards pop in cycle-sync */
+  .tc1,.tc2,.tc3,.tc4,.tc5 { opacity:0; }
+  .tc1 { animation: tc1 13s infinite; }
+  .tc2 { animation: tc2 13s infinite; }
+  .tc3 { animation: tc3 13s infinite; }
+  .tc4 { animation: tc4 13s infinite; }
+  .tc5 { animation: tc5 13s infinite; }
+  @keyframes tc1 { 0%,1%{opacity:0;transform:scale(.92)} 7%,30%{opacity:1;transform:scale(1)} 34%,100%{opacity:0} }
+  @keyframes tc2 { 0%,4%{opacity:0;transform:scale(.92)} 10%,30%{opacity:1;transform:scale(1)} 34%,100%{opacity:0} }
+  @keyframes tc3 { 0%,7%{opacity:0;transform:scale(.92)} 13%,30%{opacity:1;transform:scale(1)} 34%,100%{opacity:0} }
+  @keyframes tc4 { 0%,10%{opacity:0;transform:scale(.92)} 16%,30%{opacity:1;transform:scale(1)} 34%,100%{opacity:0} }
+  @keyframes tc5 { 0%,13%{opacity:0;transform:scale(.92)} 19%,30%{opacity:1;transform:scale(1)} 34%,100%{opacity:0} }
+
+  /* Selected card pulse */
+  .sel-pulse { animation: selP 2s ease-in-out infinite; }
+  @keyframes selP { 0%,100%{opacity:.88} 50%{opacity:1} }
+
+  /* Sections slide in — cycle-sync */
+  .se1,.se2,.se3,.se4,.se5 { opacity:0; }
+  .se1 { animation: se1 13s infinite; }
+  .se2 { animation: se2drag 13s infinite; }
+  .se3 { animation: se3up   13s infinite; }
+  .se4 { animation: se4 13s infinite; }
+  .se5 { animation: se5 13s infinite; }
+  @keyframes se1 { 0%,34%{opacity:0;transform:translateY(8px)} 39%,63%{opacity:1;transform:translateY(0)} 67%,100%{opacity:0} }
+  @keyframes se4 { 0%,46%{opacity:0;transform:translateY(8px)} 51%,63%{opacity:1;transform:translateY(0)} 67%,100%{opacity:0} }
+  @keyframes se5 { 0%,50%{opacity:0;transform:translateY(8px)} 55%,63%{opacity:1;transform:translateY(0)} 67%,100%{opacity:0} }
+
+  /* se2: slides in, then drags DOWN past se3 */
+  @keyframes se2drag {
+    0%,38%  { opacity:0; transform:translateY(8px); }
+    43%,55% { opacity:1; transform:translateY(0); filter:none; }
+    57%     { opacity:1; transform:translateY(-6px) scale(1.015); filter:drop-shadow(0 10px 20px rgba(0,0,0,.13)); }
+    62%,63% { opacity:1; transform:translateY(66px); filter:drop-shadow(0 4px 10px rgba(0,0,0,.07)); }
+    66%,100%{ opacity:0; transform:translateY(66px); filter:none; }
+  }
+  /* se3: slides in, then shuffles UP to make room */
+  @keyframes se3up {
+    0%,42%  { opacity:0; transform:translateY(8px); }
+    47%,57% { opacity:1; transform:translateY(0); }
+    62%,63% { opacity:1; transform:translateY(-66px); }
+    66%,100%{ opacity:0; transform:translateY(-66px); }
+  }
+
+  /* PIN toggle */
+  .pin-off { animation: pinOff 13s infinite; }
+  .pin-on  { animation: pinOn  13s infinite; }
+  @keyframes pinOff { 0%,79%{opacity:1} 84%,100%{opacity:0} }
+  @keyframes pinOn  { 0%,81%{opacity:0} 85%,97%{opacity:1} 100%{opacity:0} }
+
+  .cta-pulse { animation: ctaP 1.6s ease-in-out infinite; }
+  @keyframes ctaP { 0%,100%{opacity:.88} 50%{opacity:1} }
+
+  .email-cursor { animation: blink .9s steps(2) infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  @media (prefers-reduced-motion: reduce) { * { animation:none!important } }
+</style>
+</head>
+<body>
+<div class=&quot;stage&quot;>
+<svg class=&quot;canvas&quot; viewBox=&quot;0 0 480 600&quot; preserveAspectRatio=&quot;xMidYMid meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
+  <defs>
+    <filter id=&quot;sh&quot;><feDropShadow dx=&quot;0&quot; dy=&quot;6&quot; stdDeviation=&quot;18&quot; flood-color=&quot;#00000012&quot;/></filter>
+    <filter id=&quot;sh-sm&quot;><feDropShadow dx=&quot;0&quot; dy=&quot;3&quot; stdDeviation=&quot;10&quot; flood-color=&quot;#0000000E&quot;/></filter>
+    <filter id=&quot;sh-drag&quot;><feDropShadow dx=&quot;0&quot; dy=&quot;10&quot; stdDeviation=&quot;20&quot; flood-color=&quot;#0000001A&quot;/></filter>
+  </defs>
+
+  <!-- ══════════════════════════════
+       STATE 1 — Template selection
+       ══════════════════════════════ -->
+  <g class=&quot;s1&quot;>
+    <g class=&quot;f1&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;24&quot; y=&quot;50&quot; width=&quot;432&quot; height=&quot;450&quot; rx=&quot;24&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+      <text x=&quot;48&quot; y=&quot;90&quot; font-size=&quot;16&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>General Scan Report</text>
+      <text x=&quot;230&quot; y=&quot;90&quot; font-size=&quot;13&quot; font-weight=&quot;500&quot; fill=&quot;#0EA5E9&quot;>Undo</text>
+
+      <!-- Start from Scratch -->
+      <g class=&quot;tc1&quot;>
+        <rect x=&quot;48&quot;  y=&quot;106&quot; width=&quot;182&quot; height=&quot;90&quot; rx=&quot;12&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+        <g transform=&quot;translate(66, 120)&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.3&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;>
+          <rect x=&quot;3&quot; y=&quot;3&quot; width=&quot;14&quot; height=&quot;14&quot; rx=&quot;2&quot;/>
+          <line x1=&quot;10&quot; y1=&quot;7&quot; x2=&quot;10&quot; y2=&quot;13&quot;/>
+          <line x1=&quot;7&quot;  y1=&quot;10&quot; x2=&quot;13&quot; y2=&quot;10&quot;/>
+        </g>
+        <text x=&quot;66&quot; y=&quot;175&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Start from Scratch</text>
+      </g>
+
+      <!-- General Scan Report — SELECTED -->
+      <g class=&quot;tc2 sel-pulse&quot;>
+        <rect x=&quot;246&quot; y=&quot;104&quot; width=&quot;182&quot; height=&quot;92&quot; rx=&quot;12&quot; fill=&quot;#EFF8FF&quot; stroke=&quot;#0EA5E9&quot; stroke-width=&quot;2&quot;/>
+        <circle cx=&quot;406&quot; cy=&quot;120&quot; r=&quot;10&quot; fill=&quot;#0EA5E9&quot;/>
+        <path d=&quot;M 400 120 L 403 123 L 412 114&quot; stroke=&quot;white&quot; stroke-width=&quot;2&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+        <g transform=&quot;translate(264, 118)&quot; fill=&quot;none&quot; stroke=&quot;#0EA5E9&quot; stroke-width=&quot;1.3&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;>
+          <rect x=&quot;3&quot; y=&quot;2&quot; width=&quot;14&quot; height=&quot;16&quot; rx=&quot;2&quot;/>
+          <line x1=&quot;7&quot; y1=&quot;7&quot;  x2=&quot;13&quot; y2=&quot;7&quot;/>
+          <line x1=&quot;7&quot; y1=&quot;10&quot; x2=&quot;13&quot; y2=&quot;10&quot;/>
+          <line x1=&quot;7&quot; y1=&quot;13&quot; x2=&quot;10&quot; y2=&quot;13&quot;/>
+        </g>
+        <text x=&quot;264&quot; y=&quot;175&quot; font-size=&quot;12&quot; font-weight=&quot;700&quot; fill=&quot;#0EA5E9&quot;>General Scan Report</text>
+      </g>
+
+      <!-- Implant Planning -->
+      <g class=&quot;tc3&quot;>
+        <rect x=&quot;48&quot;  y=&quot;210&quot; width=&quot;182&quot; height=&quot;90&quot; rx=&quot;12&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+        <g transform=&quot;translate(66, 224)&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.3&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;>
+          <path d=&quot;M10 2v6&quot;/>
+          <path d=&quot;M7 8h6l-1 8H8L7 8z&quot;/>
+          <line x1=&quot;7.5&quot; y1=&quot;11&quot; x2=&quot;12.5&quot; y2=&quot;11&quot;/>
+          <line x1=&quot;8&quot;   y1=&quot;14&quot; x2=&quot;12&quot;   y2=&quot;14&quot;/>
+        </g>
+        <text x=&quot;66&quot; y=&quot;277&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Implant Planning</text>
+      </g>
+
+      <!-- Crown Preparation -->
+      <g class=&quot;tc4&quot;>
+        <rect x=&quot;246&quot; y=&quot;210&quot; width=&quot;182&quot; height=&quot;90&quot; rx=&quot;12&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+        <g transform=&quot;translate(264, 224)&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.3&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;>
+          <path d=&quot;M4 14l2-8 4 4 4-4 2 8H4z&quot;/>
+          <line x1=&quot;4&quot; y1=&quot;14&quot; x2=&quot;16&quot; y2=&quot;14&quot;/>
+          <rect x=&quot;4&quot; y=&quot;14&quot; width=&quot;12&quot; height=&quot;3&quot; rx=&quot;1&quot;/>
+        </g>
+        <text x=&quot;264&quot; y=&quot;277&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Crown Preparation</text>
+      </g>
+
+      <!-- Follow-up Visit -->
+      <g class=&quot;tc5&quot;>
+        <rect x=&quot;48&quot;  y=&quot;314&quot; width=&quot;182&quot; height=&quot;90&quot; rx=&quot;12&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+        <g transform=&quot;translate(66, 328)&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.3&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;>
+          <circle cx=&quot;10&quot; cy=&quot;10&quot; r=&quot;7&quot;/>
+          <polyline points=&quot;10,6 10,10 13,12&quot;/>
+        </g>
+        <text x=&quot;66&quot; y=&quot;381&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Follow-up Visit</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ══════════════════════════════
+       STATE 2 — Content sections + drag
+       ══════════════════════════════ -->
+  <g class=&quot;s2&quot;>
+    <g class=&quot;f1&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;24&quot; y=&quot;50&quot; width=&quot;432&quot; height=&quot;80&quot; rx=&quot;20&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+      <text x=&quot;48&quot; y=&quot;86&quot; font-size=&quot;14&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>Content</text>
+      <text x=&quot;400&quot; y=&quot;86&quot; text-anchor=&quot;end&quot; font-size=&quot;12&quot; fill=&quot;#9CA3AF&quot;>5 sections</text>
+    </g>
+
+    <!-- Section 1 — Initial tooth condition -->
+    <g class=&quot;se1 f2&quot; filter=&quot;url(#sh-sm)&quot;>
+      <rect x=&quot;24&quot; y=&quot;148&quot; width=&quot;432&quot; height=&quot;56&quot; rx=&quot;14&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+      <circle cx=&quot;46&quot; cy=&quot;170&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;46&quot; cy=&quot;178&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+      <circle cx=&quot;52&quot; cy=&quot;170&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;52&quot; cy=&quot;178&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+      <text x=&quot;68&quot; y=&quot;180&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Initial tooth condition</text>
+      <path d=&quot;M 428 172 L 432 176 L 436 172&quot; fill=&quot;none&quot; stroke=&quot;#C4C8D0&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    </g>
+
+    <!-- Section 2 — Before/After (drags down) -->
+    <g class=&quot;se2&quot; filter=&quot;url(#sh-sm)&quot;>
+      <rect x=&quot;24&quot; y=&quot;214&quot; width=&quot;432&quot; height=&quot;56&quot; rx=&quot;14&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+      <circle cx=&quot;46&quot; cy=&quot;236&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;46&quot; cy=&quot;244&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+      <circle cx=&quot;52&quot; cy=&quot;236&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;52&quot; cy=&quot;244&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+      <text x=&quot;68&quot; y=&quot;246&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Before / After</text>
+      <path d=&quot;M 428 238 L 432 242 L 436 238&quot; fill=&quot;none&quot; stroke=&quot;#C4C8D0&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    </g>
+
+    <!-- Section 3 — Summary (shuffles up) -->
+    <g class=&quot;se3&quot; filter=&quot;url(#sh-sm)&quot;>
+      <rect x=&quot;24&quot; y=&quot;280&quot; width=&quot;432&quot; height=&quot;56&quot; rx=&quot;14&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+      <circle cx=&quot;46&quot; cy=&quot;302&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;46&quot; cy=&quot;310&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+      <circle cx=&quot;52&quot; cy=&quot;302&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;52&quot; cy=&quot;310&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+      <text x=&quot;68&quot; y=&quot;312&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Summary</text>
+      <path d=&quot;M 428 304 L 432 308 L 436 304&quot; fill=&quot;none&quot; stroke=&quot;#C4C8D0&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    </g>
+
+    <!-- Section 4 — Temporary Crown Care -->
+    <g class=&quot;se4 f2&quot; filter=&quot;url(#sh-sm)&quot;>
+      <rect x=&quot;24&quot; y=&quot;346&quot; width=&quot;432&quot; height=&quot;56&quot; rx=&quot;14&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+      <circle cx=&quot;46&quot; cy=&quot;368&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;46&quot; cy=&quot;376&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+      <circle cx=&quot;52&quot; cy=&quot;368&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;52&quot; cy=&quot;376&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+      <text x=&quot;68&quot; y=&quot;378&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Temporary Crown Care</text>
+      <path d=&quot;M 428 370 L 432 374 L 436 370&quot; fill=&quot;none&quot; stroke=&quot;#C4C8D0&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    </g>
+
+    <!-- Section 5 — Next Appointment -->
+    <g class=&quot;se5 f2&quot; filter=&quot;url(#sh-sm)&quot;>
+      <rect x=&quot;24&quot; y=&quot;412&quot; width=&quot;432&quot; height=&quot;56&quot; rx=&quot;14&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+      <circle cx=&quot;46&quot; cy=&quot;434&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;46&quot; cy=&quot;442&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+      <circle cx=&quot;52&quot; cy=&quot;434&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;52&quot; cy=&quot;442&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+      <text x=&quot;68&quot; y=&quot;444&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Next Appointment</text>
+      <path d=&quot;M 428 436 L 432 440 L 436 436&quot; fill=&quot;none&quot; stroke=&quot;#C4C8D0&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+    </g>
+  </g>
+
+
+</svg>
+</div>
+</body>
+</html>
+"
+  width="100%"
+  height="100%"
+  scrolling="no"
+  frameborder="0"
+  style="border:0; display:block; width: 100%; height: 100%; min-height: 100vh; overflow:hidden;"
+  loading="lazy"
+  title="Patient Report">
+</iframe>

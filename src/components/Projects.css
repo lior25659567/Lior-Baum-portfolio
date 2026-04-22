@@ -4642,8 +4642,6 @@
   justify-content: center;
   gap: var(--spacing-xs);
   cursor: pointer;
-  width: 100%;
-  height: 100%;
   color: inherit;
 }
 
@@ -4654,6 +4652,96 @@
   opacity: 0;
   overflow: hidden;
   z-index: -1;
+}
+
+/* Keep the overlay open while the iframe input is active, regardless of
+   hover — otherwise moving the cursor out of the card mid-typing hides it. */
+.project-image-overlay.project-image-overlay--pinned {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Fit/Fill + Embed iframe controls inside the hover overlay */
+.project-image-overlay-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
+  pointer-events: auto;
+}
+
+.project-overlay-btn {
+  font: inherit;
+  font-size: var(--text-caption);
+  font-weight: var(--fw-heading);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.project-overlay-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Iframe URL input panel */
+.project-image-iframe-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: min(86%, 360px);
+  padding: var(--spacing-sm);
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-md);
+}
+
+.project-image-iframe-input .iframe-file-picker,
+.project-image-iframe-input .iframe-url-input {
+  width: 100%;
+  font: inherit;
+  font-size: var(--text-caption);
+  padding: 0.4rem 0.55rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--color-text);
+}
+
+/* The embedded iframe takes the whole media area, just like the background
+   image it replaces. */
+.project-iframe.media-inner {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: var(--color-bg-secondary);
+  transition: transform var(--transition-slow), filter var(--transition-medium);
+}
+
+.project-card.work-grid-project:hover .project-iframe.media-inner {
+  transform: scale(1.02);
+  filter: brightness(0.94);
+}
+
+/* Uploaded media (image or iframe) fills the full card — strip the template
+   mode's frame padding and wrapper inset so the content runs edge-to-edge. */
+.project-media[data-fill-media="true"] {
+  padding: 0 !important;
+}
+
+.project-media[data-fill-media="true"] .project-image-wrapper.media-wrapper {
+  inset: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
 
 .image-overlay-icon {
@@ -4799,6 +4887,58 @@
 .project-reorder-btn:disabled {
   opacity: 0.25;
   cursor: not-allowed;
+}
+
+/* Show/hide (visibility) toggle in the edit controls */
+.project-visibility-btn {
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: var(--fw-heading);
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+  white-space: nowrap;
+}
+
+.project-visibility-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.project-visibility-btn.is-hidden {
+  border-color: color-mix(in srgb, var(--color-accent) 60%, transparent);
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
+/* Cards marked as hidden get a muted state in edit mode so it's obvious
+   they won't render for visitors, but they stay editable. */
+.project-card.is-hidden-from-visitors {
+  opacity: 0.55;
+  outline: 2px dashed color-mix(in srgb, var(--color-accent) 60%, transparent);
+  outline-offset: -2px;
+}
+
+.project-card.is-hidden-from-visitors::before {
+  content: 'Hidden';
+  position: absolute;
+  top: var(--spacing-xs);
+  left: var(--spacing-xs);
+  z-index: 5;
+  font-size: 0.7rem;
+  font-weight: var(--fw-heading);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--color-accent);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  pointer-events: none;
 }
 
 /* Add New Project card (edit mode) */

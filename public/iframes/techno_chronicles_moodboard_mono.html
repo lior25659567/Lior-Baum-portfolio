@@ -1,0 +1,152 @@
+<style>
+.mb { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; padding: 1rem 0; font-family: var(--font-sans); }
+.t { border-radius: var(--border-radius-md); overflow: hidden; position: relative; }
+.ink { background: #0a0a0a; color: #f5f2e8; }
+.cream { background: #f5f2e8; color: #0a0a0a; }
+.steel { background: #1e1e1d; color: #c4c1b8; }
+.lbl { font-size: 10px; letter-spacing: 0.28em; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; opacity: 0.55; text-transform: uppercase; }
+.mq { overflow: hidden; white-space: nowrap; }
+.mq-track { display: inline-block; animation: mb-slide 40s linear infinite; }
+@keyframes mb-slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.pulse { animation: mb-pulse 0.5s steps(2) infinite; }
+@keyframes mb-pulse { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0.35; } }
+</style>
+
+<div class="mb">
+
+  <div class="t ink" style="grid-column: span 12; padding: 28px 32px 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px;">
+      <div class="lbl">Mood board · 001</div>
+      <div class="lbl">Berlin — Detroit</div>
+    </div>
+    <div style="font-size: 58px; font-weight: 500; line-height: 0.9; letter-spacing: -0.025em; font-family: ui-monospace, monospace;">TECHNO—<br/>CHRONICLES</div>
+    <div style="display: flex; gap: 24px; margin-top: 22px; font-size: 11px; font-family: ui-monospace, monospace; opacity: 0.55;">
+      <span>Industrial</span><span>·</span><span>Brutalist</span><span>·</span><span>Underground</span><span>·</span><span>1981→</span>
+    </div>
+  </div>
+
+  <div class="t" style="grid-column: span 7; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;">
+    <div style="background: #0a0a0a; aspect-ratio: 1; display: flex; align-items: flex-end; padding: 8px; color: #888; font-family: ui-monospace, monospace; font-size: 9px;">#0A0A0A</div>
+    <div style="background: #2a2a29; aspect-ratio: 1; display: flex; align-items: flex-end; padding: 8px; color: #888; font-family: ui-monospace, monospace; font-size: 9px;">#2A2A29</div>
+    <div style="background: #888780; aspect-ratio: 1; display: flex; align-items: flex-end; padding: 8px; color: #1a1a19; font-family: ui-monospace, monospace; font-size: 9px;">#888780</div>
+    <div style="background: #f5f2e8; aspect-ratio: 1; display: flex; align-items: flex-end; padding: 8px; color: #555; font-family: ui-monospace, monospace; font-size: 9px;">#F5F2E8</div>
+  </div>
+
+  <div class="t ink" style="grid-column: span 5; padding: 20px 22px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div class="lbl">Tempo</div>
+    <div>
+      <div style="font-size: 44px; font-weight: 500; line-height: 1; font-family: ui-monospace, monospace; letter-spacing: -0.03em;">
+        120–150
+      </div>
+      <div style="font-size: 11px; opacity: 0.5; margin-top: 6px; font-family: ui-monospace, monospace;">BPM · 4/4 common time</div>
+    </div>
+  </div>
+
+  <div class="t cream" style="grid-column: span 7; padding: 28px 24px;">
+    <div class="lbl" style="color: #666; margin-bottom: 14px;">Typography</div>
+    <div style="font-size: 72px; font-weight: 500; line-height: 0.85; letter-spacing: -0.04em; font-family: ui-monospace, SFMono-Regular, monospace;">4/4</div>
+    <div style="font-size: 34px; font-weight: 500; line-height: 1; letter-spacing: -0.02em; margin-top: 14px; font-family: ui-monospace, monospace;">ORIGINATED<br/>GERMANY '81</div>
+    <div style="font-size: 12px; opacity: 0.6; margin-top: 14px;">Sans display · condensed mono · heavy tracking</div>
+  </div>
+
+  <div class="t steel" style="grid-column: span 5; padding: 20px 22px;">
+    <div class="lbl" style="margin-bottom: 14px;">Lexicon</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 6px; font-family: ui-monospace, monospace; font-size: 11px;">
+      <span style="border: 0.5px solid #555; padding: 4px 9px; border-radius: 2px;">acid</span>
+      <span style="background: #f5f2e8; color: #0a0a0a; padding: 4px 9px; border-radius: 2px;">berghain</span>
+      <span style="border: 0.5px solid #555; padding: 4px 9px; border-radius: 2px;">belleville 3</span>
+      <span style="border: 0.5px solid #555; padding: 4px 9px; border-radius: 2px;">warehouse</span>
+      <span style="border: 0.5px solid #555; padding: 4px 9px; border-radius: 2px;">TB-303</span>
+      <span style="border: 0.5px solid #555; padding: 4px 9px; border-radius: 2px;">squat</span>
+      <span style="background: #f5f2e8; color: #0a0a0a; padding: 4px 9px; border-radius: 2px;">4/4</span>
+      <span style="border: 0.5px solid #555; padding: 4px 9px; border-radius: 2px;">dystopia</span>
+      <span style="border: 0.5px solid #555; padding: 4px 9px; border-radius: 2px;">free party</span>
+      <span style="border: 0.5px solid #555; padding: 4px 9px; border-radius: 2px;">detroit</span>
+      <span style="border: 0.5px solid #555; padding: 4px 9px; border-radius: 2px;">minimal</span>
+      <span style="border: 0.5px solid #555; padding: 4px 9px; border-radius: 2px;">funktion-one</span>
+      <span style="border: 0.5px solid #555; padding: 4px 9px; border-radius: 2px;">hypnotic loop</span>
+    </div>
+  </div>
+
+  <div class="t ink" style="grid-column: span 6; padding: 0; aspect-ratio: 16/10; position: relative;">
+    <svg viewBox="0 0 400 250" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" style="display: block;">
+      <rect width="400" height="250" fill="#0a0a0a"/>
+      <g stroke="#1e1e1d" stroke-width="0.5">
+        <line x1="0" y1="50" x2="400" y2="50"/>
+        <line x1="0" y1="100" x2="400" y2="100"/>
+        <line x1="0" y1="150" x2="400" y2="150"/>
+        <line x1="0" y1="200" x2="400" y2="200"/>
+        <line x1="100" y1="0" x2="100" y2="250"/>
+        <line x1="200" y1="0" x2="200" y2="250"/>
+        <line x1="300" y1="0" x2="300" y2="250"/>
+      </g>
+      <rect x="40" y="110" width="320" height="110" fill="#2a2a29"/>
+      <rect x="40" y="110" width="320" height="4" fill="#1a1a19"/>
+      <g fill="#0a0a0a">
+        <rect x="58" y="135" width="22" height="50"/>
+        <rect x="96" y="135" width="22" height="50"/>
+        <rect x="134" y="135" width="22" height="50"/>
+        <rect x="172" y="135" width="22" height="50"/>
+        <rect x="210" y="135" width="22" height="50"/>
+        <rect x="248" y="135" width="22" height="50"/>
+        <rect x="286" y="135" width="22" height="50"/>
+        <rect x="324" y="135" width="22" height="50"/>
+      </g>
+      <rect x="140" y="40" width="30" height="70" fill="#2a2a29"/>
+      <rect x="230" y="20" width="30" height="90" fill="#2a2a29"/>
+      <rect x="155" y="26" width="3" height="14" fill="#f5f2e8" class="pulse"/>
+      <rect x="245" y="6" width="3" height="14" fill="#f5f2e8"/>
+      <text x="22" y="30" fill="#f5f2e8" font-family="ui-monospace, monospace" font-size="10" letter-spacing="2">BERGHAIN / 2004</text>
+      <text x="22" y="242" fill="#555" font-family="ui-monospace, monospace" font-size="9" letter-spacing="1.5">FORMER THERMAL PLANT · 18M CEILINGS</text>
+    </svg>
+  </div>
+
+  <div class="t cream" style="grid-column: span 6; padding: 18px 22px;">
+    <div class="lbl" style="color: #666; margin-bottom: 12px;">Timeline</div>
+    <div style="font-family: ui-monospace, monospace; font-size: 11px; line-height: 1.9;">
+      <div style="display: flex; gap: 14px;"><span style="color: #999; width: 36px;">1981</span><span>Germany. Term coined.</span></div>
+      <div style="display: flex; gap: 14px;"><span style="color: #999; width: 36px;">1985</span><span>The Belleville Three, Detroit.</span></div>
+      <div style="display: flex; gap: 14px;"><span style="color: #999; width: 36px;">1992</span><span>Snax @ Bunker Berlin.</span></div>
+      <div style="display: flex; gap: 14px;"><span style="color: #999; width: 36px;">1998</span><span>UK free-party scene peak.</span></div>
+      <div style="display: flex; gap: 14px; background: #0a0a0a; color: #f5f2e8; padding: 2px 6px; margin: 2px -6px;"><span style="width: 36px;">2004</span><span>Berghain opens.</span></div>
+      <div style="display: flex; gap: 14px;"><span style="color: #999; width: 36px;">2007</span><span>First Funktion-One installed.</span></div>
+      <div style="display: flex; gap: 14px;"><span style="color: #999; width: 36px;">2020</span><span>Declared a cultural institution.</span></div>
+    </div>
+  </div>
+
+  <div class="t ink" style="grid-column: span 12; padding: 16px 0; border-top: 0.5px solid #1e1e1d; border-bottom: 0.5px solid #1e1e1d;">
+    <div class="mq">
+      <div class="mq-track" style="font-size: 22px; font-weight: 500; letter-spacing: 0.05em; font-family: ui-monospace, monospace;">
+        <span style="color: #f5f2e8;">WORLD CAPITAL OF TECHNO</span> <span style="color: #444;">★</span>
+        <span style="color: #f5f2e8;">WORLD CAPITAL OF TECHNO</span> <span style="color: #444;">★</span>
+        <span style="color: #f5f2e8;">WORLD CAPITAL OF TECHNO</span> <span style="color: #444;">★</span>
+        <span style="color: #f5f2e8;">WORLD CAPITAL OF TECHNO</span> <span style="color: #444;">★</span>
+        <span style="color: #f5f2e8;">WORLD CAPITAL OF TECHNO</span> <span style="color: #444;">★</span>
+        <span style="color: #f5f2e8;">WORLD CAPITAL OF TECHNO</span> <span style="color: #444;">★</span>
+        <span style="color: #f5f2e8;">WORLD CAPITAL OF TECHNO</span> <span style="color: #444;">★</span>
+        <span style="color: #f5f2e8;">WORLD CAPITAL OF TECHNO</span> <span style="color: #444;">★</span>
+        <span style="color: #f5f2e8;">WORLD CAPITAL OF TECHNO</span> <span style="color: #444;">★</span>
+        <span style="color: #f5f2e8;">WORLD CAPITAL OF TECHNO</span> <span style="color: #444;">★</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="t cream" style="grid-column: span 7; padding: 22px 24px;">
+    <div class="lbl" style="color: #666; margin-bottom: 12px;">Type pairing</div>
+    <div style="border-bottom: 0.5px solid #0a0a0a; padding-bottom: 10px; margin-bottom: 10px;">
+      <div style="font-family: ui-monospace, monospace; font-size: 24px; font-weight: 500; letter-spacing: -0.01em;">JetBrains Mono / Space Mono</div>
+      <div style="font-family: ui-monospace, monospace; font-size: 10px; opacity: 0.6; margin-top: 4px;">Display · headings · marquees</div>
+    </div>
+    <div>
+      <div style="font-family: var(--font-sans); font-size: 15px; line-height: 1.45; max-width: 46ch;">Inter or Neue Haas Grotesk for body copy — clean, industrial, readable at small sizes without competing with the mono display type.</div>
+      <div style="font-family: ui-monospace, monospace; font-size: 10px; opacity: 0.6; margin-top: 8px;">Inter · Neue Haas Grotesk · Body</div>
+    </div>
+  </div>
+
+  <div class="t steel" style="grid-column: span 5; padding: 22px 24px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div class="lbl">Quotation</div>
+    <div style="font-family: var(--font-serif); font-size: 19px; line-height: 1.3; color: #f5f2e8; font-style: italic;">"We became the poets of Detroit struggle."</div>
+    <div style="font-family: ui-monospace, monospace; font-size: 10px; opacity: 0.55;">— DERRICK MAY · BELLEVILLE THREE</div>
+  </div>
+
+</div>

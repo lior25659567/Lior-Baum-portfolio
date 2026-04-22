@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEdit } from '../context/EditContext';
+import { IFRAME_FILES } from '../iframes';
 import './Projects.css';
 
 // Add scheme to bare URLs so `google.com` works as an external link.
@@ -13,6 +14,27 @@ const normalizeExternalUrl = (u) => {
   if (!trimmed) return '';
   if (/^(https?:)?\/\//i.test(trimmed) || trimmed.startsWith('mailto:') || trimmed.startsWith('tel:')) return trimmed;
   return `https://${trimmed}`;
+};
+
+// Same rules as the case-study media-slide embed input: accepts a full
+// <iframe> tag, a URL, or a bare filename (routed into /iframes/ by
+// convention). Bare domains get `https://` prepended.
+const toIframeSrc = (input) => {
+  if (!input || typeof input !== 'string') return null;
+  const trimmed = input.trim();
+  if (!trimmed) return null;
+  const iframeMatch = trimmed.match(/<iframe[^>]+src=["']([^"']+)["']/i);
+  let src = (iframeMatch ? iframeMatch[1] : trimmed).trim();
+  if (!src) return null;
+  if (/^([a-z][a-z0-9+\-.]*:|\/\/)/i.test(src)) return src;
+  if (src.startsWith('/')) return src;
+  const firstSeg = src.split(/[/?#]/)[0];
+  const looksLikeDomain = /^[a-z0-9][a-z0-9-]*(\.[a-z0-9-]+)+$/i.test(firstSeg);
+  const isLocalFileExt = /\.(html?|pdf|svg|png|jpe?g|gif|webp|mp4|webm)$/i.test(firstSeg);
+  if (looksLikeDomain && !isLocalFileExt) return 'https://' + src;
+  const cleaned = src.replace(/^\.\//, '');
+  if (!cleaned.includes('/')) return '/iframes/' + cleaned;
+  return '/' + cleaned;
 };
 
 gsap.registerPlugin(ScrollTrigger);
@@ -58,27 +80,47 @@ const ProjectCard = ({ project, index, total, editMode, onImageChange, onRemove,
   const fileInputRef = useRef(null);
   const cardRef = useRef(null);
   const fileInputId = `project-image-${project.id}`;
+  const [iframeDraft, setIframeDraft] = useState(null); // null = closed, string = open with this value
+
+  const imageFit = project.imageFit === 'contain' ? 'contain' : 'cover';
+  const iframeSrc = (project.iframeSrc || '').trim();
+
+  const applyIframe = (raw) => {
+    const src = toIframeSrc(raw);
+    if (!src) { alert('Please paste an <iframe> tag, URL, or filename'); return; }
+    onUpdate(project.id, { iframeSrc: src });
+    setIframeDraft(null);
+  };
 
   const handleImageUpload = useCallback((e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Compress and convert to data URL
+    // Compress and convert to data URL. Sized for 2× retina at the
+    // largest card width (~800 CSS px), so the image stays sharp without
+    // storing multi-MB data URLs in the home-content JSON.
     const reader = new FileReader();
     reader.onload = (event) => {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const maxWidth = 800;
-        const maxHeight = 600;
+        const maxWidth = 1920;
+        const maxHeight = 1440;
         let { width, height } = img;
-        if (width > maxWidth) { height = (maxWidth / width) * height; width = maxWidth; }
-        if (height > maxHeight) { width = (maxHeight / height) * width; height = maxHeight; }
+        const scale = Math.min(1, maxWidth / width, maxHeight / height);
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(img, 0, 0, width, height);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        // PNGs and source files with transparency shouldn't be flattened to
+        // JPEG — detect the original MIME and keep PNG when it matters.
+        const srcIsPng = typeof event.target.result === 'string' && event.target.result.startsWith('data:image/png');
+        const dataUrl = srcIsPng
+          ? canvas.toDataURL('image/png')
+          : canvas.toDataURL('image/jpeg', 0.92);
         onImageChange(project.id, dataUrl);
       };
       img.src = event.target.result;
@@ -759,7 +801,12 @@ const ProjectCard = ({ project, index, total, editMode, onImageChange, onRemove,
   }, [mediaMode]);
 
   return (
-    <article ref={cardRef} className="project-card work-grid-project" data-media-mode={mediaMode} data-showcase-color={showcaseColor}>
+    <article
+      ref={cardRef}
+      className={`project-card work-grid-project${project.hidden ? ' is-hidden-from-visitors' : ''}`}
+      data-media-mode={mediaMode}
+      data-showcase-color={showcaseColor}
+    >
       {externalUrl ? (
         <a
           href={externalUrl}
@@ -773,7 +820,12 @@ const ProjectCard = ({ project, index, total, editMode, onImageChange, onRemove,
       )}
 
       {/* Image area */}
-      <div className="project-media" data-media-mode={mediaMode}>
+      <div
+        className="project-media"
+        data-media-mode={mediaMode}
+        data-has-iframe={iframeSrc ? 'true' : undefined}
+        data-fill-media={(iframeSrc || project.image) ? 'true' : undefined}
+      >
         {mediaMode === 'animated' && (
           <div className="project-media-fx" aria-hidden="true">
             <span className="project-media-fx-orb project-media-fx-orb--1" />
@@ -1215,17 +1267,93 @@ const ProjectCard = ({ project, index, total, editMode, onImageChange, onRemove,
           </>
         )}
         <div className="project-image-wrapper media-wrapper">
-          <div className="project-image media-inner" style={{ backgroundImage: project.image ? `url(${project.image})` : undefined }} />
-          {!project.image && <div className="project-image-placeholder" />}
+          {iframeSrc ? (
+            <iframe
+              className="project-iframe media-inner"
+              src={iframeSrc}
+              title={project.title || 'Embedded content'}
+              loading="lazy"
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <>
+              <div
+                className="project-image media-inner"
+                style={{
+                  backgroundImage: project.image ? `url(${project.image})` : undefined,
+                  backgroundSize: imageFit,
+                }}
+              />
+              {!project.image && <div className="project-image-placeholder" />}
+            </>
+          )}
         </div>
 
         {/* Edit overlay scoped to image only */}
         {editMode && (
-          <div className="project-image-overlay">
-            <label htmlFor={fileInputId} className="project-image-overlay-label">
-              <span className="image-overlay-icon">📷</span>
-              <span className="image-overlay-text">Change Image</span>
-            </label>
+          <div className={`project-image-overlay${iframeDraft !== null ? ' project-image-overlay--pinned' : ''}`}>
+            {iframeDraft !== null ? (
+              <div className="project-image-iframe-input" onClick={(e) => e.stopPropagation()}>
+                {IFRAME_FILES.length > 0 && (
+                  <select
+                    className="iframe-file-picker"
+                    value=""
+                    onChange={(e) => { if (e.target.value) applyIframe(e.target.value); }}
+                  >
+                    <option value="">Pick from /public/iframes…</option>
+                    {IFRAME_FILES.map((f) => (
+                      <option key={f.path} value={f.path}>{f.label}</option>
+                    ))}
+                  </select>
+                )}
+                <input
+                  type="text"
+                  className="iframe-url-input"
+                  placeholder="Paste iframe tag, URL, or filename"
+                  value={iframeDraft}
+                  autoFocus
+                  onChange={(e) => setIframeDraft(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') applyIframe(iframeDraft); }}
+                />
+                <div className="project-image-overlay-actions">
+                  <button type="button" className="project-overlay-btn" onClick={() => applyIframe(iframeDraft)}>Apply</button>
+                  <button type="button" className="project-overlay-btn" onClick={() => setIframeDraft(null)}>Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <>
+                {iframeSrc ? (
+                  <div className="project-image-overlay-actions">
+                    <button type="button" className="project-overlay-btn" onClick={() => setIframeDraft(iframeSrc)}>
+                      ⚙ Edit iframe
+                    </button>
+                    <button type="button" className="project-overlay-btn" onClick={() => onUpdate(project.id, { iframeSrc: '' })}>
+                      × Remove iframe
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <label htmlFor={fileInputId} className="project-image-overlay-label">
+                      <span className="image-overlay-icon">📷</span>
+                      <span className="image-overlay-text">Change Image</span>
+                    </label>
+                    <div className="project-image-overlay-actions">
+                      <button
+                        type="button"
+                        className="project-overlay-btn"
+                        onClick={() => onUpdate(project.id, { imageFit: imageFit === 'contain' ? 'cover' : 'contain' })}
+                        title={imageFit === 'contain' ? 'Switch to fill (cover)' : 'Switch to fit (contain)'}
+                      >
+                        {imageFit === 'contain' ? '◱ Fit' : '▣ Fill'}
+                      </button>
+                      <button type="button" className="project-overlay-btn" onClick={() => setIframeDraft('')}>
+                        ⧉ Embed iframe
+                      </button>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
             <input
               id={fileInputId}
               ref={fileInputRef}
@@ -1349,6 +1477,13 @@ const ProjectCard = ({ project, index, total, editMode, onImageChange, onRemove,
               <option value="kinetic">Kinetic type</option>
             </select>
           </label>
+          <button
+            className={`project-visibility-btn${project.hidden ? ' is-hidden' : ''}`}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); onUpdate(project.id, { hidden: !project.hidden }); }}
+            title={project.hidden ? 'Hidden from visitors — click to show' : 'Visible to visitors — click to hide'}
+          >
+            {project.hidden ? '🚫 Hidden' : '👁 Visible'}
+          </button>
           <div className="project-reorder-controls">
             <button
               className="project-reorder-btn"
@@ -1540,10 +1675,12 @@ const Projects = () => {
   // Only allow removal of user-created projects (not defaults)
   const defaultIds = defaultProjects.map(p => p.id);
 
-  // Filter projects by active tag
-  const filteredProjects = activeFilter === 'all'
+  // Filter projects by active tag. Hidden projects stay visible in edit mode
+  // (so they can be toggled back on) but are stripped for public visitors.
+  const filteredProjects = (activeFilter === 'all'
     ? projects
-    : projects.filter(p => (p.tag || 'work') === activeFilter);
+    : projects.filter(p => (p.tag || 'work') === activeFilter)
+  ).filter(p => editMode || !p.hidden);
 
   const handleMoveUp = useCallback((filteredIdx) => {
     if (filteredIdx <= 0) return;

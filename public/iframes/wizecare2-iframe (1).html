@@ -1,0 +1,241 @@
+<iframe
+  srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot;>
+<title>WizeCare</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    min-height: 100vh; min-height: 100dvh;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #A8E6E2 0%, #C4EEDA 35%, #B8D8F0 65%, #C8B8F0 100%);
+  }
+  .stage { width: 100%; height: 100%; }
+  .canvas { width: 100%; height: 100%; display: block; }
+
+  .s1,.s2 { opacity:0; }
+  .s1 { animation: s1 10s infinite; }
+  .s2 { animation: s2 10s infinite; }
+  @keyframes s1 { 0%,44% { opacity:1 } 48%,100% { opacity:0 } }
+  @keyframes s2 { 0%,46% { opacity:0 } 50%,97%  { opacity:1 } 100% { opacity:0 } }
+
+  .f1 { animation: fy 4.2s ease-in-out infinite; }
+  .f2 { animation: fy 4.2s ease-in-out infinite; animation-delay:.8s; }
+  .f3 { animation: fy 4.2s ease-in-out infinite; animation-delay:1.6s; }
+  .f4 { animation: fy 4.2s ease-in-out infinite; animation-delay:2.4s; }
+  @keyframes fy { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+  /* Patient cards stagger in */
+  .pc1,.pc2,.pc3,.pc4 { opacity:0; }
+  .pc1 { animation: pc1 10s infinite; }
+  .pc2 { animation: pc2 10s infinite; }
+  .pc3 { animation: pc3 10s infinite; }
+  .pc4 { animation: pc4 10s infinite; }
+  @keyframes pc1 { 0%,1%{opacity:0;transform:scale(.93)} 7%,44%{opacity:1;transform:scale(1)} 48%,100%{opacity:0} }
+  @keyframes pc2 { 0%,4%{opacity:0;transform:scale(.93)} 10%,44%{opacity:1;transform:scale(1)} 48%,100%{opacity:0} }
+  @keyframes pc3 { 0%,7%{opacity:0;transform:scale(.93)} 13%,44%{opacity:1;transform:scale(1)} 48%,100%{opacity:0} }
+  @keyframes pc4 { 0%,10%{opacity:0;transform:scale(.93)} 16%,44%{opacity:1;transform:scale(1)} 48%,100%{opacity:0} }
+
+  /* Gauge fill animations — r=40 → circumference ≈ 251 */
+  /* 67% amber: offset = 251*(1-.67) = 82.8 */
+  .g1 { animation: g1 10s infinite; }
+  @keyframes g1 { 0%,6%{stroke-dashoffset:251} 30%,44%{stroke-dashoffset:83} 48%,100%{stroke-dashoffset:251} }
+  /* 75% teal: offset = 251*(1-.75) = 62.75 */
+  .g2 { animation: g2 10s infinite; }
+  @keyframes g2 { 0%,8%{stroke-dashoffset:251} 32%,44%{stroke-dashoffset:63} 48%,100%{stroke-dashoffset:251} }
+  /* 36% red: offset = 251*(1-.36) = 160.6 */
+  .g3 { animation: g3 10s infinite; }
+  @keyframes g3 { 0%,10%{stroke-dashoffset:251} 34%,44%{stroke-dashoffset:161} 48%,100%{stroke-dashoffset:251} }
+  /* 96% teal: offset = 251*(1-.96) = 10 */
+  .g4 { animation: g4 10s infinite; }
+  @keyframes g4 { 0%,12%{stroke-dashoffset:251} 36%,44%{stroke-dashoffset:10} 48%,100%{stroke-dashoffset:251} }
+
+  /* State 2 elements slide in */
+  .si { opacity:0; animation: si 10s infinite; }
+  .si1{animation-delay:0s} .si2{animation-delay:.15s} .si3{animation-delay:.3s}
+  @keyframes si { 0%,51%{opacity:0;transform:translateY(8px)} 56%,97%{opacity:1;transform:translateY(0)} 100%{opacity:0} }
+
+  @media (prefers-reduced-motion: reduce) { * { animation:none!important } }
+</style>
+</head>
+<body>
+<div class=&quot;stage&quot;>
+<svg class=&quot;canvas&quot; viewBox=&quot;0 0 480 580&quot; preserveAspectRatio=&quot;xMidYMid meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
+  <defs>
+    <filter id=&quot;sh&quot;><feDropShadow dx=&quot;0&quot; dy=&quot;6&quot; stdDeviation=&quot;16&quot; flood-color=&quot;#00000013&quot;/></filter>
+    <filter id=&quot;sh-sm&quot;><feDropShadow dx=&quot;0&quot; dy=&quot;3&quot; stdDeviation=&quot;8&quot; flood-color=&quot;#0000000D&quot;/></filter>
+  </defs>
+
+  <!-- ══════════════════
+       STATE 1 — Patient adherence grid
+       ══════════════════ -->
+  <g class=&quot;s1&quot;>
+
+    <!-- Card 1: Sara Cohen 67% — AMBER (caution) -->
+    <g class=&quot;pc1 f1&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;16&quot; y=&quot;24&quot; width=&quot;220&quot; height=&quot;256&quot; rx=&quot;20&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+      <!-- Active badge -->
+      <rect x=&quot;30&quot; y=&quot;38&quot; width=&quot;52&quot; height=&quot;22&quot; rx=&quot;11&quot; fill=&quot;none&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;1.4&quot;/>
+      <text x=&quot;56&quot; y=&quot;53&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#00B4A6&quot;>Active</text>
+      <!-- Name + email -->
+      <text x=&quot;126&quot; y=&quot;88&quot; text-anchor=&quot;middle&quot; font-size=&quot;14&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>Sara Cohen</text>
+      <text x=&quot;126&quot; y=&quot;106&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#AAAAAA&quot;>sara.cohen@gmail.com</text>
+      <!-- Gauge track -->
+      <circle cx=&quot;126&quot; cy=&quot;188&quot; r=&quot;40&quot; fill=&quot;none&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;8&quot;/>
+      <!-- Gauge fill — amber for 67% -->
+      <circle class=&quot;g1&quot; cx=&quot;126&quot; cy=&quot;188&quot; r=&quot;40&quot; fill=&quot;none&quot; stroke=&quot;#F59E0B&quot; stroke-width=&quot;8&quot;
+              stroke-dasharray=&quot;251&quot; stroke-dashoffset=&quot;251&quot;
+              stroke-linecap=&quot;round&quot; transform=&quot;rotate(-90 126 188)&quot;/>
+      <text x=&quot;126&quot; y=&quot;196&quot; text-anchor=&quot;middle&quot; font-size=&quot;22&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>67%</text>
+      <text x=&quot;126&quot; y=&quot;248&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#BBBBBB&quot;>Adherence</text>
+    </g>
+
+    <!-- Card 2: Amir Peretz 75% — TEAL (good) -->
+    <g class=&quot;pc2 f2&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;244&quot; y=&quot;24&quot; width=&quot;220&quot; height=&quot;256&quot; rx=&quot;20&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+      <rect x=&quot;258&quot; y=&quot;38&quot; width=&quot;52&quot; height=&quot;22&quot; rx=&quot;11&quot; fill=&quot;none&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;1.4&quot;/>
+      <text x=&quot;284&quot; y=&quot;53&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#00B4A6&quot;>Active</text>
+      <text x=&quot;354&quot; y=&quot;88&quot; text-anchor=&quot;middle&quot; font-size=&quot;14&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>Amir Peretz</text>
+      <text x=&quot;354&quot; y=&quot;106&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#AAAAAA&quot;>amir.peretz@gmail.com</text>
+      <circle cx=&quot;354&quot; cy=&quot;188&quot; r=&quot;40&quot; fill=&quot;none&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;8&quot;/>
+      <circle class=&quot;g2&quot; cx=&quot;354&quot; cy=&quot;188&quot; r=&quot;40&quot; fill=&quot;none&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;8&quot;
+              stroke-dasharray=&quot;251&quot; stroke-dashoffset=&quot;251&quot;
+              stroke-linecap=&quot;round&quot; transform=&quot;rotate(-90 354 188)&quot;/>
+      <text x=&quot;354&quot; y=&quot;196&quot; text-anchor=&quot;middle&quot; font-size=&quot;22&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>75%</text>
+      <text x=&quot;354&quot; y=&quot;248&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#BBBBBB&quot;>Adherence</text>
+    </g>
+
+    <!-- Card 3: Dana Levi 36% — RED (needs attention) -->
+    <g class=&quot;pc3 f3&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;16&quot; y=&quot;296&quot; width=&quot;220&quot; height=&quot;256&quot; rx=&quot;20&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+      <rect x=&quot;30&quot; y=&quot;310&quot; width=&quot;52&quot; height=&quot;22&quot; rx=&quot;11&quot; fill=&quot;none&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;1.4&quot;/>
+      <text x=&quot;56&quot; y=&quot;325&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#00B4A6&quot;>Active</text>
+      <text x=&quot;126&quot; y=&quot;360&quot; text-anchor=&quot;middle&quot; font-size=&quot;14&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>Dana Levi</text>
+      <text x=&quot;126&quot; y=&quot;378&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#AAAAAA&quot;>dana.levi@gmail.com</text>
+      <circle cx=&quot;126&quot; cy=&quot;460&quot; r=&quot;40&quot; fill=&quot;none&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;8&quot;/>
+      <circle class=&quot;g3&quot; cx=&quot;126&quot; cy=&quot;460&quot; r=&quot;40&quot; fill=&quot;none&quot; stroke=&quot;#EF4444&quot; stroke-width=&quot;8&quot;
+              stroke-dasharray=&quot;251&quot; stroke-dashoffset=&quot;251&quot;
+              stroke-linecap=&quot;round&quot; transform=&quot;rotate(-90 126 460)&quot;/>
+      <text x=&quot;126&quot; y=&quot;468&quot; text-anchor=&quot;middle&quot; font-size=&quot;22&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>36%</text>
+      <text x=&quot;126&quot; y=&quot;520&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#BBBBBB&quot;>Adherence</text>
+    </g>
+
+    <!-- Card 4: Dana Mizrachi 96% — TEAL (excellent) -->
+    <g class=&quot;pc4 f4&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;244&quot; y=&quot;296&quot; width=&quot;220&quot; height=&quot;256&quot; rx=&quot;20&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+      <rect x=&quot;258&quot; y=&quot;310&quot; width=&quot;52&quot; height=&quot;22&quot; rx=&quot;11&quot; fill=&quot;none&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;1.4&quot;/>
+      <text x=&quot;284&quot; y=&quot;325&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; font-weight=&quot;500&quot; fill=&quot;#00B4A6&quot;>Active</text>
+      <text x=&quot;354&quot; y=&quot;360&quot; text-anchor=&quot;middle&quot; font-size=&quot;14&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>Dana Mizrachi</text>
+      <text x=&quot;354&quot; y=&quot;378&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#AAAAAA&quot;>dana.mizrachi@gmail.com</text>
+      <circle cx=&quot;354&quot; cy=&quot;460&quot; r=&quot;40&quot; fill=&quot;none&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;8&quot;/>
+      <circle class=&quot;g4&quot; cx=&quot;354&quot; cy=&quot;460&quot; r=&quot;40&quot; fill=&quot;none&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;8&quot;
+              stroke-dasharray=&quot;251&quot; stroke-dashoffset=&quot;251&quot;
+              stroke-linecap=&quot;round&quot; transform=&quot;rotate(-90 354 460)&quot;/>
+      <text x=&quot;354&quot; y=&quot;468&quot; text-anchor=&quot;middle&quot; font-size=&quot;22&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>96%</text>
+      <text x=&quot;354&quot; y=&quot;520&quot; text-anchor=&quot;middle&quot; font-size=&quot;10&quot; fill=&quot;#BBBBBB&quot;>Adherence</text>
+    </g>
+  </g>
+
+  <!-- ══════════════════
+       STATE 2 — Care plan + exercises
+       ══════════════════ -->
+  <g class=&quot;s2&quot;>
+
+    <!-- Care plan row -->
+    <g class=&quot;si si1 f1&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;16&quot; y=&quot;24&quot; width=&quot;448&quot; height=&quot;76&quot; rx=&quot;18&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+      <circle cx=&quot;46&quot; cy=&quot;62&quot; r=&quot;12&quot; fill=&quot;none&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;2.5&quot;/>
+      <text x=&quot;70&quot; y=&quot;57&quot; font-size=&quot;15&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>Shoulder Program</text>
+      <text x=&quot;70&quot; y=&quot;74&quot; font-size=&quot;10&quot; fill=&quot;#AAAAAA&quot;>Assigned 19/4  ·  Avg adherence: 0%  ·  0/4 sessions left</text>
+      <rect x=&quot;334&quot; y=&quot;46&quot; width=&quot;116&quot; height=&quot;32&quot; rx=&quot;16&quot; fill=&quot;#111111&quot;/>
+      <text x=&quot;392&quot; y=&quot;66&quot; text-anchor=&quot;middle&quot; font-size=&quot;10.5&quot; font-weight=&quot;500&quot; fill=&quot;white&quot;>Edit Care Plan</text>
+    </g>
+
+    <!-- Exercise card 1 — full card with Sets inside -->
+    <g class=&quot;si si2 f2&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;16&quot; y=&quot;118&quot; width=&quot;448&quot; height=&quot;150&quot; rx=&quot;18&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+      <!-- Left teal accent INSIDE card -->
+      <rect x=&quot;16&quot; y=&quot;118&quot; width=&quot;6&quot; height=&quot;150&quot; rx=&quot;3&quot; fill=&quot;#00B4A6&quot;/>
+      <!-- Image placeholder -->
+      <rect x=&quot;34&quot; y=&quot;130&quot; width=&quot;82&quot; height=&quot;82&quot; rx=&quot;12&quot; fill=&quot;#F2F2F2&quot;/>
+      <!-- Stick figure -->
+      <g transform=&quot;translate(60, 144)&quot; fill=&quot;none&quot; stroke=&quot;#C0C0C0&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot;>
+        <circle cx=&quot;14&quot; cy=&quot;7&quot; r=&quot;7&quot; fill=&quot;#D4D4D4&quot; stroke=&quot;none&quot;/>
+        <line x1=&quot;14&quot; y1=&quot;14&quot; x2=&quot;14&quot; y2=&quot;33&quot;/>
+        <line x1=&quot;5&quot;  y1=&quot;21&quot; x2=&quot;23&quot; y2=&quot;25&quot;/>
+        <line x1=&quot;14&quot; y1=&quot;33&quot; x2=&quot;7&quot;  y2=&quot;46&quot;/>
+        <line x1=&quot;14&quot; y1=&quot;33&quot; x2=&quot;21&quot; y2=&quot;44&quot;/>
+        <line x1=&quot;5&quot;  y1=&quot;21&quot; x2=&quot;0&quot;  y2=&quot;13&quot;/>
+      </g>
+      <text x=&quot;130&quot; y=&quot;160&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>High Step Endurance Exercise</text>
+
+      <!-- Divider -->
+      <line x1=&quot;34&quot; y1=&quot;222&quot; x2=&quot;448&quot; y2=&quot;222&quot; stroke=&quot;#F5F5F5&quot; stroke-width=&quot;1&quot;/>
+
+      <!-- Sets row inside card -->
+      <g transform=&quot;translate(34, 236)&quot;>
+        <g fill=&quot;none&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot;>
+          <circle cx=&quot;7&quot; cy=&quot;4&quot; r=&quot;4&quot; fill=&quot;#00B4A6&quot; stroke=&quot;none&quot;/>
+          <line x1=&quot;7&quot; y1=&quot;8&quot; x2=&quot;7&quot; y2=&quot;18&quot;/>
+          <line x1=&quot;3&quot; y1=&quot;12&quot; x2=&quot;11&quot; y2=&quot;12&quot;/>
+          <line x1=&quot;7&quot; y1=&quot;18&quot; x2=&quot;3&quot; y2=&quot;24&quot;/>
+          <line x1=&quot;7&quot; y1=&quot;18&quot; x2=&quot;11&quot; y2=&quot;24&quot;/>
+        </g>
+        <text x=&quot;20&quot; y=&quot;17&quot; font-size=&quot;11&quot; fill=&quot;#AAAAAA&quot;>Sets</text>
+        <text x=&quot;80&quot; y=&quot;17&quot; font-size=&quot;14&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>5</text>
+      </g>
+    </g>
+
+    <!-- Exercise card 2 — full card with Sets inside -->
+    <g class=&quot;si si3 f3&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;16&quot; y=&quot;282&quot; width=&quot;448&quot; height=&quot;150&quot; rx=&quot;18&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+      <rect x=&quot;16&quot; y=&quot;282&quot; width=&quot;6&quot; height=&quot;150&quot; rx=&quot;3&quot; fill=&quot;#00B4A6&quot;/>
+      <rect x=&quot;34&quot; y=&quot;294&quot; width=&quot;82&quot; height=&quot;82&quot; rx=&quot;12&quot; fill=&quot;#F2F2F2&quot;/>
+      <g transform=&quot;translate(62, 310)&quot; fill=&quot;none&quot; stroke=&quot;#C0C0C0&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot;>
+        <circle cx=&quot;14&quot; cy=&quot;7&quot; r=&quot;7&quot; fill=&quot;#D4D4D4&quot; stroke=&quot;none&quot;/>
+        <line x1=&quot;14&quot; y1=&quot;14&quot; x2=&quot;14&quot; y2=&quot;33&quot;/>
+        <line x1=&quot;5&quot;  y1=&quot;21&quot; x2=&quot;23&quot; y2=&quot;21&quot;/>
+        <line x1=&quot;14&quot; y1=&quot;33&quot; x2=&quot;7&quot;  y2=&quot;46&quot;/>
+        <line x1=&quot;14&quot; y1=&quot;33&quot; x2=&quot;21&quot; y2=&quot;44&quot;/>
+      </g>
+      <text x=&quot;130&quot; y=&quot;324&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>Shoulder Flexion and Adduction</text>
+
+      <line x1=&quot;34&quot; y1=&quot;386&quot; x2=&quot;448&quot; y2=&quot;386&quot; stroke=&quot;#F5F5F5&quot; stroke-width=&quot;1&quot;/>
+
+      <g transform=&quot;translate(34, 400)&quot;>
+        <g fill=&quot;none&quot; stroke=&quot;#00B4A6&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot;>
+          <circle cx=&quot;7&quot; cy=&quot;4&quot; r=&quot;4&quot; fill=&quot;#00B4A6&quot; stroke=&quot;none&quot;/>
+          <line x1=&quot;7&quot; y1=&quot;8&quot; x2=&quot;7&quot; y2=&quot;18&quot;/>
+          <line x1=&quot;3&quot; y1=&quot;12&quot; x2=&quot;11&quot; y2=&quot;12&quot;/>
+          <line x1=&quot;7&quot; y1=&quot;18&quot; x2=&quot;3&quot; y2=&quot;24&quot;/>
+          <line x1=&quot;7&quot; y1=&quot;18&quot; x2=&quot;11&quot; y2=&quot;24&quot;/>
+        </g>
+        <text x=&quot;20&quot; y=&quot;17&quot; font-size=&quot;11&quot; fill=&quot;#AAAAAA&quot;>Sets</text>
+        <text x=&quot;80&quot; y=&quot;17&quot; font-size=&quot;14&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>3</text>
+      </g>
+    </g>
+
+    <!-- Update Care Plan CTA -->
+    <g class=&quot;si si3 f4&quot; filter=&quot;url(#sh-sm)&quot;>
+      <rect x=&quot;16&quot; y=&quot;448&quot; width=&quot;448&quot; height=&quot;48&quot; rx=&quot;14&quot; fill=&quot;#00B4A6&quot;/>
+      <text x=&quot;240&quot; y=&quot;477&quot; text-anchor=&quot;middle&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;white&quot;>Update Care Plan</text>
+    </g>
+  </g>
+
+</svg>
+</div>
+</body>
+</html>
+"
+  width="100%"
+  height="100%"
+  scrolling="no"
+  frameborder="0"
+  style="border:0; display:block; width: 100%; height: 100%; min-height: 100vh; overflow:hidden;"
+  loading="lazy"
+  title="WizeCare">
+</iframe>

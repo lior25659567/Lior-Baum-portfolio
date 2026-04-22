@@ -17,6 +17,18 @@
       "image": [
         {
           "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "/iframes/report-workflow.html",
+          "src": "",
+          "caption": "Template → Annotate → Share",
+          "isVideo": false,
+          "isGif": false,
+          "embedType": "iframe"
+        },
+        {
+          "position": "center center",
           "size": "medium",
           "fit": "contain",
           "wrapperBg": false,
@@ -28,7 +40,7 @@
           "embedType": ""
         }
       ],
-      "gridCols": 1,
+      "gridCols": 2,
       "imageDisplayMode": "grid",
       "splitRatio": 50
     },

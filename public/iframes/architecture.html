@@ -102,8 +102,11 @@
     fill: none;
     stroke-linecap: round;
     vector-effect: non-scaling-stroke;
+    /* Continuous dash flow = data streaming toward Claude. */
+    animation: dashFlow 1.4s linear infinite;
   }
   @keyframes drawReveal { to { clip-path: inset(0 0 0 0); } }
+  @keyframes dashFlow { to { stroke-dashoffset: -24; } }
 
   /* ── Cards ── */
   .card {
@@ -194,8 +197,61 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    position: relative;
   }
-  .card .ico-sq svg { width: 60%; height: 60%; }
+  .card .ico-sq svg {
+    width: 60%;
+    height: 60%;
+    animation: starSpin 9s linear infinite;
+    transform-origin: 50% 50%;
+  }
+  /* Soft halo radiating out from the Claude card — signals "convergence point". */
+  .card.c4 .ico-sq::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    background: radial-gradient(closest-side, rgba(217,119,87,0.45), rgba(217,119,87,0) 70%);
+    animation: haloPulse 2.4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+  }
+  @keyframes starSpin { to { transform: rotate(360deg); } }
+  @keyframes haloPulse {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50%      { opacity: 0.95; transform: scale(1.18); }
+  }
+
+  /* Idle bob on left-column icons — subtle lift cycle, staggered per card. */
+  .card.c1 .ico, .card.c3 .ico { animation: iconBob 4.2s ease-in-out infinite; }
+  .card.c3 .ico { animation-delay: 1.4s; }
+  @keyframes iconBob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-3px); }
+  }
+
+  /* Design-tokens bars breathe slightly — looks like values being re-resolved. */
+  .tokens-bars .bar { transform-origin: left center; animation: barPulse 3.2s ease-in-out infinite; }
+  .tokens-bars .bar.b1 { animation-delay: 0s; }
+  .tokens-bars .bar.b2 { animation-delay: 0.3s; }
+  .tokens-bars .bar.b3 { animation-delay: 0.6s; }
+  .tokens-bars .bar.b4 { animation-delay: 0.9s; }
+  @keyframes barPulse {
+    0%, 100% { transform: scaleX(1); opacity: 1; }
+    50%      { transform: scaleX(0.92); opacity: 0.78; }
+  }
+
+  /* Token graph nodes softly pulse so the graphic reads as alive, not static. */
+  .tokens-graph circle { transform-origin: center; transform-box: fill-box; animation: nodePulse 2.6s ease-in-out infinite; }
+  .tokens-graph circle:nth-of-type(1) { animation-delay: 0s; }
+  .tokens-graph circle:nth-of-type(2) { animation-delay: 0.4s; }
+  .tokens-graph circle:nth-of-type(3) { animation-delay: 0.8s; }
+  .tokens-graph circle:nth-of-type(4) { animation-delay: 1.2s; }
+  .tokens-graph circle:nth-of-type(5) { animation-delay: 1.6s; }
+  @keyframes nodePulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.12); }
+  }
 
   /* Stack only at phone widths (far below a 50/50 split) */
   @media (max-width: 340px) {

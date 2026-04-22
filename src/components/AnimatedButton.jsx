@@ -19,8 +19,8 @@ const AnimatedButton = ({
   const chars = text.split('');
   
   const ButtonTag = href ? 'a' : 'button';
-  const props = href 
-    ? { href, target, rel: rel || (target === '_blank' ? 'noopener noreferrer' : undefined) }
+  const props = href
+    ? { href, target, rel: rel || (target === '_blank' ? 'noopener noreferrer' : undefined), onClick }
     : { onClick };
 
   return (

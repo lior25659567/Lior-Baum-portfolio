@@ -1,0 +1,59 @@
+<h2 class="sr-only">An animated diagram showing a p5.js sketch being loaded into a Webflow page through a script embed.</h2>
+<style>
+.tw-row { display: flex; align-items: stretch; gap: 12px; max-width: 680px; margin: 0 auto; padding: 1rem 0; }
+.tw-card { flex: 1; padding: 32px 16px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; min-width: 0; }
+.tw-card.p5 { background: #FBEAF0; }
+.tw-card.wf { background: #E6F1FB; }
+@media (prefers-color-scheme: dark) {
+  .tw-card.p5 { background: #4B1528; }
+  .tw-card.wf { background: #042C53; }
+}
+.tw-logo { width: 72px; height: 72px; }
+.tw-logo-p5 { animation: tw-spin 14s linear infinite; transform-origin: center; }
+@keyframes tw-spin { to { transform: rotate(360deg); } }
+.tw-logo-wf { animation: tw-pulse 3.2s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+@keyframes tw-pulse {
+  0%, 80% { transform: scale(1); }
+  90% { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+.tw-label { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; font-weight: 500; letter-spacing: -0.01em; }
+.tw-label.p5 { color: #ED225D; }
+.tw-label.wf { color: #146EF5; }
+.tw-bridge { flex: 0 0 100px; position: relative; align-self: center; height: 40px; }
+.tw-bridge::before { content: ''; position: absolute; left: 0; right: 10px; top: 50%; height: 0.5px; background: var(--color-border-secondary); }
+.tw-bridge::after { content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 6px solid var(--color-border-secondary); }
+.tw-token { position: absolute; top: 50%; left: 0; transform: translate(-50%, -50%); background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: 11px; padding: 3px 10px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 11px; color: var(--color-text-secondary); white-space: nowrap; animation: tw-travel 3.2s ease-in-out infinite; }
+@keyframes tw-travel {
+  0%   { left: 0%;   opacity: 0; transform: translate(-50%, -50%); }
+  15%  { opacity: 1; transform: translate(-50%, -50%); }
+  85%  { opacity: 1; transform: translate(-50%, -50%); }
+  100% { left: 100%; opacity: 0; transform: translate(-50%, -50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tw-logo-p5, .tw-logo-wf, .tw-token { animation: none; }
+  .tw-token { left: 50%; opacity: 1; }
+}
+</style>
+
+<div class="tw-row">
+  <div class="tw-card p5">
+    <svg class="tw-logo tw-logo-p5" viewBox="-50 -50 100 100">
+      <ellipse rx="7" ry="40" fill="#ED225D"/>
+      <ellipse rx="7" ry="40" fill="#ED225D" transform="rotate(72)"/>
+      <ellipse rx="7" ry="40" fill="#ED225D" transform="rotate(144)"/>
+      <ellipse rx="7" ry="40" fill="#ED225D" transform="rotate(216)"/>
+      <ellipse rx="7" ry="40" fill="#ED225D" transform="rotate(288)"/>
+    </svg>
+    <div class="tw-label p5">p5.js</div>
+  </div>
+  <div class="tw-bridge">
+    <div class="tw-token">&lt;script&gt;</div>
+  </div>
+  <div class="tw-card wf">
+    <svg class="tw-logo tw-logo-wf" viewBox="-50 -40 100 80">
+      <path d="M-32 -25 L-18 31 L0 -5 L18 31 L32 -25" stroke="#146EF5" stroke-width="10" fill="none" stroke-linejoin="miter"/>
+    </svg>
+    <div class="tw-label wf">Webflow</div>
+  </div>
+</div>

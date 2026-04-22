@@ -1,0 +1,304 @@
+<iframe
+  srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot;>
+<title>Patient Report</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    min-height: 100vh; min-height: 100dvh;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #A8E6E2 0%, #C4EEDA 35%, #B8D8F0 65%, #C8B8F0 100%);
+  }
+  .stage { width: 100%; height: 100%; }
+  .canvas { width: 100%; height: 100%; display: block; }
+
+  /* 3 states × ~4s each in 13s */
+  .s1,.s2,.s3 { opacity:0; }
+  .s1 { animation: s1 13s infinite; }
+  .s2 { animation: s2 13s infinite; }
+  .s3 { animation: s3 13s infinite; }
+  @keyframes s1 { 0%,30%  { opacity:1 } 34%,100% { opacity:0 } }
+  @keyframes s2 { 0%,31%  { opacity:0 } 34%,64%  { opacity:1 } 68%,100% { opacity:0 } }
+  @keyframes s3 { 0%,65%  { opacity:0 } 68%,97%  { opacity:1 } 100%    { opacity:0 } }
+
+  /* Card float */
+  .f1 { animation: fy 4s ease-in-out infinite; }
+  .f2 { animation: fy 4s ease-in-out infinite; animation-delay:.8s; }
+  @keyframes fy { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+  /* Template cards pop in — cycle-synchronized with s1 window */
+  .tc1,.tc2,.tc3,.tc4,.tc5 { opacity:0; }
+  .tc1 { animation: tc1 13s infinite; }
+  .tc2 { animation: tc2 13s infinite; }
+  .tc3 { animation: tc3 13s infinite; }
+  .tc4 { animation: tc4 13s infinite; }
+  .tc5 { animation: tc5 13s infinite; }
+  @keyframes tc1 { 0%,1%{opacity:0;transform:scale(.92)} 7%,30%{opacity:1;transform:scale(1)} 34%,100%{opacity:0} }
+  @keyframes tc2 { 0%,4%{opacity:0;transform:scale(.92)} 10%,30%{opacity:1;transform:scale(1)} 34%,100%{opacity:0} }
+  @keyframes tc3 { 0%,7%{opacity:0;transform:scale(.92)} 13%,30%{opacity:1;transform:scale(1)} 34%,100%{opacity:0} }
+  @keyframes tc4 { 0%,10%{opacity:0;transform:scale(.92)} 16%,30%{opacity:1;transform:scale(1)} 34%,100%{opacity:0} }
+  @keyframes tc5 { 0%,13%{opacity:0;transform:scale(.92)} 19%,30%{opacity:1;transform:scale(1)} 34%,100%{opacity:0} }
+
+  /* Selected card pulse */
+  .sel-pulse { animation: selP 2s ease-in-out infinite; }
+  @keyframes selP { 0%,100%{opacity:.88} 50%{opacity:1} }
+
+  /* Sections slide in — cycle-synchronized with s2 window (34%-64%) */
+  .se1,.se2,.se3,.se4,.se5 { opacity:0; }
+  .se1 { animation: se1 13s infinite; }
+  .se2 { animation: se2 13s infinite; }
+  .se3 { animation: se3 13s infinite; }
+  .se4 { animation: se4 13s infinite; }
+  .se5 { animation: se5 13s infinite; }
+  @keyframes se1 { 0%,34%{opacity:0;transform:translateY(8px)} 39%,63%{opacity:1;transform:translateY(0)} 67%,100%{opacity:0} }
+  @keyframes se2 { 0%,38%{opacity:0;transform:translateY(8px)} 43%,63%{opacity:1;transform:translateY(0)} 67%,100%{opacity:0} }
+  @keyframes se3 { 0%,42%{opacity:0;transform:translateY(8px)} 47%,63%{opacity:1;transform:translateY(0)} 67%,100%{opacity:0} }
+  @keyframes se4 { 0%,46%{opacity:0;transform:translateY(8px)} 51%,63%{opacity:1;transform:translateY(0)} 67%,100%{opacity:0} }
+  @keyframes se5 { 0%,50%{opacity:0;transform:translateY(8px)} 55%,63%{opacity:1;transform:translateY(0)} 67%,100%{opacity:0} }
+
+  /* PIN toggle switches on */
+  .pin-off { animation: pinOff 13s infinite; }
+  .pin-on  { animation: pinOn  13s infinite; }
+  @keyframes pinOff { 0%,79%{opacity:1} 84%,100%{opacity:0} }
+  @keyframes pinOn  { 0%,81%{opacity:0} 85%,97%{opacity:1} 100%{opacity:0} }
+
+  /* Copy link button pulse */
+  .cta-pulse { animation: ctaP 1.6s ease-in-out infinite; }
+  @keyframes ctaP { 0%,100%{opacity:.88} 50%{opacity:1} }
+
+  /* Email typing */
+  .email-cursor { animation: blink .9s steps(2) infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  @media (prefers-reduced-motion: reduce) { * { animation:none!important } }
+</style>
+</head>
+<body>
+<div class=&quot;stage&quot;>
+<svg class=&quot;canvas&quot; viewBox=&quot;0 0 480 600&quot; preserveAspectRatio=&quot;xMidYMid meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
+  <defs>
+    <filter id=&quot;sh&quot;><feDropShadow dx=&quot;0&quot; dy=&quot;6&quot; stdDeviation=&quot;18&quot; flood-color=&quot;#00000012&quot;/></filter>
+    <filter id=&quot;sh-sm&quot;><feDropShadow dx=&quot;0&quot; dy=&quot;3&quot; stdDeviation=&quot;10&quot; flood-color=&quot;#0000000E&quot;/></filter>
+  </defs>
+
+  <!-- ══════════════════════════════
+       STATE 1 — Template selection
+       Killer: one click → structured report
+       ══════════════════════════════ -->
+  <g class=&quot;s1&quot;>
+    <g class=&quot;f1&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;24&quot; y=&quot;50&quot; width=&quot;432&quot; height=&quot;430&quot; rx=&quot;24&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+
+      <!-- Header -->
+      <text x=&quot;48&quot; y=&quot;90&quot; font-size=&quot;16&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>General Scan Report</text>
+      <text x=&quot;230&quot; y=&quot;90&quot; font-size=&quot;13&quot; font-weight=&quot;500&quot; fill=&quot;#0EA5E9&quot;>Undo</text>
+
+      <!-- Template grid — 2 cols -->
+      <!-- Start from Scratch -->
+      <g class=&quot;tc1&quot;>
+        <rect x=&quot;48&quot;  y=&quot;106&quot; width=&quot;182&quot; height=&quot;90&quot; rx=&quot;12&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+        <rect x=&quot;68&quot;  y=&quot;124&quot; width=&quot;24&quot; height=&quot;24&quot; rx=&quot;5&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.5&quot;/>
+        <path d=&quot;M 74 136 L 80 136 M 80 130 L 80 142&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot;/>
+        <text x=&quot;68&quot;  y=&quot;174&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Start from Scratch</text>
+      </g>
+
+      <!-- General Scan Report — SELECTED -->
+      <g class=&quot;tc2 sel-pulse&quot;>
+        <rect x=&quot;246&quot; y=&quot;104&quot; width=&quot;182&quot; height=&quot;92&quot; rx=&quot;12&quot; fill=&quot;#EFF8FF&quot; stroke=&quot;#0EA5E9&quot; stroke-width=&quot;2&quot;/>
+        <!-- Checkmark badge -->
+        <circle cx=&quot;406&quot; cy=&quot;120&quot; r=&quot;13&quot; fill=&quot;#0EA5E9&quot;/>
+        <path d=&quot;M 400 120 L 403 123 L 412 114&quot; stroke=&quot;white&quot; stroke-width=&quot;2&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+        <!-- Doc icon -->
+        <rect x=&quot;266&quot; y=&quot;122&quot; width=&quot;20&quot; height=&quot;24&quot; rx=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#0EA5E9&quot; stroke-width=&quot;1.5&quot;/>
+        <line x1=&quot;270&quot; y1=&quot;130&quot; x2=&quot;282&quot; y2=&quot;130&quot; stroke=&quot;#0EA5E9&quot; stroke-width=&quot;1&quot;/>
+        <line x1=&quot;270&quot; y1=&quot;136&quot; x2=&quot;282&quot; y2=&quot;136&quot; stroke=&quot;#0EA5E9&quot; stroke-width=&quot;1&quot;/>
+        <line x1=&quot;270&quot; y1=&quot;142&quot; x2=&quot;278&quot; y2=&quot;142&quot; stroke=&quot;#0EA5E9&quot; stroke-width=&quot;1&quot;/>
+        <text x=&quot;266&quot; y=&quot;172&quot; font-size=&quot;12&quot; font-weight=&quot;700&quot; fill=&quot;#0EA5E9&quot;>General Scan Report</text>
+      </g>
+
+      <!-- Implant Planning -->
+      <g class=&quot;tc3&quot;>
+        <rect x=&quot;48&quot;  y=&quot;210&quot; width=&quot;182&quot; height=&quot;90&quot; rx=&quot;12&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+        <line x1=&quot;70&quot; y1=&quot;228&quot; x2=&quot;70&quot; y2=&quot;254&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot;/>
+        <circle cx=&quot;70&quot; cy=&quot;260&quot; r=&quot;5&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.5&quot;/>
+        <text x=&quot;68&quot; y=&quot;282&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Implant Planning</text>
+      </g>
+
+      <!-- Crown Preparation -->
+      <g class=&quot;tc4&quot;>
+        <rect x=&quot;246&quot; y=&quot;210&quot; width=&quot;182&quot; height=&quot;90&quot; rx=&quot;12&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+        <path d=&quot;M 266 250 Q 268 238 272 236 L 278 235 L 284 236 L 290 235 L 296 236 Q 300 238 302 250 Q 298 258 284 258 Q 270 258 266 250 Z&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.4&quot;/>
+        <text x=&quot;266&quot; y=&quot;282&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Crown Preparation</text>
+      </g>
+
+      <!-- Follow-up Visit -->
+      <g class=&quot;tc5&quot;>
+        <rect x=&quot;48&quot;  y=&quot;314&quot; width=&quot;182&quot; height=&quot;90&quot; rx=&quot;12&quot; fill=&quot;#FAFAFA&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+        <circle cx=&quot;70&quot; cy=&quot;350&quot; r=&quot;12&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.4&quot;/>
+        <line x1=&quot;70&quot; y1=&quot;341&quot; x2=&quot;70&quot; y2=&quot;345&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.4&quot; stroke-linecap=&quot;round&quot;/>
+        <line x1=&quot;70&quot; y1=&quot;350&quot; x2=&quot;74&quot; y2=&quot;350&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.4&quot; stroke-linecap=&quot;round&quot;/>
+        <text x=&quot;68&quot;  y=&quot;386&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Follow-up Visit</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ══════════════════════════════
+       STATE 2 — Structured sections
+       Killer: template → 5 named sections in seconds
+       ══════════════════════════════ -->
+  <g class=&quot;s2&quot;>
+    <g class=&quot;f1&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;24&quot; y=&quot;50&quot; width=&quot;432&quot; height=&quot;80&quot; rx=&quot;20&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+      <text x=&quot;48&quot; y=&quot;84&quot; font-size=&quot;14&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>Content</text>
+      <text x=&quot;400&quot; y=&quot;84&quot; text-anchor=&quot;end&quot; font-size=&quot;12&quot; fill=&quot;#9CA3AF&quot;>5 sections</text>
+    </g>
+
+    <!-- 5 section rows sliding in -->
+    <g class=&quot;f2&quot;>
+      <g class=&quot;se1&quot; filter=&quot;url(#sh-sm)&quot;>
+        <rect x=&quot;24&quot; y=&quot;148&quot; width=&quot;432&quot; height=&quot;56&quot; rx=&quot;14&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+        <!-- Drag dots -->
+        <circle cx=&quot;46&quot; cy=&quot;170&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;46&quot; cy=&quot;178&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+        <circle cx=&quot;52&quot; cy=&quot;170&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;52&quot; cy=&quot;178&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+        <text x=&quot;68&quot; y=&quot;180&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Initial tooth condition</text>
+        <path d=&quot;M 428 172 L 432 176 L 436 172&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+      </g>
+
+      <g class=&quot;se2&quot; filter=&quot;url(#sh-sm)&quot;>
+        <rect x=&quot;24&quot; y=&quot;214&quot; width=&quot;432&quot; height=&quot;56&quot; rx=&quot;14&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+        <circle cx=&quot;46&quot; cy=&quot;236&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;46&quot; cy=&quot;244&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+        <circle cx=&quot;52&quot; cy=&quot;236&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;52&quot; cy=&quot;244&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+        <text x=&quot;68&quot; y=&quot;246&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Before / After</text>
+        <path d=&quot;M 428 238 L 432 242 L 436 238&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+      </g>
+
+      <g class=&quot;se3&quot; filter=&quot;url(#sh-sm)&quot;>
+        <rect x=&quot;24&quot; y=&quot;280&quot; width=&quot;432&quot; height=&quot;56&quot; rx=&quot;14&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+        <circle cx=&quot;46&quot; cy=&quot;302&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;46&quot; cy=&quot;310&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+        <circle cx=&quot;52&quot; cy=&quot;302&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;52&quot; cy=&quot;310&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+        <text x=&quot;68&quot; y=&quot;312&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Summary</text>
+        <path d=&quot;M 428 304 L 432 308 L 436 304&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+      </g>
+
+      <g class=&quot;se4&quot; filter=&quot;url(#sh-sm)&quot;>
+        <rect x=&quot;24&quot; y=&quot;346&quot; width=&quot;432&quot; height=&quot;56&quot; rx=&quot;14&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+        <circle cx=&quot;46&quot; cy=&quot;368&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;46&quot; cy=&quot;376&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+        <circle cx=&quot;52&quot; cy=&quot;368&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;52&quot; cy=&quot;376&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+        <text x=&quot;68&quot; y=&quot;378&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Temporary Crown Care</text>
+        <path d=&quot;M 428 370 L 432 374 L 436 370&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+      </g>
+
+      <g class=&quot;se5&quot; filter=&quot;url(#sh-sm)&quot;>
+        <rect x=&quot;24&quot; y=&quot;412&quot; width=&quot;432&quot; height=&quot;56&quot; rx=&quot;14&quot; fill=&quot;white&quot; opacity=&quot;.97&quot;/>
+        <circle cx=&quot;46&quot; cy=&quot;434&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;46&quot; cy=&quot;442&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+        <circle cx=&quot;52&quot; cy=&quot;434&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/><circle cx=&quot;52&quot; cy=&quot;442&quot; r=&quot;2&quot; fill=&quot;#CBD5E1&quot;/>
+        <text x=&quot;68&quot; y=&quot;444&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#0F2F44&quot;>Next Appointment</text>
+        <path d=&quot;M 428 436 L 432 440 L 436 436&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/>
+      </g>
+    </g>
+  </g>
+
+  <!-- ══════════════════════════════
+       STATE 3 — Share Report modal
+       Killer: secure sharing with PIN
+       ══════════════════════════════ -->
+  <g class=&quot;s3&quot;>
+    <g class=&quot;f1&quot; filter=&quot;url(#sh)&quot;>
+      <rect x=&quot;24&quot; y=&quot;48&quot; width=&quot;432&quot; height=&quot;440&quot; rx=&quot;24&quot; fill=&quot;white&quot; opacity=&quot;.98&quot;/>
+
+      <!-- Header -->
+      <text x=&quot;48&quot; y=&quot;92&quot; font-size=&quot;16&quot; font-weight=&quot;700&quot; fill=&quot;#111111&quot;>Share Report</text>
+
+      <line x1=&quot;48&quot; y1=&quot;106&quot; x2=&quot;432&quot; y2=&quot;106&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;1&quot;/>
+
+      <!-- Email field -->
+      <rect x=&quot;48&quot; y=&quot;118&quot; width=&quot;384&quot; height=&quot;40&quot; rx=&quot;10&quot; fill=&quot;white&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+      <text x=&quot;66&quot; y=&quot;143&quot; font-size=&quot;11&quot; fill=&quot;#BBBBBB&quot;>patient@example.com</text>
+      <rect class=&quot;email-cursor&quot; x=&quot;234&quot; y=&quot;128&quot; width=&quot;2&quot; height=&quot;18&quot; rx=&quot;1&quot; fill=&quot;#0EA5E9&quot;/>
+
+      <!-- Who has access -->
+      <text x=&quot;48&quot; y=&quot;182&quot; font-size=&quot;11&quot; fill=&quot;#9CA3AF&quot;>Who has access</text>
+      <rect x=&quot;48&quot; y=&quot;192&quot; width=&quot;384&quot; height=&quot;40&quot; rx=&quot;10&quot; fill=&quot;white&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+      <!-- Lock icon -->
+      <rect x=&quot;64&quot; y=&quot;204&quot; width=&quot;12&quot; height=&quot;10&quot; rx=&quot;2&quot; fill=&quot;none&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;1.2&quot;/>
+      <path d=&quot;M 67 204 V 201 Q 67 198 70 198 Q 73 198 73 201 V 204&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;1.2&quot; fill=&quot;none&quot;/>
+      <text x=&quot;84&quot; y=&quot;216&quot; font-size=&quot;11&quot; fill=&quot;#111111&quot;>Only those invited</text>
+
+      <!-- Dr. Smith row -->
+      <circle cx=&quot;66&quot; cy=&quot;260&quot; r=&quot;18&quot; fill=&quot;#F0F0F0&quot;/>
+      <text x=&quot;66&quot; y=&quot;265&quot; text-anchor=&quot;middle&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;#6B7280&quot;>D</text>
+      <text x=&quot;94&quot; y=&quot;256&quot; font-size=&quot;13&quot; font-weight=&quot;500&quot; fill=&quot;#111111&quot;>Dr. Smith</text>
+      <text x=&quot;94&quot; y=&quot;272&quot; font-size=&quot;11&quot; fill=&quot;#9CA3AF&quot;>(you)</text>
+      <text x=&quot;416&quot; y=&quot;262&quot; text-anchor=&quot;end&quot; font-size=&quot;11&quot; fill=&quot;#9CA3AF&quot;>Owner</text>
+
+      <!-- Privacy notice -->
+      <rect x=&quot;48&quot; y=&quot;290&quot; width=&quot;384&quot; height=&quot;68&quot; rx=&quot;10&quot; fill=&quot;#F9FAFB&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+      <circle cx=&quot;68&quot; cy=&quot;316&quot; r=&quot;8&quot; fill=&quot;none&quot; stroke=&quot;#6B7280&quot; stroke-width=&quot;1.2&quot;/>
+      <text x=&quot;68&quot; y=&quot;320&quot; text-anchor=&quot;middle&quot; font-size=&quot;9&quot; fill=&quot;#6B7280&quot;>i</text>
+      <text x=&quot;84&quot; y=&quot;312&quot; font-size=&quot;11&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>This report may include personal information</text>
+      <text x=&quot;84&quot; y=&quot;328&quot; font-size=&quot;10&quot; fill=&quot;#9CA3AF&quot;>All report contents are visible to recipients.</text>
+      <text x=&quot;84&quot; y=&quot;342&quot; font-size=&quot;10&quot; fill=&quot;#9CA3AF&quot;>Enable PIN protection for added security.</text>
+
+      <!-- PIN Protection row -->
+      <text x=&quot;48&quot; y=&quot;388&quot; font-size=&quot;13&quot; font-weight=&quot;600&quot; fill=&quot;#111111&quot;>PIN Protection</text>
+      <!-- Toggle OFF -->
+      <g class=&quot;pin-off&quot;>
+        <rect x=&quot;372&quot; y=&quot;376&quot; width=&quot;44&quot; height=&quot;24&quot; rx=&quot;12&quot; fill=&quot;#E5E7EB&quot;/>
+        <circle cx=&quot;384&quot; cy=&quot;388&quot; r=&quot;9&quot; fill=&quot;white&quot;/>
+      </g>
+      <!-- Toggle ON -->
+      <g class=&quot;pin-on&quot;>
+        <rect x=&quot;372&quot; y=&quot;376&quot; width=&quot;44&quot; height=&quot;24&quot; rx=&quot;12&quot; fill=&quot;#0EA5E9&quot;/>
+        <circle cx=&quot;408&quot; cy=&quot;388&quot; r=&quot;9&quot; fill=&quot;white&quot;/>
+      </g>
+
+      <line x1=&quot;48&quot; y1=&quot;408&quot; x2=&quot;432&quot; y2=&quot;408&quot; stroke=&quot;#F0F0F0&quot; stroke-width=&quot;1&quot;/>
+
+      <!-- Share icons -->
+      <circle cx=&quot;76&quot; cy=&quot;440&quot; r=&quot;22&quot; fill=&quot;white&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+      <!-- WhatsApp -->
+      <circle cx=&quot;76&quot; cy=&quot;440&quot; r=&quot;10&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.2&quot;/>
+      <path d=&quot;M 72 436 Q 76 432 80 436 Q 84 440 80 444 L 78 445 L 74 443 L 72 445 Q 68 440 72 436Z&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1&quot;/>
+
+      <circle cx=&quot;136&quot; cy=&quot;440&quot; r=&quot;22&quot; fill=&quot;white&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+      <!-- WeChat dots -->
+      <circle cx=&quot;132&quot; cy=&quot;438&quot; r=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.2&quot;/>
+      <circle cx=&quot;140&quot; cy=&quot;442&quot; r=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1.2&quot;/>
+
+      <circle cx=&quot;196&quot; cy=&quot;440&quot; r=&quot;22&quot; fill=&quot;white&quot; stroke=&quot;#E5E7EB&quot; stroke-width=&quot;1&quot;/>
+      <!-- QR -->
+      <rect x=&quot;188&quot; y=&quot;432&quot; width=&quot;8&quot; height=&quot;8&quot; rx=&quot;1&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1&quot;/>
+      <rect x=&quot;198&quot; y=&quot;432&quot; width=&quot;8&quot; height=&quot;8&quot; rx=&quot;1&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1&quot;/>
+      <rect x=&quot;188&quot; y=&quot;442&quot; width=&quot;8&quot; height=&quot;8&quot; rx=&quot;1&quot; fill=&quot;none&quot; stroke=&quot;#9CA3AF&quot; stroke-width=&quot;1&quot;/>
+      <rect x=&quot;200&quot; y=&quot;444&quot; width=&quot;2&quot; height=&quot;2&quot; fill=&quot;#9CA3AF&quot;/>
+      <rect x=&quot;204&quot; y=&quot;444&quot; width=&quot;2&quot; height=&quot;2&quot; fill=&quot;#9CA3AF&quot;/>
+      <rect x=&quot;200&quot; y=&quot;448&quot; width=&quot;2&quot; height=&quot;2&quot; fill=&quot;#9CA3AF&quot;/>
+
+      <!-- Copy link CTA -->
+      <g class=&quot;cta-pulse&quot;>
+        <rect x=&quot;276&quot; y=&quot;420&quot; width=&quot;160&quot; height=&quot;42&quot; rx=&quot;21&quot; fill=&quot;#0EA5E9&quot;/>
+        <!-- Link icon -->
+        <path d=&quot;M 298 441 Q 302 437 307 441 Q 311 437 315 441 M 305 437 L 309 437&quot; stroke=&quot;white&quot; stroke-width=&quot;1.8&quot; fill=&quot;none&quot; stroke-linecap=&quot;round&quot;/>
+        <text x=&quot;375&quot; y=&quot;446&quot; text-anchor=&quot;middle&quot; font-size=&quot;12&quot; font-weight=&quot;600&quot; fill=&quot;white&quot;>Copy link</text>
+      </g>
+    </g>
+  </g>
+
+</svg>
+</div>
+</body>
+</html>
+"
+  width="100%"
+  height="100%"
+  scrolling="no"
+  frameborder="0"
+  style="border:0; display:block; width: 100%; height: 100%; min-height: 100vh; overflow:hidden;"
+  loading="lazy"
+  title="Patient Report">
+</iframe>
