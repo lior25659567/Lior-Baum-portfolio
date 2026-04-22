@@ -21,16 +21,40 @@
           "fit": "contain",
           "wrapperBg": false,
           "embedUrl": "",
-          "src": "",
+          "src": "/case-studies/project-1776628169716/img-43iovghrb4.png",
           "caption": "An AI-first design system",
           "isVideo": false,
           "isGif": false,
           "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-acdebrcl0.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-2zdylg6pe8.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
         }
       ],
       "gridCols": 1,
-      "imageDisplayMode": "grid",
-      "splitRatio": 50
+      "imageDisplayMode": "carousel",
+      "splitRatio": 40,
+      "imageCarouselFit": "contain",
+      "imageCarouselInterval": 1500
     },
     {
       "type": "problem",
