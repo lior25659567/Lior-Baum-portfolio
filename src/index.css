@@ -61,13 +61,17 @@
   --ls-heading: -0.02em;
   --ls-label: 0.15em;
   
-  /* Section spacing */
+  /* Section spacing — fluid with clamp() so values interpolate smoothly
+     from mobile through desktop instead of stepping at each breakpoint.
+     Floor/ceiling are anchored so sizes never get cramped or excessive.
+     Media-query overrides further down adjust only spacing-sm/md on
+     small phones, and bump everything at ≥1921px ultrawide. */
   --spacing-xs: 0.5rem;
   --spacing-sm: 0.75rem;
-  --spacing-md: 1.5rem;
-  --spacing-lg: 3rem;
-  --spacing-xl: 5rem;
-  --spacing-2xl: 7rem;
+  --spacing-md: clamp(1rem, 0.85rem + 0.4vw, 1.5rem);
+  --spacing-lg: clamp(1.5rem, 1.15rem + 1.5vw, 3rem);
+  --spacing-xl: clamp(2rem, 1.3rem + 3vw, 5rem);
+  --spacing-2xl: clamp(3rem, 2rem + 4vw, 7rem);
   
   /* Container widths */
   --container-2xl: 1800px;
@@ -106,7 +110,8 @@
   --accent-graphite: #c9c9c9;
 }
 
-/* 1920px+ - Large Desktop */
+/* 1920px+ — Large Desktop ultrawide bump. Gives ultrawide viewports a
+   touch more breathing room than the default clamp() ceilings. */
 @media (min-width: 1921px) {
   :root {
     --spacing-lg: 3.5rem;
@@ -116,52 +121,11 @@
   }
 }
 
-/* 1440px */
-@media (max-width: 1440px) {
-  :root {
-    --spacing-lg: 2.5rem;
-    --spacing-xl: 4.5rem;
-    --spacing-2xl: 6rem;
-  }
-}
-
-/* 1200px */
-@media (max-width: 1200px) {
-  :root {
-    --spacing-lg: 2.25rem;
-    --spacing-xl: 3.5rem;
-    --spacing-2xl: 5rem;
-  }
-}
-
-/* 1024px - Tablet */
-@media (max-width: 1024px) {
-  :root {
-    --spacing-md: 1.25rem;
-    --spacing-lg: 2rem;
-    --spacing-xl: 3rem;
-    --spacing-2xl: 4rem;
-  }
-}
-
-/* 768px - Mobile */
-@media (max-width: 768px) {
-  :root {
-    --spacing-md: 1.25rem;
-    --spacing-lg: 1.75rem;
-    --spacing-xl: 2.5rem;
-    --spacing-2xl: 3.5rem;
-  }
-}
-
-/* 480px - Small Mobile */
+/* 480px — tighter spacing-sm on very small phones. The lg/xl/2xl/md
+   already interpolate down via clamp(); only sm needs a dedicated floor. */
 @media (max-width: 480px) {
   :root {
     --spacing-sm: 0.625rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
-    --spacing-2xl: 3rem;
   }
 }
 

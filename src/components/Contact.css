@@ -1,5 +1,5 @@
 .contact {
-  padding: var(--spacing-xl) 3rem;
+  padding: var(--spacing-xl) var(--spacing-lg);
   min-height: 70vh;
   display: flex;
   align-items: center;

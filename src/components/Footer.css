@@ -239,7 +239,7 @@
 /* 768px - Mobile */
 @media (max-width: 768px) {
   .footer {
-    padding: 3.5rem var(--spacing-md) 2rem;
+    padding: var(--spacing-xl) var(--spacing-md) var(--spacing-lg);
   }
 
   .footer-cta-wrapper {
