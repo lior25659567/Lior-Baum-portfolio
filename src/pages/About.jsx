@@ -392,7 +392,7 @@ const About = () => {
             )}
 
             <div className="bio-cta">
-              <AnimatedButton href={`mailto:${about.email || 'lior@example.com'}`} variant="primary" icon="→">
+              <AnimatedButton href={`mailto:${about.email || 'lior@example.com'}`} variant="outline" icon="→">
                 Get in touch
               </AnimatedButton>
             </div>
