@@ -106,13 +106,20 @@
   --accent-graphite: #c9c9c9;
 }
 
-/* 1920px+ - Large Desktop */
-@media (min-width: 1921px) {
+/* 1920px+ — Large Desktop / 4K
+   Wider content rails + denser vertical padding. On ultra-wide screens the
+   old spacing-xl (6rem × 18px base = 108px) was visually too airy, and the
+   1600px container felt narrow for the viewport. Pull padding in and push
+   max-widths out so content owns the screen. */
+@media (min-width: 1920px) {
   :root {
-    --spacing-lg: 3.5rem;
-    --spacing-xl: 6rem;
-    --spacing-2xl: 8rem;
-    --container-xl: 1600px;
+    --spacing-md: 1.35rem;
+    --spacing-lg: 2.75rem;
+    --spacing-xl: 4rem;       /* was 6rem (~108px) → 72px at 18px base */
+    --spacing-2xl: 5.5rem;    /* was 8rem (~144px) → 99px at 18px base */
+    --container-lg: 1400px;
+    --container-xl: 1760px;
+    --container-2xl: 1920px;
   }
 }
 
@@ -178,7 +185,7 @@ html {
   max-width: 100%;
 }
 
-@media (min-width: 1921px) {
+@media (min-width: 1920px) {
   html { font-size: 18px; }
 }
 
@@ -264,7 +271,7 @@ img {
   padding: 0 var(--spacing-lg);
 }
 
-@media (min-width: 1921px) {
+@media (min-width: 1920px) {
   .container {
     max-width: var(--container-2xl);
     padding: 0 var(--spacing-xl);

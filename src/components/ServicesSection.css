@@ -159,7 +159,7 @@
 /* Responsive */
 
 /* 1920px+ - Large Desktop */
-@media (min-width: 1921px) {
+@media (min-width: 1920px) {
   .services-section-container {
     max-width: var(--container-2xl);
     padding: 0 var(--spacing-xl);

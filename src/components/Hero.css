@@ -753,10 +753,10 @@
 }
 
 /* 1920px+ — Large desktop */
-@media (min-width: 1921px) {
+@media (min-width: 1920px) {
   .hero-container {
     max-width: var(--container-2xl);
-    padding: clamp(130px, 16vh, 200px) var(--spacing-xl) clamp(60px, 7vh, 100px);
+    padding: clamp(96px, 11vh, 140px) var(--spacing-xl) clamp(40px, 4.5vh, 72px);
   }
 
   .hero-3d-wrap          { width: min(560px, 90%); }

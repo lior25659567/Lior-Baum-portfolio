@@ -5062,7 +5062,7 @@
 /* Responsive */
 
 /* 1920px+ - Large Desktop */
-@media (min-width: 1921px) {
+@media (min-width: 1920px) {
   .projects-container {
     max-width: var(--container-2xl);
     padding: 0 var(--spacing-xl);

@@ -121,7 +121,7 @@
 /* Responsive */
 
 /* 1920px+ - Large Desktop */
-@media (min-width: 1921px) {
+@media (min-width: 1920px) {
   .animated-btn {
     padding: var(--spacing-sm) var(--spacing-lg);
     font-size: var(--text-body);

@@ -103,7 +103,7 @@
 }
 
 /* 1920px+ - Large Desktop */
-@media (min-width: 1921px) {
+@media (min-width: 1920px) {
   .contact {
     padding: var(--spacing-2xl) var(--spacing-xl);
   }
