@@ -1660,8 +1660,8 @@ body.case-study-active .footer {
   gap: 2rem;
   grid-auto-rows: 1fr;
   flex: 1;
-  overflow: visible;
   overflow: hidden;
+  min-height: 0;
 }
 
 .goals-grid .goal-item {
@@ -1730,7 +1730,10 @@ body.case-study-active .footer {
   color: var(--color-text-muted);
 }
 
-/* Goals slide: optional goals section & KPIs section (remove/add in edit mode) */
+/* Goals slide: optional goals section & KPIs section (remove/add in edit
+   mode). The outer wrapper is the fit target — .slide-goals-content inside
+   applies a --fit-scale that shrinks when content exceeds the available
+   height (see the useEffect in CaseStudy.jsx). No scrollbar ever. */
 .slide-goals .goals-cards-section-wrapper,
 .slide-goals .kpis-section-wrapper {
   position: relative;
@@ -1738,8 +1741,13 @@ body.case-study-active .footer {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: visible;
-  overflow: auto;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.slide-goals .goals-cards-section,
+.slide-goals .kpis-section {
+  zoom: var(--fit-scale, 1);
 }
 
 .slide-goals .goals-cards-section-wrapper {

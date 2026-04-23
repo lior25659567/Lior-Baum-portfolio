@@ -1165,6 +1165,40 @@ const CaseStudy = () => {
     currentScaleRef.current = baseFitScaleRef.current || 1;
   }, [currentSlide]);
 
+  // ── Goals-slide auto-shrink ──────────────────────────────────────────────
+  // When a .slide-goals has more content than can fit the viewport, scale
+  // the inner cards proportionally via a --fit-scale CSS var so no internal
+  // scrollbar ever appears. Runs whenever the active slide or project data
+  // changes; ResizeObserver handles viewport resize. No-op when content fits.
+  useEffect(() => {
+    const slides = document.querySelectorAll('.slide-goals');
+    if (!slides.length) return;
+    const apply = () => {
+      slides.forEach((slideEl) => {
+        const wrappers = slideEl.querySelectorAll('.goals-cards-section-wrapper, .kpis-section-wrapper');
+        wrappers.forEach((w) => {
+          const inner = w.querySelector('.goals-cards-section, .kpis-section');
+          if (inner) inner.style.setProperty('--fit-scale', '1');
+        });
+        // Force reflow so we read natural (unscaled) measurements.
+        void slideEl.offsetHeight;
+        wrappers.forEach((w) => {
+          const inner = w.querySelector('.goals-cards-section, .kpis-section');
+          if (!inner) return;
+          const avail = w.clientHeight;
+          const needed = inner.scrollHeight;
+          if (needed <= avail + 1) return;
+          const scale = Math.max(0.55, (avail / needed) * 0.98);
+          inner.style.setProperty('--fit-scale', String(scale));
+        });
+      });
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    slides.forEach((s) => ro.observe(s));
+    return () => ro.disconnect();
+  }, [currentSlide, project]);
+
   // Track if we've loaded initial data (to avoid saving on first load)
   const hasLoadedRef = useRef(false);
   const saveTimeoutRef = useRef(null);
