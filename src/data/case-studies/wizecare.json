@@ -160,7 +160,7 @@
       "goalsCardsTitle": "Goals",
       "gridColumns": 2,
       "cardHeight": "100",
-      "kpisGridColumns": 4,
+      "kpisGridColumns": 2,
       "showKpisSection": true,
       "goalsCardVariant": "minimal"
     },
