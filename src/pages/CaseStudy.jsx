@@ -1126,6 +1126,10 @@ const CaseStudy = () => {
   const [project, setProject] = useState(() => getCaseStudyData(projectId));
   const containerRef = useRef(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+  /* Bumped in `go()` when switching to a different project. Used as the
+     .slides-track key so framer-motion treats the new project's first
+     slide as a fresh mount — no x-tween from the old end position. */
+  const [projectNonce, setProjectNonce] = useState(0);
   const [showTemplates, setShowTemplates] = useState(false);
   const [previewTemplate, setPreviewTemplate] = useState(null);
   const [showBuilder, setShowBuilder] = useState(false);
@@ -5795,6 +5799,9 @@ My instructions: `;
                       const nextId = to.slice('/project/'.length);
                       const data = getCaseStudyData(nextId);
                       if (data) setProject(data);
+                      /* Remount the slide track on project switch so it starts
+                         at x=0 with no tween from the previous end position. */
+                      setProjectNonce(n => n + 1);
                     }
                     setCurrentSlide(0);
                     navigate(to);
@@ -7129,11 +7136,14 @@ My instructions: `;
       >
         <div className="slides-container" onClick={handleSlideAreaClick}>
           <motion.div
-            /* Keyed on projectId so clicking "Next project" remounts the
-               track at x=0 instead of tweening from the old end slide
-               through every new slide on the way back to first. */
-            key={projectId}
+            /* Keyed on projectNonce (bumped in go() on project switch) so
+               the track remounts synchronously in the same React batch
+               as setProject/setCurrentSlide. initial={false} skips the
+               entrance tween; without it framer-motion would animate
+               from its default initial into the new animate target. */
+            key={projectNonce}
             className={`slides-track${isMobileSlide ? ' slides-track--mobile-scaled' : ''}`}
+            initial={false}
             animate={{ x: `-${currentSlide * 100}%` }}
             transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
           >
