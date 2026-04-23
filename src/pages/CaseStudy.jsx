@@ -6504,19 +6504,35 @@ My instructions: `;
     >
       {/* Per-breakpoint slide padding from the edit panel. Mobile-first
           min-width cascade; same selector specificity as CaseStudy.css
-          rules but injected later in document order, so these win. */}
+          rules but injected later in document order, so these win.
+          Horizontal var sets both left+right via .slide's 3-value padding
+          shorthand (top | horizontal | bottom). */}
       <style>{(() => {
+        /* Accept bare numbers (e.g. "120"), numbers with units (e.g. "6rem"),
+           or empty. Invalid/empty → fall back to default so CSS stays valid. */
+        const toCss = (raw, fallback) => {
+          if (raw == null) return fallback;
+          const s = String(raw).trim();
+          if (!s) return fallback;
+          if (/^-?\d+(\.\d+)?$/.test(s)) return `${s}px`;
+          return s;
+        };
         const pad = styles.spacing.slidePad || {};
         const z = (bp) => pad[bp] || {};
         const m = z('mobile'), t = z('tablet'), d = z('desktop'),
               l = z('large'),  u = z('ultrawide'), f = z('fourK');
+        const rule = (x, y, xDef, yDef) => {
+          const xv = toCss(x, xDef);
+          const yv = toCss(y, yDef);
+          return `--slide-pad-x: ${xv}; --slide-pad-top: ${yv}; --slide-pad-bottom: ${yv};`;
+        };
         return `
-          .case-study { --slide-pad-x: ${m.x || '24px'}; --slide-pad-top: ${m.y || '56px'}; --slide-pad-bottom: ${m.y || '56px'}; }
-          @media (min-width: 768px)  { .case-study { --slide-pad-x: ${t.x || '36px'};  --slide-pad-top: ${t.y || '48px'};  --slide-pad-bottom: ${t.y || '48px'};  } }
-          @media (min-width: 1024px) { .case-study { --slide-pad-x: ${d.x || '80px'};  --slide-pad-top: ${d.y || '128px'}; --slide-pad-bottom: ${d.y || '128px'}; } }
-          @media (min-width: 1440px) { .case-study { --slide-pad-x: ${l.x || '64px'};  --slide-pad-top: ${l.y || '96px'};  --slide-pad-bottom: ${l.y || '96px'};  } }
-          @media (min-width: 1920px) { .case-study { --slide-pad-x: ${u.x || '128px'}; --slide-pad-top: ${u.y || '120px'}; --slide-pad-bottom: ${u.y || '120px'}; } }
-          @media (min-width: 2400px) { .case-study { --slide-pad-x: ${f.x || '144px'}; --slide-pad-top: ${f.y || '128px'}; --slide-pad-bottom: ${f.y || '128px'}; } }
+          .case-study { ${rule(m.x, m.y, '24px',  '56px' )} }
+          @media (min-width: 768px)  { .case-study { ${rule(t.x, t.y, '36px',  '48px' )} } }
+          @media (min-width: 1024px) { .case-study { ${rule(d.x, d.y, '80px',  '128px')} } }
+          @media (min-width: 1440px) { .case-study { ${rule(l.x, l.y, '64px',  '96px' )} } }
+          @media (min-width: 1920px) { .case-study { ${rule(u.x, u.y, '128px', '120px')} } }
+          @media (min-width: 2400px) { .case-study { ${rule(f.x, f.y, '144px', '128px')} } }
         `;
       })()}</style>
       {/* Edit Mode Indicator */}

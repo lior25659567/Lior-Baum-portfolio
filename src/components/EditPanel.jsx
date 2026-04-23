@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useEdit } from '../context/EditContext';
 import './EditPanel.css';
 
@@ -18,6 +18,18 @@ const EditPanel = () => {
   } = useEdit();
 
   const [expandedProject, setExpandedProject] = useState(null);
+
+  /* Tracks the viewport width so the per-breakpoint slide-padding editor can
+     highlight which zone is currently live. */
+  const [viewportW, setViewportW] = useState(
+    typeof window === 'undefined' ? 1024 : window.innerWidth
+  );
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onResize = () => setViewportW(window.innerWidth);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   if (!editMode || !showPanel) return null;
 
@@ -374,48 +386,106 @@ const EditPanel = () => {
               />
             </div>
 
-            <h4 style={{ marginTop: '1.5rem' }}>Case Study Slides</h4>
-            <p style={{ fontSize: '0.8rem', opacity: 0.7, marginBottom: '0.75rem' }}>
-              Per-breakpoint padding for every slide in every case study.
-              Horizontal (H) = left/right, Vertical (V) = top/bottom.
+            <h4 style={{ marginTop: '1.5rem', marginBottom: '0.25rem' }}>
+              Case Study Slides — per breakpoint
+            </h4>
+            <p style={{ fontSize: '0.78rem', opacity: 0.7, lineHeight: 1.45, marginBottom: '0.75rem' }}>
+              <strong>H</strong> sets left <em>and</em> right together.
+              <strong> V</strong> sets top <em>and</em> bottom together.
+              Enter a number (defaults to px) or any CSS length (e.g. <code>6rem</code>, <code>4vw</code>).
+              The row highlighted in accent is what your current viewport sees ({viewportW}px).
             </p>
-            {[
-              { id: 'mobile',    label: 'Mobile (0+)',     dx: '24px',  dy: '56px'  },
-              { id: 'tablet',    label: 'Tablet (768+)',   dx: '36px',  dy: '48px'  },
-              { id: 'desktop',   label: 'Desktop (1024+)', dx: '80px',  dy: '128px' },
-              { id: 'large',     label: 'Large (1440+)',   dx: '64px',  dy: '96px'  },
-              { id: 'ultrawide', label: 'Ultrawide (1920+)', dx: '128px', dy: '120px' },
-              { id: 'fourK',     label: '4K (2400+)',      dx: '144px', dy: '128px' },
-            ].map((bp) => {
-              const zone = styles.spacing.slidePad?.[bp.id] || {};
-              const writeZone = (axis, value) => updateStyles('spacing', 'slidePad', {
-                ...(styles.spacing.slidePad || {}),
-                [bp.id]: { ...zone, [axis]: value },
-              });
-              return (
-                <div key={bp.id} style={{ marginBottom: '0.75rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 500, display: 'block', marginBottom: '0.35rem' }}>
-                    {bp.label}
-                  </label>
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <input
-                      type="text"
-                      value={zone.x ?? ''}
-                      onChange={(e) => writeZone('x', e.target.value)}
-                      placeholder={`H ${bp.dx}`}
-                      style={{ flex: 1 }}
-                    />
-                    <input
-                      type="text"
-                      value={zone.y ?? ''}
-                      onChange={(e) => writeZone('y', e.target.value)}
-                      placeholder={`V ${bp.dy}`}
-                      style={{ flex: 1 }}
-                    />
+            {(() => {
+              /* Ordered mobile-first. `min` is inclusive lower bound of the
+                 zone; used to decide which zone the current viewport is in. */
+              const zones = [
+                { id: 'mobile',    label: 'Mobile',     range: '0 – 767',      min: 0,    dx: '24px',  dy: '56px'  },
+                { id: 'tablet',    label: 'Tablet',     range: '768 – 1023',   min: 768,  dx: '36px',  dy: '48px'  },
+                { id: 'desktop',   label: 'Desktop',    range: '1024 – 1439',  min: 1024, dx: '80px',  dy: '128px' },
+                { id: 'large',     label: 'Large',      range: '1440 – 1919',  min: 1440, dx: '64px',  dy: '96px'  },
+                { id: 'ultrawide', label: 'Ultrawide',  range: '1920 – 2399',  min: 1920, dx: '128px', dy: '120px' },
+                { id: 'fourK',     label: '4K',         range: '2400+',        min: 2400, dx: '144px', dy: '128px' },
+              ];
+              const activeId = [...zones].reverse().find((z) => viewportW >= z.min)?.id;
+              return zones.map((bp) => {
+                const zone = styles.spacing.slidePad?.[bp.id] || {};
+                const isActive = bp.id === activeId;
+                const writeZone = (axis, value) => updateStyles('spacing', 'slidePad', {
+                  ...(styles.spacing.slidePad || {}),
+                  [bp.id]: { ...zone, [axis]: value },
+                });
+                const clearZone = () => updateStyles('spacing', 'slidePad', {
+                  ...(styles.spacing.slidePad || {}),
+                  [bp.id]: { x: '', y: '' },
+                });
+                return (
+                  <div
+                    key={bp.id}
+                    style={{
+                      marginBottom: '0.6rem',
+                      padding: '0.6rem 0.75rem',
+                      borderRadius: '6px',
+                      border: isActive ? '1px solid var(--color-accent)' : '1px solid var(--color-border, rgba(255,255,255,0.12))',
+                      background: isActive ? 'color-mix(in srgb, var(--color-accent) 8%, transparent)' : 'transparent',
+                      transition: 'border-color 0.15s, background 0.15s',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.4rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem' }}>
+                        <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{bp.label}</span>
+                        <span style={{ fontSize: '0.72rem', opacity: 0.6 }}>{bp.range}px</span>
+                        {isActive && (
+                          <span style={{ fontSize: '0.65rem', fontWeight: 600, padding: '1px 6px', borderRadius: '4px', background: 'var(--color-accent)', color: '#fff' }}>
+                            LIVE
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={clearZone}
+                        title="Reset to default"
+                        style={{
+                          fontSize: '0.7rem',
+                          opacity: 0.6,
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                          padding: '2px 6px',
+                        }}
+                      >
+                        reset
+                      </button>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                      <label style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                        <span style={{ fontSize: '0.7rem', opacity: 0.65, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                          H (left + right)
+                        </span>
+                        <input
+                          type="text"
+                          value={zone.x ?? ''}
+                          onChange={(e) => writeZone('x', e.target.value)}
+                          placeholder={bp.dx}
+                          inputMode="numeric"
+                        />
+                      </label>
+                      <label style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                        <span style={{ fontSize: '0.7rem', opacity: 0.65, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                          V (top + bottom)
+                        </span>
+                        <input
+                          type="text"
+                          value={zone.y ?? ''}
+                          onChange={(e) => writeZone('y', e.target.value)}
+                          placeholder={bp.dy}
+                          inputMode="numeric"
+                        />
+                      </label>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              });
+            })()}
           </div>
         )}
 
