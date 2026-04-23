@@ -54,7 +54,7 @@
       "imageDisplayMode": "carousel",
       "splitRatio": 40,
       "imageCarouselFit": "contain",
-      "imageCarouselInterval": 1500
+      "imageCarouselInterval": 2500
     },
     {
       "type": "problem",
