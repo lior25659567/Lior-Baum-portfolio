@@ -1280,6 +1280,7 @@ const ProjectCard = ({ project, index, total, editMode, hideCardYear, onImageCha
               title={project.title || 'Embedded content'}
               loading="lazy"
               referrerPolicy="no-referrer"
+              scrolling="no"
             />
           ) : (
             <>

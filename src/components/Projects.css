@@ -146,15 +146,6 @@
   gap: var(--spacing-md);
 }
 
-/* 1600px+ — 3 columns so cards don't grow tall enough on ultrawide
-   viewports to overflow the slide height. Kicks in before the 1921
-   ultrawide rule so the layout reacts smoothly at 1600-1920 too. */
-@media (min-width: 1600px) {
-  .projects-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
 /* Card */
 .project-card.work-grid-project {
   position: relative;
