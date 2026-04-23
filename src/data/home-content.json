@@ -182,7 +182,10 @@
       ],
       "removedIds": [
         "align-technology"
-      ]
+      ],
+      "hideFilter": true,
+      "hideContentYear": true,
+      "hideCardYear": false
     },
     "footer": {
       "line1": "How about",
