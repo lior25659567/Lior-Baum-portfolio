@@ -7,7 +7,81 @@ import { useEdit } from '../context/EditContext';
 import { getCaseStudyData, getCaseStudyDataAsync, saveCaseStudyData, resetCaseStudyData, listSavedCaseStudies, slideTemplates, templateCategories, compressImage, defaultCaseStudies, contactDefaults } from '../data/caseStudyData';
 import { slideTemplateDocs } from '../data/slideTemplateDocs';
 import { IFRAME_FILES } from '../iframes';
+import imageVariantManifest from '../data/case-study-image-variants.json';
 import './CaseStudy.css';
+
+// ─── Responsive media helpers ────────────────────────────────────────────
+// The build pipeline emits:
+//   - <name>.webp + <name>@480.webp / @960.webp siblings (see
+//     scripts/generate-image-variants.mjs; availability recorded in
+//     _variants.json — the only reliable source because very small images
+//     skip variants to avoid upscaling).
+//   - <name>.mp4 + <name>.mobile.mp4 + <name>.poster.webp (see
+//     scripts/compress-videos.js; always produced for every video, so
+//     paths can be derived from the source path without a manifest).
+// Ad-hoc videos uploaded through the dev editor won't have the sibling
+// files yet; `onError` on the rendered element hides the fallback path so
+// the user still sees the underlying media.
+
+function buildResponsiveWebp(src) {
+  if (typeof src !== 'string') return null;
+  const clean = src.split('?')[0].split('#')[0];
+  if (!clean.toLowerCase().endsWith('.webp')) return null;
+  const entry = imageVariantManifest[clean];
+  if (!entry || !Array.isArray(entry.widths) || entry.widths.length < 2) return null;
+  const base = clean.replace(/\.webp$/i, '');
+  const full = entry.full;
+  const srcset = entry.widths
+    .map((w) => (w === full ? `${src} ${w}w` : `${base}@${w}.webp ${w}w`))
+    .join(', ');
+  return { srcSet: srcset, sizes: '(max-width: 767px) 100vw, (max-width: 1440px) 75vw, 1440px' };
+}
+
+function deriveVideoPoster(src) {
+  if (typeof src !== 'string') return null;
+  const m = src.match(/^(.*)\.mp4(\?.*)?$/i);
+  return m ? `${m[1]}.poster.webp` : null;
+}
+
+function deriveMobileVideoSrc(src) {
+  if (typeof src !== 'string') return null;
+  if (/\.mobile\.mp4(\?|$)/i.test(src)) return src;
+  const m = src.match(/^(.*)\.mp4(\?.*)?$/i);
+  return m ? `${m[1]}.mobile.mp4${m[2] || ''}` : null;
+}
+
+// Detect mobile viewport + data-saver network for adaptive media delivery.
+// Re-evaluates on resize/connection change; safe on SSR (returns false).
+function useLowBandwidthMedia() {
+  const [state, setState] = useState(() => {
+    if (typeof window === 'undefined') return { mobile: false, saveData: false, slow: false };
+    const mq = window.matchMedia && window.matchMedia('(max-width: 767px)');
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    return {
+      mobile: !!(mq && mq.matches),
+      saveData: !!(conn && conn.saveData),
+      slow: !!(conn && /^(slow-2g|2g|3g)$/i.test(conn.effectiveType || '')),
+    };
+  });
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 767px)');
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const update = () => setState({
+      mobile: mq.matches,
+      saveData: !!(conn && conn.saveData),
+      slow: !!(conn && /^(slow-2g|2g|3g)$/i.test(conn.effectiveType || '')),
+    });
+    const onMq = () => update();
+    mq.addEventListener ? mq.addEventListener('change', onMq) : mq.addListener(onMq);
+    if (conn && conn.addEventListener) conn.addEventListener('change', update);
+    return () => {
+      mq.removeEventListener ? mq.removeEventListener('change', onMq) : mq.removeListener(onMq);
+      if (conn && conn.removeEventListener) conn.removeEventListener('change', update);
+    };
+  }, []);
+  return state;
+}
 
 // ─────────────────────────────────────────────────────────────────────────
 // LazyVideo: IntersectionObserver-gated <video> with poster + metadata
@@ -44,6 +118,7 @@ function migrateCaseStudyImagePathsToWebp(node) {
 
 const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'lazy' }) => {
   const ref = useRef(null);
+  const { mobile, saveData, slow } = useLowBandwidthMedia();
   // high = current slide (load src + preload auto)
   // nearby = ±1 slide (load src + preload metadata to warm up)
   // lazy = far slides (gate via IntersectionObserver, no preload)
@@ -52,18 +127,42 @@ const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'la
     if (priority !== 'lazy') { setVisible(true); return; }
     const el = ref.current;
     if (!el || visible) return;
+    // Wider rootMargin on mobile so the video starts fetching before the user
+    // swipes in; on desktop 200px is enough to cover typical slide heights.
+    const rootMargin = mobile ? '400px 0px' : '200px 0px';
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => { if (e.isIntersecting) { setVisible(true); io.disconnect(); } });
-    }, { rootMargin: '200px 0px' });
+    }, { rootMargin });
     io.observe(el);
     return () => io.disconnect();
-  }, [visible, priority]);
-  const preload = priority === 'high' ? 'auto' : priority === 'nearby' ? 'metadata' : 'metadata';
+  }, [visible, priority, mobile]);
+  // Prefer the 720p mobile variant on phones or when Save-Data / slow
+  // network is reported. `deriveMobileVideoSrc` returns the sibling path
+  // generated by scripts/compress-videos.js.
+  const useMobile = (mobile || saveData || slow);
+  const playbackSrc = useMobile ? (deriveMobileVideoSrc(src) || src) : src;
+  const effectivePoster = poster || deriveVideoPoster(src) || undefined;
+  const preload = priority === 'high' ? 'auto' : 'metadata';
+  const handleCanPlay = useCallback((e) => {
+    // Safari on iOS occasionally drops autoplay when the src swaps mid-
+    // navigation even with muted+playsInline. Re-issuing play() on
+    // canplay recovers without requiring a user gesture (videos are muted).
+    const el = e.currentTarget;
+    if (el && el.paused) { const p = el.play(); if (p && p.catch) p.catch(() => {}); }
+  }, []);
+  const handleError = useCallback((e) => {
+    // If the mobile variant 404s (e.g. freshly uploaded video without a
+    // sibling .mobile.mp4 yet), fall back to the desktop src once.
+    const el = e.currentTarget;
+    if (useMobile && el && el.src && /\.mobile\.mp4(\?|$)/i.test(el.src) && src) {
+      el.src = src;
+    }
+  }, [useMobile, src]);
   return (
     <video
       ref={ref}
-      src={visible ? src : undefined}
-      poster={poster || undefined}
+      src={visible ? playbackSrc : undefined}
+      poster={effectivePoster}
       preload={preload}
       autoPlay
       loop
@@ -72,6 +171,8 @@ const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'la
       style={style}
       className={className}
       onClick={onClick}
+      onCanPlay={handleCanPlay}
+      onError={handleError}
     />
   );
 });
@@ -1179,6 +1280,10 @@ const CaseStudy = () => {
   const [gitPushStatus, setGitPushStatus] = useState(null); // null | 'pushing' | 'pushed' | 'error'
   const [webpStatus, setWebpStatus] = useState(null); // null | 'running' | 'done' | 'error'
   const [webpSummary, setWebpSummary] = useState(''); // last stdout line (e.g. "converted: 4 files")
+  const [compressVideosStatus, setCompressVideosStatus] = useState(null);
+  const [compressVideosSummary, setCompressVideosSummary] = useState('');
+  const [imgVariantsStatus, setImgVariantsStatus] = useState(null);
+  const [imgVariantsSummary, setImgVariantsSummary] = useState('');
   const [showImportJSON, setShowImportJSON] = useState(false);
   const [importJSONText, setImportJSONText] = useState('');
   const [importError, setImportError] = useState('');
@@ -1284,17 +1389,36 @@ const CaseStudy = () => {
   useEffect(() => {
     const slides = project?.slides;
     if (!slides?.length) return;
-    const targets = [currentSlide + 1, currentSlide + 2].filter((i) => i < slides.length);
+    // Skip prefetching entirely on Save-Data or 2G/3G — burning cellular
+    // data for a slide the user may never reach is worse than the small
+    // nav latency we avoid.
+    const conn = (typeof navigator !== 'undefined'
+      ? (navigator.connection || navigator.mozConnection || navigator.webkitConnection)
+      : null);
+    if (conn && (conn.saveData || /^(slow-2g|2g|3g)$/i.test(conn.effectiveType || ''))) return;
+    const isMobile = typeof window !== 'undefined'
+      && window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
+    // On mobile, only warm 1 slide ahead; on desktop warm 2.
+    const offsets = isMobile ? [1] : [1, 2];
+    const targets = offsets.map((o) => currentSlide + o).filter((i) => i < slides.length);
     const urls = new Set();
+    const videoSrcs = new Set();
+    const collectFromItem = (item) => {
+      if (!item) return;
+      if (typeof item === 'string') { urls.add(item); return; }
+      if (typeof item === 'object') {
+        if (item.src) {
+          if (item.isVideo) videoSrcs.add(item.src);
+          else urls.add(item.src);
+        }
+        if (item.posterSrc) urls.add(item.posterSrc);
+      }
+    };
     const collect = (val) => {
       if (!val) return;
       if (typeof val === 'string') urls.add(val);
-      else if (Array.isArray(val)) {
-        for (const item of val) {
-          if (typeof item === 'string') urls.add(item);
-          else if (item && typeof item === 'object' && item.src) urls.add(item.src);
-        }
-      }
+      else if (Array.isArray(val)) val.forEach(collectFromItem);
+      else collectFromItem(val);
     };
     for (const i of targets) {
       const s = slides[i];
@@ -1305,13 +1429,33 @@ const CaseStudy = () => {
       collect(s.beforeImage);
       collect(s.afterImage);
       collect(s.logo);
+      // Many slide types use the DynamicImages field; look there too.
+      if (Array.isArray(s.dynamicImages)) collect(s.dynamicImages);
+      if (Array.isArray(s.images)) collect(s.images);
+    }
+    // Always also warm video poster frames (tiny, high impact on perceived speed).
+    for (const vsrc of videoSrcs) {
+      const poster = deriveVideoPoster(vsrc);
+      if (poster) urls.add(poster);
     }
     const pool = [];
     for (const url of urls) {
       if (!/\.(png|jpg|jpeg|webp|gif|avif)(\?|$)/i.test(url)) continue;
       const img = new Image();
       try { img.decoding = 'async'; } catch { /* older browsers */ }
-      img.src = url;
+      // Prefer the mobile width variant when available so we're not warming
+      // a 1440w image we'd never actually render on a phone.
+      if (isMobile) {
+        const clean = url.split('?')[0];
+        const entry = imageVariantManifest[clean];
+        if (entry && entry.widths && entry.widths.includes(480)) {
+          img.src = clean.replace(/\.webp$/i, '@480.webp');
+        } else {
+          img.src = url;
+        }
+      } else {
+        img.src = url;
+      }
       pool.push(img);
     }
     /* Keep references alive so the browser doesn't cancel the prefetch if
@@ -2239,6 +2383,96 @@ const CaseStudy = () => {
       window.alert(`WebP conversion failed: ${msg}`);
       setWebpStatus('error');
       setTimeout(() => setWebpStatus(null), 5_000);
+    } finally {
+      clearTimeout(timer);
+    }
+  }, []);
+
+  /* Runs scripts/compress-videos.js via the dev plugin. Produces desktop
+     re-encodes, .mobile.mp4 variants, and .poster.webp frames. Originals
+     backed up under backups/. Long timeout — preset=slow ffmpeg takes
+     minutes across a full library. */
+  const handleCompressVideos = useCallback(async () => {
+    if (!IS_DEV_EDITOR) {
+      window.alert('Video compression only works on the local dev server (npm run dev).');
+      return;
+    }
+    const proceed = window.confirm(
+      'Compress every MP4 under public/case-studies/?\n\n' +
+      '• Re-encodes originals > 2 MB with H.264 CRF 28 + faststart\n' +
+      '• Generates a 720p .mobile.mp4 sibling for every video\n' +
+      '• Generates a .poster.webp first-frame for every video\n' +
+      '• Originals are backed up before rewrite; safe to re-run'
+    );
+    if (!proceed) return;
+    setCompressVideosStatus('running');
+    setCompressVideosSummary('');
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 1_800_000);
+    try {
+      const res = await fetch('/api/compress-videos', { method: 'POST', signal: ctrl.signal });
+      const data = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+      if (data.ok) {
+        const summary = (data.stdout || '')
+          .split('\n')
+          .filter((l) => /^(desktop total|mobile variants|posters generated|failed):/i.test(l.trim()))
+          .map((l) => l.trim())
+          .join(' · ');
+        setCompressVideosStatus('done');
+        setCompressVideosSummary(summary);
+        setTimeout(() => { setCompressVideosStatus(null); setCompressVideosSummary(''); }, 10_000);
+      } else {
+        console.error('[compress-videos] Failed:', data);
+        window.alert(`Video compression failed:\n${data.error || 'unknown error'}`);
+        setCompressVideosStatus('error');
+        setTimeout(() => setCompressVideosStatus(null), 5_000);
+      }
+    } catch (err) {
+      const msg = err.name === 'AbortError' ? 'timed out' : (err.message || 'network error');
+      console.error('[compress-videos] Network/abort:', err);
+      window.alert(`Video compression failed: ${msg}`);
+      setCompressVideosStatus('error');
+      setTimeout(() => setCompressVideosStatus(null), 5_000);
+    } finally {
+      clearTimeout(timer);
+    }
+  }, []);
+
+  /* Runs scripts/generate-image-variants.mjs via the dev plugin. Emits
+     @480/@960 WebP siblings and rewrites src/data/case-study-image-variants.json. */
+  const handleGenerateImageVariants = useCallback(async () => {
+    if (!IS_DEV_EDITOR) {
+      window.alert('Image variant generation only works on the local dev server (npm run dev).');
+      return;
+    }
+    setImgVariantsStatus('running');
+    setImgVariantsSummary('');
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 600_000);
+    try {
+      const res = await fetch('/api/generate-image-variants', { method: 'POST', signal: ctrl.signal });
+      const data = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+      if (data.ok) {
+        const summary = (data.stdout || '')
+          .split('\n')
+          .filter((l) => /^(Generated|Manifest):/i.test(l.trim()))
+          .map((l) => l.trim())
+          .join(' · ');
+        setImgVariantsStatus('done');
+        setImgVariantsSummary(summary);
+        setTimeout(() => { setImgVariantsStatus(null); setImgVariantsSummary(''); }, 10_000);
+      } else {
+        console.error('[image-variants] Failed:', data);
+        window.alert(`Image variant generation failed:\n${data.error || 'unknown error'}`);
+        setImgVariantsStatus('error');
+        setTimeout(() => setImgVariantsStatus(null), 5_000);
+      }
+    } catch (err) {
+      const msg = err.name === 'AbortError' ? 'timed out' : (err.message || 'network error');
+      console.error('[image-variants] Network/abort:', err);
+      window.alert(`Image variant generation failed: ${msg}`);
+      setImgVariantsStatus('error');
+      setTimeout(() => setImgVariantsStatus(null), 5_000);
     } finally {
       clearTimeout(timer);
     }
@@ -3920,6 +4154,7 @@ My instructions: `;
                           ) : (
                             <img
                               src={imgData.src}
+                              {...(buildResponsiveWebp(imgData.src) || {})}
                               alt={`Image ${imgIndex + 1}`}
                               loading={imgLoading}
                               decoding="async"
@@ -4167,6 +4402,7 @@ My instructions: `;
                       ) : (
                         <img
                           src={imgData.src}
+                          {...(buildResponsiveWebp(imgData.src) || {})}
                           alt={imgData.caption || `Image ${imgIndex + 1}`}
                           loading={Math.abs((slideIndex ?? 0) - (currentSlideRef.current ?? 0)) <= 1 ? 'eager' : 'lazy'}
                           decoding="async"
@@ -7422,6 +7658,34 @@ My instructions: `;
                           : webpStatus === 'error'
                             ? '⚠ Error'
                             : '🖼 WebP'}
+                    </button>
+                    <button
+                      className={`slide-sorter-webp${imgVariantsStatus ? ` webp-${imgVariantsStatus}` : ''}`}
+                      onClick={handleGenerateImageVariants}
+                      disabled={imgVariantsStatus === 'running'}
+                      title={imgVariantsSummary || 'Generate @480/@960 responsive WebP variants + manifest (safe, idempotent)'}
+                    >
+                      {imgVariantsStatus === 'running'
+                        ? '⟳ Resizing…'
+                        : imgVariantsStatus === 'done'
+                          ? (imgVariantsSummary ? `✓ ${imgVariantsSummary}` : '✓ Variants')
+                          : imgVariantsStatus === 'error'
+                            ? '⚠ Error'
+                            : '📐 Variants'}
+                    </button>
+                    <button
+                      className={`slide-sorter-webp${compressVideosStatus ? ` webp-${compressVideosStatus}` : ''}`}
+                      onClick={handleCompressVideos}
+                      disabled={compressVideosStatus === 'running'}
+                      title={compressVideosSummary || 'Compress MP4s + generate .mobile.mp4 + .poster.webp (long-running, originals backed up)'}
+                    >
+                      {compressVideosStatus === 'running'
+                        ? '⟳ Encoding…'
+                        : compressVideosStatus === 'done'
+                          ? (compressVideosSummary ? `✓ ${compressVideosSummary}` : '✓ Videos')
+                          : compressVideosStatus === 'error'
+                            ? '⚠ Error'
+                            : '🎬 Videos'}
                     </button>
                   </>
                 )}

@@ -1,8 +1,18 @@
 #!/usr/bin/env node
-// Compresses every mp4 under public/case-studies/ above SIZE_THRESHOLD_MB
-// in-place with h.264 + CRF 28. Filenames stay the same, so JSON references
-// keep working. Run: `node scripts/compress-videos.js`
-// Dry run (no writes): `node scripts/compress-videos.js --dry`
+// Video media pipeline for public/case-studies/*.mp4.
+//
+//   1. Desktop re-encode (in-place, H.264 CRF 28, +faststart) — only when the
+//      source is > SIZE_THRESHOLD_MB and the result is meaningfully smaller.
+//   2. Mobile variant `<name>.mobile.mp4` (720p cap, CRF 30, aac 64k) — for
+//      every video, so phones on cellular download ~1/3 the bytes.
+//   3. Poster frame `<name>.poster.webp` (first frame @ q80) — for every
+//      video, so the slide has an instant preview instead of a blank frame.
+//
+// Originals are copied into backups/case-studies-videos-<ts>/ before desktop
+// re-encode. Mobile + poster steps never touch the original.
+//
+// Run: node scripts/compress-videos.js
+// Dry: node scripts/compress-videos.js --dry
 
 import fs from 'fs';
 import path from 'path';
@@ -10,17 +20,24 @@ import { spawnSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(__dirname, '..', 'public', 'case-studies');
+const REPO_ROOT = path.resolve(__dirname, '..');
+const ROOT = path.join(REPO_ROOT, 'public', 'case-studies');
 const SIZE_THRESHOLD_MB = 2;
-const CRF = 28;
+const CRF_DESKTOP = 28;
+const CRF_MOBILE = 30;
 const PRESET = 'slow';
 const DRY = process.argv.includes('--dry');
+
+const isMobileVariant = (f) => /\.mobile\.mp4$/i.test(f);
+const isPosterFile = (f) => /\.poster\.webp$/i.test(f);
 
 function walk(dir, acc = []) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) walk(full, acc);
-    else if (entry.isFile() && entry.name.toLowerCase().endsWith('.mp4')) acc.push(full);
+    else if (entry.isFile() && entry.name.toLowerCase().endsWith('.mp4') && !isMobileVariant(entry.name)) {
+      acc.push(full);
+    }
   }
   return acc;
 }
@@ -29,26 +46,52 @@ function fmtMB(bytes) {
   return (bytes / 1024 / 1024).toFixed(2) + ' MB';
 }
 
-function compress(file) {
-  const tmp = file + '.compressing.mp4';
-  const args = [
-    '-y',
-    '-i', file,
-    '-c:v', 'libx264',
-    '-crf', String(CRF),
-    '-preset', PRESET,
-    '-pix_fmt', 'yuv420p',
-    '-movflags', '+faststart',
-    '-c:a', 'aac',
-    '-b:a', '96k',
-    tmp,
-  ];
-  const result = spawnSync('ffmpeg', args, { stdio: ['ignore', 'ignore', 'pipe'] });
+function run(cmd, args) {
+  const result = spawnSync(cmd, args, { stdio: ['ignore', 'ignore', 'pipe'] });
   if (result.status !== 0) {
-    if (fs.existsSync(tmp)) fs.unlinkSync(tmp);
-    throw new Error(result.stderr?.toString().trim().split('\n').slice(-3).join(' | ') || 'ffmpeg failed');
+    const tail = result.stderr?.toString().trim().split('\n').slice(-3).join(' | ') || `${cmd} failed`;
+    throw new Error(tail);
   }
+}
+
+function compressDesktop(file) {
+  const tmp = file + '.compressing.mp4';
+  run('ffmpeg', [
+    '-y', '-i', file,
+    '-c:v', 'libx264', '-crf', String(CRF_DESKTOP), '-preset', PRESET,
+    '-pix_fmt', 'yuv420p', '-movflags', '+faststart',
+    '-c:a', 'aac', '-b:a', '96k',
+    tmp,
+  ]);
   return tmp;
+}
+
+function buildMobile(file, outPath) {
+  run('ffmpeg', [
+    '-y', '-i', file,
+    '-vf', "scale='min(1280,iw)':'-2'",
+    '-c:v', 'libx264', '-crf', String(CRF_MOBILE), '-preset', PRESET,
+    '-pix_fmt', 'yuv420p', '-movflags', '+faststart',
+    '-c:a', 'aac', '-b:a', '64k', '-ac', '2',
+    outPath,
+  ]);
+}
+
+function buildPoster(file, outPath) {
+  const tmpPng = outPath + '.tmp.png';
+  try {
+    run('ffmpeg', ['-y', '-ss', '0.1', '-i', file, '-frames:v', '1', tmpPng]);
+    run('cwebp', ['-q', '80', '-quiet', tmpPng, '-o', outPath]);
+  } finally {
+    if (fs.existsSync(tmpPng)) fs.unlinkSync(tmpPng);
+  }
+}
+
+function backupOriginal(file, backupDir) {
+  const rel = path.relative(ROOT, file);
+  const dest = path.join(backupDir, rel);
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(file, dest);
 }
 
 if (!fs.existsSync(ROOT)) {
@@ -56,53 +99,91 @@ if (!fs.existsSync(ROOT)) {
   process.exit(1);
 }
 
-const files = walk(ROOT).filter((f) => fs.statSync(f).size > SIZE_THRESHOLD_MB * 1024 * 1024);
-
+const files = walk(ROOT);
 if (files.length === 0) {
-  console.log(`No mp4 files above ${SIZE_THRESHOLD_MB} MB under ${ROOT}`);
+  console.log(`No mp4 files under ${ROOT}`);
   process.exit(0);
 }
 
-console.log(`${DRY ? '[dry run] ' : ''}Found ${files.length} mp4 file(s) > ${SIZE_THRESHOLD_MB} MB\n`);
+const ts = new Date().toISOString().replace(/[:.]/g, '-');
+const backupDir = path.join(REPO_ROOT, 'backups', `case-studies-videos-${ts}`);
+
+console.log(`${DRY ? '[dry run] ' : ''}Processing ${files.length} mp4 file(s)\n`);
+if (!DRY) {
+  fs.mkdirSync(backupDir, { recursive: true });
+  console.log(`Backups → ${path.relative(REPO_ROOT, backupDir)}/\n`);
+}
 
 let totalBefore = 0;
 let totalAfter = 0;
-let skipped = 0;
+let mobileGenerated = 0;
+let postersGenerated = 0;
 let failed = 0;
 
 for (const file of files) {
   const rel = path.relative(process.cwd(), file);
   const sizeBefore = fs.statSync(file).size;
   totalBefore += sizeBefore;
-  process.stdout.write(`→ ${rel} (${fmtMB(sizeBefore)})… `);
+  const dir = path.dirname(file);
+  const base = path.basename(file, path.extname(file));
+  const mobilePath = path.join(dir, `${base}.mobile.mp4`);
+  const posterPath = path.join(dir, `${base}.poster.webp`);
+  const needsDesktop = sizeBefore > SIZE_THRESHOLD_MB * 1024 * 1024;
+  const needsMobile = !fs.existsSync(mobilePath);
+  const needsPoster = !fs.existsSync(posterPath);
+
+  process.stdout.write(`→ ${rel} (${fmtMB(sizeBefore)})`);
 
   if (DRY) {
-    console.log('skipped (dry run)');
+    const steps = [
+      needsDesktop ? 'desktop' : null,
+      needsMobile ? 'mobile' : null,
+      needsPoster ? 'poster' : null,
+    ].filter(Boolean);
+    console.log(steps.length ? `  [${steps.join('+')}]` : '  (up to date)');
     totalAfter += sizeBefore;
     continue;
   }
 
+  let sizeAfter = sizeBefore;
   try {
-    const tmp = compress(file);
-    const sizeAfter = fs.statSync(tmp).size;
-    if (sizeAfter >= sizeBefore * 0.95) {
-      fs.unlinkSync(tmp);
-      console.log(`kept original (compressed barely smaller: ${fmtMB(sizeAfter)})`);
-      totalAfter += sizeBefore;
-      skipped++;
-    } else {
-      fs.renameSync(tmp, file);
-      totalAfter += sizeAfter;
-      const pct = ((1 - sizeAfter / sizeBefore) * 100).toFixed(1);
-      console.log(`${fmtMB(sizeAfter)} (−${pct}%)`);
+    if (needsDesktop) {
+      backupOriginal(file, backupDir);
+      const tmp = compressDesktop(file);
+      const compressedSize = fs.statSync(tmp).size;
+      if (compressedSize >= sizeBefore * 0.95) {
+        fs.unlinkSync(tmp);
+        process.stdout.write('  desktop: kept original');
+      } else {
+        fs.renameSync(tmp, file);
+        sizeAfter = compressedSize;
+        const pct = ((1 - compressedSize / sizeBefore) * 100).toFixed(1);
+        process.stdout.write(`  desktop: ${fmtMB(compressedSize)} (−${pct}%)`);
+      }
     }
+
+    if (needsMobile) {
+      buildMobile(file, mobilePath);
+      mobileGenerated++;
+      process.stdout.write(`  mobile: ${fmtMB(fs.statSync(mobilePath).size)}`);
+    }
+
+    if (needsPoster) {
+      buildPoster(file, posterPath);
+      postersGenerated++;
+      process.stdout.write(`  poster: ${fmtMB(fs.statSync(posterPath).size)}`);
+    }
+
+    console.log('');
   } catch (err) {
-    console.log(`FAILED — ${err.message}`);
-    totalAfter += sizeBefore;
+    console.log(`  FAILED — ${err.message}`);
     failed++;
   }
+
+  totalAfter += sizeAfter;
 }
 
-console.log(`\nTotal: ${fmtMB(totalBefore)} → ${fmtMB(totalAfter)}  (saved ${fmtMB(totalBefore - totalAfter)})`);
-if (skipped) console.log(`Skipped (already efficient): ${skipped}`);
+console.log(`\nDesktop total: ${fmtMB(totalBefore)} → ${fmtMB(totalAfter)} (saved ${fmtMB(totalBefore - totalAfter)})`);
+console.log(`Mobile variants generated: ${mobileGenerated}`);
+console.log(`Posters generated: ${postersGenerated}`);
 if (failed) console.log(`Failed: ${failed}`);

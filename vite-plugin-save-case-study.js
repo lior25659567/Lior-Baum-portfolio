@@ -499,6 +499,74 @@ export function saveCaseStudyPlugin() {
         return { stdout: result.stdout, stderr: result.stderr, elapsedMs };
       }));
 
+      // Runs scripts/compress-videos.js — produces desktop re-encode,
+      // .mobile.mp4, and .poster.webp siblings. Idempotent; originals go
+      // into backups/case-studies-videos-<ts>/. Long timeout because ffmpeg
+      // preset=slow can take minutes across a full library.
+      server.middlewares.use('/api/compress-videos', wrap('/api/compress-videos', async (req) => {
+        assertMethod(req, 'POST');
+        const scriptPath = path.resolve('scripts/compress-videos.js');
+        const startedAt = Date.now();
+        const result = await new Promise((resolve) => {
+          exec(`node ${JSON.stringify(scriptPath)}`, {
+            cwd: path.resolve('.'),
+            timeout: 1_800_000,
+            maxBuffer: 20 * 1024 * 1024,
+            env: { ...process.env },
+          }, (err, stdout, stderr) => resolve({
+            stdout: (stdout || '').trim(),
+            stderr: (stderr || '').trim(),
+            code: err ? (err.code ?? err.signal ?? 1) : 0,
+            killed: !!(err && err.killed),
+          }));
+        });
+        const elapsedMs = Date.now() - startedAt;
+        console.log(`[compress-videos] exit=${result.code} ms=${elapsedMs}`);
+        if (result.code !== 0) {
+          const hint = result.killed ? ' (killed — likely timeout)' : '';
+          const detail = result.stderr || result.stdout || `exit ${result.code}`;
+          const e = new Error(`Video compression failed${hint}: ${detail}`);
+          e.statusCode = 500;
+          e.stderr = result.stderr;
+          e.stdout = result.stdout;
+          throw e;
+        }
+        return { stdout: result.stdout, stderr: result.stderr, elapsedMs };
+      }));
+
+      // Runs scripts/generate-image-variants.mjs — emits @480/@960 webp
+      // siblings + updates src/data/case-study-image-variants.json.
+      server.middlewares.use('/api/generate-image-variants', wrap('/api/generate-image-variants', async (req) => {
+        assertMethod(req, 'POST');
+        const scriptPath = path.resolve('scripts/generate-image-variants.mjs');
+        const startedAt = Date.now();
+        const result = await new Promise((resolve) => {
+          exec(`node ${JSON.stringify(scriptPath)}`, {
+            cwd: path.resolve('.'),
+            timeout: 600_000,
+            maxBuffer: 20 * 1024 * 1024,
+            env: { ...process.env },
+          }, (err, stdout, stderr) => resolve({
+            stdout: (stdout || '').trim(),
+            stderr: (stderr || '').trim(),
+            code: err ? (err.code ?? err.signal ?? 1) : 0,
+            killed: !!(err && err.killed),
+          }));
+        });
+        const elapsedMs = Date.now() - startedAt;
+        console.log(`[image-variants] exit=${result.code} ms=${elapsedMs}`);
+        if (result.code !== 0) {
+          const hint = result.killed ? ' (killed — likely timeout)' : '';
+          const detail = result.stderr || result.stdout || `exit ${result.code}`;
+          const e = new Error(`Image variant generation failed${hint}: ${detail}`);
+          e.statusCode = 500;
+          e.stderr = result.stderr;
+          e.stdout = result.stdout;
+          throw e;
+        }
+        return { stdout: result.stdout, stderr: result.stderr, elapsedMs };
+      }));
+
       // Cheap, always-safe git state snapshot.
       server.middlewares.use('/api/git-status', wrap('/api/git-status', async (req) => {
         assertMethod(req, 'GET');
