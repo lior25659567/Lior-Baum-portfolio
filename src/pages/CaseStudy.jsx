@@ -119,6 +119,20 @@ function migrateCaseStudyImagePathsToWebp(node) {
 const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'lazy' }) => {
   const ref = useRef(null);
   const { mobile, saveData, slow } = useLowBandwidthMedia();
+  // iOS Safari allows autoplay only when the `muted` HTML *attribute* is
+  // present at parse time — `el.muted = true` (what React emits from the
+  // JSX `muted` prop) is not enough. Without this, videos on `.slide-problem`
+  // (and every other LazyVideo) autoplay-fail silently on iPhone and the
+  // user just sees the poster. A ref callback is the earliest point we
+  // can force the attribute before the element is committed to the DOM.
+  const setVideoRef = useCallback((el) => {
+    ref.current = el;
+    if (el) {
+      el.muted = true;
+      if (!el.hasAttribute('muted')) el.setAttribute('muted', '');
+      if (!el.hasAttribute('playsinline')) el.setAttribute('playsinline', '');
+    }
+  }, []);
   // high = current slide (load src + preload auto)
   // nearby = ±1 slide (load src + preload metadata to warm up)
   // lazy = far slides (gate via IntersectionObserver, no preload)
@@ -160,7 +174,7 @@ const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'la
   }, [useMobile, src]);
   return (
     <video
-      ref={ref}
+      ref={setVideoRef}
       src={visible ? playbackSrc : undefined}
       poster={effectivePoster}
       preload={preload}
