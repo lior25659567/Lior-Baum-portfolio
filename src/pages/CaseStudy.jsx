@@ -7129,6 +7129,10 @@ My instructions: `;
       >
         <div className="slides-container" onClick={handleSlideAreaClick}>
           <motion.div
+            /* Keyed on projectId so clicking "Next project" remounts the
+               track at x=0 instead of tweening from the old end slide
+               through every new slide on the way back to first. */
+            key={projectId}
             className={`slides-track${isMobileSlide ? ' slides-track--mobile-scaled' : ''}`}
             animate={{ x: `-${currentSlide * 100}%` }}
             transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
