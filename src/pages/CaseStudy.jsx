@@ -157,13 +157,43 @@ const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'la
   const playbackSrc = useMobile ? (deriveMobileVideoSrc(src) || src) : src;
   const effectivePoster = poster || deriveVideoPoster(src) || undefined;
   const preload = priority === 'high' ? 'auto' : 'metadata';
-  const handleCanPlay = useCallback((e) => {
-    // Safari on iOS occasionally drops autoplay when the src swaps mid-
-    // navigation even with muted+playsInline. Re-issuing play() on
-    // canplay recovers without requiring a user gesture (videos are muted).
-    const el = e.currentTarget;
-    if (el && el.paused) { const p = el.play(); if (p && p.catch) p.catch(() => {}); }
+  // iOS Safari is fussy about autoplay even with muted + playsInline: Low
+  // Power Mode, transformed ancestors (we have one — the zoom-pan-pinch
+  // scaler), and timing races with the autoplay policy check can all leave
+  // the video paused on its poster frame. One `play()` call on `canplay` is
+  // not enough — we retry on every load milestone, whenever the element
+  // becomes `visible`, and whenever it enters the viewport. Each attempt is
+  // cheap (play() on a playing element is a no-op) and swallows the
+  // NotAllowedError so the promise never logs.
+  const tryPlay = useCallback((el) => {
+    if (!el || !el.paused) return;
+    el.muted = true;
+    const p = el.play();
+    if (p && p.catch) p.catch(() => {});
   }, []);
+  const handleCanPlay = useCallback((e) => { tryPlay(e.currentTarget); }, [tryPlay]);
+  const handleLoadedData = useCallback((e) => { tryPlay(e.currentTarget); }, [tryPlay]);
+  // Kick off playback whenever `visible` flips to true — covers the case
+  // where `canplay` already fired (video was preloaded from a prior mount)
+  // and won't fire again, so the existing canplay handler would never run.
+  useEffect(() => {
+    if (!visible) return;
+    const el = ref.current;
+    if (!el) return;
+    tryPlay(el);
+    // One more attempt on the next frame — by then React has committed the
+    // current `src`, the element is in the DOM with all attributes set, and
+    // iOS has had a chance to register it as on-screen.
+    const raf = requestAnimationFrame(() => tryPlay(el));
+    // And a viewport-entry retry, for the zoom-pan-pinch case where the
+    // element is technically in the DOM + playing but iOS paused it because
+    // the transform briefly put it outside the visual viewport.
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) tryPlay(el); });
+    }, { threshold: 0.01 });
+    io.observe(el);
+    return () => { cancelAnimationFrame(raf); io.disconnect(); };
+  }, [visible, tryPlay]);
   const handleError = useCallback((e) => {
     // If the mobile variant 404s (e.g. freshly uploaded video without a
     // sibling .mobile.mp4 yet), fall back to the desktop src once.
@@ -186,6 +216,7 @@ const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'la
       className={className}
       onClick={onClick}
       onCanPlay={handleCanPlay}
+      onLoadedData={handleLoadedData}
       onError={handleError}
     />
   );
