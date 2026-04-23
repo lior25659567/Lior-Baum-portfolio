@@ -217,7 +217,13 @@
     "spacing": {
       "sectionPadding": "6rem",
       "containerMaxWidth": "1400px",
-      "gap": "2rem"
+      "gap": "2rem",
+      "slidePad": {
+        "large": {
+          "x": "",
+          "y": ""
+        }
+      }
     },
     "colors": {
       "accent": "#ff584a",
