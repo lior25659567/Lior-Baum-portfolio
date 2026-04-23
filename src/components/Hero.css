@@ -752,11 +752,12 @@
   .hero-stat-divider { height: 28px; }
 }
 
-/* 1920px+ — Large desktop */
+/* 1920px+ — Large desktop. Horizontal + vertical padding inherit from the
+   default .hero-container rule so they match the 1440 breakpoint exactly.
+   Only the max-width widens and the 3D decoration scales up. */
 @media (min-width: 1920px) {
   .hero-container {
     max-width: var(--container-2xl);
-    padding: clamp(96px, 11vh, 140px) var(--spacing-xl) clamp(40px, 4.5vh, 72px);
   }
 
   .hero-3d-wrap          { width: min(560px, 90%); }

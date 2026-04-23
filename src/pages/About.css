@@ -415,11 +415,12 @@
   color: var(--color-text-muted);
 }
 
-/* 1920px+ - Large Desktop */
+/* 1920px+ - Large Desktop. Horizontal padding + content gap match the
+   1440 breakpoint. Only max-width and a few grid proportions widen. */
 @media (min-width: 1920px) {
   .about-container {
     max-width: var(--container-2xl);
-    padding: 0 var(--spacing-xl);
+    padding: 0 var(--spacing-lg);
   }
 
   .about-hero {
@@ -428,7 +429,7 @@
 
   .about-content {
     grid-template-columns: 2fr 3fr;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
   }
 
   .skills-grid {

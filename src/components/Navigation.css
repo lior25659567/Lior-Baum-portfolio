@@ -256,15 +256,16 @@
 
 /* Responsive */
 
-/* 1920px+ - Large Desktop */
+/* 1920px+ - Large Desktop. Padding + gap match the 1440 breakpoint; the
+   nav container just widens and logo/link typography scale up. */
 @media (min-width: 1920px) {
   .navigation {
-    padding: var(--spacing-sm) var(--spacing-xl);
+    padding: var(--spacing-sm) var(--spacing-lg);
   }
 
   .nav-container {
     max-width: var(--container-2xl);
-    gap: var(--spacing-xl);
+    gap: var(--spacing-md);
   }
 
   .nav-logo img {

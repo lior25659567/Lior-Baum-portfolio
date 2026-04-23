@@ -107,16 +107,15 @@
 }
 
 /* 1920px+ — Large Desktop / 4K
-   Wider content rails + denser vertical padding. On ultra-wide screens the
-   old spacing-xl (6rem × 18px base = 108px) was visually too airy, and the
-   1600px container felt narrow for the viewport. Pull padding in and push
-   max-widths out so content owns the screen. */
+   Adopts the same spacing rhythm as the 1440 breakpoint so sections read
+   consistently across the desktop range. The only bumps at 1920+ are a
+   slightly larger type scale (via the html font-size rule below) and
+   wider max-width containers, so content fills the extra screen width. */
 @media (min-width: 1920px) {
   :root {
-    --spacing-md: 1.35rem;
-    --spacing-lg: 2.75rem;
-    --spacing-xl: 4rem;       /* was 6rem (~108px) → 72px at 18px base */
-    --spacing-2xl: 5.5rem;    /* was 8rem (~144px) → 99px at 18px base */
+    --spacing-lg: 2.5rem;     /* matches 1440 */
+    --spacing-xl: 4.5rem;     /* matches 1440 */
+    --spacing-2xl: 6rem;      /* matches 1440 */
     --container-lg: 1400px;
     --container-xl: 1760px;
     --container-2xl: 1920px;
