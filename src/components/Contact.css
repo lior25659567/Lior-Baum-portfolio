@@ -102,11 +102,10 @@
   to { transform: rotate(360deg); }
 }
 
-/* 1920px+ - Large Desktop. Padding matches 1440 so the rhythm stays
-   consistent across desktop sizes; only max-width + decoration scale. */
-@media (min-width: 1920px) {
+/* 1920px+ - Large Desktop */
+@media (min-width: 1921px) {
   .contact {
-    padding: var(--spacing-xl) var(--spacing-lg);
+    padding: var(--spacing-2xl) var(--spacing-xl);
   }
 
   .contact-container {

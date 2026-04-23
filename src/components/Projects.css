@@ -5061,16 +5061,15 @@
 
 /* Responsive */
 
-/* 1920px+ - Large Desktop. Padding + grid gap match 1440 so the section
-   reads identically; only max-width widens and title type scales up. */
-@media (min-width: 1920px) {
+/* 1920px+ - Large Desktop */
+@media (min-width: 1921px) {
   .projects-container {
     max-width: var(--container-2xl);
-    padding: 0 var(--spacing-lg);
+    padding: 0 var(--spacing-xl);
   }
 
   .projects-grid {
-    gap: var(--spacing-md);
+    gap: var(--spacing-lg);
   }
 
   .project-content-title {

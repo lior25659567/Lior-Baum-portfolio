@@ -156,11 +156,10 @@
 
 /* ========== RESPONSIVE ========== */
 
-/* 1920px+ - Large Desktop. Padding matches the default / 1440 rhythm;
-   only max-width + decoration scale up and CTA gets a small font bump. */
-@media (min-width: 1920px) {
+/* 1920px+ - Large Desktop */
+@media (min-width: 1921px) {
   .footer {
-    padding: var(--spacing-xl) var(--spacing-lg);
+    padding: var(--spacing-2xl) var(--spacing-xl);
   }
 
   .footer-container {
@@ -181,7 +180,7 @@
   }
 
   .footer-bottom {
-    padding-top: var(--spacing-xl);
+    padding-top: var(--spacing-2xl);
   }
 }
 

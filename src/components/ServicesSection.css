@@ -158,12 +158,11 @@
 
 /* Responsive */
 
-/* 1920px+ - Large Desktop. Padding matches 1440; only max-width and
-   headline max-width widen to fit the extra screen space. */
-@media (min-width: 1920px) {
+/* 1920px+ - Large Desktop */
+@media (min-width: 1921px) {
   .services-section-container {
     max-width: var(--container-2xl);
-    padding: 0 var(--spacing-lg);
+    padding: 0 var(--spacing-xl);
   }
 
   .services-headline {

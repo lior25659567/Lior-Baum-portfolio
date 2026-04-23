@@ -106,19 +106,13 @@
   --accent-graphite: #c9c9c9;
 }
 
-/* 1920px+ — Large Desktop / 4K
-   Adopts the same spacing rhythm as the 1440 breakpoint so sections read
-   consistently across the desktop range. The only bumps at 1920+ are a
-   slightly larger type scale (via the html font-size rule below) and
-   wider max-width containers, so content fills the extra screen width. */
-@media (min-width: 1920px) {
+/* 1920px+ - Large Desktop */
+@media (min-width: 1921px) {
   :root {
-    --spacing-lg: 2.5rem;     /* matches 1440 */
-    --spacing-xl: 4.5rem;     /* matches 1440 */
-    --spacing-2xl: 6rem;      /* matches 1440 */
-    --container-lg: 1400px;
-    --container-xl: 1760px;
-    --container-2xl: 1920px;
+    --spacing-lg: 3.5rem;
+    --spacing-xl: 6rem;
+    --spacing-2xl: 8rem;
+    --container-xl: 1600px;
   }
 }
 
@@ -184,7 +178,7 @@ html {
   max-width: 100%;
 }
 
-@media (min-width: 1920px) {
+@media (min-width: 1921px) {
   html { font-size: 18px; }
 }
 
@@ -270,7 +264,7 @@ img {
   padding: 0 var(--spacing-lg);
 }
 
-@media (min-width: 1920px) {
+@media (min-width: 1921px) {
   .container {
     max-width: var(--container-2xl);
     padding: 0 var(--spacing-xl);
