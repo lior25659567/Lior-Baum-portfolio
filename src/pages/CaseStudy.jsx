@@ -9,6 +9,17 @@ import { slideTemplateDocs } from '../data/slideTemplateDocs';
 import { IFRAME_FILES } from '../iframes';
 import './CaseStudy.css';
 
+// All the Save-to-Code / Push-to-Git / Save-All / Save-Image endpoints are
+// Vite dev-plugin middleware (vite-plugin-save-case-study.js). On a static
+// host like Netlify they 404 into the SPA shell, which previous code tried
+// to JSON.parse — producing "Unexpected token '<'" storms. Gate every
+// dev-only write behind this flag.
+const IS_DEV_EDITOR = (() => {
+  try {
+    return !!(import.meta && import.meta.env && import.meta.env.DEV);
+  } catch { return false; }
+})();
+
 // Inline matchMedia hook — avoids adding another dependency.
 // Returns true when the media query matches; listens for changes.
 function useMediaQuery(query) {
@@ -613,8 +624,16 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
 
   // ── before/after state ──
   const [baActiveTab, setBaActiveTab] = useState('before');
+  // Tracks whether the user has revealed the "after" view at least once on this
+  // slide. Drives the one-shot "click After" affordance so returning readers
+  // don't keep seeing the nudge after they already interacted.
+  const [hasRevealedAfter, setHasRevealedAfter] = useState(false);
   const beforeLabel = slide.beforeLabel || 'Before';
   const afterLabel = slide.afterLabel || 'After';
+  // Per-slide toggle: 'pulse' (default) shows the "click After" nudge until the
+  // reader interacts; 'off' turns the nudge off entirely for this slide.
+  const afterNudge = slide.afterNudge === 'off' ? 'off' : 'pulse';
+  const showAfterNudge = afterNudge === 'pulse' && !hasRevealedAfter && baActiveTab === 'before';
 
   // ── tabs (problemSolution) state ──
   const [psEmbedInput, setPsEmbedInput] = useState({ tabIdx: null, draft: '', type: 'figma' });
@@ -734,11 +753,29 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
                   <span className="comparison-mode-label">Style</span>
                   <button type="button" className={`comparison-mode-btn${switcherStyle !== 'flat' ? ' active' : ''}`} onClick={() => updateSlide(index, { switcherStyle: 'pill' })}>Pill</button>
                   <button type="button" className={`comparison-mode-btn${switcherStyle === 'flat' ? ' active' : ''}`} onClick={() => updateSlide(index, { switcherStyle: 'flat' })}>Flat</button>
+                  <span className="comparison-mode-label comparison-mode-label--sep">Nudge</span>
+                  <button type="button" className={`comparison-mode-btn${afterNudge === 'pulse' ? ' active' : ''}`} onClick={() => updateSlide(index, { afterNudge: 'pulse' })}>Pulse</button>
+                  <button type="button" className={`comparison-mode-btn${afterNudge === 'off' ? ' active' : ''}`} onClick={() => updateSlide(index, { afterNudge: 'off' })}>Off</button>
                 </div>
               )}
-              <div className={switcherStyle === 'flat' ? 'comparison-switcher-flat' : 'comparison-switcher'}>
-                <button type="button" className={`${switcherStyle === 'flat' ? 'comparison-tab-flat' : 'comparison-tab'}${baActiveTab === 'before' ? ' active' : ''}`} onClick={() => setBaActiveTab('before')}>{beforeLabel}</button>
-                <button type="button" className={`${switcherStyle === 'flat' ? 'comparison-tab-flat' : 'comparison-tab'}${baActiveTab === 'after' ? ' active' : ''}`} onClick={() => setBaActiveTab('after')}>{afterLabel}</button>
+              <div
+                className={switcherStyle === 'flat' ? 'comparison-switcher-flat' : 'comparison-switcher'}
+                data-after-hint={showAfterNudge ? 'true' : undefined}
+              >
+                <button
+                  type="button"
+                  className={`${switcherStyle === 'flat' ? 'comparison-tab-flat' : 'comparison-tab'}${baActiveTab === 'before' ? ' active' : ''}`}
+                  onClick={() => setBaActiveTab('before')}
+                >
+                  {beforeLabel}
+                </button>
+                <button
+                  type="button"
+                  className={`${switcherStyle === 'flat' ? 'comparison-tab-flat' : 'comparison-tab'}${baActiveTab === 'after' ? ' active' : ''}`}
+                  onClick={() => { setBaActiveTab('after'); setHasRevealedAfter(true); }}
+                >
+                  {afterLabel}
+                </button>
               </div>
               {editMode && (
                 <div className="comparison-label-edit">
@@ -1827,6 +1864,10 @@ const CaseStudy = () => {
     };
 
     const runJob = async ({ filename, base64data, mimeType, isVideo }) => {
+      // Don't even try to POST to the dev API on a static host — it would
+      // hit the SPA fallback and dump a huge HTML "Page not found" per file
+      // into the console. The images stay as data URLs in state/IDB instead.
+      if (!IS_DEV_EDITOR) return;
       try {
         if (isVideo) {
           // Stream video as raw bytes — avoids the 50MB JSON cap and Node
@@ -1838,14 +1879,14 @@ const CaseStudy = () => {
             headers: { 'Content-Type': mimeType || 'application/octet-stream' },
             body: bytes,
           });
-          if (!res.ok) console.warn('[save-video] Failed for', filename, await res.text().catch(() => ''));
+          if (!res.ok) console.warn('[save-video] Failed for', filename, res.status);
         } else {
           const res = await fetch('/api/save-image', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ projectId: pid, filename, base64data }),
           });
-          if (!res.ok) console.warn('[save-image] Failed for', filename, await res.text().catch(() => ''));
+          if (!res.ok) console.warn('[save-image] Failed for', filename, res.status);
         }
       } catch (err) {
         console.warn('[save-media] Failed for', filename, err);
@@ -1870,6 +1911,10 @@ const CaseStudy = () => {
 
   // ── Save to Code (writes to source files via dev API) ──────────
   const handleSaveToCode = useCallback(async () => {
+    if (!IS_DEV_EDITOR) {
+      window.alert('Save to Code only works on the local dev server (npm run dev). Edits on the deployed site live in this browser only — to persist, clone the repo and run locally.');
+      return;
+    }
     try {
       setSaveStatus('saving-code');
       const cleanData = await extractAndSaveMedia(projectId, project);
@@ -1878,7 +1923,10 @@ const CaseStudy = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ projectId, data: cleanData }),
       });
-      const result = await res.json();
+      // Defensive: if a misconfigured proxy returns HTML instead of JSON,
+      // don't let JSON.parse explode — show the user a readable error.
+      const text = await res.text();
+      const result = text.trim().startsWith('{') ? JSON.parse(text) : { ok: false, error: `Server returned non-JSON (${res.status})` };
       if (result.ok) {
         setSaveStatus('saved-code');
         setTimeout(() => setSaveStatus(null), 2500);
@@ -1897,6 +1945,10 @@ const CaseStudy = () => {
   // ── Save All to Code (saves every case study in one go) ────────
   const [saveAllStatus, setSaveAllStatus] = useState(null); // null | 'saving' | 'saved' | 'error'
   const handleSaveAllToCode = useCallback(async () => {
+    if (!IS_DEV_EDITOR) {
+      window.alert('Save All only works on the local dev server (npm run dev). The deployed site can\'t write back to the repo — changes here stay in this browser session.');
+      return;
+    }
     setSaveAllStatus('saving');
     try {
       // Fail fast if the dev plugin is frozen — avoids queueing huge saves
@@ -1928,7 +1980,8 @@ const CaseStudy = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ projectId: pid, data: cleanData }),
           });
-          const result = await res.json();
+          const text = await res.text();
+          const result = text.trim().startsWith('{') ? JSON.parse(text) : { ok: false, error: `Server returned non-JSON (${res.status})` };
           if (!result.ok) {
             console.error(`[save-all] Failed for ${pid}:`, result.error);
             return false;
@@ -1955,6 +2008,10 @@ const CaseStudy = () => {
 
   // ── Git push ──────────────────────────────────────────────────
   const handleGitPush = useCallback(async () => {
+    if (!IS_DEV_EDITOR) {
+      window.alert('Push to Git only works on the local dev server (npm run dev). Run the editor locally, then push from there.');
+      return;
+    }
     setGitPushStatus('pushing');
     const ctrl = new AbortController();
     // Client timeout slightly > server push timeout (180s) so server errors can surface
@@ -5632,69 +5689,72 @@ My instructions: `;
             {slideControls}
             {titleSpacingControl}
             <div className="slide-inner">
-              <h2 className="end-title">
-                <EditableField
-                  value={slide.title}
-                  onChange={(v) => updateSlide(index, { title: v })}
-                />
-              </h2>
-              <p className="end-subtitle">
-                <EditableField
-                  value={slide.subtitle}
-                  onChange={(v) => updateSlide(index, { subtitle: v })}
-                />
-              </p>
-              {(() => {
-                // Next project mirrors the home page project order, so
-                // reordering on Home automatically changes what comes next.
-                const items = content?.projects?.items || [];
-                const removedIds = content?.projects?.removedIds || [];
-                const ordered = items.filter(p => !removedIds.includes(p.id));
-                const curIdx = ordered.findIndex(p => p.id === projectId);
-                const next = ordered.length > 0
-                  ? ordered[((curIdx >= 0 ? curIdx : -1) + 1 + ordered.length) % ordered.length]
-                  : null;
-                // Client-side nav keeps the CaseStudy mounted so the
-                // `case-study-active` body class stays on — without it the
-                // footer would flash during the route transition.
-                //
-                // Resetting slide index + swapping in the next project's sync
-                // data before `navigate()` avoids the flash of the current
-                // project's end slide (currentSlide persists across route
-                // param changes because the component doesn't unmount).
-                const go = (to) => (e) => {
-                  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
-                  e.preventDefault();
-                  if (to.startsWith('/project/')) {
-                    const nextId = to.slice('/project/'.length);
-                    const data = getCaseStudyData(nextId);
-                    if (data) setProject(data);
-                  }
-                  setCurrentSlide(0);
-                  navigate(to);
-                };
-                const nextHref = next ? `/project/${next.id}` : '/';
-                return (
-                  <div className="end-cta-group">
-                    <AnimatedButton
-                      href={nextHref}
-                      onClick={go(nextHref)}
-                      variant="primary"
-                      icon="→"
-                    >
-                      Next project
-                    </AnimatedButton>
-                    <AnimatedButton
-                      href="/"
-                      onClick={go('/')}
-                      variant="outline"
-                      icon="←"
-                    >
-                      Back to home
-                    </AnimatedButton>
-                  </div>
-                );
-              })()}
+              <div className="end-headline">
+                <h2 className="end-title">
+                  <EditableField
+                    value={slide.title}
+                    onChange={(v) => updateSlide(index, { title: v })}
+                  />
+                </h2>
+                <p className="end-subtitle">
+                  <EditableField
+                    value={slide.subtitle}
+                    onChange={(v) => updateSlide(index, { subtitle: v })}
+                  />
+                </p>
+                {(() => {
+                  // Next project mirrors the home page project order, so
+                  // reordering on Home automatically changes what comes next.
+                  const items = content?.projects?.items || [];
+                  const removedIds = content?.projects?.removedIds || [];
+                  const ordered = items.filter(p => !removedIds.includes(p.id));
+                  const curIdx = ordered.findIndex(p => p.id === projectId);
+                  const next = ordered.length > 0
+                    ? ordered[((curIdx >= 0 ? curIdx : -1) + 1 + ordered.length) % ordered.length]
+                    : null;
+                  // Client-side nav keeps the CaseStudy mounted so the
+                  // `case-study-active` body class stays on — without it the
+                  // footer would flash during the route transition.
+                  //
+                  // Resetting slide index + swapping in the next project's
+                  // sync data before `navigate()` avoids the flash of the
+                  // current project's end slide (currentSlide persists
+                  // across route param changes because the component
+                  // doesn't unmount).
+                  const go = (to) => (e) => {
+                    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+                    e.preventDefault();
+                    if (to.startsWith('/project/')) {
+                      const nextId = to.slice('/project/'.length);
+                      const data = getCaseStudyData(nextId);
+                      if (data) setProject(data);
+                    }
+                    setCurrentSlide(0);
+                    navigate(to);
+                  };
+                  const nextHref = next ? `/project/${next.id}` : '/';
+                  return (
+                    <div className="end-cta-group">
+                      <AnimatedButton
+                        href={nextHref}
+                        onClick={go(nextHref)}
+                        variant="primary"
+                        icon="→"
+                      >
+                        Next project
+                      </AnimatedButton>
+                      <AnimatedButton
+                        href="/"
+                        onClick={go('/')}
+                        variant="outline"
+                        icon="←"
+                      >
+                        Back to home
+                      </AnimatedButton>
+                    </div>
+                  );
+                })()}
+              </div>
               {(() => {
                 // Fallback pattern: when a slide-level contact field is undefined
                 // (existing slides that predate the defaults), fall back to the
@@ -6414,9 +6474,11 @@ My instructions: `;
                 <option value="elevated">Cards: Elevated</option>
                 <option value="accent-left">Cards: Accent Left</option>
               </select>
-              <button onClick={handleSaveToCode} className={saveStatus === 'saved-code' ? 'save-code-done' : ''}>
-                {saveStatus === 'saving-code' ? 'Saving...' : saveStatus === 'saved-code' ? '✓ Saved to Code' : saveStatus === 'error-code' ? '✗ Error' : '💾 Save to Code'}
-              </button>
+              {IS_DEV_EDITOR && (
+                <button onClick={handleSaveToCode} className={saveStatus === 'saved-code' ? 'save-code-done' : ''}>
+                  {saveStatus === 'saving-code' ? 'Saving...' : saveStatus === 'saved-code' ? '✓ Saved to Code' : saveStatus === 'error-code' ? '✗ Error' : '💾 Save to Code'}
+                </button>
+              )}
               <button onClick={handleReset}>Reset to Default</button>
               <button onClick={() => { setEditMode(false); setShowPanel(false); }}>Done Editing</button>
             </div>
@@ -7058,22 +7120,26 @@ My instructions: `;
             <div className="slide-sorter-header">
               <span className="slide-sorter-title">Slides ({totalSlides})</span>
               <div className="slide-sorter-actions">
-                <button
-                  className={`slide-sorter-save-all${saveAllStatus ? ` save-all-${saveAllStatus}` : ''}`}
-                  onClick={handleSaveAllToCode}
-                  disabled={saveAllStatus === 'saving'}
-                  title="Save all case studies to code"
-                >
-                  {saveAllStatus === 'saving' ? '⟳ Saving...' : saveAllStatus === 'saved' ? '✓ All Saved' : saveAllStatus === 'error' ? '⚠ Error' : '💾 Save All'}
-                </button>
-                <button
-                  className={`slide-sorter-git-push${gitPushStatus ? ` git-push-${gitPushStatus}` : ''}`}
-                  onClick={handleGitPush}
-                  disabled={gitPushStatus === 'pushing'}
-                  title="Commit & push to git"
-                >
-                  {gitPushStatus === 'pushing' ? '⟳ Pushing...' : gitPushStatus === 'pushed' ? '✓ Pushed' : gitPushStatus === 'error' ? '⚠ Error' : '↑ Push to git'}
-                </button>
+                {IS_DEV_EDITOR && (
+                  <>
+                    <button
+                      className={`slide-sorter-save-all${saveAllStatus ? ` save-all-${saveAllStatus}` : ''}`}
+                      onClick={handleSaveAllToCode}
+                      disabled={saveAllStatus === 'saving'}
+                      title="Save all case studies to code"
+                    >
+                      {saveAllStatus === 'saving' ? '⟳ Saving...' : saveAllStatus === 'saved' ? '✓ All Saved' : saveAllStatus === 'error' ? '⚠ Error' : '💾 Save All'}
+                    </button>
+                    <button
+                      className={`slide-sorter-git-push${gitPushStatus ? ` git-push-${gitPushStatus}` : ''}`}
+                      onClick={handleGitPush}
+                      disabled={gitPushStatus === 'pushing'}
+                      title="Commit & push to git"
+                    >
+                      {gitPushStatus === 'pushing' ? '⟳ Pushing...' : gitPushStatus === 'pushed' ? '✓ Pushed' : gitPushStatus === 'error' ? '⚠ Error' : '↑ Push to git'}
+                    </button>
+                  </>
+                )}
                 <button
                   className="slide-sorter-add"
                   onClick={() => setShowTemplates(true)}

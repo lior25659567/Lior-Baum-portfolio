@@ -2097,6 +2097,21 @@ body.case-study-active .footer {
   gap: var(--slide-title-gap, 1rem);
 }
 
+/* Title + subtitle + CTAs now share a single container so they read as
+   one block. Item-level margins are zeroed and the stack uses a single
+   gap, tightening the space between them. */
+.end-headline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.end-headline .end-title,
+.end-headline .end-subtitle {
+  margin: 0;
+}
+
 .end-title {
   font-family: var(--font-body);
   font-size: var(--text-hero);
@@ -2119,27 +2134,40 @@ body.case-study-active .footer {
   gap: 1.25rem;
   flex-wrap: wrap;
   justify-content: center;
+  margin-top: 0.25rem;
 }
 
 .end-contact-info {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  margin-top: auto;
+  margin-top: 72px;
   padding-bottom: 1rem;
-  margin-top: 2rem;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .end-contact-item {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--color-text-muted);
   text-decoration: none;
   font-size: var(--text-body-sm);
   transition: color 0.2s;
+  /* Items now sit at their natural width (no flex grow) so the visible
+     space between them is exactly the container's `gap`. Earlier the
+     equal-width flex slots meant large empty areas around short labels
+     like "LinkedIn". */
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .end-contact-info { flex-direction: column; }
 }
 
 .end-contact-item:hover {
@@ -9171,6 +9199,69 @@ textarea.editable-field {
 .comparison-tab.active {
   background: var(--color-accent);
   color: #fff;
+}
+
+/* ──────────────────────────────────────────────────────────
+   "Click After" nudge — one-shot pulse that disarms once the
+   reader reveals the After view. Per-slide toggle via
+   `slide.afterNudge` ('pulse' | 'off') controls whether the
+   pulse shows at all.
+   ────────────────────────────────────────────────────────── */
+
+/* Pill variant: tint + pulsing halo on the inactive After button. */
+.comparison-switcher[data-after-hint="true"] .comparison-tab:not(.active):last-child {
+  color: var(--color-accent);
+  font-weight: 600;
+  background: rgba(255, 88, 74, 0.1);
+  animation: comparison-after-pulse 2.2s ease-in-out infinite;
+}
+
+/* Flat variant: brighten the label + pulse a soft underline */
+.comparison-switcher-flat[data-after-hint="true"] .comparison-tab-flat:not(.active):last-child {
+  color: var(--color-accent);
+  font-weight: 600;
+  border-bottom-color: rgba(255, 88, 74, 0.4);
+  animation: comparison-after-pulse-flat 2.2s ease-in-out infinite;
+}
+
+@keyframes comparison-after-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 88, 74, 0.45); }
+  50%      { box-shadow: 0 0 0 8px rgba(255, 88, 74, 0); }
+}
+
+@keyframes comparison-after-pulse-flat {
+  0%, 100% { border-bottom-color: rgba(255, 88, 74, 0.4); }
+  50%      { border-bottom-color: rgba(255, 88, 74, 1); }
+}
+
+/* Content cross-fade when the tab switches — small, quick reward
+   that confirms the click mattered. */
+.comparison-panel {
+  animation: comparison-reveal 0.4s ease-out;
+}
+
+@keyframes comparison-reveal {
+  from { opacity: 0.25; transform: translateY(3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Edit-mode separator label inside the mode control */
+.comparison-mode-label--sep {
+  margin-left: 0.75rem;
+  padding-left: 0.75rem;
+  border-left: 1px solid var(--color-border);
+}
+
+/* Respect user motion preferences: keep the highlight, drop motion. */
+@media (prefers-reduced-motion: reduce) {
+  .comparison-switcher[data-after-hint="true"] .comparison-tab:not(.active):last-child,
+  .comparison-switcher-flat[data-after-hint="true"] .comparison-tab-flat:not(.active):last-child,
+  .comparison-panel {
+    animation: none !important;
+  }
+  .comparison-switcher[data-after-hint="true"] .comparison-tab:not(.active):last-child {
+    box-shadow: 0 0 0 2px rgba(255, 88, 74, 0.5);
+  }
 }
 
 .comparison-panel {

@@ -97,7 +97,7 @@ const DEFAULT_CV = {
   awards: [{ title: '', issuer: '', year: '' }],
   volunteer: '',
   // Layout settings
-  fontSize: 9,         // pt — base font size
+  fontSize: 11,        // pt — base font size (11pt min per CV typography best practice)
   contentWidth: 180,   // mm — content area width inside A4
   showSummary: true,
   showExperience: true,
@@ -183,7 +183,7 @@ const CV_JSON_SCHEMA_REFERENCE = `{
 
   "volunteer": "Description of volunteer work or side projects.",
 
-  "fontSize": 9,
+  "fontSize": 11,
   "contentWidth": 180,
 
   "showSummary": true,
@@ -237,7 +237,7 @@ SCHEMA REFERENCE
   "languages":      [ { "language": "", "level": "" } ],
   "awards":         [ { "title": "", "issuer": "", "year": "" } ],
   "volunteer": "",
-  "fontSize": 9,
+  "fontSize": 11,
   "contentWidth": 180,
   "showSummary": true, "showExperience": true, "showEducation": true,
   "showSkills": true, "showProjects": false, "showCertifications": false,
@@ -252,18 +252,156 @@ WHAT TO DO
 `;
 
 const CV_STYLES = [
-  { id: 'default', label: 'Default' },
-  { id: 'minimal', label: 'Minimal' },
-  { id: 'editorial', label: 'Editorial' },
-  { id: 'minimal-ats', label: 'Minimal ATS' },
-  { id: 'classic', label: 'Classic' },
-  { id: 'modernist', label: 'Modernist' },
+  // Two-column original layout
+  { id: 'default',                label: 'Default' },
+  { id: 'minimal',                label: 'Minimal' },
+  // Editorial-family single-column layout (clean paper flow)
+  { id: 'editorial',              label: 'Editorial — Single' },
+  { id: 'minimal-ats',            label: 'Minimal ATS — Single' },
+  { id: 'classic',                label: 'Classic — Single' },
+  { id: 'modernist',              label: 'Modernist — Single' },
+  // Sidebar layout: left rail with contact + skills, right column content
+  { id: 'editorial-sidebar',      label: 'Editorial — Sidebar' },
+  { id: 'minimal-ats-sidebar',    label: 'Minimal ATS — Sidebar' },
+  { id: 'classic-sidebar',        label: 'Classic — Sidebar' },
+  { id: 'modernist-sidebar',      label: 'Modernist — Sidebar' },
 ];
 
-// The editorial family shares a single-column "paper" layout and differs
-// only in theme variables (colors + fonts). Keep the ids in sync with
-// CV_STYLES above and the CSS in CVBuilder.css.
+// Themes that use the paper-style editorial rendering. Both the single and
+// sidebar layouts share the same theme variables; the layout suffix picks
+// which layout component to render.
 const EDITORIAL_THEMES = new Set(['editorial', 'minimal-ats', 'classic', 'modernist']);
+
+// Split a composite style id ("classic-sidebar") into its theme + layout.
+const parseCvStyle = (styleId) => {
+  if (!styleId) return { theme: 'default', layout: 'default' };
+  if (styleId.endsWith('-sidebar')) {
+    const theme = styleId.slice(0, -'-sidebar'.length);
+    return { theme, layout: EDITORIAL_THEMES.has(theme) ? 'sidebar' : 'default' };
+  }
+  if (EDITORIAL_THEMES.has(styleId)) return { theme: styleId, layout: 'single' };
+  return { theme: styleId, layout: 'default' };
+};
+
+// Measures 1mm in px — mm rendering varies with browser zoom, so we re-check
+// on resize. Falls back to the 96dpi standard if the probe can't run.
+const measurePxPerMm = () => {
+  if (typeof document === 'undefined') return 3.7795;
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:absolute;width:1mm;height:0;top:-9999px;left:-9999px;visibility:hidden;';
+  document.body.appendChild(probe);
+  const w = probe.getBoundingClientRect().width;
+  document.body.removeChild(probe);
+  return w || 3.7795;
+};
+
+// Watches the CV preview and reports how many mm it overflows past 297mm.
+// Drives the overflow badge + the "Fit to Page" auto-shrink. 2mm tolerance
+// swallows sub-pixel rendering noise from the mm→px probe.
+const PAGE_FIT_TOLERANCE_MM = 2;
+const usePageFit = (ref) => {
+  const [overflowMm, setOverflowMm] = useState(0);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let pxPerMm = measurePxPerMm();
+    const update = () => {
+      const pagePx = 297 * pxPerMm;
+      const overflow = Math.max(0, el.scrollHeight - pagePx);
+      setOverflowMm(Math.round(overflow / pxPerMm));
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    const onResize = () => { pxPerMm = measurePxPerMm(); update(); };
+    window.addEventListener('resize', onResize);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', onResize);
+    };
+  });
+  return { overflowMm, fits: overflowMm <= PAGE_FIT_TOLERANCE_MM };
+};
+
+// Map of theme -> { bg, ink, accent } used to tint the style-picker thumbnails.
+const STYLE_THUMB_COLORS = {
+  default:       { bg: '#FFFFFF', ink: '#1A1A1A', accent: '#FF584A' },
+  minimal:       { bg: '#FFFFFF', ink: '#1A1A1A', accent: '#888888' },
+  editorial:     { bg: '#F5F1E8', ink: '#1A1915', accent: '#D97757' },
+  classic:       { bg: '#FAF8F2', ink: '#1A1A2E', accent: '#8B2635' },
+  modernist:     { bg: '#F2EFE8', ink: '#0F0F0F', accent: '#FF4B2B' },
+  'minimal-ats': { bg: '#FFFFFF', ink: '#0A0A0A', accent: '#0A0A0A' },
+};
+
+// Schematic mini-preview that hints at the layout (two-col / single / sidebar)
+// and theme palette. Lets the user tell the 10 styles apart at a glance.
+const StyleTile = ({ id, label, active, onClick }) => {
+  const { theme, layout } = parseCvStyle(id);
+  const colors = STYLE_THUMB_COLORS[theme] || STYLE_THUMB_COLORS.default;
+  const bodyClass = layout === 'sidebar' ? 'is-sidebar' : layout === 'single' ? 'is-single' : 'is-two-col';
+  return (
+    <button type="button" className={`cv-style-tile ${active ? 'active' : ''}`} onClick={onClick} aria-pressed={active}>
+      <div className="cv-style-thumb" style={{ background: colors.bg, color: colors.ink }}>
+        <div className="cv-style-thumb-head">
+          <div className="cv-style-thumb-head-left">
+            <div className="cv-style-thumb-name" style={{ background: colors.ink }} />
+            <div className="cv-style-thumb-tag" style={{ background: colors.accent }} />
+          </div>
+          {layout !== 'sidebar' && (
+            <div className="cv-style-thumb-head-right">
+              <div className="cv-style-thumb-contact" style={{ background: colors.ink }} />
+              <div className="cv-style-thumb-contact" style={{ background: colors.ink }} />
+              <div className="cv-style-thumb-contact" style={{ background: colors.ink }} />
+            </div>
+          )}
+        </div>
+        <div className={`cv-style-thumb-body ${bodyClass}`} style={{ color: colors.ink }}>
+          <div className="cv-style-thumb-col">
+            <div className="cv-style-thumb-line is-title" style={{ background: colors.accent }} />
+            <div className="cv-style-thumb-line" />
+            <div className="cv-style-thumb-line is-mid" />
+            <div className="cv-style-thumb-line is-short" />
+            <div className="cv-style-thumb-line is-title" style={{ background: colors.accent, marginTop: '3%' }} />
+            <div className="cv-style-thumb-line" />
+            <div className="cv-style-thumb-line is-mid" />
+          </div>
+          {layout !== 'single' && (
+            <div className="cv-style-thumb-col">
+              <div className="cv-style-thumb-line is-title" style={{ background: colors.accent }} />
+              <div className="cv-style-thumb-line is-short" />
+              <div className="cv-style-thumb-line is-short" />
+              <div className="cv-style-thumb-line is-title" style={{ background: colors.accent, marginTop: '3%' }} />
+              <div className="cv-style-thumb-line is-short" />
+            </div>
+          )}
+        </div>
+      </div>
+      <span className="cv-style-tile-label">{label}</span>
+    </button>
+  );
+};
+
+// Top-level editor navigation — groups 10 content sections, design controls,
+// section-visibility toggles, and data (JSON/AI) into four panels.
+const PANELS = [
+  { id: 'content',  label: 'Content' },
+  { id: 'design',   label: 'Design' },
+  { id: 'sections', label: 'Sections' },
+  { id: 'data',     label: 'Data' },
+];
+
+const CONTENT_SECTIONS = [
+  { id: 'personal',       label: 'Personal' },
+  { id: 'summary',        label: 'Summary' },
+  { id: 'experience',     label: 'Experience' },
+  { id: 'education',      label: 'Education' },
+  { id: 'skills',         label: 'Skills' },
+  { id: 'projects',       label: 'Projects' },
+  { id: 'certifications', label: 'Certifications' },
+  { id: 'languages',      label: 'Languages' },
+  { id: 'awards',         label: 'Awards' },
+  { id: 'volunteer',      label: 'Volunteer' },
+];
 
 const CVBuilder = () => {
   const [cv, setCv] = useState(() => {
@@ -276,13 +414,16 @@ const CVBuilder = () => {
   const [cvStyle, setCvStyle] = useState(() => {
     return localStorage.getItem('portfolio_cv_style') || 'default';
   });
+  const [activePanel, setActivePanel] = useState('content');
   const [activeSection, setActiveSection] = useState('personal');
   const [jsonDraft, setJsonDraft] = useState('');
   const [jsonStatus, setJsonStatus] = useState('');
   const [copyJsonStatus, setCopyJsonStatus] = useState('');
   const [copyAiStatus, setCopyAiStatus] = useState('');
   const [copySchemaStatus, setCopySchemaStatus] = useState('');
+  const [fitStatus, setFitStatus] = useState('');
   const printRef = useRef(null);
+  const { overflowMm, fits } = usePageFit(printRef);
 
   useEffect(() => {
     localStorage.setItem('portfolio_cv_style', cvStyle);
@@ -348,6 +489,37 @@ const CVBuilder = () => {
     setTimeout(() => window.print(), 50);
   }, []);
 
+  // Scale down font-size in one shot so the CV fits on 297mm. If already at or
+  // below the 7pt floor and still overflowing, flag the user with a toast.
+  const handleFitToPage = useCallback(() => {
+    if (!printRef.current) return;
+    const pxPerMm = measurePxPerMm();
+    const pagePx = 297 * pxPerMm;
+    const currentHeight = printRef.current.scrollHeight;
+    const currentSize = cv.fontSize || 11;
+    if (currentHeight <= pagePx + PAGE_FIT_TOLERANCE_MM * pxPerMm) {
+      setFitStatus('fits');
+      setTimeout(() => setFitStatus(''), 2000);
+      return;
+    }
+    // Linear-scale guess with a 3% safety margin, quantized to 0.25pt steps.
+    const scale = pagePx / currentHeight;
+    const next = Math.max(11, Math.round(currentSize * scale * 0.97 * 4) / 4);
+    if (next >= currentSize) {
+      setFitStatus('floor');
+      setTimeout(() => setFitStatus(''), 3500);
+      return;
+    }
+    setCv(prev => ({ ...prev, fontSize: next }));
+    if (next <= 11 + 0.01) {
+      setFitStatus('floor');
+      setTimeout(() => setFitStatus(''), 3500);
+    } else {
+      setFitStatus('shrunk');
+      setTimeout(() => setFitStatus(''), 2000);
+    }
+  }, [cv.fontSize]);
+
   const handleReset = useCallback(() => {
     if (window.confirm('Reset CV to defaults? This cannot be undone.')) {
       setCv(DEFAULT_CV);
@@ -395,79 +567,51 @@ const CVBuilder = () => {
     </div>
   );
 
-  const sections = [
-    { id: 'personal', label: 'Personal' },
-    { id: 'summary', label: 'Summary' },
-    { id: 'experience', label: 'Experience' },
-    { id: 'education', label: 'Education' },
-    { id: 'skills', label: 'Skills' },
-    { id: 'projects', label: 'Projects' },
-    { id: 'certifications', label: 'Certs' },
-    { id: 'languages', label: 'Languages' },
-    { id: 'awards', label: 'Awards' },
-    { id: 'volunteer', label: 'Volunteer' },
-    { id: 'sections', label: 'Sections' },
-    { id: 'json', label: 'JSON' },
-  ];
-
   return (
     <div className="cv-builder">
       {/* Editor Panel */}
       <div className="cv-editor no-print">
         <div className="cv-editor-header">
           <h1>CV Builder</h1>
-          <p>Best-practice UX Designer resume</p>
+          <p>One-page, best-practice resume — edit, style, and export.</p>
           <div className="cv-editor-actions">
+            <button className="cv-fit-btn" onClick={handleFitToPage} title="Auto-shrink font size so the CV fits on one A4 page">
+              {fitStatus === 'shrunk' ? '✓ Shrunk' : fitStatus === 'fits' ? '✓ Already fits' : fitStatus === 'floor' ? 'At 11pt floor — hide sections' : 'Fit to page'}
+            </button>
             <button onClick={handleExportPDF}>Export PDF</button>
             <button onClick={handleExportJSON}>Save JSON</button>
             <button onClick={handleImportJSON}>Load JSON</button>
             <button onClick={handleReset} className="cv-reset-btn">Reset</button>
           </div>
-          <div className="cv-layout-controls">
-            <div className="cv-layout-control">
-              <label>Font Size</label>
-              <div className="cv-layout-slider">
-                <input type="range" min="7" max="13" step="0.5" value={cv.fontSize || 9} onChange={e => update('fontSize', parseFloat(e.target.value))} />
-                <span>{cv.fontSize || 9}pt</span>
-              </div>
-            </div>
-            <div className="cv-layout-control">
-              <label>Content Width</label>
-              <div className="cv-layout-slider">
-                <input type="range" min="140" max="200" step="5" value={cv.contentWidth || 180} onChange={e => update('contentWidth', parseInt(e.target.value))} />
-                <span>{cv.contentWidth || 180}mm</span>
-              </div>
-            </div>
-          </div>
-          <div className="cv-style-selector">
-            <label>Style</label>
-            <div className="cv-style-options">
-              {CV_STYLES.map(s => (
-                <button
-                  key={s.id}
-                  className={`cv-style-btn ${cvStyle === s.id ? 'active' : ''}`}
-                  onClick={() => setCvStyle(s.id)}
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
-        <nav className="cv-sections-nav">
-          {sections.map(s => (
+        <nav className="cv-panel-nav">
+          {PANELS.map(p => (
             <button
-              key={s.id}
-              className={`cv-nav-btn ${activeSection === s.id ? 'active' : ''}`}
-              onClick={() => setActiveSection(s.id)}
+              key={p.id}
+              className={`cv-panel-btn ${activePanel === p.id ? 'active' : ''}`}
+              onClick={() => setActivePanel(p.id)}
             >
-              {s.label}
+              {p.label}
             </button>
           ))}
         </nav>
 
-        <div className="cv-form">
+        {activePanel === 'content' && (
+        <div className="cv-panel cv-content-layout">
+          <nav className="cv-content-nav">
+            {CONTENT_SECTIONS.map(s => (
+              <button
+                key={s.id}
+                className={`cv-content-nav-btn ${activeSection === s.id ? 'active' : ''}`}
+                onClick={() => setActiveSection(s.id)}
+              >
+                {s.label}
+              </button>
+            ))}
+          </nav>
+
+          <div className="cv-form">
           {/* Personal Info */}
           {activeSection === 'personal' && (
             <div className="cv-form-section">
@@ -712,10 +856,46 @@ const CVBuilder = () => {
             </div>
           )}
 
-          {/* Sections Manager */}
-          {activeSection === 'sections' && (
+          </div>
+        </div>
+        )}
+
+        {activePanel === 'design' && (
+        <div className="cv-panel cv-design-panel">
+          <div className="cv-design-section">
+            <label>Style</label>
+            <div className="cv-style-grid">
+              {CV_STYLES.map(s => (
+                <StyleTile key={s.id} id={s.id} label={s.label} active={cvStyle === s.id} onClick={() => setCvStyle(s.id)} />
+              ))}
+            </div>
+          </div>
+
+          <div className="cv-design-section">
+            <label>Typography</label>
+            <div className="cv-layout-control">
+              <label>Font size</label>
+              <div className="cv-layout-slider">
+                <input type="range" min="11" max="14" step="0.25" value={cv.fontSize || 11} onChange={e => update('fontSize', parseFloat(e.target.value))} />
+                <span>{(cv.fontSize || 11).toFixed(2).replace(/\.?0+$/, '')}pt</span>
+              </div>
+            </div>
+            <div className="cv-layout-control">
+              <label>Content width</label>
+              <div className="cv-layout-slider">
+                <input type="range" min="140" max="200" step="5" value={cv.contentWidth || 180} onChange={e => update('contentWidth', parseInt(e.target.value))} />
+                <span>{cv.contentWidth || 180}mm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        )}
+
+        {activePanel === 'sections' && (
+        <div className="cv-panel">
+          <div className="cv-form">
             <div className="cv-form-section">
-              <h3>Manage Sections</h3>
+              <h3>Manage sections</h3>
               <p className="cv-hint">Toggle which sections appear on your CV. Disabled sections are hidden from the preview and PDF.</p>
               <div className="cv-sections-manager">
                 <SectionToggle label="Professional Summary" field="showSummary" />
@@ -729,9 +909,13 @@ const CVBuilder = () => {
                 <SectionToggle label="Volunteer & Side Projects" field="showVolunteer" />
               </div>
             </div>
-          )}
+          </div>
+        </div>
+        )}
 
-          {activeSection === 'json' && (
+        {activePanel === 'data' && (
+        <div className="cv-panel">
+          <div className="cv-form">
             <div className="cv-form-section cv-json-section">
               <h3>Edit the full JSON</h3>
               <p className="cv-hint">Paste or edit the JSON directly. Applying it merges into the current CV — only the fields you include get overwritten. Use <strong>Load Current CV</strong> to start from what's on the page now.</p>
@@ -829,16 +1013,33 @@ const CVBuilder = () => {
                 </div>
               </div>
             </div>
-          )}
+          </div>
         </div>
+        )}
       </div>
 
       {/* CV Preview / Print Target */}
       <div className="cv-preview-wrapper">
-        {EDITORIAL_THEMES.has(cvStyle) ? (
-          <EditorialCV cv={cv} theme={cvStyle} innerRef={printRef} />
+        <div className="cv-preview-actions no-print">
+          <span className={`cv-fit-badge ${fits ? 'cv-fit-badge--ok' : 'cv-fit-badge--warn'}`}>
+            <span className="cv-fit-badge-dot" />
+            {fits ? 'Fits on one page' : `Overflows by ~${overflowMm}mm`}
+          </span>
+          <div className="cv-preview-actions-spacer" />
+          {!fits && (
+            <button className="cv-fit-btn" onClick={handleFitToPage}>
+              {fitStatus === 'shrunk' ? '✓ Shrunk' : fitStatus === 'floor' ? 'At 11pt floor — hide sections' : 'Fit to page'}
+            </button>
+          )}
+          <button onClick={handleExportPDF}>Export PDF</button>
+        </div>
+        <div className="cv-preview-stage">
+        {parseCvStyle(cvStyle).layout === 'sidebar' ? (
+          <SidebarCV cv={cv} theme={parseCvStyle(cvStyle).theme} innerRef={printRef} overflowing={!fits} />
+        ) : parseCvStyle(cvStyle).layout === 'single' ? (
+          <EditorialCV cv={cv} theme={parseCvStyle(cvStyle).theme} innerRef={printRef} overflowing={!fits} />
         ) : (
-        <div className={`cv-preview cv-style-${cvStyle}`} ref={printRef} style={{ '--cv-font-size': `${cv.fontSize || 9}pt`, '--cv-content-width': `${cv.contentWidth || 180}mm` }}>
+        <div className={`cv-preview cv-style-${cvStyle}${!fits ? ' is-overflowing' : ''}`} ref={printRef} style={{ '--cv-font-size': `${cv.fontSize || 11}pt`, '--cv-content-width': `${cv.contentWidth || 180}mm` }}>
           {/* Header */}
           <header className="cv-doc-header">
             <div className="cv-doc-header-left">
@@ -868,25 +1069,20 @@ const CVBuilder = () => {
               {cv.showExperience !== false && cv.experience.some(e => e.company || e.role) && (
                 <section className="cv-doc-section">
                   <h2>Experience</h2>
-                  <div className="cv-doc-timeline">
-                    {cv.experience.filter(e => e.company || e.role).map((exp, i) => (
-                      <div key={i} className="cv-doc-timeline-item">
-                        <div className="cv-doc-timeline-dot" />
-                        <div className="cv-doc-timeline-content">
-                          <div className="cv-doc-exp-header">
-                            <span className="cv-doc-exp-company">{exp.company}</span>
-                            {exp.role && <><span className="cv-doc-exp-sep">|</span><span className="cv-doc-exp-role">{exp.role}</span></>}
-                          </div>
-                          {exp.period && <span className="cv-doc-period-badge">{exp.period}</span>}
-                          {exp.bullets.filter(b => b).length > 0 && (
-                            <ul className="cv-doc-bullets">
-                              {exp.bullets.filter(b => b).map((b, j) => <li key={j}>{b}</li>)}
-                            </ul>
-                          )}
-                        </div>
+                  {cv.experience.filter(e => e.company || e.role).map((exp, i) => (
+                    <div key={i} className="cv-doc-exp-item">
+                      <div className="cv-doc-exp-header">
+                        <span className="cv-doc-exp-company">{exp.company}</span>
+                        {exp.role && <><span className="cv-doc-exp-sep">·</span><span className="cv-doc-exp-role">{exp.role}</span></>}
                       </div>
-                    ))}
-                  </div>
+                      {exp.period && <span className="cv-doc-period-badge">{exp.period}</span>}
+                      {exp.bullets.filter(b => b).length > 0 && (
+                        <ul className="cv-doc-bullets">
+                          {exp.bullets.filter(b => b).map((b, j) => <li key={j}>{b}</li>)}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
                 </section>
               )}
 
@@ -990,6 +1186,7 @@ const CVBuilder = () => {
           </div>
         </div>
         )}
+        </div>
       </div>
     </div>
   );
@@ -1015,18 +1212,27 @@ const EditorialIcon = ({ name }) => {
   }
 };
 
-const EditorialCV = ({ cv, theme, innerRef }) => {
+const EditorialCV = ({ cv, theme, innerRef, overflowing }) => {
   const bullets = (exp) => (exp.bullets || []).filter(Boolean);
   const skills = (cv.skillCategories || []).filter(c => c.name || c.skills);
+  const projects = (cv.projects || []).filter(p => p.name || p.description || p.impact);
+  const certs = (cv.certifications || []).filter(c => c.name);
+  const languages = (cv.languages || []).filter(l => l.language);
+  const awards = (cv.awards || []).filter(a => a.title);
   const hasExperience = cv.showExperience !== false && (cv.experience || []).some(e => e.company || e.role || bullets(e).length);
   const hasEducation = cv.showEducation !== false && (cv.education || []).some(e => e.institution || e.degree);
   const hasSkills = cv.showSkills !== false && skills.length > 0;
+  const hasProjects = cv.showProjects && projects.length > 0;
+  const hasCerts = cv.showCertifications && certs.length > 0;
+  const hasLanguages = cv.showLanguages && languages.length > 0;
+  const hasAwards = cv.showAwards && awards.length > 0;
+  const hasVolunteer = cv.showVolunteer && cv.volunteer;
   return (
     <div
       ref={innerRef}
-      className="cv-preview cv-preview-editorial"
+      className={`cv-preview-editorial${overflowing ? ' is-overflowing' : ''}`}
       data-cv-theme={theme}
-      style={{ '--cv-font-size': `${cv.fontSize || 9}pt`, '--cv-content-width': `${cv.contentWidth || 180}mm` }}
+      style={{ '--cv-font-size': `${cv.fontSize || 11}pt`, '--cv-content-width': `${cv.contentWidth || 180}mm` }}
     >
       <header className="ed-header">
         <div className="ed-header-left">
@@ -1043,7 +1249,6 @@ const EditorialCV = ({ cv, theme, innerRef }) => {
 
       {cv.showSummary !== false && cv.summary && (
         <section className="ed-section">
-          <h2 className="ed-section-title">Summary</h2>
           <p className="ed-summary">{cv.summary}</p>
         </section>
       )}
@@ -1096,6 +1301,7 @@ const EditorialCV = ({ cv, theme, innerRef }) => {
 
       {hasSkills && (
         <section className="ed-section">
+          <h2 className="ed-section-title">Skills</h2>
           {skills.map((cat, i) => (
             <div key={i} className="ed-skills-group">
               <div className="ed-skills-label">{cat.name}</div>
@@ -1108,6 +1314,260 @@ const EditorialCV = ({ cv, theme, innerRef }) => {
           ))}
         </section>
       )}
+
+      {hasProjects && (
+        <section className="ed-section">
+          <h2 className="ed-section-title">Projects</h2>
+          {projects.map((p, i) => (
+            <div key={i} className="ed-entry">
+              <div className="ed-entry-head">
+                <h3 className="ed-entry-title">{p.name}</h3>
+              </div>
+              {p.description && <p className="ed-entry-meta" style={{ color: 'var(--ed-ink-2)', fontWeight: 400 }}>{p.description}</p>}
+              {p.impact && <p className="ed-project-impact">{p.impact}</p>}
+            </div>
+          ))}
+        </section>
+      )}
+
+      {hasCerts && (
+        <section className="ed-section">
+          <h2 className="ed-section-title">Certifications</h2>
+          <div className="ed-certs">
+            {certs.map((c, i) => (
+              <div key={i} className="ed-cert-row">
+                <strong>{c.name}</strong>
+                {(c.issuer || c.year) && (
+                  <span className="ed-cert-meta">{[c.issuer, c.year].filter(Boolean).join(', ')}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {hasLanguages && (
+        <section className="ed-section">
+          <h2 className="ed-section-title">Languages</h2>
+          <div className="ed-langs">
+            {languages.map((l, i) => (
+              <span key={i} className="ed-lang-pill">
+                {l.language}
+                {l.level && <span className="ed-lang-level">{l.level}</span>}
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {hasAwards && (
+        <section className="ed-section">
+          <h2 className="ed-section-title">Awards</h2>
+          <div className="ed-awards">
+            {awards.map((a, i) => (
+              <div key={i} className="ed-award-row">
+                <strong>{a.title}</strong>
+                {(a.issuer || a.year) && (
+                  <span className="ed-award-meta">{[a.issuer, a.year].filter(Boolean).join(', ')}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {hasVolunteer && (
+        <section className="ed-section">
+          <h2 className="ed-section-title">Volunteer & Side Projects</h2>
+          <p className="ed-volunteer">{cv.volunteer}</p>
+        </section>
+      )}
+    </div>
+  );
+};
+
+// Sidebar layout — same theme palette/fonts as EditorialCV, but with a
+// left rail for contact + skills and the right column holding the main
+// content (summary, experience, education). Swapping cvStyle between
+// "<theme>" and "<theme>-sidebar" flips layouts without touching any data.
+const SidebarCV = ({ cv, theme, innerRef, overflowing }) => {
+  const bullets = (exp) => (exp.bullets || []).filter(Boolean);
+  const skills = (cv.skillCategories || []).filter(c => c.name || c.skills);
+  const projects = (cv.projects || []).filter(p => p.name || p.description || p.impact);
+  const certs = (cv.certifications || []).filter(c => c.name);
+  const languages = (cv.languages || []).filter(l => l.language);
+  const awards = (cv.awards || []).filter(a => a.title);
+  const hasExperience = cv.showExperience !== false && (cv.experience || []).some(e => e.company || e.role || bullets(e).length);
+  const hasEducation = cv.showEducation !== false && (cv.education || []).some(e => e.institution || e.degree);
+  const hasSkills = cv.showSkills !== false && skills.length > 0;
+  const hasProjects = cv.showProjects && projects.length > 0;
+  const hasCerts = cv.showCertifications && certs.length > 0;
+  const hasLanguages = cv.showLanguages && languages.length > 0;
+  const hasAwards = cv.showAwards && awards.length > 0;
+  const hasVolunteer = cv.showVolunteer && cv.volunteer;
+  return (
+    <div
+      ref={innerRef}
+      className={`cv-preview-editorial cv-preview-sidebar${overflowing ? ' is-overflowing' : ''}`}
+      data-cv-theme={theme}
+      style={{ '--cv-font-size': `${cv.fontSize || 11}pt`, '--cv-content-width': `${cv.contentWidth || 180}mm` }}
+    >
+      <header className="ed-header sb-header">
+        <h1 className="ed-name">{cv.fullName || 'Your Name'}</h1>
+        {cv.title && <p className="ed-tagline">{cv.title}</p>}
+      </header>
+
+      <div className="sb-body">
+        <aside className="sb-aside">
+          <div className="sb-aside-block">
+            <h2 className="ed-section-title">Contact</h2>
+            <div className="sb-contact">
+              {cv.portfolio && <div className="sb-contact-row">{cv.portfolio}</div>}
+              {cv.email && <div className="sb-contact-row">{cv.email}</div>}
+              {cv.phone && <div className="sb-contact-row">{cv.phone}</div>}
+              {cv.linkedin && <div className="sb-contact-row">{cv.linkedin}</div>}
+              {cv.location && <div className="sb-contact-row">{cv.location}</div>}
+            </div>
+          </div>
+
+          {hasSkills && (
+            <div className="sb-aside-block">
+              <h2 className="ed-section-title">Skills</h2>
+              {skills.map((cat, i) => (
+                <div key={i} className="ed-skills-group sb-skills-group">
+                  <div className="ed-skills-label">{cat.name}</div>
+                  <div className="ed-chips">
+                    {(cat.skills || '').split(',').map(s => s.trim()).filter(Boolean).map((s, j) => (
+                      <span key={j} className="ed-chip">{s}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {hasLanguages && (
+            <div className="sb-aside-block">
+              <h2 className="ed-section-title">Languages</h2>
+              <div className="sb-lang-pills">
+                {languages.map((l, i) => (
+                  <span key={i} className="sb-lang-pill">
+                    {l.language}{l.level ? ` · ${l.level}` : ''}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {hasCerts && (
+            <div className="sb-aside-block">
+              <h2 className="ed-section-title">Certifications</h2>
+              <div className="sb-compact-list">
+                {certs.map((c, i) => (
+                  <div key={i}>
+                    <strong>{c.name}</strong>
+                    {(c.issuer || c.year) && (
+                      <span className="sb-compact-meta">{[c.issuer, c.year].filter(Boolean).join(', ')}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {hasAwards && (
+            <div className="sb-aside-block">
+              <h2 className="ed-section-title">Awards</h2>
+              <div className="sb-compact-list">
+                {awards.map((a, i) => (
+                  <div key={i}>
+                    <strong>{a.title}</strong>
+                    {(a.issuer || a.year) && (
+                      <span className="sb-compact-meta">{[a.issuer, a.year].filter(Boolean).join(', ')}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </aside>
+
+        <main className="sb-main">
+          {cv.showSummary !== false && cv.summary && (
+            <section className="ed-section">
+              <p className="ed-summary">{cv.summary}</p>
+            </section>
+          )}
+
+          {hasExperience && (
+            <section className="ed-section">
+              <h2 className="ed-section-title">Experience</h2>
+              {cv.experience.filter(e => e.company || e.role || bullets(e).length).map((exp, i) => (
+                <div key={i} className="ed-entry">
+                  <div className="ed-entry-head">
+                    <h3 className="ed-entry-title">{exp.role || exp.company}</h3>
+                    {exp.period && <span className="ed-entry-dates">{exp.period}</span>}
+                  </div>
+                  {(exp.company || exp.location) && (
+                    <p className="ed-entry-meta">
+                      {exp.role && exp.company && <span>{exp.company}</span>}
+                      {exp.role && exp.company && exp.location && <span className="ed-sep">·</span>}
+                      {exp.location && <span className="ed-loc">{exp.location}</span>}
+                    </p>
+                  )}
+                  {bullets(exp).length > 0 && (
+                    <ul className="ed-bullets">
+                      {bullets(exp).map((b, j) => <li key={j}>{b}</li>)}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {hasEducation && (
+            <section className="ed-section">
+              <h2 className="ed-section-title">Education</h2>
+              {cv.education.filter(e => e.institution || e.degree).map((edu, i) => (
+                <div key={i} className="ed-entry">
+                  <div className="ed-entry-head">
+                    <h3 className="ed-entry-title">{edu.degree || edu.institution}</h3>
+                    {edu.period && <span className="ed-entry-dates">{edu.period}</span>}
+                  </div>
+                  {edu.degree && edu.institution && (
+                    <p className="ed-entry-meta"><span>{edu.institution}</span></p>
+                  )}
+                  {edu.details && (
+                    <ul className="ed-bullets"><li>{edu.details}</li></ul>
+                  )}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {hasProjects && (
+            <section className="ed-section">
+              <h2 className="ed-section-title">Projects</h2>
+              {projects.map((p, i) => (
+                <div key={i} className="ed-entry">
+                  <div className="ed-entry-head">
+                    <h3 className="ed-entry-title">{p.name}</h3>
+                  </div>
+                  {p.description && <p className="ed-entry-meta" style={{ color: 'var(--ed-ink-2)', fontWeight: 400 }}>{p.description}</p>}
+                  {p.impact && <p className="ed-project-impact">{p.impact}</p>}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {hasVolunteer && (
+            <section className="ed-section">
+              <h2 className="ed-section-title">Volunteer & Side Projects</h2>
+              <p className="ed-volunteer">{cv.volunteer}</p>
+            </section>
+          )}
+        </main>
+      </div>
     </div>
   );
 };
