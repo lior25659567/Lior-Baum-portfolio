@@ -16,10 +16,14 @@ import './CaseStudy.css';
 // the viewport, and asks the browser to fetch metadata only (~100KB)
 // instead of the whole file up front.
 // ─────────────────────────────────────────────────────────────────────────
-const LazyVideo = memo(({ src, poster, style, className, onClick }) => {
+const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'lazy' }) => {
   const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
+  // high = current slide (load src + preload auto)
+  // nearby = ±1 slide (load src + preload metadata to warm up)
+  // lazy = far slides (gate via IntersectionObserver, no preload)
+  const [visible, setVisible] = useState(priority !== 'lazy');
   useEffect(() => {
+    if (priority !== 'lazy') { setVisible(true); return; }
     const el = ref.current;
     if (!el || visible) return;
     const io = new IntersectionObserver((entries) => {
@@ -27,13 +31,14 @@ const LazyVideo = memo(({ src, poster, style, className, onClick }) => {
     }, { rootMargin: '200px 0px' });
     io.observe(el);
     return () => io.disconnect();
-  }, [visible]);
+  }, [visible, priority]);
+  const preload = priority === 'high' ? 'auto' : priority === 'nearby' ? 'metadata' : 'metadata';
   return (
     <video
       ref={ref}
       src={visible ? src : undefined}
       poster={poster || undefined}
-      preload="metadata"
+      preload={preload}
       autoPlay
       loop
       muted
@@ -1130,6 +1135,10 @@ const CaseStudy = () => {
      .slides-track key so framer-motion treats the new project's first
      slide as a fresh mount — no x-tween from the old end position. */
   const [projectNonce, setProjectNonce] = useState(0);
+  /* Always-fresh mirror of currentSlide so memoized subtrees (DynamicImages)
+     can compute slide-distance without having currentSlide in their deps. */
+  const currentSlideRef = useRef(0);
+  useEffect(() => { currentSlideRef.current = currentSlide; }, [currentSlide]);
   const [showTemplates, setShowTemplates] = useState(false);
   const [previewTemplate, setPreviewTemplate] = useState(null);
   const [showBuilder, setShowBuilder] = useState(false);
@@ -1237,6 +1246,49 @@ const CaseStudy = () => {
     const ro = new ResizeObserver(apply);
     slides.forEach((s) => ro.observe(s));
     return () => ro.disconnect();
+  }, [currentSlide, project]);
+
+  /* Warm the browser cache for the next two slides' images when the current
+     slide changes. Images go through `new Image()` (cheap); videos are too
+     large to prefetch eagerly — LazyVideo still gates them on intersection.
+     Only image-extension URLs are prefetched so we don't fire requests for
+     iframes/embeds. */
+  useEffect(() => {
+    const slides = project?.slides;
+    if (!slides?.length) return;
+    const targets = [currentSlide + 1, currentSlide + 2].filter((i) => i < slides.length);
+    const urls = new Set();
+    const collect = (val) => {
+      if (!val) return;
+      if (typeof val === 'string') urls.add(val);
+      else if (Array.isArray(val)) {
+        for (const item of val) {
+          if (typeof item === 'string') urls.add(item);
+          else if (item && typeof item === 'object' && item.src) urls.add(item.src);
+        }
+      }
+    };
+    for (const i of targets) {
+      const s = slides[i];
+      if (!s) continue;
+      collect(s.image);
+      collect(s.imageLeft);
+      collect(s.imageRight);
+      collect(s.beforeImage);
+      collect(s.afterImage);
+      collect(s.logo);
+    }
+    const pool = [];
+    for (const url of urls) {
+      if (!/\.(png|jpg|jpeg|webp|gif|avif)(\?|$)/i.test(url)) continue;
+      const img = new Image();
+      try { img.decoding = 'async'; } catch { /* older browsers */ }
+      img.src = url;
+      pool.push(img);
+    }
+    /* Keep references alive so the browser doesn't cancel the prefetch if
+       GC fires before the response arrives. */
+    return () => { pool.length = 0; };
   }, [currentSlide, project]);
 
   // Track if we've loaded initial data (to avoid saving on first load)
@@ -3776,14 +3828,26 @@ My instructions: `;
                   const carouselFit = slide[`${field}CarouselFit`] || 'cover';
                   const isContain = carouselFit === 'contain';
                   const carouselBg = slide[`${field}CarouselBg`] !== false;
+                  const distance = Math.abs((slideIndex ?? 0) - (currentSlideRef.current ?? 0));
+                  const videoPriority = distance === 0 ? 'high' : distance <= 1 ? 'nearby' : 'lazy';
+                  const imgLoading = distance <= 1 ? 'eager' : 'lazy';
+                  const imgFetchPriority = distance === 0 ? 'high' : distance > 2 ? 'low' : 'auto';
                   return (
                     <div key={imgIndex} className={`dynamic-carousel-slide${isContain ? ' carousel-fit-contain' : ''}${carouselBg ? ' carousel-has-bg' : ''}`}>
                       {imgData.src ? (
                         <>
                           {imgData.isVideo ? (
-                            <LazyVideo src={imgData.src} poster={imgData.posterSrc} style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }} />
+                            <LazyVideo src={imgData.src} poster={imgData.posterSrc} priority={videoPriority} style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }} />
                           ) : (
-                            <img src={imgData.src} alt={`Image ${imgIndex + 1}`} style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }} onClick={() => !editMode && setLightboxImage && setLightboxImage(imgData.src)} />
+                            <img
+                              src={imgData.src}
+                              alt={`Image ${imgIndex + 1}`}
+                              loading={imgLoading}
+                              decoding="async"
+                              fetchpriority={imgFetchPriority}
+                              style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }}
+                              onClick={() => !editMode && setLightboxImage && setLightboxImage(imgData.src)}
+                            />
                           )}
                           {editMode && (
                             <div className="carousel-slide-edit-controls">
@@ -4015,12 +4079,22 @@ My instructions: `;
                         <LazyVideo
                           src={imgData.src}
                           poster={imgData.posterSrc}
+                          priority={(() => {
+                            const d = Math.abs((slideIndex ?? 0) - (currentSlideRef.current ?? 0));
+                            return d === 0 ? 'high' : d <= 1 ? 'nearby' : 'lazy';
+                          })()}
                           style={mediaContainStyle}
                         />
                       ) : (
-                        <img 
-                          src={imgData.src} 
-                          alt={imgData.caption || `Image ${imgIndex + 1}`} 
+                        <img
+                          src={imgData.src}
+                          alt={imgData.caption || `Image ${imgIndex + 1}`}
+                          loading={Math.abs((slideIndex ?? 0) - (currentSlideRef.current ?? 0)) <= 1 ? 'eager' : 'lazy'}
+                          decoding="async"
+                          fetchpriority={(() => {
+                            const d = Math.abs((slideIndex ?? 0) - (currentSlideRef.current ?? 0));
+                            return d === 0 ? 'high' : d > 2 ? 'low' : 'auto';
+                          })()}
                           style={mediaContainStyle}
                         />
                       )}
