@@ -9,6 +9,42 @@ import { slideTemplateDocs } from '../data/slideTemplateDocs';
 import { IFRAME_FILES } from '../iframes';
 import './CaseStudy.css';
 
+// ─────────────────────────────────────────────────────────────────────────
+// LazyVideo: IntersectionObserver-gated <video> with poster + metadata
+// preload. Case study videos are 5–35MB each; eagerly loading them all
+// bricks bandwidth. This defers the real `src` until the slide is near
+// the viewport, and asks the browser to fetch metadata only (~100KB)
+// instead of the whole file up front.
+// ─────────────────────────────────────────────────────────────────────────
+const LazyVideo = memo(({ src, poster, style, className, onClick }) => {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || visible) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { setVisible(true); io.disconnect(); } });
+    }, { rootMargin: '200px 0px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [visible]);
+  return (
+    <video
+      ref={ref}
+      src={visible ? src : undefined}
+      poster={poster || undefined}
+      preload="metadata"
+      autoPlay
+      loop
+      muted
+      playsInline
+      style={style}
+      className={className}
+      onClick={onClick}
+    />
+  );
+});
+
 // All the Save-to-Code / Push-to-Git / Save-All / Save-Image endpoints are
 // Vite dev-plugin middleware (vite-plugin-save-case-study.js). On a static
 // host like Netlify they 404 into the SPA shell, which previous code tried
@@ -3741,7 +3777,7 @@ My instructions: `;
                       {imgData.src ? (
                         <>
                           {imgData.isVideo ? (
-                            <video src={imgData.src} autoPlay loop muted playsInline style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }} />
+                            <LazyVideo src={imgData.src} poster={imgData.posterSrc} style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }} />
                           ) : (
                             <img src={imgData.src} alt={`Image ${imgIndex + 1}`} style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }} onClick={() => !editMode && setLightboxImage && setLightboxImage(imgData.src)} />
                           )}
@@ -3972,12 +4008,9 @@ My instructions: `;
                   ) : imgData.src ? (
                     <>
                       {imgData.isVideo ? (
-                        <video 
+                        <LazyVideo
                           src={imgData.src}
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
+                          poster={imgData.posterSrc}
                           style={mediaContainStyle}
                         />
                       ) : (
