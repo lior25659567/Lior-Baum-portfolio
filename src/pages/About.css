@@ -415,11 +415,12 @@
   color: var(--color-text-muted);
 }
 
-/* 1920px+ - Large Desktop */
+/* 1920px+ - Large Desktop. Lighter horizontal padding so the bio column
+   doesn't float in an empty gutter on ultrawide screens. */
 @media (min-width: 1921px) {
   .about-container {
     max-width: var(--container-2xl);
-    padding: 0 var(--spacing-xl);
+    padding: 0 var(--spacing-lg);
   }
 
   .about-hero {
@@ -541,40 +542,8 @@
   }
 }
 
-/* Small Mobile */
-@media (max-width: 480px) {
-  .about-container {
-    padding: 0 var(--spacing-sm);
-  }
-  
-  .about-image-wrapper {
-    max-width: 280px;
-  }
-  
-  .image-decoration {
-    inset: 10px -10px -10px 10px;
-  }
-
-  .about-hero {
-    min-height: 30vh;
-    padding: var(--spacing-md) 0;
-  }
-}
-
-/* Very small screens */
-@media (max-width: 360px) {
-  .about-container {
-    padding: 0 var(--spacing-sm);
-  }
-  
-  .about-title {
-    font-size: clamp(1.6rem, 10vw, 2.25rem);
-  }
-  
-  .about-image-wrapper {
-    max-width: 240px;
-  }
-}
+/* Small Mobile (≤480) and very small screens (≤360) blocks moved to end of
+   file so they sit AFTER the ≤767 mobile overlay and win the cascade. */
 
 /* ── Edit Mode Controls ── */
 .about-editable {
@@ -927,5 +896,40 @@
   .about-inline-input {
     font-size: 0.875rem;
     padding: 0.5rem 0.625rem;
+  }
+}
+
+/* Small Mobile — placed AFTER the ≤767 mobile overlay so ≤480 rules win. */
+@media (max-width: 480px) {
+  .about-container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .about-image-wrapper {
+    max-width: 280px;
+  }
+
+  .image-decoration {
+    inset: 10px -10px -10px 10px;
+  }
+
+  .about-hero {
+    min-height: 30vh;
+    padding: var(--spacing-md) 0;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  .about-container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .about-title {
+    font-size: clamp(1.6rem, 10vw, 2.25rem);
+  }
+
+  .about-image-wrapper {
+    max-width: 240px;
   }
 }

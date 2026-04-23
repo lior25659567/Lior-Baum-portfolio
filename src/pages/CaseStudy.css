@@ -248,20 +248,30 @@ body.case-study-active .footer {
 
 @media (min-width: 1440px) {
   .case-study {
-    --slide-pad-x: 100px;
-    --slide-pad-top: 144px;
-    --slide-pad-bottom: 144px;
-    --slide-gap: 144px;
+    --slide-pad-x: 64px;
+    --slide-pad-top: 96px;
+    --slide-pad-bottom: 96px;
+    --slide-gap: 112px;
   }
 }
 
 @media (min-width: 1920px) {
   .case-study {
-    --slide-max-w: 1600px;
-    --slide-pad-x: 80px;
-    --slide-pad-top: 200px;
-    --slide-pad-bottom: 200px;
-    --slide-gap: 160px;
+    --slide-max-w: 1920px;
+    --slide-pad-x: 64px;
+    --slide-pad-top: 120px;
+    --slide-pad-bottom: 120px;
+    --slide-gap: 128px;
+  }
+}
+
+@media (min-width: 2400px) {
+  .case-study {
+    --slide-max-w: 2200px;
+    --slide-pad-x: 72px;
+    --slide-pad-top: 128px;
+    --slide-pad-bottom: 128px;
+    --slide-gap: 144px;
   }
 }
 

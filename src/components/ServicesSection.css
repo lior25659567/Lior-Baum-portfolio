@@ -208,13 +208,8 @@
   }
 }
 
-@media (max-width: 480px) {
-  .services-section-container {
-    padding: 0 var(--spacing-sm);
-  }
-}
-
-/* ===== Mobile responsiveness overrides (≤767px only) ===== */
+/* ===== Mobile responsiveness overrides (≤767px only) =====
+   Placed BEFORE the ≤480 block so source-order cascade lets ≤480 overrides win. */
 @media (max-width: 767px) {
   .services-section {
     padding: var(--spacing-xl) 0; /* 48px resolved via tokens */
@@ -230,5 +225,11 @@
 
   .services-card-inner {
     padding: var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .services-section-container {
+    padding: 0 var(--spacing-sm);
   }
 }

@@ -5061,11 +5061,12 @@
 
 /* Responsive */
 
-/* 1920px+ - Large Desktop */
+/* 1920px+ - Large Desktop. Wider container + lighter horizontal padding
+   so content fills the screen instead of floating in empty gutters. */
 @media (min-width: 1921px) {
   .projects-container {
     max-width: var(--container-2xl);
-    padding: 0 var(--spacing-xl);
+    padding: 0 var(--spacing-lg);
   }
 
   .projects-grid {
@@ -5176,6 +5177,50 @@
   }
 }
 
+/* ===== Mobile responsiveness overrides (≤767px only) =====
+   Placed BEFORE the ≤480 block so source-order cascade lets ≤480 overrides win. */
+@media (max-width: 767px) {
+  .projects {
+    padding: var(--spacing-xl) 0;
+  }
+
+  .projects-container {
+    padding: 0 var(--spacing-md);
+  }
+
+  .projects-grid {
+    gap: var(--spacing-lg); /* 24px — comfortable between-card breathing room */
+  }
+
+  /* Filter chips: caption token floor is 13px now; add comfortable padding + inter-chip gap */
+  .projects-filter-bar {
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+  }
+
+  .projects-filter-chip {
+    font-size: var(--text-caption);
+    padding: 0.5rem 0.875rem;
+    min-height: 36px;
+  }
+
+  .project-content-title {
+    font-size: 1.0625rem;
+    line-height: 1.3;
+  }
+
+  .project-content-meta {
+    font-size: var(--text-caption);
+  }
+
+  /* Edit-only chrome — raise to ≥13px to satisfy the 12px minimum with margin */
+  .project-url-input,
+  .project-tag-btn,
+  .add-project-hint {
+    font-size: 0.8125rem;
+  }
+}
+
 @media (max-width: 480px) {
   .projects-container {
     padding: 0 var(--spacing-sm);
@@ -5221,48 +5266,5 @@
 
   .project-media {
     aspect-ratio: 4/3;
-  }
-}
-
-/* ===== Mobile responsiveness overrides (≤767px only) ===== */
-@media (max-width: 767px) {
-  .projects {
-    padding: var(--spacing-xl) 0;
-  }
-
-  .projects-container {
-    padding: 0 var(--spacing-md);
-  }
-
-  .projects-grid {
-    gap: var(--spacing-lg); /* 24px — comfortable between-card breathing room */
-  }
-
-  /* Filter chips: caption token floor is 13px now; add comfortable padding + inter-chip gap */
-  .projects-filter-bar {
-    gap: var(--spacing-sm);
-    flex-wrap: wrap;
-  }
-
-  .projects-filter-chip {
-    font-size: var(--text-caption);
-    padding: 0.5rem 0.875rem;
-    min-height: 36px;
-  }
-
-  .project-content-title {
-    font-size: 1.0625rem;
-    line-height: 1.3;
-  }
-
-  .project-content-meta {
-    font-size: var(--text-caption);
-  }
-
-  /* Edit-only chrome — raise to ≥13px to satisfy the 12px minimum with margin */
-  .project-url-input,
-  .project-tag-btn,
-  .add-project-hint {
-    font-size: 0.8125rem;
   }
 }

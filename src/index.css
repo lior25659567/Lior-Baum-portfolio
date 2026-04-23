@@ -110,14 +110,26 @@
   --accent-graphite: #c9c9c9;
 }
 
-/* 1920px+ — Large Desktop ultrawide bump. Gives ultrawide viewports a
-   touch more breathing room than the default clamp() ceilings. */
+/* 1920px+ — Large Desktop ultrawide bump. Wider containers so content
+   uses the extra screen width (home, about, projects) instead of
+   floating in a sea of empty gutter. Slight spacing bump for breathing
+   room. */
 @media (min-width: 1921px) {
   :root {
-    --spacing-lg: 3.5rem;
-    --spacing-xl: 6rem;
-    --spacing-2xl: 8rem;
-    --container-xl: 1600px;
+    --spacing-lg: 3rem;
+    --spacing-xl: 4.5rem;
+    --spacing-2xl: 6rem;
+    --container-xl: 1760px;
+    --container-2xl: 2000px;
+  }
+}
+
+/* 2400px+ — true ultrawide / 4K. Bump containers further; keep padding
+   modest so content isn't lost in the gutters. */
+@media (min-width: 2400px) {
+  :root {
+    --container-xl: 1920px;
+    --container-2xl: 2200px;
   }
 }
 
