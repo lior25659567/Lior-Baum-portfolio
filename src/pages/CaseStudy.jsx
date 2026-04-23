@@ -1151,6 +1151,8 @@ const CaseStudy = () => {
   const [showSavedList, setShowSavedList] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null); // 'saving', 'saved', 'error'
   const [gitPushStatus, setGitPushStatus] = useState(null); // null | 'pushing' | 'pushed' | 'error'
+  const [webpStatus, setWebpStatus] = useState(null); // null | 'running' | 'done' | 'error'
+  const [webpSummary, setWebpSummary] = useState(''); // last stdout line (e.g. "converted: 4 files")
   const [showImportJSON, setShowImportJSON] = useState(false);
   const [importJSONText, setImportJSONText] = useState('');
   const [importError, setImportError] = useState('');
@@ -2160,6 +2162,57 @@ const CaseStudy = () => {
       window.alert(`Push failed: ${msg}`);
       setGitPushStatus('error');
       setTimeout(() => setGitPushStatus(null), 4000);
+    } finally {
+      clearTimeout(timer);
+    }
+  }, []);
+
+  /* Runs scripts/convert-case-study-images-to-webp.sh via the dev plugin.
+     Dev-only — the API is a middleware mounted by vite-plugin-save-case-study
+     which isn't present in the production bundle. Confirms first so the
+     user can't click accidentally (the script DELETES originals once the
+     build passes, even though it backs them up first). */
+  const handleConvertImagesToWebp = useCallback(async () => {
+    if (!IS_DEV_EDITOR) {
+      window.alert('WebP conversion only works on the local dev server (npm run dev). Run the editor locally.');
+      return;
+    }
+    const proceed = window.confirm(
+      'Convert all PNG/JPG images under public/case-studies/ to WebP?\n\n' +
+      '• Originals are backed up to backups/ before anything is deleted\n' +
+      '• MP4s are not touched\n' +
+      '• Production build is run first; originals are only removed if it passes\n' +
+      '• Safe to run again later — already-converted images are skipped'
+    );
+    if (!proceed) return;
+    setWebpStatus('running');
+    setWebpSummary('');
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 320_000);
+    try {
+      const res = await fetch('/api/convert-images-to-webp', { method: 'POST', signal: ctrl.signal });
+      const data = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+      if (data.ok) {
+        const summary = (data.stdout || '')
+          .split('\n')
+          .filter((l) => /converted:|webp total size:|backup total size:|already fully WebP/i.test(l))
+          .map((l) => l.trim())
+          .join(' · ');
+        setWebpStatus('done');
+        setWebpSummary(summary);
+        setTimeout(() => { setWebpStatus(null); setWebpSummary(''); }, 10_000);
+      } else {
+        console.error('[convert-webp] Failed:', data);
+        window.alert(`WebP conversion failed:\n${data.error || 'unknown error'}`);
+        setWebpStatus('error');
+        setTimeout(() => setWebpStatus(null), 5_000);
+      }
+    } catch (err) {
+      const msg = err.name === 'AbortError' ? 'timed out after 320s' : (err.message || 'network error');
+      console.error('[convert-webp] Network/abort:', err);
+      window.alert(`WebP conversion failed: ${msg}`);
+      setWebpStatus('error');
+      setTimeout(() => setWebpStatus(null), 5_000);
     } finally {
       clearTimeout(timer);
     }
@@ -7329,6 +7382,20 @@ My instructions: `;
                       title="Commit & push to git"
                     >
                       {gitPushStatus === 'pushing' ? '⟳ Pushing...' : gitPushStatus === 'pushed' ? '✓ Pushed' : gitPushStatus === 'error' ? '⚠ Error' : '↑ Push to git'}
+                    </button>
+                    <button
+                      className={`slide-sorter-webp${webpStatus ? ` webp-${webpStatus}` : ''}`}
+                      onClick={handleConvertImagesToWebp}
+                      disabled={webpStatus === 'running'}
+                      title={webpSummary || 'Convert PNG/JPG under public/case-studies/ to WebP (MP4s untouched, originals backed up)'}
+                    >
+                      {webpStatus === 'running'
+                        ? '⟳ Converting…'
+                        : webpStatus === 'done'
+                          ? (webpSummary ? `✓ ${webpSummary}` : '✓ Converted')
+                          : webpStatus === 'error'
+                            ? '⚠ Error'
+                            : '🖼 WebP'}
                     </button>
                   </>
                 )}

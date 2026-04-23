@@ -464,6 +464,41 @@ export function saveCaseStudyPlugin() {
         })();
       });
 
+      // Run the case-study WebP conversion script. Dev-only (never shipped).
+      // The script handles backup + convert + ref rewrite + build-verify + delete
+      // end-to-end; this endpoint is a thin exec wrapper so the editor can fire
+      // it without the user touching a terminal.
+      server.middlewares.use('/api/convert-images-to-webp', wrap('/api/convert-images-to-webp', async (req) => {
+        assertMethod(req, 'POST');
+        const scriptPath = path.resolve('scripts/convert-case-study-images-to-webp.sh');
+        const startedAt = Date.now();
+        const result = await new Promise((resolve) => {
+          exec(`bash ${JSON.stringify(scriptPath)}`, {
+            cwd: path.resolve('.'),
+            timeout: 300_000,
+            maxBuffer: 10 * 1024 * 1024,
+            env: { ...process.env },
+          }, (err, stdout, stderr) => resolve({
+            stdout: (stdout || '').trim(),
+            stderr: (stderr || '').trim(),
+            code: err ? (err.code ?? err.signal ?? 1) : 0,
+            killed: !!(err && err.killed),
+          }));
+        });
+        const elapsedMs = Date.now() - startedAt;
+        console.log(`[convert-webp] exit=${result.code} ms=${elapsedMs}`);
+        if (result.code !== 0) {
+          const hint = result.killed ? ' (killed — likely timeout)' : '';
+          const detail = result.stderr || result.stdout || `exit ${result.code}`;
+          const e = new Error(`WebP conversion failed${hint}: ${detail}`);
+          e.statusCode = 500;
+          e.stderr = result.stderr;
+          e.stdout = result.stdout;
+          throw e;
+        }
+        return { stdout: result.stdout, stderr: result.stderr, elapsedMs };
+      }));
+
       // Cheap, always-safe git state snapshot.
       server.middlewares.use('/api/git-status', wrap('/api/git-status', async (req) => {
         assertMethod(req, 'GET');
