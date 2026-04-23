@@ -376,26 +376,46 @@ const EditPanel = () => {
 
             <h4 style={{ marginTop: '1.5rem' }}>Case Study Slides</h4>
             <p style={{ fontSize: '0.8rem', opacity: 0.7, marginBottom: '0.75rem' }}>
-              Applies globally to every slide in every case study.
+              Per-breakpoint padding for every slide in every case study.
+              Horizontal (H) = left/right, Vertical (V) = top/bottom.
             </p>
-            <div className="edit-group">
-              <label>Horizontal padding (left/right)</label>
-              <input
-                type="text"
-                value={styles.spacing.slidePadX ?? '80px'}
-                onChange={(e) => updateStyles('spacing', 'slidePadX', e.target.value)}
-                placeholder="e.g., 80px"
-              />
-            </div>
-            <div className="edit-group">
-              <label>Vertical padding (top/bottom)</label>
-              <input
-                type="text"
-                value={styles.spacing.slidePadY ?? '128px'}
-                onChange={(e) => updateStyles('spacing', 'slidePadY', e.target.value)}
-                placeholder="e.g., 128px"
-              />
-            </div>
+            {[
+              { id: 'mobile',    label: 'Mobile (0+)',     dx: '24px',  dy: '56px'  },
+              { id: 'tablet',    label: 'Tablet (768+)',   dx: '36px',  dy: '48px'  },
+              { id: 'desktop',   label: 'Desktop (1024+)', dx: '80px',  dy: '128px' },
+              { id: 'large',     label: 'Large (1440+)',   dx: '64px',  dy: '96px'  },
+              { id: 'ultrawide', label: 'Ultrawide (1920+)', dx: '128px', dy: '120px' },
+              { id: 'fourK',     label: '4K (2400+)',      dx: '144px', dy: '128px' },
+            ].map((bp) => {
+              const zone = styles.spacing.slidePad?.[bp.id] || {};
+              const writeZone = (axis, value) => updateStyles('spacing', 'slidePad', {
+                ...(styles.spacing.slidePad || {}),
+                [bp.id]: { ...zone, [axis]: value },
+              });
+              return (
+                <div key={bp.id} style={{ marginBottom: '0.75rem' }}>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 500, display: 'block', marginBottom: '0.35rem' }}>
+                    {bp.label}
+                  </label>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <input
+                      type="text"
+                      value={zone.x ?? ''}
+                      onChange={(e) => writeZone('x', e.target.value)}
+                      placeholder={`H ${bp.dx}`}
+                      style={{ flex: 1 }}
+                    />
+                    <input
+                      type="text"
+                      value={zone.y ?? ''}
+                      onChange={(e) => writeZone('y', e.target.value)}
+                      placeholder={`V ${bp.dy}`}
+                      style={{ flex: 1 }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
 

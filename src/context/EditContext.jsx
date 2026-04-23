@@ -92,8 +92,16 @@ const defaultStyles = {
     sectionPadding: '6rem',
     containerMaxWidth: '1400px',
     gap: '2rem',
-    slidePadX: '80px',
-    slidePadY: '128px',
+    /* Per-breakpoint case-study slide padding. Mobile-first min-width
+       cascade — each zone inherits from the one before until overridden. */
+    slidePad: {
+      mobile:    { x: '24px',  y: '56px'  }, /* 0+    */
+      tablet:    { x: '36px',  y: '48px'  }, /* 768+  */
+      desktop:   { x: '80px',  y: '128px' }, /* 1024+ */
+      large:     { x: '64px',  y: '96px'  }, /* 1440+ */
+      ultrawide: { x: '128px', y: '120px' }, /* 1920+ */
+      fourK:     { x: '144px', y: '128px' }, /* 2400+ */
+    },
   },
   colors: {
     accent: '#ff584a',

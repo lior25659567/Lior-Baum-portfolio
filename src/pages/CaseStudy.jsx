@@ -6502,17 +6502,23 @@ My instructions: `;
       ref={containerRef}
       data-card-style={cardStyle !== 'outlined' ? cardStyle : undefined}
     >
-      {/* Global slide padding — edit-panel value wins over CaseStudy.css at
-         desktop+. Mobile keeps its own responsive scaling. */}
-      <style>{`
-        @media (min-width: 1024px) {
-          .case-study {
-            --slide-pad-x: ${styles.spacing.slidePadX || '80px'};
-            --slide-pad-top: ${styles.spacing.slidePadY || '128px'};
-            --slide-pad-bottom: ${styles.spacing.slidePadY || '128px'};
-          }
-        }
-      `}</style>
+      {/* Per-breakpoint slide padding from the edit panel. Mobile-first
+          min-width cascade; same selector specificity as CaseStudy.css
+          rules but injected later in document order, so these win. */}
+      <style>{(() => {
+        const pad = styles.spacing.slidePad || {};
+        const z = (bp) => pad[bp] || {};
+        const m = z('mobile'), t = z('tablet'), d = z('desktop'),
+              l = z('large'),  u = z('ultrawide'), f = z('fourK');
+        return `
+          .case-study { --slide-pad-x: ${m.x || '24px'}; --slide-pad-top: ${m.y || '56px'}; --slide-pad-bottom: ${m.y || '56px'}; }
+          @media (min-width: 768px)  { .case-study { --slide-pad-x: ${t.x || '36px'};  --slide-pad-top: ${t.y || '48px'};  --slide-pad-bottom: ${t.y || '48px'};  } }
+          @media (min-width: 1024px) { .case-study { --slide-pad-x: ${d.x || '80px'};  --slide-pad-top: ${d.y || '128px'}; --slide-pad-bottom: ${d.y || '128px'}; } }
+          @media (min-width: 1440px) { .case-study { --slide-pad-x: ${l.x || '64px'};  --slide-pad-top: ${l.y || '96px'};  --slide-pad-bottom: ${l.y || '96px'};  } }
+          @media (min-width: 1920px) { .case-study { --slide-pad-x: ${u.x || '128px'}; --slide-pad-top: ${u.y || '120px'}; --slide-pad-bottom: ${u.y || '120px'}; } }
+          @media (min-width: 2400px) { .case-study { --slide-pad-x: ${f.x || '144px'}; --slide-pad-top: ${f.y || '128px'}; --slide-pad-bottom: ${f.y || '128px'}; } }
+        `;
+      })()}</style>
       {/* Edit Mode Indicator */}
       <AnimatePresence>
         {editMode && (
