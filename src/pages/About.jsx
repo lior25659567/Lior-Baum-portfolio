@@ -392,10 +392,7 @@ const About = () => {
             )}
 
             <div className="bio-cta">
-              <AnimatedButton href={content.hero?.cvLink || 'https://drive.google.com/file/d/1wdnZiNuaSKB_TByqJm4TYQ7Cbg2W6sND/view?usp=sharing'} variant="primary" icon="↓">
-                Download CV
-              </AnimatedButton>
-              <AnimatedButton href={`mailto:${about.email || 'lior@example.com'}`} variant="outline" icon="→">
+              <AnimatedButton href={`mailto:${about.email || 'lior@example.com'}`} variant="primary" icon="→">
                 Get in touch
               </AnimatedButton>
             </div>

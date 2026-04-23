@@ -110,7 +110,7 @@ const Navigation = () => {
                       type="text"
                       className="cv-link-input"
                       value={content.hero.cvLink || 'https://drive.google.com/file/d/1wdnZiNuaSKB_TByqJm4TYQ7Cbg2W6sND/view?usp=sharing'}
-                      onChange={(e) => updateContent('hero', { ...content.hero, cvLink: e.target.value })}
+                      onChange={(e) => updateContent('hero', 'cvLink', e.target.value)}
                       placeholder="Enter CV link or file path"
                       onClick={(e) => e.stopPropagation()}
                     />
