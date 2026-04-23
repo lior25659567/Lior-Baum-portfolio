@@ -10,6 +10,25 @@ try {
 
 const EditContext = createContext();
 
+/* After the 2026-04-23 WebP conversion, /case-studies/*.png|jpg paths no
+   longer resolve. localStorage/IndexedDB copies of site content written
+   before that deploy still reference them — this walker rewrites those
+   paths on load so pre-migration snapshots keep rendering. Non-mutating:
+   returns a new tree so shared default objects are never touched. */
+function migrateCaseStudyImagePathsToWebp(node) {
+  if (node == null) return node;
+  if (Array.isArray(node)) return node.map(migrateCaseStudyImagePathsToWebp);
+  if (typeof node === 'object') {
+    const out = {};
+    for (const k of Object.keys(node)) out[k] = migrateCaseStudyImagePathsToWebp(node[k]);
+    return out;
+  }
+  if (typeof node === 'string' && /^\/case-studies\//.test(node)) {
+    return node.replace(/\.(png|jpe?g)(?=($|[?#]))/i, '.webp');
+  }
+  return node;
+}
+
 // Default site content
 const defaultContent = {
   hero: {
@@ -171,7 +190,9 @@ export const EditProvider = ({ children }) => {
   const [content, setContent] = useState(() => {
     try {
       const saved = localStorage.getItem('siteContent');
-      return saved ? mergeContent(JSON.parse(saved)) : effectiveDefaultContent;
+      return saved
+        ? migrateCaseStudyImagePathsToWebp(mergeContent(JSON.parse(saved)))
+        : effectiveDefaultContent;
     } catch { return effectiveDefaultContent; }
   });
 
@@ -190,7 +211,7 @@ export const EditProvider = ({ children }) => {
         getData('siteStyles'),
       ]);
       if (cancelled) return;
-      if (savedContent) setContent(mergeContent(savedContent));
+      if (savedContent) setContent(migrateCaseStudyImagePathsToWebp(mergeContent(savedContent)));
       if (savedStyles) setStyles(prev => ({ ...prev, ...savedStyles }));
       hydrated.current = true;
     })();

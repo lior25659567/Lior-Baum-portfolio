@@ -16,6 +16,32 @@ import './CaseStudy.css';
 // the viewport, and asks the browser to fetch metadata only (~100KB)
 // instead of the whole file up front.
 // ─────────────────────────────────────────────────────────────────────────
+/* After the 2026-04-23 WebP conversion (commit eb4f5dc) the .png/.jpg files
+   under public/case-studies/ no longer exist on disk. Users who had edited
+   anything before that deploy still carry the old paths inside localStorage
+   and IndexedDB; when those are loaded verbatim, every <img> 404s and we get
+   broken-image icons everywhere. This walker rewrites any /case-studies/*
+   URL ending in .png/.jpg/.jpeg to .webp in-place so legacy saved data
+   renders against the files that actually exist. Cheap: no network, no
+   disk, just string replace. Safe to run on the same object more than once
+   (second pass is a no-op). Remove once we're confident no one still has
+   pre-conversion data cached locally. */
+function migrateCaseStudyImagePathsToWebp(node) {
+  if (node == null) return node;
+  if (Array.isArray(node)) return node.map(migrateCaseStudyImagePathsToWebp);
+  if (typeof node === 'object') {
+    // Rebuild the object so we never mutate a shared module import (JSON
+    // files imported once are cached forever; mutation would leak).
+    const out = {};
+    for (const k of Object.keys(node)) out[k] = migrateCaseStudyImagePathsToWebp(node[k]);
+    return out;
+  }
+  if (typeof node === 'string' && /^\/case-studies\//.test(node)) {
+    return node.replace(/\.(png|jpe?g)(?=($|[?#]))/i, '.webp');
+  }
+  return node;
+}
+
 const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'lazy' }) => {
   const ref = useRef(null);
   // high = current slide (load src + preload auto)
@@ -1128,7 +1154,7 @@ const CaseStudy = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
   const { editMode, setEditMode, setShowPanel, content, styles } = useEdit(); // Use global edit mode from context
-  const [project, setProject] = useState(() => getCaseStudyData(projectId));
+  const [project, setProject] = useState(() => migrateCaseStudyImagePathsToWebp(getCaseStudyData(projectId)));
   const containerRef = useRef(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   /* Bumped in `go()` when switching to a different project. Used as the
@@ -1325,22 +1351,22 @@ const CaseStudy = () => {
     // If localStorage has data or no IDB marker, use sync data immediately
     // Otherwise, wait for async load to avoid showing defaults
     if (!hasIdbMarker || syncHasData || hasMinimal) {
-      setProject(syncData);
+      setProject(migrateCaseStudyImagePathsToWebp(syncData));
       if (!preserveSlide) setCurrentSlide(0);
       console.log('[loadProjectData] Set project from sync data');
     } else {
       // Data is only in IndexedDB, show defaults temporarily while loading
-      setProject(defaultData);
+      setProject(migrateCaseStudyImagePathsToWebp(defaultData));
       if (!preserveSlide) setCurrentSlide(0);
       console.log('[loadProjectData] Set project to defaults (waiting for IndexedDB)');
     }
-    
+
     // Always try async load from IndexedDB (may have more complete data)
     try {
       const asyncData = await getCaseStudyDataAsync(projectId);
       if (asyncData) {
         // Update with the real data from IndexedDB
-        setProject(asyncData);
+        setProject(migrateCaseStudyImagePathsToWebp(asyncData));
         console.log('[loadProjectData] Updated project from IndexedDB');
         // If we showed defaults initially, reset slide to 0 (unless preserving for tab return)
         if (!preserveSlide && hasIdbMarker && !syncHasData && !hasMinimal) {
@@ -1933,7 +1959,7 @@ const CaseStudy = () => {
   const handleReset = useCallback(async () => {
     if (window.confirm('Reset all changes to default? This cannot be undone.')) {
       const defaultData = await resetCaseStudyData(projectId);
-      setProject(defaultData);
+      setProject(migrateCaseStudyImagePathsToWebp(defaultData));
     }
   }, [projectId]);
 
@@ -5925,7 +5951,7 @@ My instructions: `;
                     if (to.startsWith('/project/')) {
                       const nextId = to.slice('/project/'.length);
                       const data = getCaseStudyData(nextId);
-                      if (data) setProject(data);
+                      if (data) setProject(migrateCaseStudyImagePathsToWebp(data));
                       /* Remount the slide track on project switch so it starts
                          at x=0 with no tween from the previous end position. */
                       setProjectNonce(n => n + 1);
@@ -7585,7 +7611,7 @@ My instructions: `;
                         return edited;
                       };
                       const restored = restoreMedia(parsed, original);
-                      setProject(restored);
+                      setProject(migrateCaseStudyImagePathsToWebp(restored));
                       setEditFullJSON(null);
                     } catch (e) {
                       setEditFullJSON(prev => ({ ...prev, error: `JSON parse error: ${e.message}` }));
