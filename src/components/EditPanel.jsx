@@ -373,6 +373,29 @@ const EditPanel = () => {
                 placeholder="e.g., 2rem"
               />
             </div>
+
+            <h4 style={{ marginTop: '1.5rem' }}>Case Study Slides</h4>
+            <p style={{ fontSize: '0.8rem', opacity: 0.7, marginBottom: '0.75rem' }}>
+              Applies globally to every slide in every case study.
+            </p>
+            <div className="edit-group">
+              <label>Horizontal padding (left/right)</label>
+              <input
+                type="text"
+                value={styles.spacing.slidePadX ?? '80px'}
+                onChange={(e) => updateStyles('spacing', 'slidePadX', e.target.value)}
+                placeholder="e.g., 80px"
+              />
+            </div>
+            <div className="edit-group">
+              <label>Vertical padding (top/bottom)</label>
+              <input
+                type="text"
+                value={styles.spacing.slidePadY ?? '128px'}
+                onChange={(e) => updateStyles('spacing', 'slidePadY', e.target.value)}
+                placeholder="e.g., 128px"
+              />
+            </div>
           </div>
         )}
 

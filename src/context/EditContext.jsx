@@ -92,6 +92,8 @@ const defaultStyles = {
     sectionPadding: '6rem',
     containerMaxWidth: '1400px',
     gap: '2rem',
+    slidePadX: '80px',
+    slidePadY: '128px',
   },
   colors: {
     accent: '#ff584a',

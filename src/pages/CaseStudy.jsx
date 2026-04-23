@@ -1122,7 +1122,7 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
 const CaseStudy = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
-  const { editMode, setEditMode, setShowPanel, content } = useEdit(); // Use global edit mode from context
+  const { editMode, setEditMode, setShowPanel, content, styles } = useEdit(); // Use global edit mode from context
   const [project, setProject] = useState(() => getCaseStudyData(projectId));
   const containerRef = useRef(null);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -6497,7 +6497,22 @@ My instructions: `;
   };
 
   return (
-    <div className={`case-study ${editMode ? 'edit-mode' : ''}`} ref={containerRef} data-card-style={cardStyle !== 'outlined' ? cardStyle : undefined}>
+    <div
+      className={`case-study ${editMode ? 'edit-mode' : ''}`}
+      ref={containerRef}
+      data-card-style={cardStyle !== 'outlined' ? cardStyle : undefined}
+    >
+      {/* Global slide padding — edit-panel value wins over CaseStudy.css at
+         desktop+. Mobile keeps its own responsive scaling. */}
+      <style>{`
+        @media (min-width: 1024px) {
+          .case-study {
+            --slide-pad-x: ${styles.spacing.slidePadX || '80px'};
+            --slide-pad-top: ${styles.spacing.slidePadY || '128px'};
+            --slide-pad-bottom: ${styles.spacing.slidePadY || '128px'};
+          }
+        }
+      `}</style>
       {/* Edit Mode Indicator */}
       <AnimatePresence>
         {editMode && (
