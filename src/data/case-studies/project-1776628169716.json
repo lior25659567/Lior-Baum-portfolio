@@ -230,7 +230,8 @@
         }
       ],
       "showNumbers": false,
-      "cardVariant": "default"
+      "cardVariant": "default",
+      "gridColumns": 4
     },
     {
       "type": "end",
