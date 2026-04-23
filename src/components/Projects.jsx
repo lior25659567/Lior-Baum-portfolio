@@ -51,7 +51,7 @@ const defaultProjects = [
     id: 'align-technology',
     title: 'iTero Toolbar',
     category: 'UI Unification & Efficiency',
-    image: '/case-studies/align/slide-1.png',
+    image: '/case-studies/align/slide-1.webp',
     year: '2024',
     tag: 'work',
     mediaMode: 'template',

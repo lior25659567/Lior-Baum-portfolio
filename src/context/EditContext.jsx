@@ -54,7 +54,7 @@ const defaultContent = {
     sectionLabel: 'Portfolio',
     sectionTitle: 'Selected Projects',
     items: [
-      { id: 'align-technology', title: 'iTero Toolbar', category: 'UI Unification & Efficiency', year: '2024', image: '/case-studies/align/slide-1.png', tag: 'work' },
+      { id: 'align-technology', title: 'iTero Toolbar', category: 'UI Unification & Efficiency', year: '2024', image: '/case-studies/align/slide-1.webp', tag: 'work' },
       { id: 'itero-scan-workflow', title: 'iTero Scan Workflow', category: 'Clinical Workflow Redesign', year: '2024', image: '', tag: 'work' },
       { id: 'wizecare', title: 'WizeCare', category: 'B2B Complex System', year: '2023', image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop', tag: 'work' },
     ],
