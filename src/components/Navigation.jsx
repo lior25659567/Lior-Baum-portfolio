@@ -93,7 +93,7 @@ const Navigation = () => {
             {editMode ? (
               <div className="cv-link-editor">
                 <AnimatedButton 
-                  href={content.hero.cvLink || '/resume.pdf'} 
+                  href={content.hero.cvLink || 'https://drive.google.com/file/d/1wdnZiNuaSKB_TByqJm4TYQ7Cbg2W6sND/view?usp=sharing'} 
                   variant="outline"
                   icon="→"
                   className="nav-cta-btn"
@@ -109,7 +109,7 @@ const Navigation = () => {
                     <input
                       type="text"
                       className="cv-link-input"
-                      value={content.hero.cvLink || '/resume.pdf'}
+                      value={content.hero.cvLink || 'https://drive.google.com/file/d/1wdnZiNuaSKB_TByqJm4TYQ7Cbg2W6sND/view?usp=sharing'}
                       onChange={(e) => updateContent('hero', { ...content.hero, cvLink: e.target.value })}
                       placeholder="Enter CV link or file path"
                       onClick={(e) => e.stopPropagation()}
@@ -125,7 +125,7 @@ const Navigation = () => {
               </div>
             ) : (
               <AnimatedButton 
-                href={content.hero.cvLink || '/resume.pdf'} 
+                href={content.hero.cvLink || 'https://drive.google.com/file/d/1wdnZiNuaSKB_TByqJm4TYQ7Cbg2W6sND/view?usp=sharing'} 
                 variant="outline"
                 icon="→"
                 className="nav-cta-btn"
@@ -208,7 +208,7 @@ const Navigation = () => {
                 transition={{ duration: 0.4, delay: 0.5 }}
               >
                 <AnimatedButton 
-                  href={content.hero.cvLink || '/resume.pdf'} 
+                  href={content.hero.cvLink || 'https://drive.google.com/file/d/1wdnZiNuaSKB_TByqJm4TYQ7Cbg2W6sND/view?usp=sharing'} 
                   variant="primary"
                   icon="↓"
                   className="mobile-cta-btn"

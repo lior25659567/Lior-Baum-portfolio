@@ -76,7 +76,13 @@ const defaultProjects = [
   },
 ];
 
-const ProjectCard = ({ project, index, total, editMode, onImageChange, onRemove, onUpdate, onMoveUp, onMoveDown }) => {
+const ProjectCard = ({ project, index, total, editMode, hideCardYear, onImageChange, onRemove, onUpdate, onMoveUp, onMoveDown }) => {
+  // When the section-level hideCardYear flag is on, collapse the year to an
+  // empty string so decorative strings like "$ build --year 2024" become
+  // "$ build --year " and "Display · 2024" becomes "Display · ". The
+  // standalone year flourishes (neon-year, broadsheet-year) are hidden via
+  // the .projects--hide-card-year CSS modifier on the section.
+  const cardYear = hideCardYear ? '' : (project.year || String(new Date().getFullYear()));
   const fileInputRef = useRef(null);
   const cardRef = useRef(null);
   const fileInputId = `project-image-${project.id}`;
@@ -870,7 +876,7 @@ const ProjectCard = ({ project, index, total, editMode, onImageChange, onRemove,
                 <span className="project-media-marquee-item" key={i}>
                   <span>Case Study</span>
                   <span className="project-media-marquee-dot" />
-                  <span>{project.year || new Date().getFullYear()}</span>
+                  <span>{cardYear}</span>
                   <span className="project-media-marquee-dot" />
                   <span>View Project</span>
                   <span className="project-media-marquee-dot" />
@@ -926,7 +932,7 @@ const ProjectCard = ({ project, index, total, editMode, onImageChange, onRemove,
               {`Case \u2022 ${String(((index ?? 0) % 99) + 1).padStart(2, '0')}`}
             </span>
             <span className="project-media-neon-year" aria-hidden="true">
-              {project.year || new Date().getFullYear()}
+              {cardYear}
             </span>
             <span className="project-media-neon-corner project-media-neon-corner--tl" aria-hidden="true" />
             <span className="project-media-neon-corner project-media-neon-corner--br" aria-hidden="true" />
@@ -1069,7 +1075,7 @@ const ProjectCard = ({ project, index, total, editMode, onImageChange, onRemove,
             </div>
             <div className="project-media-terminal-lines" aria-hidden="true">
               <span className="project-media-terminal-line">$ open project</span>
-              <span className="project-media-terminal-line">$ build --year {project.year || new Date().getFullYear()}</span>
+              <span className="project-media-terminal-line">$ build --year {cardYear}</span>
               <span className="project-media-terminal-line project-media-terminal-line--cursor">
                 $ <span className="project-media-terminal-caret" />
               </span>
@@ -1156,7 +1162,7 @@ const ProjectCard = ({ project, index, total, editMode, onImageChange, onRemove,
             <span className="project-media-specimen-baseline" aria-hidden="true" />
             <span className="project-media-specimen-meta project-media-specimen-meta--top" aria-hidden="true">Type Specimen</span>
             <span className="project-media-specimen-meta project-media-specimen-meta--bottom" aria-hidden="true">
-              {`Display \u00b7 ${project.year || new Date().getFullYear()}`}
+              {`Display \u00b7 ${cardYear}`}
             </span>
           </>
         )}
@@ -1242,7 +1248,7 @@ const ProjectCard = ({ project, index, total, editMode, onImageChange, onRemove,
               </defs>
               <text>
                 <textPath href={`#kinetic-outer-${project.id}`}>
-                  {` CASE STUDY \u2022 ${project.year || new Date().getFullYear()} \u2022 VIEW PROJECT \u2022 PORTFOLIO \u2022`.repeat(2)}
+                  {` CASE STUDY \u2022 ${cardYear} \u2022 VIEW PROJECT \u2022 PORTFOLIO \u2022`.repeat(2)}
                 </textPath>
               </text>
             </svg>
@@ -1714,7 +1720,16 @@ const Projects = () => {
   }, [setContent, filteredProjects, projects]);
 
   return (
-    <section className={`projects ${editMode ? 'edit-mode-active' : ''}`} id="projects">
+    <section
+      className={[
+        'projects',
+        editMode ? 'edit-mode-active' : '',
+        content.projects?.hideFilter ? 'projects--hide-filter' : '',
+        content.projects?.hideCardYear ? 'projects--hide-card-year' : '',
+        content.projects?.hideContentYear ? 'projects--hide-content-year' : '',
+      ].filter(Boolean).join(' ')}
+      id="projects"
+    >
       <div className="projects-container">
         <motion.div
           className="projects-header"
@@ -1741,17 +1756,49 @@ const Projects = () => {
           </h2>
         </motion.div>
 
-        <div className="projects-filter-bar">
-          {PROJECT_TAGS.map(tag => (
-            <button
-              key={tag.id}
-              className={`projects-filter-chip ${activeFilter === tag.id ? 'active' : ''}`}
-              onClick={() => setActiveFilter(tag.id)}
-            >
-              {tag.label}
-            </button>
-          ))}
-        </div>
+        {editMode && (
+          <div className="projects-edit-toolbar no-print">
+            <span className="projects-edit-toolbar-label">Section visibility</span>
+            <label className="projects-edit-toolbar-check">
+              <input
+                type="checkbox"
+                checked={!content.projects?.hideFilter}
+                onChange={(e) => setContent(prev => ({ ...prev, projects: { ...prev.projects, hideFilter: !e.target.checked } }))}
+              />
+              <span>Filter bar</span>
+            </label>
+            <label className="projects-edit-toolbar-check">
+              <input
+                type="checkbox"
+                checked={!content.projects?.hideCardYear}
+                onChange={(e) => setContent(prev => ({ ...prev, projects: { ...prev.projects, hideCardYear: !e.target.checked } }))}
+              />
+              <span>Year on card media</span>
+            </label>
+            <label className="projects-edit-toolbar-check">
+              <input
+                type="checkbox"
+                checked={!content.projects?.hideContentYear}
+                onChange={(e) => setContent(prev => ({ ...prev, projects: { ...prev.projects, hideContentYear: !e.target.checked } }))}
+              />
+              <span>Year below title</span>
+            </label>
+          </div>
+        )}
+
+        {!content.projects?.hideFilter && (
+          <div className="projects-filter-bar">
+            {PROJECT_TAGS.map(tag => (
+              <button
+                key={tag.id}
+                className={`projects-filter-chip ${activeFilter === tag.id ? 'active' : ''}`}
+                onClick={() => setActiveFilter(tag.id)}
+              >
+                {tag.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="projects-grid" ref={gridRef}>
           <AnimatePresence mode="popLayout">
@@ -1769,6 +1816,7 @@ const Projects = () => {
                   index={index}
                   total={filteredProjects.length}
                   editMode={editMode}
+                  hideCardYear={!!content.projects?.hideCardYear}
                   onImageChange={handleImageChange}
                   onUpdate={handleUpdateProject}
                   onRemove={handleRemoveProject}

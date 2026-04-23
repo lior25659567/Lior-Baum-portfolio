@@ -17,7 +17,7 @@ const defaultContent = {
     greeting: "Hello! I'm ",
     name: 'Lior Baum',
     description: 'Crafting digital experiences that merge aesthetics with functionality. Based in Israel, currently available for freelance work.',
-    cvLink: '/resume.pdf',
+    cvLink: 'https://drive.google.com/file/d/1wdnZiNuaSKB_TByqJm4TYQ7Cbg2W6sND/view?usp=sharing',
     ctaText: 'View work',
     ctaLink: '#projects',
   },

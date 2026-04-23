@@ -45,7 +45,7 @@ const Contact = () => {
               Get in touch
             </AnimatedButton>
             <AnimatedButton 
-              href={content.hero?.cvLink || '/resume.pdf'}
+              href={content.hero?.cvLink || 'https://drive.google.com/file/d/1wdnZiNuaSKB_TByqJm4TYQ7Cbg2W6sND/view?usp=sharing'}
               variant="outline"
               icon="↓"
             >

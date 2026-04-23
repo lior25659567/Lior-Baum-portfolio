@@ -47,6 +47,65 @@
   will-change: transform, opacity;
 }
 
+/* Edit-only toolbar: section visibility toggles (filter / card year / content year) */
+.projects-edit-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  align-items: center;
+  padding: 0.6rem 0.85rem;
+  margin-bottom: var(--spacing-sm);
+  border: 1px dashed var(--color-border);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-bg-secondary, rgba(0,0,0,0.02)) 70%, transparent);
+}
+
+.projects-edit-toolbar-label {
+  font-size: var(--text-caption);
+  font-weight: 500;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+  margin-right: 0.35rem;
+}
+
+.projects-edit-toolbar-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: var(--text-body-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.projects-edit-toolbar-check input[type="checkbox"] {
+  accent-color: var(--color-accent);
+  width: 15px;
+  height: 15px;
+  margin: 0;
+}
+
+.projects-edit-toolbar-check input[type="checkbox"]:checked + span {
+  color: var(--color-text);
+}
+
+/* Section visibility modifiers — drive from content.projects flags. */
+/* Hide the year line that sits below the card title. */
+.projects--hide-content-year .project-content-year {
+  display: none !important;
+}
+
+/* Hide the standalone year flourishes in card media variants (neon year,
+   broadsheet year). Variants where the year is embedded mid-string
+   (terminal, specimen, kinetic, marquee) are handled in the JSX by
+   substituting an empty string for the year — see ProjectCard. */
+.projects--hide-card-year .project-media-broadsheet-year,
+.projects--hide-card-year .project-media-neon-year {
+  display: none !important;
+}
+
 /* Filter Chips */
 .projects-filter-bar {
   display: flex;

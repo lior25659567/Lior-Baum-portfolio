@@ -115,9 +115,9 @@ const EditPanel = () => {
               <label>CV Link</label>
               <input
                 type="text"
-                value={content.hero.cvLink || '/resume.pdf'}
+                value={content.hero.cvLink || 'https://drive.google.com/file/d/1wdnZiNuaSKB_TByqJm4TYQ7Cbg2W6sND/view?usp=sharing'}
                 onChange={(e) => updateContent('hero', 'cvLink', e.target.value)}
-                placeholder="/resume.pdf or https://..."
+                placeholder="https://drive.google.com/... or /resume.pdf"
               />
               <small className="field-hint">Link or file path for your CV (used in all CV buttons)</small>
             </div>
