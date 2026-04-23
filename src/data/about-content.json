@@ -1,5 +1,5 @@
 {
-  "profileImage": "/about/profile.png",
+  "profileImage": "",
   "about": {
     "label": "About Me",
     "title1": "Designing",
@@ -7,9 +7,9 @@
     "title3": "that matter",
     "bioHeading": "Hello!",
     "bio": [
-      "I'm a product designer with a passion for creating digital experiences that are both beautiful and functional. With over 5 years of experience in the industry, I've had the privilege of working with startups and established companies alike.",
-      "My approach combines user-centered design principles with a keen eye for aesthetics. I believe that great design should not only look good but also solve real problems and create meaningful connections between products and their users.",
-      "When I'm not designing, you can find me exploring new places, experimenting with photography, or diving into the latest design trends and technologies."
+      "I'm a Product & UX Designer who cares about the full process — from user research to scalable design systems to interfaces that make complex things feel simple.",
+      "What sets me apart is where design meets technology. I teach designers at Shenkar to build real products using AI-assisted tools like Cursor and Claude, and I bring that same mindset to my own work. I'm not just delivering Figma files — I prototype in code, move faster, and collaborate with engineers from a place of real understanding.",
+      "I thrive in environments where design has actual ownership over the product, not just the pixels."
     ],
     "email": "lior@example.com",
     "skillsTitle": "Skills & Expertise",
@@ -115,6 +115,7 @@
         "company": "WizeCare",
         "description": "Reimagined clinician dashboard to reduce friction in digital physical therapy sessions. Conducted interviews with stakeholders and therapists to identify pain points and deliver improved task flows. Created onboarding flows and visual guidance assets to support product adoption."
       }
-    ]
+    ],
+    "bioAlign": "start"
   }
 }
