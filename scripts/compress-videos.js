@@ -23,12 +23,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..');
 const ROOT = path.join(REPO_ROOT, 'public', 'case-studies');
 const SIZE_THRESHOLD_MB = 2;
-// CRF 18 on a 1920-wide frame with `-tune animation` gives near-lossless
+// CRF 16 on a 1920-wide frame with `-tune animation` gives near-lossless
 // output on UI screencasts (flat colors + sharp edges, which is what these
 // portfolio videos are). The earlier CRF 28 at the source's native
 // 2880×1800 spent its bit budget across too many pixels and produced soft,
 // smeared frames on desktop.
-const CRF_DESKTOP = 18;
+const CRF_DESKTOP = 16;
 const CRF_MOBILE = 30;
 const DESKTOP_MAX_W = 1920;
 const PRESET = 'slow';
