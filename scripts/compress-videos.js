@@ -23,10 +23,22 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..');
 const ROOT = path.join(REPO_ROOT, 'public', 'case-studies');
 const SIZE_THRESHOLD_MB = 2;
-const CRF_DESKTOP = 28;
+// CRF 20 on a 1920-wide frame gives sharp output close to visually lossless.
+// The earlier CRF 28 at the source's native 2880×1800 spent its bit budget
+// across too many pixels and produced soft, smeared frames on desktop.
+const CRF_DESKTOP = 20;
 const CRF_MOBILE = 30;
+const DESKTOP_MAX_W = 1920;
 const PRESET = 'slow';
 const DRY = process.argv.includes('--dry');
+// `--from-backup` restores the pristine original from the most recent
+// backups/case-studies-videos-* dir before running the desktop encode +
+// mobile/poster rebuild, so we re-encode from clean source instead of
+// recompressing an already-degraded file.
+const FROM_BACKUP = process.argv.includes('--from-backup');
+// `--force` re-runs the desktop compression even if the current file is
+// under SIZE_THRESHOLD_MB (e.g. after CRF / resolution tuning).
+const FORCE = process.argv.includes('--force') || FROM_BACKUP;
 
 const isMobileVariant = (f) => /\.mobile\.mp4$/i.test(f);
 const isPosterFile = (f) => /\.poster\.webp$/i.test(f);
@@ -58,6 +70,7 @@ function compressDesktop(file) {
   const tmp = file + '.compressing.mp4';
   run('ffmpeg', [
     '-y', '-i', file,
+    '-vf', `scale='min(${DESKTOP_MAX_W},iw)':'-2'`,
     '-c:v', 'libx264', '-crf', String(CRF_DESKTOP), '-preset', PRESET,
     '-pix_fmt', 'yuv420p', '-movflags', '+faststart',
     '-c:a', 'aac', '-b:a', '96k',
@@ -99,6 +112,49 @@ if (!fs.existsSync(ROOT)) {
   process.exit(1);
 }
 
+// With --from-backup, restore pristine originals from the most recent
+// backups/case-studies-videos-* directory before the compression pass.
+// Also deletes the existing mobile + poster so they get rebuilt from
+// clean source at the new quality settings.
+const restoredFromBackup = new Set();
+if (FROM_BACKUP && !DRY) {
+  const backupsRoot = path.join(REPO_ROOT, 'backups');
+  const backupDirs = fs.existsSync(backupsRoot)
+    ? fs.readdirSync(backupsRoot).filter((n) => n.startsWith('case-studies-videos-'))
+    : [];
+  if (backupDirs.length === 0) {
+    console.error('--from-backup: no backups/case-studies-videos-* directory found');
+    process.exit(1);
+  }
+  backupDirs.sort();
+  const src = path.join(backupsRoot, backupDirs[backupDirs.length - 1]);
+  console.log(`--from-backup: restoring originals from ${path.relative(REPO_ROOT, src)}/\n`);
+  const restoreWalk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) { restoreWalk(full); continue; }
+      if (!entry.isFile() || !entry.name.toLowerCase().endsWith('.mp4')) continue;
+      if (isMobileVariant(entry.name)) continue;
+      const rel = path.relative(src, full);
+      const dest = path.join(ROOT, rel);
+      fs.mkdirSync(path.dirname(dest), { recursive: true });
+      fs.copyFileSync(full, dest);
+      // Drop the derived artifacts so the pipeline rebuilds them from
+      // the restored source.
+      const base = path.basename(dest, path.extname(dest));
+      const siblingDir = path.dirname(dest);
+      const mobilePath = path.join(siblingDir, `${base}.mobile.mp4`);
+      const posterPath = path.join(siblingDir, `${base}.poster.webp`);
+      if (fs.existsSync(mobilePath)) fs.unlinkSync(mobilePath);
+      if (fs.existsSync(posterPath)) fs.unlinkSync(posterPath);
+      restoredFromBackup.add(dest);
+      console.log(`  restored ${rel}`);
+    }
+  };
+  restoreWalk(src);
+  console.log('');
+}
+
 const files = walk(ROOT);
 if (files.length === 0) {
   console.log(`No mp4 files under ${ROOT}`);
@@ -128,7 +184,11 @@ for (const file of files) {
   const base = path.basename(file, path.extname(file));
   const mobilePath = path.join(dir, `${base}.mobile.mp4`);
   const posterPath = path.join(dir, `${base}.poster.webp`);
-  const needsDesktop = sizeBefore > SIZE_THRESHOLD_MB * 1024 * 1024;
+  // With --from-backup, only re-encode files that were actually restored
+  // from the backup — files without a backup counterpart are already
+  // lossy-compressed, and re-encoding them just degrades them further.
+  const skipDueToNoBackup = FROM_BACKUP && !restoredFromBackup.has(file);
+  const needsDesktop = !skipDueToNoBackup && (FORCE || sizeBefore > SIZE_THRESHOLD_MB * 1024 * 1024);
   const needsMobile = !fs.existsSync(mobilePath);
   const needsPoster = !fs.existsSync(posterPath);
 
