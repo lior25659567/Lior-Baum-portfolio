@@ -73,12 +73,21 @@ function run(cmd, args) {
 
 function compressDesktop(file) {
   const tmp = file + '.compressing.mp4';
+  // Screen-recording sources are full-range (Y: 0-255) but the default
+  // H.264 pipeline tags output as TV range (16-235). Browsers then expand
+  // a file that's already full-range, crushing shadows and making the
+  // video read as darker than sibling images on the same slide. Forcing
+  // `in_range=pc`/`out_range=pc` + `-color_range pc` preserves the data
+  // and tells the decoder not to expand it.
   run('ffmpeg', [
     '-y', '-i', file,
-    '-vf', `scale='min(${DESKTOP_MAX_W},iw)':'-2'`,
+    '-vf', `scale='min(${DESKTOP_MAX_W},iw)':'-2':in_range=pc:out_range=pc`,
     '-c:v', 'libx264', '-crf', String(CRF_DESKTOP), '-preset', PRESET,
     '-tune', TUNE_DESKTOP,
-    '-pix_fmt', 'yuv420p', '-movflags', '+faststart',
+    '-pix_fmt', 'yuv420p',
+    '-color_range', 'pc',
+    '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709',
+    '-movflags', '+faststart',
     '-c:a', 'aac', '-b:a', '96k',
     tmp,
   ]);
@@ -88,9 +97,12 @@ function compressDesktop(file) {
 function buildMobile(file, outPath) {
   run('ffmpeg', [
     '-y', '-i', file,
-    '-vf', "scale='min(1280,iw)':'-2'",
+    '-vf', "scale='min(1280,iw)':'-2':in_range=pc:out_range=pc",
     '-c:v', 'libx264', '-crf', String(CRF_MOBILE), '-preset', PRESET,
-    '-pix_fmt', 'yuv420p', '-movflags', '+faststart',
+    '-pix_fmt', 'yuv420p',
+    '-color_range', 'pc',
+    '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709',
+    '-movflags', '+faststart',
     '-c:a', 'aac', '-b:a', '64k', '-ac', '2',
     outPath,
   ]);
