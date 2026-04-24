@@ -23,14 +23,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..');
 const ROOT = path.join(REPO_ROOT, 'public', 'case-studies');
 const SIZE_THRESHOLD_MB = 2;
-// CRF 16 on a 1920-wide frame with `-tune animation` gives near-lossless
-// output on UI screencasts (flat colors + sharp edges, which is what these
-// portfolio videos are). The earlier CRF 28 at the source's native
-// 2880×1800 spent its bit budget across too many pixels and produced soft,
-// smeared frames on desktop.
-const CRF_DESKTOP = 16;
+// CRF 14 on a 2560-wide frame with `-tune animation` is near-lossless
+// for UI screencasts (flat colors + sharp edges). Cap matches typical
+// 3× DPR display widths for slide media; CRF 14 puts us about as close
+// to the pristine 2880×1800 / 3.5 Mbps source as H.264 usefully gets.
+const CRF_DESKTOP = 14;
 const CRF_MOBILE = 30;
-const DESKTOP_MAX_W = 1920;
+const DESKTOP_MAX_W = 2560;
 const PRESET = 'slow';
 // x264 tuning — `animation` is built for large flat regions and crisp
 // edges (cartoons, UI screencasts), which matches the portfolio content
