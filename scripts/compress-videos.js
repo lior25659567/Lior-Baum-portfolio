@@ -23,13 +23,19 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..');
 const ROOT = path.join(REPO_ROOT, 'public', 'case-studies');
 const SIZE_THRESHOLD_MB = 2;
-// CRF 20 on a 1920-wide frame gives sharp output close to visually lossless.
-// The earlier CRF 28 at the source's native 2880×1800 spent its bit budget
-// across too many pixels and produced soft, smeared frames on desktop.
-const CRF_DESKTOP = 20;
+// CRF 18 on a 1920-wide frame with `-tune animation` gives near-lossless
+// output on UI screencasts (flat colors + sharp edges, which is what these
+// portfolio videos are). The earlier CRF 28 at the source's native
+// 2880×1800 spent its bit budget across too many pixels and produced soft,
+// smeared frames on desktop.
+const CRF_DESKTOP = 18;
 const CRF_MOBILE = 30;
 const DESKTOP_MAX_W = 1920;
 const PRESET = 'slow';
+// x264 tuning — `animation` is built for large flat regions and crisp
+// edges (cartoons, UI screencasts), which matches the portfolio content
+// better than the default tune. No effect on playback compatibility.
+const TUNE_DESKTOP = 'animation';
 const DRY = process.argv.includes('--dry');
 // `--from-backup` restores the pristine original from the most recent
 // backups/case-studies-videos-* dir before running the desktop encode +
@@ -72,6 +78,7 @@ function compressDesktop(file) {
     '-y', '-i', file,
     '-vf', `scale='min(${DESKTOP_MAX_W},iw)':'-2'`,
     '-c:v', 'libx264', '-crf', String(CRF_DESKTOP), '-preset', PRESET,
+    '-tune', TUNE_DESKTOP,
     '-pix_fmt', 'yuv420p', '-movflags', '+faststart',
     '-c:a', 'aac', '-b:a', '96k',
     tmp,
