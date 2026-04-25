@@ -4256,27 +4256,52 @@ My instructions: `;
               <div className="carousel-thumb-strip" onClick={(e) => e.stopPropagation()} data-no-slide-advance="true">
                 {images.map((imgData, ci) => {
                   const isActive = carouselIdx === ci;
+                  const isEmpty = !imgData.src && !imgData.embedUrl;
+                  // The minimum is 2 — under that the carousel template
+                  // collapses back to a single image. Match the slide-
+                  // overlay Remove behavior: clear src/embed in place
+                  // when at the minimum, drop the slot otherwise.
+                  const handleRemoveSlot = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (imageCount > 2) {
+                      removeImage(ci);
+                      if (carouselIdx >= imageCount - 1) setCarouselIdx(Math.max(0, imageCount - 2));
+                    } else {
+                      updateImage(ci, { src: '', embedUrl: '', embedType: undefined, isVideo: false, isGif: false });
+                    }
+                  };
                   return (
-                    <button
-                      key={ci}
-                      type="button"
-                      className={`carousel-thumb${isActive ? ' active' : ''}`}
-                      onMouseDown={(e) => e.stopPropagation()}
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(ci); }}
-                      title={`Image ${ci + 1}${imgData.src ? '' : imgData.embedUrl ? ' (embed)' : ' (empty)'}`}
-                      data-no-slide-advance="true"
-                    >
-                      {imgData.src && !imgData.isVideo ? (
-                        <img src={imgData.src} alt="" loading="lazy" decoding="async" />
-                      ) : imgData.src && imgData.isVideo ? (
-                        <span className="carousel-thumb-placeholder" aria-hidden="true">▶</span>
-                      ) : imgData.embedUrl ? (
-                        <span className="carousel-thumb-placeholder" aria-hidden="true">⧉</span>
-                      ) : (
-                        <span className="carousel-thumb-placeholder carousel-thumb-empty" aria-hidden="true">＋</span>
-                      )}
-                      <span className="carousel-thumb-index">{ci + 1}</span>
-                    </button>
+                    <div key={ci} className={`carousel-thumb-wrap${isActive ? ' active' : ''}${isEmpty ? ' empty' : ''}`}>
+                      <button
+                        type="button"
+                        className={`carousel-thumb${isActive ? ' active' : ''}`}
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(ci); }}
+                        title={`Image ${ci + 1}${imgData.src ? '' : imgData.embedUrl ? ' (embed)' : ' (empty)'}`}
+                        data-no-slide-advance="true"
+                      >
+                        {imgData.src && !imgData.isVideo ? (
+                          <img src={imgData.src} alt="" loading="lazy" decoding="async" />
+                        ) : imgData.src && imgData.isVideo ? (
+                          <span className="carousel-thumb-placeholder" aria-hidden="true">▶</span>
+                        ) : imgData.embedUrl ? (
+                          <span className="carousel-thumb-placeholder" aria-hidden="true">⧉</span>
+                        ) : (
+                          <span className="carousel-thumb-placeholder carousel-thumb-empty" aria-hidden="true">＋</span>
+                        )}
+                        <span className="carousel-thumb-index">{ci + 1}</span>
+                      </button>
+                      <button
+                        type="button"
+                        className="carousel-thumb-remove"
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onClick={handleRemoveSlot}
+                        title={imageCount > 2 ? `Remove slot ${ci + 1}` : 'Clear this slot'}
+                        aria-label={imageCount > 2 ? `Remove slot ${ci + 1}` : 'Clear this slot'}
+                        data-no-slide-advance="true"
+                      >×</button>
+                    </div>
                   );
                 })}
                 {imageCount < effectiveMaxImages && (
