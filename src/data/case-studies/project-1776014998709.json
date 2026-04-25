@@ -18,50 +18,18 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "cover",
+          "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-2xjw0pwaio.webp",
+          "src": "/case-studies/project-1776014998709/vid-ek4wo3txd8o.mp4",
           "caption": "",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-b4gk9toqg0.webp",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-6y3e4fy8w0.webp",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-bgbf9kr1q0.webp",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
+          "isVideo": true,
+          "embedType": "",
+          "isGif": false
         }
       ],
       "gridCols": 1,
-      "imageDisplayMode": "carousel",
+      "imageDisplayMode": "grid",
       "splitRatio": 30,
       "imageCarouselBg": true,
       "imageCarouselFit": "contain",
