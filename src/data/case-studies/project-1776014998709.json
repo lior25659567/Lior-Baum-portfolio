@@ -359,7 +359,7 @@
           "position": "center center",
           "size": "large",
           "fit": "contain",
-          "wrapperBg": false,
+          "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/project-1776014998709/img-mpp2k7l6t4.webp",
           "caption": "Old — Preview, Download PDF, Share via QR",
