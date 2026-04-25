@@ -312,7 +312,7 @@
           "isVideo": false
         }
       ],
-      "splitRatio": 30,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "carousel",
       "imageCarouselInterval": 1500,
