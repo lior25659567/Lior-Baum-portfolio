@@ -23,11 +23,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..');
 const ROOT = path.join(REPO_ROOT, 'public', 'case-studies');
 const SIZE_THRESHOLD_MB = 2;
-// CRF 14 on a 2560-wide frame with `-tune animation` is near-lossless
-// for UI screencasts (flat colors + sharp edges). Cap matches typical
-// 3× DPR display widths for slide media; CRF 14 puts us about as close
-// to the pristine 2880×1800 / 3.5 Mbps source as H.264 usefully gets.
-const CRF_DESKTOP = 14;
+// CRF 12 on a 2560-wide frame with `-tune animation` is effectively
+// archival-quality for UI screencasts — visibly indistinguishable from
+// source short of A/B pixel-peeping. Further drops give diminishing
+// returns at a steep size cost.
+const CRF_DESKTOP = 12;
 const CRF_MOBILE = 30;
 const DESKTOP_MAX_W = 2560;
 const PRESET = 'slow';
@@ -229,7 +229,10 @@ for (const file of files) {
       backupOriginal(file, backupDir);
       const tmp = compressDesktop(file);
       const compressedSize = fs.statSync(tmp).size;
-      if (compressedSize >= sizeBefore * 0.95) {
+      // With --force we always replace — the user asked for the new
+      // quality target even if the file grows. Without --force, skip
+      // the swap if the gain is negligible.
+      if (!FORCE && compressedSize >= sizeBefore * 0.95) {
         fs.unlinkSync(tmp);
         process.stdout.write('  desktop: kept original');
       } else {
