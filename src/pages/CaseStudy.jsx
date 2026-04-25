@@ -4231,13 +4231,15 @@ My instructions: `;
                   );
                 })}
               </div>
+              {imageCount > 1 && !editMode && (
+                <div className="carousel-dots">
+                  {images.map((_, ci) => (
+                    <button key={ci} className={`carousel-dot ${carouselIdx === ci ? 'active' : ''}`} onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(ci); }} data-no-slide-advance="true" />
+                  ))}
+                </div>
+              )}
               {imageCount > 1 && (
                 <>
-                  <div className="carousel-dots">
-                    {images.map((_, ci) => (
-                      <button key={ci} className={`carousel-dot ${carouselIdx === ci ? 'active' : ''}`} onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(ci); }} data-no-slide-advance="true" />
-                    ))}
-                  </div>
                   <button className="carousel-arrow carousel-prev" onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(prev => (prev - 1 + imageCount) % imageCount); }} data-no-slide-advance="true">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 4L8 10L12 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </button>
@@ -4246,12 +4248,53 @@ My instructions: `;
                   </button>
                 </>
               )}
-              {editMode && imageCount < effectiveMaxImages && (
-                <button className="add-dynamic-image-btn carousel-add-btn" onClick={addImage}>
-                  + Add Image ({imageCount}/{effectiveMaxImages})
-                </button>
-              )}
             </div>
+            {/* Edit-mode thumbnail strip — clear "selected" state, click to
+                switch slide, dedicated `+ Add` tile that stays visible no
+                matter how many images the carousel already has. */}
+            {editMode && (
+              <div className="carousel-thumb-strip" onClick={(e) => e.stopPropagation()} data-no-slide-advance="true">
+                {images.map((imgData, ci) => {
+                  const isActive = carouselIdx === ci;
+                  return (
+                    <button
+                      key={ci}
+                      type="button"
+                      className={`carousel-thumb${isActive ? ' active' : ''}`}
+                      onMouseDown={(e) => e.stopPropagation()}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(ci); }}
+                      title={`Image ${ci + 1}${imgData.src ? '' : imgData.embedUrl ? ' (embed)' : ' (empty)'}`}
+                      data-no-slide-advance="true"
+                    >
+                      {imgData.src && !imgData.isVideo ? (
+                        <img src={imgData.src} alt="" loading="lazy" decoding="async" />
+                      ) : imgData.src && imgData.isVideo ? (
+                        <span className="carousel-thumb-placeholder" aria-hidden="true">▶</span>
+                      ) : imgData.embedUrl ? (
+                        <span className="carousel-thumb-placeholder" aria-hidden="true">⧉</span>
+                      ) : (
+                        <span className="carousel-thumb-placeholder carousel-thumb-empty" aria-hidden="true">＋</span>
+                      )}
+                      <span className="carousel-thumb-index">{ci + 1}</span>
+                    </button>
+                  );
+                })}
+                {imageCount < effectiveMaxImages && (
+                  <button
+                    type="button"
+                    className="carousel-thumb carousel-thumb-add"
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); addImage(); }}
+                    title={`Add image (${imageCount}/${effectiveMaxImages})`}
+                    data-no-slide-advance="true"
+                  >
+                    <span className="carousel-thumb-add-plus" aria-hidden="true">+</span>
+                    <span className="carousel-thumb-add-label">Add</span>
+                    <span className="carousel-thumb-index carousel-thumb-index-add">{imageCount}/{effectiveMaxImages}</span>
+                  </button>
+                )}
+              </div>
+            )}
           </>
         ) : (
         <div className="dynamic-images-grid" style={imageCount >= 2 ? { gridTemplateColumns: `repeat(${gridCols}, 1fr)` } : undefined}>

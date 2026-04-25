@@ -6767,6 +6767,117 @@ textarea.editable-field {
   white-space: nowrap;
 }
 
+/* ── Edit-mode carousel thumbnail strip ────────────────────────────────
+   Replaces the dot row in edit mode. Each tile shows the image, its
+   position number, and a clear active-state ring. The trailing `+ Add`
+   tile is always visible (up to effectiveMaxImages) so the user can keep
+   adding without hunting for a separate button. */
+.carousel-thumb-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.4rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.carousel-thumb {
+  position: relative;
+  width: 64px;
+  height: 44px;
+  flex: 0 0 auto;
+  padding: 0;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-thumb:hover {
+  border-color: rgba(255, 255, 255, 0.32);
+}
+
+.carousel-thumb.active {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(255, 88, 74, 0.3);
+}
+
+.carousel-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 0;
+  pointer-events: none;
+}
+
+.carousel-thumb-placeholder {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1;
+}
+
+.carousel-thumb-empty {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 1.3rem;
+}
+
+.carousel-thumb-index {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.65);
+  padding: 1px 5px;
+  border-radius: 4px;
+  line-height: 1.3;
+  pointer-events: none;
+}
+
+.carousel-thumb-add {
+  background: rgba(255, 255, 255, 0.08);
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.28);
+  flex-direction: column;
+  gap: 1px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.carousel-thumb-add:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+.carousel-thumb-add-plus {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.carousel-thumb-add-label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.carousel-thumb-index-add {
+  position: static;
+  background: transparent;
+  padding: 0;
+  font-weight: 500;
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
 /* Carousel background wrapper */
 .dynamic-carousel-slide.carousel-has-bg {
   background: var(--color-bg-secondary);
