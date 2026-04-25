@@ -8,8 +8,8 @@
   "slides": [
     {
       "type": "intro",
-      "title": "Simplifying Remote\nPhysical Therapy",
-      "description": "WizeCare brings physical therapy into the patient's home. We redesigned the core clinical workflows — patient management, care plan editing, and protocol creation — to reduce friction and drive adoption.",
+      "title": "Physical Therapy\nRedesign",
+      "description": "WizeCare brings physical therapy into the patient's home. We redesigned the core workflows — patient management, care plan editing, and protocol creation — to reduce friction and drive adoption.",
       "clientLabel": "Client",
       "client": "WizeCare",
       "focusLabel": "Platform",
@@ -58,9 +58,9 @@
     {
       "type": "problem",
       "label": "The Context",
-      "title": "Clinicians who don't have time to learn new software",
-      "content": "Physiotherapists using WizeCare manage packed clinic days and rely on manual routines built over years. They're quick to abandon tools that add steps instead of removing them.",
-      "highlight": "For WizeCare to succeed, the system needed to feel like a time-saver — not an extra task.",
+      "title": "Clinicians who don't have time for new software",
+      "content": "Physiotherapists manage packed clinic days and rely on manual routines built over years. They abandon tools that add steps instead of removing them.",
+      "highlight": "The system needed to feel like a time-saver — not an extra task.",
       "image": [
         {
           "position": "center center",
@@ -81,23 +81,23 @@
     {
       "type": "issuesBreakdown",
       "label": "The Problem",
-      "title": "Three places the experience broke down",
-      "description": "We visited clinics, ran interviews, and reviewed support tickets. The same friction appeared in the same three places every time.",
+      "title": "Three places it broke down",
+      "description": "Clinic visits, interviews, and support tickets — the same friction surfaced in the same three places every time.",
       "issues": [
         {
           "number": "1",
           "title": "Patient screen unclear",
-          "description": "Clinicians couldn't find care plans or patient details — no hierarchy, no predictable navigation"
+          "description": "No hierarchy, no predictable navigation — care plans and details hard to find."
         },
         {
           "number": "2",
           "title": "Care plan editing too complex",
-          "description": "Editing required navigating multiple screens — context lost at every step"
+          "description": "Multi-screen flow — context lost at every step."
         },
         {
           "number": "3",
           "title": "No protocol creation flow",
-          "description": "No way to build from scratch — rigid templates didn't fit complex cases"
+          "description": "No way to build from scratch — rigid templates only."
         }
       ],
       "gridColumns": 3,
@@ -107,7 +107,7 @@
       "type": "problem",
       "label": "User Research",
       "title": "What clinicians told us",
-      "content": "Across every clinic we visited, the same frustrations came up — not as complaints, but as things clinicians had simply accepted.",
+      "content": "Same frustrations across every clinic — accepted as part of the routine, not reported as problems.",
       "highlight": "These weren't edge cases — they were accepted parts of the daily routine.",
       "image": [
         {
@@ -117,7 +117,7 @@
           "wrapperBg": false,
           "embedUrl": "",
           "src": "/case-studies/wizecare/img-9ev1haqlc4.webp",
-          "caption": "Field research — clinic visits and user interviews",
+          "caption": "Field research — clinic visits and interviews",
           "isVideo": false,
           "embedType": ""
         }
@@ -139,12 +139,12 @@
         {
           "number": "2",
           "title": "Streamline care plan editing",
-          "description": "One focused flow instead of multiple disconnected screens."
+          "description": "One focused flow instead of disconnected screens."
         },
         {
           "number": "3",
           "title": "Enable protocol creation",
-          "description": "Let experienced clinicians build and customise from scratch."
+          "description": "Let experts build and customise from scratch."
         },
         {
           "number": "4",
@@ -227,11 +227,11 @@
           "embedType": ""
         }
       ],
-      "beforeDescription": "Cluttered tabs, no clear hierarchy, and adherence metrics buried where no one could find them.",
+      "beforeDescription": "Cluttered tabs, no hierarchy, adherence metrics buried where no one could find them.",
       "afterDescription": "One dedicated page — patient info, active plans, and progress clearly separated.",
       "beforeBullets": [
-        "Oversized tabs with no clear hierarchy",
-        "No dedicated patient page — plans hard to locate",
+        "Oversized tabs with no hierarchy",
+        "No dedicated patient page",
         "Adherence metrics buried — most useful, hardest to find"
       ],
       "afterBullets": [
@@ -239,7 +239,7 @@
         "Clear separation between info, plans, and progress",
         "Adherence metrics surfaced as the primary clinical signal"
       ],
-      "highlight": "Clinicians went from searching across screens to finding everything in one predictable place.",
+      "highlight": "Clinicians went from searching across screens to finding everything in one place.",
       "imageDisplayMode": "carousel",
       "beforeImageCarouselFit": "contain",
       "splitRatio": 40,
@@ -252,7 +252,7 @@
       "type": "chapter",
       "number": "02",
       "title": "Care Plan Editing",
-      "subtitle": "The most frequent task in the platform — and the one with the most unnecessary steps.",
+      "subtitle": "The most frequent task — and the one with the most unnecessary steps.",
       "splitRatio": 40
     },
     {
@@ -364,19 +364,19 @@
           "embedType": ""
         }
       ],
-      "beforeDescription": "Multiple screens to complete a single edit — exercises in dense lists, no patient data in view.",
-      "afterDescription": "Everything on one screen. Each exercise as its own card. Patient data pinned throughout.",
+      "beforeDescription": "Multiple screens for a single edit — exercises in dense lists, no patient data in view.",
+      "afterDescription": "One screen. Each exercise as a card. Patient data pinned throughout.",
       "beforeBullets": [
         "4–5 screens per edit — context lost every step",
-        "Dense exercise lists — easy to misread at scale",
-        "No patient health data visible while editing"
+        "Dense exercise lists — easy to misread",
+        "No patient data visible while editing"
       ],
       "afterBullets": [
         "Single screen for the full editing flow",
         "Each exercise on its own card — easy to compare and reorder",
-        "Patient data pinned for constant clinical context"
+        "Patient data pinned for clinical context"
       ],
-      "highlight": "Irrelevant information removed entirely — the screen shows only what clinicians need to act.",
+      "highlight": "Irrelevant information removed — the screen shows only what clinicians need to act.",
       "gridCols": 1,
       "imageDisplayMode": "carousel",
       "beforeImageCarouselFit": "contain",
@@ -467,17 +467,17 @@
         }
       ],
       "beforeDescription": "No protocol creation flow — experts navigated a multi-step system with no way to build from scratch.",
-      "afterDescription": "A Kanban builder with drag-and-drop gives clinicians full control — built on the same card system as the care plan editor.",
+      "afterDescription": "A drag-and-drop Kanban builder — exercise library left, board right. Same card system as the care plan editor.",
       "beforeBullets": [
-        "No dedicated creation flow — no starting point for experts",
-        "Rigid templates didn't fit complex or custom cases"
+        "No dedicated creation flow",
+        "Rigid templates didn't fit complex cases"
       ],
       "afterBullets": [
-        "Drag-and-drop Kanban — exercise library left, board right",
-        "Same card system as care plan editor — zero additional learning",
+        "Drag-and-drop Kanban — library left, board right",
+        "Same card system as the care plan editor — zero learning curve",
         "Full control over structure, order, and grouping"
       ],
-      "highlight": "Reusing the card system across both flows meant the new builder felt immediately familiar.",
+      "highlight": "Reusing the card system across both flows meant the new builder felt familiar from day one.",
       "imageDisplayMode": "carousel",
       "beforeImageCarouselInterval": 1500,
       "beforeImageCarouselFit": "contain",
@@ -493,23 +493,23 @@
       "outcomes": [
         {
           "metric": "10–15 min",
-          "title": "Saved per patient session",
-          "description": "Less time navigating — more time on clinical decisions."
+          "title": "Saved per session",
+          "description": "Less time navigating, more on clinical decisions."
         },
         {
           "metric": "Fewer",
           "title": "Misclicks and prescription errors",
-          "description": "Clearer layouts and inline editing reduced mistakes during care plan editing."
+          "description": "Clearer layouts and inline editing reduced mistakes."
         },
         {
           "metric": "Higher",
           "title": "Daily active usage",
-          "description": "Clinicians who had avoided the platform started using it as their primary tool."
+          "description": "Clinicians who avoided the platform now use it daily."
         },
         {
           "metric": "Less",
-          "title": "Dependence on support and training",
-          "description": "A self-explanatory system meant clinicians could onboard and work independently."
+          "title": "Support and training needs",
+          "description": "Self-explanatory — clinicians onboard independently."
         }
       ],
       "showNumbers": false,
