@@ -45,7 +45,7 @@
       ],
       "gridCols": 1,
       "imageDisplayMode": "carousel",
-      "splitRatio": 30,
+      "splitRatio": 40,
       "introHeaderMode": "both",
       "logo": "",
       "logoIsVideo": false,
@@ -107,7 +107,7 @@
           "embedType": ""
         }
       ],
-      "splitRatio": 30,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid",
       "imageCarouselInterval": 1500
@@ -145,7 +145,8 @@
       ],
       "bullets": [],
       "cardHeight": "100",
-      "cardVariant": "soft"
+      "cardVariant": "soft",
+      "splitRatio": 40
     },
     {
       "type": "goals",
@@ -186,7 +187,8 @@
       "showKpisSection": true,
       "cardVariant": "default",
       "kpisCardVariant": "soft",
-      "goalsCardVariant": "minimal"
+      "goalsCardVariant": "minimal",
+      "splitRatio": 40
     },
     {
       "type": "problem",
@@ -214,7 +216,7 @@
           "isGif": false
         }
       ],
-      "splitRatio": 30,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },
@@ -222,7 +224,8 @@
       "type": "chapter",
       "number": "01",
       "title": "RX",
-      "subtitle": "The prescription step where clinicians define the patient, procedure, and case details before scanning begins."
+      "subtitle": "The prescription step where clinicians define the patient, procedure, and case details before scanning begins.",
+      "splitRatio": 40
     },
     {
       "type": "comparison",
@@ -331,7 +334,7 @@
       ],
       "gridCols": 3,
       "imageDisplayMode": "carousel",
-      "splitRatio": 30,
+      "splitRatio": 40,
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "afterImageCarouselFit": "contain",
@@ -448,7 +451,7 @@
       "switcherStyle": "pill",
       "gridCols": 1,
       "imageDisplayMode": "carousel",
-      "splitRatio": 30,
+      "splitRatio": 40,
       "afterImageCarouselFit": "contain",
       "afterImageCarouselInterval": 2000
     },
@@ -456,7 +459,8 @@
       "type": "chapter",
       "number": "02",
       "title": "Scan & View",
-      "subtitle": "The active phase where clinicians capture a 3D model in real time — then analyse, validate, and decide before anything reaches the lab."
+      "subtitle": "The active phase where clinicians capture a 3D model in real time — then analyse, validate, and decide before anything reaches the lab.",
+      "splitRatio": 40
     },
     {
       "type": "comparison",
@@ -541,7 +545,7 @@
       ],
       "gridCols": 1,
       "imageDisplayMode": "carousel",
-      "splitRatio": 30,
+      "splitRatio": 40,
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "afterImageCarouselInterval": 2500,
@@ -638,7 +642,7 @@
           "isVideo": false
         }
       ],
-      "splitRatio": 30,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "carousel",
       "imageCarouselFit": "contain",
@@ -743,7 +747,8 @@
       ],
       "showNumbers": false,
       "cardVariant": "default",
-      "gridColumns": 4
+      "gridColumns": 4,
+      "splitRatio": 40
     },
     {
       "type": "end",
@@ -751,7 +756,8 @@
       "subtitle": "Designing systems for real-time decisions",
       "email": "lior2565967@gmail.com",
       "phone": "050-5550409",
-      "linkedinUrl": "https://www.linkedin.com/in/lior-baum/"
+      "linkedinUrl": "https://www.linkedin.com/in/lior-baum/",
+      "splitRatio": 40
     }
   ]
 }
