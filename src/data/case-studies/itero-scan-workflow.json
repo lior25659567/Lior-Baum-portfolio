@@ -84,7 +84,7 @@
           "position": "center center",
           "size": "large",
           "fit": "contain",
-          "wrapperBg": false,
+          "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-ojnudsaui8.webp",
           "caption": "",
@@ -221,7 +221,7 @@
           "position": "center center",
           "size": "large",
           "fit": "contain",
-          "wrapperBg": false,
+          "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-uykask3eo.webp",
           "caption": "Old — rigid multi-step setup sequence",
@@ -323,7 +323,8 @@
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "afterImageCarouselFit": "contain",
-      "afterImageCarouselInterval": 2000
+      "afterImageCarouselInterval": 2000,
+      "beforeImageCarouselBg": true
     },
     {
       "type": "comparison",
@@ -334,7 +335,7 @@
           "position": "center center",
           "size": "large",
           "fit": "contain",
-          "wrapperBg": false,
+          "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-c18bmcovzg.webp",
           "caption": "Old — one modal per tooth, no overview",
@@ -438,7 +439,9 @@
       "imageDisplayMode": "carousel",
       "splitRatio": 40,
       "afterImageCarouselFit": "contain",
-      "afterImageCarouselInterval": 2000
+      "afterImageCarouselInterval": 2000,
+      "beforeImageCarouselBg": true,
+      "beforeImageCarouselFit": "contain"
     },
     {
       "type": "chapter",
