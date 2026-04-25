@@ -62,7 +62,7 @@
       ],
       "gridCols": 1,
       "imageDisplayMode": "carousel",
-      "splitRatio": 30,
+      "splitRatio": 40,
       "imageCarouselBg": true,
       "imageCarouselFit": "contain",
       "imageCarouselInterval": 1500
@@ -93,7 +93,7 @@
           "embedType": ""
         }
       ],
-      "splitRatio": 45,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },
@@ -123,7 +123,8 @@
       "bullets": [],
       "cardHeight": "100",
       "gridColumns": 4,
-      "cardVariant": "soft"
+      "cardVariant": "soft",
+      "splitRatio": 40
     },
     {
       "type": "goals",
@@ -162,7 +163,8 @@
       "cardHeight": "100",
       "kpisGridColumns": 2,
       "showKpisSection": true,
-      "goalsCardVariant": "minimal"
+      "goalsCardVariant": "minimal",
+      "splitRatio": 40
     },
     {
       "type": "comparison",
@@ -209,7 +211,7 @@
       "highlight": "The header replaced an entire panel — and made every action faster to reach.",
       "slideMode": "before-after",
       "switcherStyle": "pill",
-      "splitRatio": 30
+      "splitRatio": 40
     },
     {
       "type": "problem",
@@ -294,7 +296,7 @@
           "isVideo": false
         }
       ],
-      "splitRatio": 30,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "carousel",
       "imageCarouselFit": "contain",
@@ -374,7 +376,7 @@
           "isVideo": false
         }
       ],
-      "splitRatio": 30,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "carousel",
       "imageCarouselFit": "contain",
@@ -468,7 +470,8 @@
       "label": "Doctor Feedback",
       "quote": "Full canvas to work with, every action in the header, and templates that actually fit how I write reports.",
       "author": "Dr. N. Haddad",
-      "role": "Orthodontist, iTero early access"
+      "role": "Orthodontist, iTero early access",
+      "splitRatio": 40
     },
     {
       "type": "outcomes",
@@ -498,13 +501,15 @@
       ],
       "showNumbers": false,
       "cardVariant": "default",
-      "gridColumns": 4
+      "gridColumns": 4,
+      "splitRatio": 40
     },
     {
       "type": "end",
       "title": "Thank You",
       "subtitle": "Designing clinical tools that work at the speed of care.",
-      "cta": "Get in touch"
+      "cta": "Get in touch",
+      "splitRatio": 40
     }
   ]
 }
