@@ -865,7 +865,12 @@ body.case-study-active .footer {
   min-height: 0;
   display: flex;
   flex-direction: column;
+  /* Never show a scrollbar on the intro image column. */
+  overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.intro-images-wrapper::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
 .intro-images-wrapper .dynamic-images {
   flex: 1;
@@ -3238,7 +3243,15 @@ body.case-study-active .footer {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  /* Never let a scrollbar leak onto the image area itself — the slide is
+     the scroll source (overflow-y: auto on .slide). Belt-and-suspenders:
+     `overflow: hidden` clips and `scrollbar-width: none` hides any
+     scrollbar a UA decides to render anyway (e.g. on subpixel rounding). */
+  overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.dynamic-images::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
 .dynamic-grid-control {
   display: flex;
@@ -3312,7 +3325,12 @@ body.case-study-active .footer {
   flex: 1;
   min-height: 0;
   box-sizing: border-box;
+  /* No scrollbar on the grid layer either. */
+  overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.dynamic-images-grid::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
 /* Grid columns based on image count */
 .dynamic-images.images-count-1 .dynamic-images-grid {
@@ -3881,7 +3899,12 @@ body.case-study-active .footer {
   min-height: 0;
   display: flex;
   flex-direction: column;
+  /* Never show a scrollbar on the image column wrapper. */
+  overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.split-images-wrapper::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
 .split-images-wrapper .dynamic-images {
   flex: 1;
@@ -3933,7 +3956,12 @@ body.case-study-active .footer {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  /* Never show a scrollbar on the gallery wrapper. */
+  overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.image-gallery-wrapper::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
 .image-gallery-wrapper .dynamic-images {
   flex: 1;
