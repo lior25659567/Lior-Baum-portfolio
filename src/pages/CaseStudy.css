@@ -3794,6 +3794,32 @@ body.case-study-active .footer {
   background: rgba(255, 88, 74, 0.05);
 }
 
+/* Grid-mode add row — primary "Upload" gets the accent treatment,
+   secondary "Empty" stays neutral so the eye lands on the bulk path. */
+.add-dynamic-image-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.add-dynamic-image-primary {
+  border-style: solid;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(255, 88, 74, 0.08);
+  font-weight: 600;
+}
+
+.add-dynamic-image-primary:hover {
+  background: rgba(255, 88, 74, 0.16);
+}
+
+.add-dynamic-image-secondary {
+  font-size: 0.75rem;
+  padding: 0.45rem 0.75rem;
+}
+
 /* Wrapper classes for dynamic content in specific slides */
 .split-images-wrapper {
   flex: 1;

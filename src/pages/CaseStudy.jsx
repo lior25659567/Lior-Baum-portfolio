@@ -5043,10 +5043,23 @@ My instructions: `;
           })}
         </div>
         )}
+        {/* Grid-mode add buttons. Mirrors the carousel strip: bulk
+            upload as the primary action, blank-slot as the secondary. */}
         {editMode && images.length < effectiveMaxImages && (
-          <button className="add-dynamic-image-btn" onClick={addImage}>
-            + Add Image ({images.length}/{effectiveMaxImages})
-          </button>
+          <div className="add-dynamic-image-row">
+            <button
+              type="button"
+              className="add-dynamic-image-btn add-dynamic-image-primary"
+              onClick={handleBulkUpload}
+              title={`Upload one or more images (${images.length}/${effectiveMaxImages})`}
+            >+ Upload ({images.length}/{effectiveMaxImages})</button>
+            <button
+              type="button"
+              className="add-dynamic-image-btn add-dynamic-image-secondary"
+              onClick={addImage}
+              title="Add an empty slot"
+            >+ Empty</button>
+          </div>
         )}
       </div>
     );
