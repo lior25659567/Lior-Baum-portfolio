@@ -275,17 +275,63 @@ body.case-study-active .footer {
   }
 }
 
+/* Short viewports — laptops with bookmarks bar + tab bar + dock can leave
+   the page area under ~720px tall. The width-based padding rules above
+   would still ask for 96–128px top + bottom, eating most of the visible
+   slide. These rules pin compact padding when vertical space is tight,
+   regardless of width — keep image content in view rather than cropped. */
+@media (max-height: 800px) {
+  .case-study {
+    --slide-pad-top: 48px;
+    --slide-pad-bottom: 48px;
+    --slide-gap: 48px;
+    --slide-title-gap: 0.75rem;
+  }
+}
+
+@media (max-height: 600px) {
+  .case-study {
+    --slide-pad-top: 28px;
+    --slide-pad-bottom: 28px;
+    --slide-gap: 24px;
+    --slide-title-gap: 0.5rem;
+  }
+}
+
 .slide {
   flex: 0 0 100%;
   width: 100%;
   height: 100vh;
   height: 100dvh;
   display: flex;
-  align-items: center;
+  /* `safe center` keeps short slides centered but pins the top in place when
+     content overflows, so users can actually scroll up to the start instead
+     of having the top half clipped off-screen. */
+  align-items: safe center;
   justify-content: center;
   padding: var(--slide-pad-top) var(--slide-pad-x) var(--slide-pad-bottom);
   position: relative;
-  overflow: visible;
+  overflow-x: visible;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-text) 25%, transparent) transparent;
+}
+
+.slide::-webkit-scrollbar {
+  width: 10px;
+}
+.slide::-webkit-scrollbar-track {
+  background: transparent;
+}
+.slide::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-text) 25%, transparent);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.slide::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--color-text) 45%, transparent);
+  background-clip: padding-box;
 }
 
 /* Error Slide */
@@ -338,8 +384,11 @@ body.case-study-active .footer {
   max-width: var(--slide-max-w);
   margin-left: auto;
   margin-right: auto;
-  height: calc(100vh - var(--slide-pad-top) - var(--slide-pad-bottom));
-  height: calc(100dvh - var(--slide-pad-top) - var(--slide-pad-bottom));
+  /* `min-height` (was `height`) lets the inner grow when content is taller
+     than the viewport; combined with `overflow-y: auto` on `.slide`, the
+     overflow becomes a scrollable region instead of being clipped. */
+  min-height: calc(100vh - var(--slide-pad-top) - var(--slide-pad-bottom));
+  min-height: calc(100dvh - var(--slide-pad-top) - var(--slide-pad-bottom));
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -2234,7 +2283,7 @@ body.case-study-active .footer {
   position: absolute;
   left: 50%;
   bottom: clamp(1rem, 2vh, 1.75rem);
-  transform: translateX(-50%) translateY(6px);
+  transform: translateX(-50%) translateY(4px);
   z-index: 51;
   display: flex;
   align-items: center;
@@ -2249,8 +2298,10 @@ body.case-study-active .footer {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--transition-medium),
-              transform var(--transition-medium);
+  /* Snappy reveal — 0.4s (--transition-medium) felt sluggish for a hover
+     affordance. 160ms reads as "follows the cursor" without feeling popped. */
+  transition: opacity 0.16s ease-out,
+              transform 0.16s ease-out;
 }
 
 [data-theme="dark"] .slide-nav-pill {

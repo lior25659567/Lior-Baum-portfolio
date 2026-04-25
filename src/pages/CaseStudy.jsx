@@ -116,7 +116,7 @@ function migrateCaseStudyImagePathsToWebp(node) {
   return node;
 }
 
-const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'lazy' }) => {
+const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'lazy', playbackRate = 1 }) => {
   const ref = useRef(null);
   const { mobile, saveData, slow } = useLowBandwidthMedia();
   // iOS Safari allows autoplay only when the `muted` HTML *attribute* is
@@ -171,8 +171,28 @@ const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'la
     const p = el.play();
     if (p && p.catch) p.catch(() => {});
   }, []);
-  const handleCanPlay = useCallback((e) => { tryPlay(e.currentTarget); }, [tryPlay]);
-  const handleLoadedData = useCallback((e) => { tryPlay(e.currentTarget); }, [tryPlay]);
+  // Apply playbackRate. Browsers reset playbackRate to 1 on every src change
+  // and on some loop wraps, so we re-apply on visibility flips, on `loadedmetadata`,
+  // and whenever the prop changes.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const rate = Number(playbackRate) || 1;
+    try { el.defaultPlaybackRate = rate; } catch {}
+    try { el.playbackRate = rate; } catch {}
+  }, [playbackRate, visible]);
+  const handleCanPlay = useCallback((e) => {
+    const el = e.currentTarget;
+    const rate = Number(playbackRate) || 1;
+    try { el.playbackRate = rate; } catch {}
+    tryPlay(el);
+  }, [tryPlay, playbackRate]);
+  const handleLoadedData = useCallback((e) => {
+    const el = e.currentTarget;
+    const rate = Number(playbackRate) || 1;
+    try { el.playbackRate = rate; } catch {}
+    tryPlay(el);
+  }, [tryPlay, playbackRate]);
   // Kick off playback whenever `visible` flips to true — covers the case
   // where `canplay` already fired (video was preloaded from a prior mount)
   // and won't fire again, so the existing canplay handler would never run.
@@ -2003,6 +2023,19 @@ const CaseStudy = () => {
 
   hideSlideNavRef.current = hideSlideNavImmediate;
 
+  // Reveal the nav pill when the cursor moves into the bottom band of the
+  // slides wrapper. Without this, after `wheel` fires `hideSlideNavImmediate`,
+  // there is no way to bring the nav back without leaving and re-entering the
+  // page (the bottom .slide-nav-hover-zone is intentionally pointer-events:none
+  // so it doesn't eat clicks on CTAs). Threshold matches the hover zone CSS:
+  // `min(42vh, 340px)` from the bottom edge.
+  const handleSlideAreaMouseMove = useCallback((e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const yFromBottom = rect.bottom - e.clientY;
+    const trigger = Math.min(window.innerHeight * 0.42, 340);
+    if (yFromBottom <= trigger) showSlideNav();
+  }, [showSlideNav]);
+
   // Hide slide nav on any wheel (window listener so we always catch it)
   useEffect(() => {
     if (editMode) return;
@@ -2375,10 +2408,19 @@ const CaseStudy = () => {
           const data = pid === projectId ? project : await getCaseStudyDataAsync(pid);
           if (!data) return true;
           const cleanData = await extractAndSaveMedia(pid, data);
+          // Stringify once so we can both size-check and reuse the body.
+          // Catches the silent "JSON exceeds /api/save-case-study's 50MB cap"
+          // case that otherwise surfaces as an empty-looking error.
+          const bodyStr = JSON.stringify({ projectId: pid, data: cleanData });
+          const bodyMB = bodyStr.length / (1024 * 1024);
+          if (bodyMB > 49) {
+            console.error(`[save-all] Body for ${pid} is ${bodyMB.toFixed(1)}MB — exceeds 50MB server cap. Likely an un-extracted base64 data: URL still in the JSON.`);
+            return false;
+          }
           const res = await fetch('/api/save-case-study', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ projectId: pid, data: cleanData }),
+            body: bodyStr,
           });
           const text = await res.text();
           const result = text.trim().startsWith('{') ? JSON.parse(text) : { ok: false, error: `Server returned non-JSON (${res.status})` };
@@ -2388,7 +2430,10 @@ const CaseStudy = () => {
           }
           return true;
         } catch (err) {
-          console.error(`[save-all] Error for ${pid}:`, err);
+          // Spell out message + stack — bare `err` prints as "{}" for plain
+          // throws, and Chrome's collapsed Error view hides the stack until
+          // expanded. Emit both so the failure is diagnosable from one log.
+          console.error(`[save-all] Error for ${pid}:`, err && err.message, '\nname:', err && err.name, '\nstack:', err && err.stack, '\nraw:', err);
           return false;
         }
       }));
@@ -4392,7 +4437,7 @@ My instructions: `;
                       {imgData.src ? (
                         <>
                           {imgData.isVideo ? (
-                            <LazyVideo src={imgData.src} poster={imgData.posterSrc} priority={videoPriority} style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }} />
+                            <LazyVideo src={imgData.src} poster={imgData.posterSrc} priority={videoPriority} playbackRate={imgData.playbackRate} style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }} />
                           ) : (
                             <img
                               src={imgData.src}
@@ -4750,6 +4795,7 @@ My instructions: `;
                             const d = Math.abs((slideIndex ?? 0) - (currentSlideRef.current ?? 0));
                             return d === 0 ? 'high' : d <= 1 ? 'nearby' : 'lazy';
                           })()}
+                          playbackRate={imgData.playbackRate}
                           style={mediaContainStyle}
                         />
                       ) : (
@@ -4883,6 +4929,25 @@ My instructions: `;
                                 ))}
                               </div>
                             </div>
+
+                            {/* Playback Speed — videos only */}
+                            {imgData.isVideo && (
+                              <div className="settings-section">
+                                <span className="settings-section-title">Playback Speed</span>
+                                <div className="size-presets-row">
+                                  {[0.5, 1, 1.5, 2, 3].map((rate) => (
+                                    <button
+                                      key={rate}
+                                      className={`size-preset-btn ${(Number(imgData.playbackRate) || 1) === rate ? 'active' : ''}`}
+                                      onClick={() => updateImage(imgIndex, 'playbackRate', rate)}
+                                      title={`${rate}× speed`}
+                                    >
+                                      {rate}×
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
 
                             <button
                               className="settings-done-btn"
@@ -7904,6 +7969,7 @@ My instructions: `;
       <div
         className="case-study-slides-wrapper"
         onMouseEnter={showSlideNav}
+        onMouseMove={handleSlideAreaMouseMove}
         onMouseLeave={hideSlideNavAfterDelay}
       >
         <div className="slides-container" onClick={handleSlideAreaClick}>
