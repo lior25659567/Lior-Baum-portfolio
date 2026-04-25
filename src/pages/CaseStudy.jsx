@@ -931,7 +931,7 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
 
       {/* ── Edit-mode: style mode picker — only for comparison / problemSolution ── */}
 
-      <div className="slide-inner slide-split" data-split-ratio={slide.splitRatio || 50} style={getSplitStyleModule(slide)}>
+      <div className="slide-inner slide-split" style={getSplitStyleModule(slide)}>
         <div className="split-content">
           {/* Label + Title — always present */}
           <span className="slide-label">
@@ -5478,7 +5478,7 @@ My instructions: `;
             {slideControls}
             {titleSpacingControl}
             <SplitRatioControl slide={slide} slideIndex={index} />
-            <div className="slide-inner slide-intro-layout" data-split-ratio={slide.splitRatio || 50} style={getSplitStyle(slide)}>
+            <div className="slide-inner slide-intro-layout" style={getSplitStyle(slide)}>
 
               {/* ── Left: content ── */}
               <div className="intro-content">
@@ -5767,7 +5767,7 @@ My instructions: `;
             {titleSpacingControl}
             <SplitRatioControl slide={slide} slideIndex={index} />
             <div className="slide-inner">
-              <div className="project-showcase-layout" data-split-ratio={slide.splitRatio || 50} style={getSplitStyle(slide)}>
+              <div className="project-showcase-layout" style={getSplitStyle(slide)}>
                 {/* Left Panel - Info (centered vertically when no number) */}
                 <div className={`project-showcase-info${!slide.slideNumber ? ' project-showcase-info--no-number' : ''}`}>
                   {(slide.slideNumber || editMode) && (
