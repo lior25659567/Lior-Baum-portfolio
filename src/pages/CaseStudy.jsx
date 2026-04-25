@@ -1390,6 +1390,21 @@ const CaseStudy = () => {
       window.dispatchEvent(new CustomEvent('case-study:slide-change', { detail: { slide: currentSlide } }));
     }
   }, [currentSlide]);
+
+  // Force scrollbar reflow when entering edit mode or switching slides while in
+  // edit mode. Without this, Chrome leaves the slide's overflow:scroll rail
+  // unpainted (the parent .slides-track has a framer-motion transform that
+  // promotes it to a compositing layer, and child overflow changes don't
+  // invalidate it). Reading offsetHeight forces a synchronous layout.
+  useEffect(() => {
+    if (!editMode) return;
+    const id = requestAnimationFrame(() => {
+      document.querySelectorAll('.case-study.edit-mode .slide').forEach(el => {
+        void el.offsetHeight;
+      });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [editMode, currentSlide]);
   const [showTemplates, setShowTemplates] = useState(false);
   const [previewTemplate, setPreviewTemplate] = useState(null);
   const [showBuilder, setShowBuilder] = useState(false);

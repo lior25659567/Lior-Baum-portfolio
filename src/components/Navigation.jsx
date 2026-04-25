@@ -207,13 +207,13 @@ const Navigation = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.4, delay: 0.5 }}
               >
-                <AnimatedButton 
-                  href={content.hero.cvLink || 'https://drive.google.com/file/d/1wdnZiNuaSKB_TByqJm4TYQ7Cbg2W6sND/view?usp=sharing'} 
-                  variant="primary"
-                  icon="↓"
+                <AnimatedButton
+                  href={content.hero.cvLink || 'https://drive.google.com/file/d/1wdnZiNuaSKB_TByqJm4TYQ7Cbg2W6sND/view?usp=sharing'}
+                  variant="secondary"
+                  icon="→"
                   className="mobile-cta-btn"
                 >
-                  Download CV
+                  Check my CV
                 </AnimatedButton>
                 
                 <div className="mobile-social-links">

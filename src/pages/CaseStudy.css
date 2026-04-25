@@ -206,30 +206,23 @@ body.case-study-active .footer {
 }
 
 /* ========== UNIFIED SLIDE SYSTEM ========== */
-/* Equal padding on all sides:
-   - Below 1920px: 128px on all sides
-   - 1920px and above: 156px
-   --slide-max-w is 100% — the padding IS the constraint. */
+/* Desktop (≥1024px) uses fluid clamp() so padding/gap interpolate smoothly
+   between 1024px and ~3000px without the staircase-and-regression pattern
+   the stepped media queries used to produce. Tablet (≤1023) and mobile
+   (≤767) keep their dedicated breakpoints below since stacked layouts need
+   tighter tuned values. */
 
 .case-study {
-  --slide-max-w: 100%;
-  --slide-pad-x: 80px;
-  --slide-pad-top: 128px;
-  --slide-pad-bottom: 128px;
-  --slide-gap: 128px;
-}
-
-@media (max-width: 1279px) {
-  .case-study {
-    --slide-pad-x: 56px;
-    --slide-pad-top: 80px;
-    --slide-pad-bottom: 80px;
-    --slide-gap: 80px;
-  }
+  --slide-max-w: min(2200px, 100%);
+  --slide-pad-x: clamp(40px, 4.5vw, 144px);
+  --slide-pad-top: clamp(56px, 6.5vw, 128px);
+  --slide-pad-bottom: clamp(56px, 6.5vw, 128px);
+  --slide-gap: clamp(56px, 7vw, 144px);
 }
 
 @media (max-width: 1023px) {
   .case-study {
+    --slide-max-w: 100%;
     --slide-pad-x: 36px;
     --slide-pad-top: 48px;
     --slide-pad-bottom: 48px;
@@ -243,35 +236,6 @@ body.case-study-active .footer {
     --slide-pad-top: 56px;
     --slide-pad-bottom: 24px;
     --slide-gap: 24px;
-  }
-}
-
-@media (min-width: 1440px) {
-  .case-study {
-    --slide-pad-x: 64px;
-    --slide-pad-top: 96px;
-    --slide-pad-bottom: 96px;
-    --slide-gap: 112px;
-  }
-}
-
-@media (min-width: 1920px) {
-  .case-study {
-    --slide-max-w: 1920px;
-    --slide-pad-x: 128px;
-    --slide-pad-top: 120px;
-    --slide-pad-bottom: 120px;
-    --slide-gap: 128px;
-  }
-}
-
-@media (min-width: 2400px) {
-  .case-study {
-    --slide-max-w: 2200px;
-    --slide-pad-x: 144px;
-    --slide-pad-top: 128px;
-    --slide-pad-bottom: 128px;
-    --slide-gap: 144px;
   }
 }
 
@@ -487,7 +451,7 @@ body.case-study-active .footer {
 .split-image-wrapper {
   width: 100%;
   height: 100%;
-  max-height: 75vh;
+  max-height: clamp(360px, 65vh, 720px);
   border-radius: 16px;
   overflow: hidden;
   position: relative;
@@ -539,6 +503,9 @@ body.case-study-active .footer {
   align-items: stretch;
   position: relative;
   z-index: 1;
+  width: 100%;
+  max-width: var(--slide-max-w);
+  margin-inline: auto;
 }
 
 /* ── Entrance animations ── */
@@ -900,7 +867,7 @@ body.case-study-active .footer {
 .intro-image-wrapper {
   width: 100%;
   height: 100%;
-  max-height: 75vh;
+  max-height: clamp(360px, 65vh, 720px);
   border-radius: 16px;
   overflow: hidden;
   position: relative;
@@ -1311,6 +1278,9 @@ body.case-study-active .footer {
   flex: 1;
   min-height: 0;
   align-items: stretch;
+  width: 100%;
+  max-width: var(--slide-max-w);
+  margin-inline: auto;
 }
 
 .split-content {
@@ -5067,16 +5037,23 @@ body.case-study-active .footer {
    subtle view-mode rail since edit mode is a workspace, not a
    reading view. */
 .case-study.edit-mode .slide::-webkit-scrollbar {
-  width: 12px;
+  width: 14px;
+  background: color-mix(in srgb, var(--color-text) 12%, transparent);
+}
+.case-study.edit-mode .slide::-webkit-scrollbar-track {
+  background: color-mix(in srgb, var(--color-text) 12%, transparent);
+  border-radius: 0;
+  margin: 0;
 }
 .case-study.edit-mode .slide::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--color-text) 35%, transparent);
+  background: color-mix(in srgb, var(--color-text) 50%, transparent);
   border-radius: 8px;
-  border: 2px solid transparent;
+  border: 3px solid transparent;
   background-clip: padding-box;
+  min-height: 48px;
 }
 .case-study.edit-mode .slide::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in srgb, var(--color-text) 55%, transparent);
+  background: color-mix(in srgb, var(--color-text) 70%, transparent);
   background-clip: padding-box;
 }
 
