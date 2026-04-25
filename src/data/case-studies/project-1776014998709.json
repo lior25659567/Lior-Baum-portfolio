@@ -1,7 +1,7 @@
 {
   "dataVersion": 4,
   "title": "Patient Report\nRedesign",
-  "subtitle": "Redesigning the clinical patient report from a blank page into a structured, shareable communication tool.",
+  "subtitle": "From a blank page into a structured, shareable communication tool.",
   "category": "Clinical UX",
   "year": "2024",
   "color": "#0097A7",
@@ -9,7 +9,7 @@
     {
       "type": "intro",
       "title": "Patient Report\nRedesign",
-      "description": "After every scan, doctors needed to generate a report for the patient. The tool gave them a blank page. We redesigned it into a structured, template-driven system that produces professional reports in minutes.",
+      "description": "After every scan, doctors had to generate a patient report from a blank page. We rebuilt it into a template-driven system that produces professional reports in minutes.",
       "clientLabel": "Client",
       "client": "Align Technology",
       "focusLabel": "Focus",
@@ -39,16 +39,16 @@
       "type": "problem",
       "label": "The Problem",
       "title": "A blank page after every appointment",
-      "content": "The existing report tool had no structure, no templates, and no way to annotate or contextualise scan images. A third of the screen was always occupied by static information doctors couldn't act on while editing.",
+      "content": "No structure, no templates, no annotation. A third of the screen was always locked to static info doctors couldn't act on while editing.",
       "issuesTitle": "Where it failed",
       "issues": [
-        "Three-panel layout — right panel wasted 25% of screen space",
-        "Share and download buttons buried in a static sidebar",
-        "No templates — every report started from a blank page",
+        "Three-panel layout — sidebar wasted 25% of screen space",
+        "Share and download buttons buried in the sidebar",
+        "No templates — every report started blank",
         "Raw scan images with no annotation or tooth context",
-        "PDF output not designed to be read by patients"
+        "PDF output not designed for patients to read"
       ],
-      "highlight": "The interface was designed around the tool — not around the doctor using it.",
+      "highlight": "The interface was designed around the tool — not the doctor using it.",
       "image": [
         {
           "position": "center center",
@@ -69,7 +69,7 @@
       "type": "quotes",
       "label": "User Research",
       "title": "What doctors told us",
-      "content": "We interviewed clinicians across multiple practices. The same problems surfaced everywhere — accepted as workarounds, not reported as issues.",
+      "content": "Interviews across multiple practices. Same problems everywhere — accepted as workarounds, not reported as issues.",
       "quotes": [
         {
           "text": "I just skip the report most of the time. It takes too long.",
@@ -101,23 +101,23 @@
       "goals": [
         {
           "number": "1",
-          "title": "Give the canvas back to the doctor",
-          "description": "Move metadata and actions to the header — the full screen is for editing."
+          "title": "Give the canvas back",
+          "description": "Move metadata and actions to the header — full screen for editing."
         },
         {
           "number": "2",
           "title": "Give doctors a starting point",
-          "description": "Templates tailored to common procedures — reports start structured, not blank."
+          "description": "Procedure templates so reports start structured, not blank."
         },
         {
           "number": "3",
-          "title": "Make findings specific and visual",
-          "description": "Annotation and tooth tagging so doctors show exactly what they mean."
+          "title": "Make findings visual",
+          "description": "Annotation and tooth tagging — show, don't describe."
         },
         {
           "number": "4",
           "title": "Make sharing frictionless",
-          "description": "A report patients can receive and understand — with one-tap share options."
+          "description": "One-tap share, patient-readable, controlled access."
         }
       ],
       "kpis": [
@@ -164,16 +164,16 @@
           "embedType": ""
         }
       ],
-      "beforeDescription": "The three-panel layout locked doctor info, preview, and share buttons into a permanent right sidebar — taking up 25% of the screen at all times.",
-      "afterDescription": "Everything moved to a compact top header — doctor, clinic, patient, and all actions inline. The full canvas is now the report.",
+      "beforeDescription": "A permanent right sidebar locked doctor info, preview, and share buttons into 25% of the screen.",
+      "afterDescription": "Everything moved to a compact top header — doctor, clinic, patient, and actions inline.",
       "beforeBullets": [
-        "Right panel permanently occupied with static doctor/clinic info",
-        "Share and download buttons buried in the sidebar",
-        "Content area squeezed between two fixed panels"
+        "Sidebar permanently occupied with static info",
+        "Share and download buried in the sidebar",
+        "Content squeezed between two fixed panels"
       ],
       "afterBullets": [
-        "Doctor, clinic, and patient editable directly from the header",
-        "Share and Export PDF in the top bar — always one click away",
+        "Doctor, clinic, and patient editable from the header",
+        "Share and Export PDF always one click away",
         "Full screen dedicated to report content"
       ],
       "highlight": "The header replaced an entire panel — and made every action faster to reach.",
@@ -185,7 +185,7 @@
       "type": "problem",
       "label": "Templates & Sections",
       "title": "A structured starting point — built to flex",
-      "content": "Procedure-based templates pre-seed the report with the right sections. A modular block system lets doctors add, reorder, or remove anything to fit the case.",
+      "content": "Procedure templates pre-seed the report with the right sections. A modular block system lets doctors add, reorder, or remove anything to fit the case.",
       "issuesTitle": "What this enabled",
       "issues": [
         "Five templates — General Scan, Implant, Crown Prep, Follow-up, Custom",
@@ -274,13 +274,13 @@
       "type": "problem",
       "label": "Annotation & Tooth Chart",
       "title": "From plain images to clinically annotated findings",
-      "content": "Doctors now annotate directly on scan images and tag findings to specific teeth via an interactive FDI chart — two tools that answer the same question: where exactly is the problem?",
+      "content": "Doctors annotate directly on scan images and tag findings to specific teeth via an interactive FDI chart.",
       "issuesTitle": "What this enabled",
       "issues": [
         "Pen, text, and color tools — annotate full-size before saving",
-        "Interactive FDI chart — click to tag teeth, shown as numbered pills in the report",
-        "Findings tied directly to anatomy — no more disconnected descriptions",
-        "Patients can see exactly which teeth are affected"
+        "FDI chart — click to tag teeth, shown as numbered pills",
+        "Findings tied directly to anatomy",
+        "Patients see exactly which teeth are affected"
       ],
       "highlight": "Two tools that answered the same question: where exactly is the problem?",
       "image": [
@@ -411,16 +411,16 @@
           "isVideo": false
         }
       ],
-      "beforeDescription": "Three buttons stacked in the sidebar — Preview, Download PDF, and Share via QR. No access control, no recipient management, no delivery options beyond a QR code.",
-      "afterDescription": "A full Share Report modal with email invites, access permissions, PIN protection, and multi-channel delivery — WhatsApp, WeChat, QR, or copy link.",
+      "beforeDescription": "Three sidebar buttons — Preview, Download PDF, Share via QR. No access control, no recipient management.",
+      "afterDescription": "A full Share Report modal — email invites, access permissions, PIN protection, multi-channel delivery.",
       "beforeBullets": [
         "Three isolated actions with no shared logic",
         "QR code was the only real sharing option",
-        "No access control — anyone with the link could open the report",
+        "No access control",
         "No way to invite specific recipients"
       ],
       "afterBullets": [
-        "Invite by email with clear ownership and access levels",
+        "Invite by email with ownership and access levels",
         "PIN protection toggle for sensitive reports",
         "Multi-channel delivery — WhatsApp, WeChat, QR, copy link",
         "Privacy warning built into the flow"
@@ -449,22 +449,22 @@
         {
           "metric": "Faster",
           "title": "Report creation",
-          "description": "Templates and a clear layout replaced blank-page setup — reports that took 15+ minutes now start in seconds."
+          "description": "Reports that took 15+ minutes now start in seconds."
         },
         {
           "metric": "Clearer",
           "title": "Clinical communication",
-          "description": "Annotation and tooth tagging let doctors show findings — not just describe them."
+          "description": "Annotation and tooth tagging let doctors show, not describe."
         },
         {
           "metric": "Higher",
-          "title": "Report completion rate",
-          "description": "With structure upfront, doctors stopped skipping the report step entirely."
+          "title": "Completion rate",
+          "description": "With structure upfront, doctors stopped skipping the report."
         },
         {
           "metric": "Wider",
           "title": "Reach per report",
-          "description": "Multi-channel sharing meant reports reached patients via their preferred channel."
+          "description": "Multi-channel sharing reached patients on their preferred channel."
         }
       ],
       "showNumbers": false,
