@@ -9,7 +9,7 @@
     {
       "type": "intro",
       "title": "Design System\nin Claude Code",
-      "description": "Tokens, components, and rules shared by designers, developers, and AI — one source of truth governing scanner, web, and every surface in between.",
+      "description": "Tokens, components, and rules shared by designers, developers, and AI — one source of truth across every surface.",
       "clientLabel": "Client",
       "client": "Align Technology",
       "focusLabel": "Focus",
@@ -38,7 +38,7 @@
       "type": "problem",
       "label": "01 · The Shift · Context",
       "title": "From design systems to infrastructure",
-      "content": "Design systems used to be libraries. Now they're infrastructure — shared governance that designers, developers, and AI operate inside.",
+      "content": "Design systems used to be libraries. Now they're infrastructure — shared governance for designers, developers, and AI.",
       "issuesTitle": "What changed",
       "issues": [
         "Manual consistency → automated governance",
@@ -68,7 +68,7 @@
       "type": "problem",
       "label": "02 · System Architecture · Foundation",
       "title": "Shared by designers, developers, and AI",
-      "content": "Storybook, design tokens, and product surfaces all governed by the same constraints — with Claude Code as the connective layer.",
+      "content": "Storybook, design tokens, and product surfaces — all governed by the same constraints, with Claude Code as the connective layer.",
       "issuesTitle": "The layers",
       "issues": [
         "Design tokens — primitive, semantic, component",
@@ -99,13 +99,13 @@
       "type": "problem",
       "label": "03 · The System · Tokens, Components, Variants",
       "title": "One connected library",
-      "content": "A full design system built in code — tokens at the foundation, components on top, and variants that flex to every context. Every piece connected, governed, and shared across designers, developers, and AI.",
+      "content": "Tokens at the foundation, components on top, variants that flex to every context. Built in code, governed across designers, developers, and AI.",
       "issuesTitle": "What's inside",
       "issues": [
-        "Design tokens — colour, typography, spacing, motion",
+        "Tokens — colour, typography, spacing, motion",
         "Core components — buttons, inputs, modals, cards, tables",
         "Variants for every state, size, platform, and theme",
-        "Living docs generated alongside every component"
+        "Living docs alongside every component"
       ],
       "highlight": "Consistency was a baseline. Extensibility was the goal.",
       "image": [
@@ -204,13 +204,13 @@
       "type": "problem",
       "label": "04 · Surfaces & Themes",
       "title": "Same component. Every surface, every theme.",
-      "content": "Scanner is used with gloves, at arm's length — it needs bigger targets and touch-first interactions. Web is compact and mouse-driven. Dark and light mode aren't separate builds — just the same component responding to the token layer. One library, every context.",
+      "content": "Scanner needs bigger targets and touch. Web is compact and mouse-driven. Dark and light just respond to the token layer. One library, every context.",
       "issuesTitle": "How it works",
       "issues": [
-        "Scanner mode — bigger targets, touch-first, gloved hands",
-        "Web mode — compact, dense, keyboard and mouse",
-        "Dark and light mode handled at the token layer",
-        "Switching platform or theme is a flag — not a rebuild"
+        "Scanner — bigger targets, touch-first, gloved hands",
+        "Web — compact, dense, keyboard and mouse",
+        "Dark and light handled at the token layer",
+        "Switching is a flag — not a rebuild"
       ],
       "highlight": "One system. Two platforms. Every theme. Same logic underneath.",
       "image": [
@@ -300,7 +300,7 @@
       "type": "problem",
       "label": "06 · AI as a Collaborator · Ways of Working",
       "title": "AI didn't replace the work. It amplified it.",
-      "content": "Claude Code operated as a structured design collaborator — working through explicit rules, prompts, and proven methodologies. Designers owned intent. AI accelerated execution.",
+      "content": "Claude Code as a structured collaborator — explicit rules, prompts, methodologies. Designers owned intent. AI accelerated execution.",
       "highlight": "AI did not replace human work. It amplified capabilities and reduced friction.",
       "image": [
         {
@@ -337,7 +337,7 @@
         },
         {
           "metric": "Faster",
-          "title": "Designer onboarding",
+          "title": "Onboarding",
           "description": "New designers inherit the rules — the system teaches itself."
         },
         {
