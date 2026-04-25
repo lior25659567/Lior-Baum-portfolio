@@ -4060,6 +4060,24 @@ My instructions: `;
       const newImages = images.filter((_, i) => i !== imgIndex);
       updateSlide(slideIndex, { [field]: newImages });
     };
+
+    // Reorder helper for the carousel thumbnail strip. Pulls the dragged
+    // tile out and reinserts it at the drop target's index — the array
+    // shifts naturally instead of swapping pairs, which matches what the
+    // user sees when they drag a tile between two others.
+    const moveImage = (from, to) => {
+      if (from === to || from < 0 || to < 0 || from >= images.length || to >= images.length) return;
+      const next = [...images];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
+      updateSlide(slideIndex, { [field]: next });
+      // Keep the user's selection on the moved tile so their attention
+      // follows the action instead of jumping to whatever now sits at
+      // the old `carouselIdx`.
+      if (carouselIdx === from) setCarouselIdx(to);
+      else if (from < carouselIdx && to >= carouselIdx) setCarouselIdx(carouselIdx - 1);
+      else if (from > carouselIdx && to <= carouselIdx) setCarouselIdx(carouselIdx + 1);
+    };
     
     // Position presets
     const positionPresets = [
@@ -4077,9 +4095,11 @@ My instructions: `;
     const imageCount = images.length;
     const gridCols = slide.gridCols || (imageCount >= 3 ? 3 : imageCount >= 2 ? 2 : 1);
     const imageDisplayMode = slide.imageDisplayMode || 'grid';
-    const effectiveMaxImages = imageDisplayMode === 'carousel' ? 7 : maxImages;
+    const effectiveMaxImages = imageDisplayMode === 'carousel' ? 10 : maxImages;
 
     const [carouselIdx, setCarouselIdx] = useState(0);
+    const [dragSrcIdx, setDragSrcIdx] = useState(null);
+    const [dragOverIdx, setDragOverIdx] = useState(null);
     const carouselRef = useRef(null);
 
     // Auto-advance carousel
@@ -4274,14 +4294,41 @@ My instructions: `;
                       updateImage(ci, { src: '', embedUrl: '', embedType: undefined, isVideo: false, isGif: false });
                     }
                   };
+                  const isDragOver = dragOverIdx === ci && dragSrcIdx !== null && dragSrcIdx !== ci;
+                  const isDragSrc = dragSrcIdx === ci;
                   return (
-                    <div key={ci} className={`carousel-thumb-wrap${isActive ? ' active' : ''}${isEmpty ? ' empty' : ''}`}>
+                    <div
+                      key={ci}
+                      className={`carousel-thumb-wrap${isActive ? ' active' : ''}${isEmpty ? ' empty' : ''}${isDragOver ? ' drag-over' : ''}${isDragSrc ? ' dragging' : ''}`}
+                      draggable={imageCount > 1}
+                      onDragStart={(e) => {
+                        e.dataTransfer.effectAllowed = 'move';
+                        e.dataTransfer.setData('text/plain', String(ci));
+                        setDragSrcIdx(ci);
+                      }}
+                      onDragOver={(e) => {
+                        if (dragSrcIdx === null) return;
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                        if (dragOverIdx !== ci) setDragOverIdx(ci);
+                      }}
+                      onDragLeave={() => { if (dragOverIdx === ci) setDragOverIdx(null); }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const from = dragSrcIdx ?? Number(e.dataTransfer.getData('text/plain'));
+                        if (!Number.isNaN(from) && from !== ci) moveImage(from, ci);
+                        setDragSrcIdx(null);
+                        setDragOverIdx(null);
+                      }}
+                      onDragEnd={() => { setDragSrcIdx(null); setDragOverIdx(null); }}
+                    >
                       <button
                         type="button"
                         className={`carousel-thumb${isActive ? ' active' : ''}`}
                         onMouseDown={(e) => e.stopPropagation()}
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCarouselIdx(ci); }}
-                        title={`Image ${ci + 1}${imgData.src ? '' : imgData.embedUrl ? ' (embed)' : ' (empty)'}`}
+                        title={`Image ${ci + 1}${imgData.src ? '' : imgData.embedUrl ? ' (embed)' : ' (empty)'}${imageCount > 1 ? ' — drag to reorder' : ''}`}
                         data-no-slide-advance="true"
                       >
                         {imgData.src && !imgData.isVideo ? (

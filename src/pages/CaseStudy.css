@@ -6893,6 +6893,35 @@ textarea.editable-field {
 .carousel-thumb-wrap {
   position: relative;
   flex: 0 0 auto;
+  cursor: grab;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.carousel-thumb-wrap[draggable="false"] {
+  cursor: default;
+}
+
+.carousel-thumb-wrap:active {
+  cursor: grabbing;
+}
+
+/* The tile being dragged: faded so the eye follows the drop indicator. */
+.carousel-thumb-wrap.dragging {
+  opacity: 0.4;
+}
+
+/* The tile under the cursor while dragging — accent left edge marks
+   the drop point so the user can predict where the tile will land. */
+.carousel-thumb-wrap.drag-over::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  left: -6px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--color-accent);
+  box-shadow: 0 0 6px rgba(255, 88, 74, 0.6);
 }
 
 .carousel-thumb-remove {
