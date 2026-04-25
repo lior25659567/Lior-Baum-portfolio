@@ -9,7 +9,7 @@
     {
       "type": "intro",
       "title": "The Techno Chronicles",
-      "description": "A scroll-telling experience built from interconnected Wikipedia entries — breaking away from the generic layout to capture the rhythmic, raw energy of techno.",
+      "description": "A scroll-telling experience built from Wikipedia entries — breaking the generic layout to capture the raw energy of techno.",
       "clientLabel": "Type",
       "client": "Personal project",
       "focusLabel": "Focus",
@@ -84,9 +84,9 @@
     },
     {
       "type": "problem",
-      "label": "The premise",
-      "title": "Interconnected. Built to feel, not just inform.",
-      "content": "Built from connected Wikipedia entries using scroll-telling — breaking away from Wikipedia's functional, generic layout with hierarchy, rhythm, focus, and visual interest.",
+      "label": "The Premise",
+      "title": "Built to feel, not just inform",
+      "content": "Connected Wikipedia entries reimagined through scroll-telling — hierarchy, rhythm, and focus replacing the generic layout.",
       "highlight": "Not a redesign of Wikipedia — a reimagining of how its content could feel.",
       "image": [
         {
@@ -109,7 +109,7 @@
       "type": "problem",
       "label": "The Challenge",
       "title": "Capture techno without overdoing it",
-      "content": "Evoke the techno vibe subtly — balancing the rhythmic, raw energy of the genre with historical storytelling. Feel the genre without the design ever getting loud enough to distract from it.",
+      "content": "Evoke the genre's raw, rhythmic energy — without the design ever getting loud enough to distract from the story.",
       "highlight": "The vibe had to live in the rhythm — not the decoration.",
       "image": [
         {
@@ -133,7 +133,7 @@
       "type": "problem",
       "label": "Responsive",
       "title": "Fluid across every device",
-      "content": "Flexible grids, adaptive layouts, and refined typography scaling kept the experience seamless from desktop to mobile — without losing the visual weight of the design.",
+      "content": "Flexible grids and adaptive typography kept the experience intact from desktop to mobile — without losing visual weight.",
       "highlight": "The rhythm had to work on any screen — not just the big one.",
       "image": [
         {
@@ -204,22 +204,22 @@
         {
           "metric": "Rhythm",
           "title": "Scroll-telling controls pace",
-          "description": "Scroll-triggered reveals let the story breathe — pacing becomes part of the design."
+          "description": "Scroll-triggered reveals let the story breathe."
         },
         {
           "metric": "Balance",
           "title": "Aesthetic meets usability",
-          "description": "Bold creative choices stayed readable and navigable — neither side had to lose."
+          "description": "Bold creative choices stayed readable and navigable."
         },
         {
           "metric": "Responsive",
           "title": "Seamless across devices",
-          "description": "Flexible grids and adaptive typography kept the experience intact on any screen."
+          "description": "Adaptive grids kept the experience intact on any screen."
         },
         {
           "metric": "Clarity",
           "title": "Minimalism with bold accents",
-          "description": "A clean base with intentional emphasis kept focus on the moments that mattered."
+          "description": "A clean base kept focus on the moments that mattered."
         }
       ],
       "showNumbers": false,
