@@ -10,7 +10,7 @@ try {
 
 const EditContext = createContext();
 
-/* After the 2026-04-23 WebP conversion, /case-studies/*.png|jpg paths no
+/* After the 2026-04-23 WebP conversion, /case-studies/*.webp|jpg paths no
    longer resolve. localStorage/IndexedDB copies of site content written
    before that deploy still reference them — this walker rewrites those
    paths on load so pre-migration snapshots keep rendering. Non-mutating:

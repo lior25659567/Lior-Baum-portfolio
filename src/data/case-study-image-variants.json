@@ -3,6 +3,7 @@
     "widths": [
       480,
       960,
+      1440,
       1920
     ],
     "full": 1920
@@ -11,6 +12,7 @@
     "widths": [
       480,
       960,
+      1440,
       1920
     ],
     "full": 1920
@@ -19,6 +21,7 @@
     "widths": [
       480,
       960,
+      1440,
       1920
     ],
     "full": 1920
@@ -27,6 +30,7 @@
     "widths": [
       480,
       960,
+      1440,
       1920
     ],
     "full": 1920
@@ -35,6 +39,7 @@
     "widths": [
       480,
       960,
+      1440,
       1920
     ],
     "full": 1920
@@ -43,6 +48,7 @@
     "widths": [
       480,
       960,
+      1440,
       1920
     ],
     "full": 1920
@@ -51,6 +57,7 @@
     "widths": [
       480,
       960,
+      1440,
       1920
     ],
     "full": 1920
@@ -59,6 +66,7 @@
     "widths": [
       480,
       960,
+      1440,
       1920
     ],
     "full": 1920
@@ -67,6 +75,7 @@
     "widths": [
       480,
       960,
+      1440,
       1920
     ],
     "full": 1920
@@ -75,6 +84,7 @@
     "widths": [
       480,
       960,
+      1440,
       1920
     ],
     "full": 1920
@@ -83,6 +93,7 @@
     "widths": [
       480,
       960,
+      1440,
       1920
     ],
     "full": 1920
@@ -91,9 +102,82 @@
     "widths": [
       480,
       960,
+      1440,
       2048
     ],
     "full": 2048
+  },
+  "/case-studies/itero-scan-workflow/img-163xnxxw4w.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-1qeu0er8cg.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-1w2ve8n9eo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-1xk93j5k1s.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-26ilmo0g00.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-2c477ox0yo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-2isgj1sdk8.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-2oamm2wj94.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
   },
   "/case-studies/itero-scan-workflow/img-2x1frtk9p0.webp": {
     "widths": [
@@ -103,10 +187,47 @@
     ],
     "full": 1190
   },
+  "/case-studies/itero-scan-workflow/img-33g5kbbgzo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-3mvz13kkh8.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-4a434ejgwg.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-4ia2al00ec.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
   "/case-studies/itero-scan-workflow/img-4lsjjyc23c.webp": {
     "widths": [
       480,
       960,
+      1440,
       1920
     ],
     "full": 1920
@@ -115,14 +236,25 @@
     "widths": [
       480,
       960,
+      1440,
       1920
     ],
     "full": 1920
+  },
+  "/case-studies/itero-scan-workflow/img-58re9pw3k.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
   },
   "/case-studies/itero-scan-workflow/img-5jzxqvcqfs.webp": {
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -131,6 +263,142 @@
     "widths": [
       480,
       960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-5ul2dshi2c.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-5xjosagu64.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-6akvwfbgtc.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-6e0lzwcho0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-6fob43pyus.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-6rhfrt04tw.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-6tols6qi64.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-6wrqetdb6w.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-75hrod5cu0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-7dbygwgyc0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-7hhcoo5lfk.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-8n1xpfe880.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-8oo7wy3bo8.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-8r3hyaday4.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-91stftgb10.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
       1600
     ],
     "full": 1600
@@ -139,6 +407,16 @@
     "widths": [
       480,
       960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-9ixeeo5cec.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
       1600
     ],
     "full": 1600
@@ -147,6 +425,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -155,6 +434,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -170,6 +450,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -178,6 +459,16 @@
     "widths": [
       480,
       960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-cd23wwt3nc.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
       1600
     ],
     "full": 1600
@@ -190,10 +481,65 @@
     ],
     "full": 1280
   },
+  "/case-studies/itero-scan-workflow/img-dr7zump674.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-g3lsfkemtc.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-ghr5xr5fic.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-gru3233i98.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-hvfigv15y0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
   "/case-studies/itero-scan-workflow/img-iVBORw0KGgoA.webp": {
     "widths": [
       480,
       960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-ing5tp683k.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
       1600
     ],
     "full": 1600
@@ -202,6 +548,34 @@
     "widths": [
       480,
       960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-jwg85at4lo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-l87h2jkfv0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-mdl2hftxfc.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
       1600
     ],
     "full": 1600
@@ -210,6 +584,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -218,6 +593,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -233,6 +609,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -244,10 +621,65 @@
     ],
     "full": 922
   },
+  "/case-studies/project-1776014998709/img-1v3xk53sa0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-2183xvxceo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-2pf70duwx4.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-2ubkci5keo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
   "/case-studies/project-1776014998709/img-2xjw0pwaio.webp": {
     "widths": [
       480,
       960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-35rxbmx9w0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-5s72t1zyj0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
       1600
     ],
     "full": 1600
@@ -256,6 +688,52 @@
     "widths": [
       480,
       960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-746o5piybo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-7hxw7sh0g0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-7zblvi8vj8.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-87shh9vrr4.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-9c25aooao.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
       1600
     ],
     "full": 1600
@@ -264,6 +742,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -272,6 +751,43 @@
     "widths": [
       480,
       960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-c87wux3a2o.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-cazovgv934.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-eep6296pc0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-hs4e511h0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
       1600
     ],
     "full": 1600
@@ -280,6 +796,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -288,6 +805,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -296,6 +814,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -304,6 +823,7 @@
     "widths": [
       480,
       960,
+      1440,
       1792
     ],
     "full": 1792
@@ -312,6 +832,34 @@
     "widths": [
       480,
       960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-ojgbryqvo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-poyh2up2g.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-z1u1z0y00.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
       1600
     ],
     "full": 1600
@@ -320,6 +868,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -336,6 +885,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -344,6 +894,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -352,6 +903,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -381,6 +933,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -389,6 +942,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -397,14 +951,61 @@
     "widths": [
       480,
       960,
+      1440,
       1992
     ],
     "full": 1992
+  },
+  "/case-studies/project-1776628169716/img-1upfr5gm8c.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-232972vdm0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-2k54wd1o10.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-2sk1bhvb40.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
   },
   "/case-studies/project-1776628169716/img-2zdylg6pe8.webp": {
     "widths": [
       480,
       960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-3pfdtniqfs.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
       1600
     ],
     "full": 1600
@@ -413,6 +1014,106 @@
     "widths": [
       480,
       960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-4hiqd7jo00.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-4jhxs4okuc.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-64weyca41s.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-69iqztm24w.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-6ucb7wkbog.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-6zmpczgaiw.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-7a1duy3a1c.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-7idwyxg340.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-7tq37ttkk0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-7vlkobseqo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-8dr3hhxg00.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
       1600
     ],
     "full": 1600
@@ -421,6 +1122,16 @@
     "widths": [
       480,
       960,
+      1440,
+      1600
+    ],
+    "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-ogicp3wg.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
       1600
     ],
     "full": 1600
@@ -429,6 +1140,7 @@
     "widths": [
       480,
       960,
+      1440,
       1779
     ],
     "full": 1779
@@ -437,6 +1149,7 @@
     "widths": [
       480,
       960,
+      1440,
       1779
     ],
     "full": 1779
@@ -445,6 +1158,7 @@
     "widths": [
       480,
       960,
+      1440,
       1779
     ],
     "full": 1779
@@ -453,6 +1167,7 @@
     "widths": [
       480,
       960,
+      1440,
       1779
     ],
     "full": 1779
@@ -461,6 +1176,7 @@
     "widths": [
       480,
       960,
+      1440,
       1779
     ],
     "full": 1779
@@ -469,6 +1185,7 @@
     "widths": [
       480,
       960,
+      1440,
       1779
     ],
     "full": 1779
@@ -477,6 +1194,7 @@
     "widths": [
       480,
       960,
+      1440,
       1779
     ],
     "full": 1779
@@ -485,6 +1203,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -493,6 +1212,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -501,6 +1221,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -509,6 +1230,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -525,6 +1247,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -533,6 +1256,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -541,6 +1265,7 @@
     "widths": [
       480,
       960,
+      1440,
       1920
     ],
     "full": 1920
@@ -549,6 +1274,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -557,6 +1283,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -565,6 +1292,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -573,6 +1301,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -581,6 +1310,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -589,6 +1319,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -597,6 +1328,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -612,6 +1344,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -620,6 +1353,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -628,6 +1362,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -636,6 +1371,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -644,6 +1380,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -652,6 +1389,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600
@@ -660,6 +1398,7 @@
     "widths": [
       480,
       960,
+      1440,
       1600
     ],
     "full": 1600

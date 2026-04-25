@@ -6,13 +6,18 @@
 <meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, viewport-fit=cover&quot;>
 <title>Patient Report</title>
 <style>
+/* scrollbar-hide */
+* { scrollbar-width: none; -ms-overflow-style: none; }
+*::-webkit-scrollbar { width: 0; height: 0; display: none; }
+html, body { overflow: hidden; overscroll-behavior: none; }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
     width: 100%; height: 100%;
     min-height: 100vh; min-height: 100dvh;
     overflow: hidden;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #FFF7F0 0%, #FFECDF 35%, #FFDCC5 65%, #FFC8AA 100%);
+    background: linear-gradient(105deg, #FFF8F2 0%, #FFEDE0 38%, #FFDAC2 68%, #FFCBAE 100%);
   }
   .stage { width: 100%; height: 100%; }
   .canvas { width: 100%; height: 100%; display: block; }

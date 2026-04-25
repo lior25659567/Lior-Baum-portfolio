@@ -1268,6 +1268,20 @@ body.case-study-active .footer {
   margin-left: 0;
 }
 
+/* ── 30/70 layout: lock image-side to 60% height for stable cross-screen proportions ──
+   At 30/70 the image column is 70% wide; if it stretches to 100% slide-inner height
+   its aspect ratio swings wildly across viewports of different aspect ratios, and
+   slide content can fall out of frame. Capping image height to 60% (with vertical
+   centering) gives the slide a consistent 40/60 vertical rhythm regardless of
+   screen height. */
+.slide-split[data-split-ratio="30"] > .split-images-wrapper,
+.slide-split[data-split-ratio="30"] > .split-image,
+.slide-intro-layout[data-split-ratio="30"] > .intro-images-wrapper,
+.project-showcase-layout[data-split-ratio="30"] > .project-showcase-visual {
+  max-height: 60%;
+  align-self: center;
+}
+
 .split-image {
   width: 100%;
   height: 100%;

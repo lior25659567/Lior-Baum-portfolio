@@ -26,8 +26,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..');
 const ROOT = path.join(REPO_ROOT, 'public', 'case-studies');
 const PUBLIC_PREFIX = '/case-studies';
-const TARGET_WIDTHS = [480, 960];
-const QUALITY = 82;
+const TARGET_WIDTHS = [480, 960, 1440];
+const QUALITY = 90;
+const EFFORT = 6;
 
 const VARIANT_RE = /@\d+\.webp$/i;
 const POSTER_RE = /\.poster\.webp$/i;
@@ -87,7 +88,7 @@ for (const file of files) {
     try {
       await sharp(file)
         .resize({ width: w, withoutEnlargement: true })
-        .webp({ quality: QUALITY })
+        .webp({ quality: QUALITY, effort: EFFORT })
         .toFile(out);
       widths.push(w);
       generated++;

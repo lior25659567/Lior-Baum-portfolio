@@ -1,4 +1,9 @@
 <style>
+/* scrollbar-hide */
+* { scrollbar-width: none; -ms-overflow-style: none; }
+*::-webkit-scrollbar { width: 0; height: 0; display: none; }
+html, body { overflow: hidden; overscroll-behavior: none; }
+
 .mb { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; padding: 1rem 0; font-family: var(--font-sans); }
 .t { border-radius: var(--border-radius-md); overflow: hidden; position: relative; }
 .ink { background: #0a0a0a; color: #f5f2e8; }
