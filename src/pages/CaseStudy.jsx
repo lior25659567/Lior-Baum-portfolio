@@ -4077,7 +4077,7 @@ My instructions: `;
     const imageCount = images.length;
     const gridCols = slide.gridCols || (imageCount >= 3 ? 3 : imageCount >= 2 ? 2 : 1);
     const imageDisplayMode = slide.imageDisplayMode || 'grid';
-    const effectiveMaxImages = imageDisplayMode === 'carousel' ? 5 : maxImages;
+    const effectiveMaxImages = imageDisplayMode === 'carousel' ? 7 : maxImages;
 
     const [carouselIdx, setCarouselIdx] = useState(0);
     const carouselRef = useRef(null);
@@ -4210,8 +4210,8 @@ My instructions: `;
                           )}
                           {editMode && (
                             <div className="carousel-slide-edit-controls">
-                              <button type="button" className="carousel-slide-replace" onClick={(e) => { e.stopPropagation(); handleDynamicImageUpload(imgIndex); }}>Replace</button>
-                              <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); imageCount > 2 ? removeImage(imgIndex) : updateImage(imgIndex, 'src', ''); }}>Remove</button>
+                              <button type="button" className="carousel-slide-replace" onClick={(e) => { e.stopPropagation(); handleDynamicImageUpload(imgIndex); }} title="Replace this image"><span aria-hidden="true">↻</span> Replace</button>
+                              <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); imageCount > 2 ? removeImage(imgIndex) : updateImage(imgIndex, 'src', ''); }} title="Remove this image"><span aria-hidden="true">✕</span> Remove</button>
                             </div>
                           )}
                         </>
@@ -4220,12 +4220,12 @@ My instructions: `;
                           <iframe src={imgData.embedUrl} title={imgData.embedType === 'youtube' ? 'YouTube Video' : `Embed ${imgIndex + 1}`} allowFullScreen allow={imgData.embedType === 'youtube' ? 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' : undefined} loading={imgData.embedType === 'youtube' ? 'lazy' : undefined} className={imgData.embedType === 'youtube' ? 'youtube-embed-iframe' : imgData.embedType === 'site' ? 'site-embed-iframe' : 'figma-embed-iframe'} />
                           {editMode && (
                             <div className="carousel-slide-edit-controls">
-                              <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); updateImage(imgIndex, { embedUrl: '' }); }}>Remove</button>
+                              <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); updateImage(imgIndex, { embedUrl: '' }); }} title="Remove this embed"><span aria-hidden="true">✕</span> Remove</button>
                             </div>
                           )}
                         </>
                       ) : editMode ? (
-                        <div className="carousel-placeholder" onClick={() => handleDynamicImageUpload(imgIndex)}>Click to add image</div>
+                        <div className="carousel-placeholder" onClick={() => handleDynamicImageUpload(imgIndex)}><span className="carousel-placeholder-plus" aria-hidden="true">+</span><span>Click to add image</span></div>
                       ) : null}
                     </div>
                   );
