@@ -292,15 +292,6 @@
           "embedUrl": "",
           "src": "/case-studies/project-1776014998709/img-5s72t1zyj0.png",
           "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-2pf70duwx4.png",
-          "isVideo": false
         }
       ],
       "splitRatio": 30,
@@ -329,16 +320,65 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/vid-jl0tegce3qg.mp4",
+          "src": "/case-studies/project-1776014998709/img-poyh2up2g.png",
           "caption": "Annotation canvas and FDI tooth chart",
-          "isVideo": true,
+          "isVideo": false,
           "embedType": "",
           "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-87shh9vrr4.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-c87wux3a2o.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-2183xvxceo.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-ojgbryqvo.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-cazovgv934.png",
+          "isVideo": false
         }
       ],
-      "splitRatio": 45,
+      "splitRatio": 30,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "carousel",
+      "imageCarouselFit": "contain",
+      "imageCarouselInterval": 2000
     },
     {
       "type": "comparison",
