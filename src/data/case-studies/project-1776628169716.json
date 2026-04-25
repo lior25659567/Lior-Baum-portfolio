@@ -52,7 +52,7 @@
       ],
       "gridCols": 1,
       "imageDisplayMode": "carousel",
-      "splitRatio": 40,
+      "splitRatio": 30,
       "imageCarouselFit": "contain",
       "imageCarouselInterval": 2500
     },
@@ -134,19 +134,93 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "contain",
+          "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776628169716/vid-2dg3iypq800.mp4",
-          "caption": "Tokens, components, and variants",
-          "isVideo": true,
-          "embedType": "",
+          "src": "/case-studies/project-1776628169716/img-3pfdtniqfs.png",
+          "caption": "",
+          "isVideo": false,
           "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-4jhxs4okuc.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-8dr3hhxg00.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-2k54wd1o10.png",
+          "caption": "",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-ogicp3wg.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-6ucb7wkbog.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-1upfr5gm8c.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-6zmpczgaiw.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-69iqztm24w.png",
+          "isVideo": false
         }
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "carousel",
+      "imageCarouselFit": "contain",
+      "imageCarouselInterval": 1500
     },
     {
       "type": "problem",
@@ -168,16 +242,81 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776628169716/vid-1ozwu5z4y4o.mp4",
+          "src": "/case-studies/project-1776628169716/img-7idwyxg340.png",
           "caption": "Same components — scanner, web, dark, light",
-          "isVideo": true,
-          "embedType": "",
+          "isVideo": false,
           "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-7tq37ttkk0.png",
+          "caption": "",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-2sk1bhvb40.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-64weyca41s.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-7a1duy3a1c.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-4hiqd7jo00.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-232972vdm0.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-7vlkobseqo.png",
+          "isVideo": false
         }
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "carousel",
+      "imageCarouselInterval": 1500,
+      "imageCarouselFit": "contain"
     },
     {
       "type": "problem",

@@ -17,15 +17,12 @@
       "image": [
         {
           "position": "center center",
-          "size": "medium",
-          "fit": "contain",
-          "wrapperBg": false,
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-5jzxqvcqfs.webp",
-          "caption": "",
-          "isVideo": false,
-          "isGif": false,
-          "embedType": ""
+          "src": "",
+          "caption": ""
         },
         {
           "position": "center center",
@@ -33,10 +30,8 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-b7q2i3k38c.webp",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
+          "src": "",
+          "caption": ""
         },
         {
           "position": "center center",
@@ -44,10 +39,8 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-pzwf0mxz40.webp",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
+          "src": "",
+          "caption": ""
         }
       ],
       "gridCols": 1,
