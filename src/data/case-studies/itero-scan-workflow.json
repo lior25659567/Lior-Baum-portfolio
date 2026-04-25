@@ -358,14 +358,78 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "contain",
+          "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/vid-3f4xusutnk0.mp4",
-          "caption": "New — visual chart, multi-select, color-coded procedures",
-          "isVideo": true,
+          "src": "/case-studies/itero-scan-workflow/img-91stftgb10.png",
+          "isVideo": false,
           "embedType": "",
           "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-26ilmo0g00.png",
+          "isVideo": false,
+          "embedType": "",
+          "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-6akvwfbgtc.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-8n1xpfe880.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-2isgj1sdk8.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-3mvz13kkh8.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-7dbygwgyc0.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-1qeu0er8cg.png",
+          "isVideo": false
         }
       ],
       "beforeDescription": "Every tooth required its own modal — click, confirm, close, repeat. No overview, no way to see the full treatment plan.",
@@ -383,8 +447,10 @@
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "gridCols": 1,
-      "imageDisplayMode": "grid",
-      "splitRatio": 40
+      "imageDisplayMode": "carousel",
+      "splitRatio": 40,
+      "afterImageCarouselFit": "contain",
+      "afterImageCarouselInterval": 2000
     },
     {
       "type": "chapter",
