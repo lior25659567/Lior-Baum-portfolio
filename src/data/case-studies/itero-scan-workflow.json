@@ -1,7 +1,7 @@
 {
   "dataVersion": 4,
   "title": "Clinical Scanning\nWorkflow",
-  "subtitle": "Redesigning the clinical scanning workflow to improve speed, clarity, and decision-making in real treatment conditions.",
+  "subtitle": "Redesigning the clinical scanning workflow for speed, clarity, and decision-making in real treatment conditions.",
   "category": "Clinical Workflow Redesign",
   "year": "2024",
   "color": "#E8847C",
@@ -9,7 +9,7 @@
     {
       "type": "intro",
       "title": "Clinical Scanning\nWorkflow",
-      "description": "Align Technology powers digital dentistry chair-side. Their scanning workflow — RX, Scan, and View — had friction at every phase. We redesigned all three into one continuous system.",
+      "description": "Align Technology powers digital dentistry chair-side. Their RX, Scan, and View workflow had friction at every phase — we redesigned all three into one continuous system.",
       "clientLabel": "Client",
       "client": "Align Technology",
       "focusLabel": "Focus",
@@ -42,12 +42,12 @@
       "type": "problem",
       "label": "The System",
       "title": "A system used during live patient treatment",
-      "content": "iTero is used chair-side while the patient is in the room. Three phases — RX, Scan, and View — feed directly into each other. A breakdown in any one affects the entire appointment.",
+      "content": "iTero is used chair-side. Three phases — RX, Scan, View — feed into each other. A breakdown in one affects the whole appointment.",
       "issuesTitle": "The three phases",
       "issues": [
-        "RX → define patient, procedure, and case details",
+        "RX → define patient, procedure, case details",
         "Scan → capture a real-time 3D model",
-        "View → validate results before lab submission"
+        "View → validate before lab submission"
       ],
       "highlight": "Every decision happens under time pressure — with the patient in the chair.",
       "image": [
@@ -71,13 +71,13 @@
       "type": "problem",
       "label": "The Problem",
       "title": "The system grew. The experience didn't.",
-      "content": "RX, Scan, and View were built up over time with no shared logic. What should feel like one workflow became three disconnected systems.",
+      "content": "RX, Scan, and View were built up over time with no shared logic — three disconnected systems instead of one workflow.",
       "issuesTitle": "Where it broke down",
       "issues": [
-        "Setup blocked users before they could start scanning",
-        "Procedure and tooth selection required too much mental effort",
+        "Setup blocked users before they could scan",
+        "Procedure and tooth selection took too much effort",
         "Scanning stopped every time a tool needed adjusting",
-        "Nothing signalled when a scan was actually complete"
+        "Nothing signalled when a scan was complete"
       ],
       "image": [
         {
@@ -101,7 +101,7 @@
       "type": "quotes",
       "label": "User Research",
       "title": "What we heard in the room",
-      "content": "We observed clinicians during live sessions and followed up with interviews. The same frustrations surfaced everywhere — accepted as part of the job, not reported as problems.",
+      "content": "Live observations and follow-up interviews. The same frustrations everywhere — accepted as part of the job.",
       "quotes": [
         {
           "text": "The patient popup interrupts me before I even start.",
@@ -140,23 +140,23 @@
       "goals": [
         {
           "number": "1",
-          "title": "Let clinicians start without friction",
-          "description": "Remove the setup gates that block users before a scan can even begin."
+          "title": "Start without friction",
+          "description": "Remove the setup gates that block users before scanning."
         },
         {
           "number": "2",
-          "title": "Keep the scanning motion unbroken",
-          "description": "Stop the interface from interrupting the physical act of scanning."
+          "title": "Keep scanning unbroken",
+          "description": "Stop the interface from interrupting the act of scanning."
         },
         {
           "number": "3",
           "title": "Make every tool self-explanatory",
-          "description": "Clarity built in — not something users figure out over time."
+          "description": "Clarity built in — not figured out over time."
         },
         {
           "number": "4",
           "title": "Make results trustworthy on first view",
-          "description": "A clear signal that the scan is done — no need to keep checking."
+          "description": "A clear signal that the scan is done — no re-checks."
         }
       ],
       "kpis": [
@@ -179,14 +179,14 @@
       "type": "problem",
       "label": "Interactive Prototype",
       "title": "Testing decisions before they became real",
-      "content": "We built an interactive prototype using Claude Code to simulate the real scanning workflow — testing decisions under clinical conditions before anything reached development.",
+      "content": "An interactive prototype built in Claude Code — simulating the real workflow under clinical conditions before development started.",
       "bullets2Title": "What this enabled",
       "bullets2": [
         "Real workflow simulation — not static screens",
-        "Friction caught before development began",
-        "Changes tested the same day they were made"
+        "Friction caught before development",
+        "Changes tested the same day"
       ],
-      "highlight": "Prototyping in code let us test things a Figma prototype simply can't — continuous motion, real-time feedback, and tool sequencing.",
+      "highlight": "Prototyping in code tested what Figma couldn't — continuous motion, real-time feedback, tool sequencing.",
       "image": [
         {
           "position": "center center",
@@ -209,7 +209,7 @@
       "type": "chapter",
       "number": "01",
       "title": "RX",
-      "subtitle": "The prescription step where clinicians define the patient, procedure, and case details before scanning begins.",
+      "subtitle": "The prescription step — defining patient, procedure, and case details before scanning.",
       "splitRatio": 40
     },
     {
@@ -305,17 +305,17 @@
           "isVideo": false
         }
       ],
-      "beforeDescription": "A rigid setup sequence blocked users before scanning could begin — no shortcuts, no flexibility.",
+      "beforeDescription": "A rigid setup sequence blocked users before scanning could begin.",
       "afterDescription": "Users start immediately and fill in context as they go.",
       "beforeBullets": [
         "Patient selection required a multi-step modal",
-        "Procedure had to be defined upfront — no flexibility",
+        "Procedure had to be defined upfront",
         "Dropdown disconnected from the dental chart"
       ],
       "afterBullets": [
-        "Inline patient selection — no modal, no interruption",
+        "Inline patient selection — no modal",
         "Patient context stays visible throughout",
-        "Procedure selection visual and tied to teeth structure"
+        "Procedure selection tied to teeth structure"
       ],
       "gridCols": 3,
       "imageDisplayMode": "carousel",
@@ -421,15 +421,15 @@
           "isVideo": false
         }
       ],
-      "beforeDescription": "Every tooth required its own modal — click, confirm, close, repeat. No overview, no way to see the full treatment plan.",
-      "afterDescription": "Teeth selected directly on the chart — individually or in groups — with procedures assigned inline.",
+      "beforeDescription": "Every tooth needed its own modal — click, confirm, close, repeat. No overview.",
+      "afterDescription": "Teeth selected directly on the chart — individually or in groups — with procedures inline.",
       "beforeBullets": [
         "One blocking modal per tooth — no multi-select",
         "No color coding — no clinical overview",
-        "Complex cases required many repetitive steps"
+        "Complex cases required repetitive steps"
       ],
       "afterBullets": [
-        "Select one or many teeth in a single interaction",
+        "Select one or many teeth in one interaction",
         "Color-coded procedures visible on the chart",
         "Full treatment plan visible without opening anything"
       ],
@@ -447,7 +447,7 @@
       "type": "chapter",
       "number": "02",
       "title": "Scan & View",
-      "subtitle": "The active phase where clinicians capture a 3D model in real time — then analyse, validate, and decide before anything reaches the lab.",
+      "subtitle": "Capturing, analysing, and validating a 3D model in real time — before anything reaches the lab.",
       "splitRatio": 40
     },
     {
@@ -519,15 +519,15 @@
           "isVideo": false
         }
       ],
-      "beforeDescription": "Icons accumulated from different sources with no shared style — and tools had no permanent home. Users had no pattern to rely on mid-scan.",
-      "afterDescription": "A unified icon set and a collapsible toolbar — consistent language, fixed location, labelled on demand.",
+      "beforeDescription": "Icons accumulated from different sources with no shared style — and no permanent home.",
+      "afterDescription": "A unified icon set and a collapsible toolbar — consistent language, fixed location.",
       "beforeBullets": [
         "No shared visual language across icons",
-        "No dedicated place for tools — each lived somewhere different",
+        "No dedicated place for tools",
         "Every new feature added more scatter"
       ],
       "afterBullets": [
-        "Unified icon set — each maps clearly to its action",
+        "Unified icon set — each maps to its action",
         "One collapsible toolbar, always in the same place",
         "Scalable — new tools slot in without disruption"
       ],
@@ -543,7 +543,7 @@
       "type": "problem",
       "label": "Multi-scan & Compare",
       "title": "Managing multiple scans — and comparing them",
-      "content": "Clinicians capture pre-treatment, post-treatment, and additional references — then need to compare them. Tabs handle the organisation; the multi-layer panel handles the comparison.",
+      "content": "Pre-treatment, post-treatment, and additional scans — organised by tabs, compared in a multi-layer panel.",
       "bullets2Title": "What this unlocked",
       "bullets2": [
         "Add and switch between scans within one session",
@@ -666,16 +666,16 @@
           "embedType": ""
         }
       ],
-      "beforeDescription": "Unlabelled icon clusters with no hierarchy — doctors memorised what every icon did and figured out the sequence themselves.",
-      "afterDescription": "Named panels with one clear primary action. Same structure across all tools — doctors build muscle memory fast.",
+      "beforeDescription": "Unlabelled icon clusters with no hierarchy — meaning had to be memorised.",
+      "afterDescription": "Named panels with one clear primary action — same structure across every tool.",
       "beforeBullets": [
-        "Unlabelled icons — meaning had to be memorised",
-        "No hierarchy — all actions carried equal weight",
-        "Destructive actions mixed with primary ones"
+        "Unlabelled icons — meaning memorised",
+        "No hierarchy — all actions equal weight",
+        "Destructive actions mixed with primary"
       ],
       "afterBullets": [
-        "Named panels with a single primary CTA per tool",
-        "AI detect is the default — doctors review, not draw",
+        "Named panels with one primary CTA per tool",
+        "AI detect is the default — review, not draw",
         "Destructive actions clearly separated"
       ],
       "gridCols": 1,
@@ -688,7 +688,7 @@
       "type": "problem",
       "label": "Design System",
       "title": "The work became the system",
-      "content": "The patterns created throughout the redesign were formalised into a design system — published in Figma and built in Claude Code as a living developer reference.",
+      "content": "Patterns from the redesign were formalised into a design system — published in Figma and built in Claude Code.",
       "highlight": "The design influenced the system built after it — and became a permanent part of it.",
       "image": [
         {
@@ -715,22 +715,22 @@
         {
           "metric": "Faster",
           "title": "Time to start scanning",
-          "description": "No setup gates — clinicians start the moment they're ready."
+          "description": "No setup gates — clinicians start when ready."
         },
         {
           "metric": "Fewer",
           "title": "Interruptions mid-scan",
-          "description": "A consistent toolbar meant doctors stopped searching and stayed in flow."
+          "description": "A consistent toolbar kept doctors in flow."
         },
         {
           "metric": "Clearer",
           "title": "Tools and states",
-          "description": "Named panels replaced icon clusters — no memorisation required."
+          "description": "Named panels replaced icon clusters."
         },
         {
           "metric": "Higher",
-          "title": "Confidence in scan results",
-          "description": "Clear completion signals meant doctors trusted results on first view."
+          "title": "Confidence in results",
+          "description": "Clear completion signals — trusted on first view."
         }
       ],
       "showNumbers": false,
