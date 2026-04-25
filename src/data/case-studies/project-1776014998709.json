@@ -62,7 +62,7 @@
       ],
       "gridCols": 1,
       "imageDisplayMode": "carousel",
-      "splitRatio": 40,
+      "splitRatio": 30,
       "imageCarouselBg": true,
       "imageCarouselFit": "contain",
       "imageCarouselInterval": 1500
