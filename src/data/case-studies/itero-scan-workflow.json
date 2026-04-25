@@ -45,7 +45,7 @@
       ],
       "gridCols": 1,
       "imageDisplayMode": "carousel",
-      "splitRatio": 30,
+      "splitRatio": 40,
       "introHeaderMode": "both",
       "logo": "",
       "logoIsVideo": false,

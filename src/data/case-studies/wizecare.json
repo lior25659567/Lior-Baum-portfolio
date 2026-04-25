@@ -21,7 +21,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-3e9ywkzxfk.png",
+          "src": "/case-studies/wizecare/img-3e9ywkzxfk.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -32,7 +32,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-4oykmxaws0.png",
+          "src": "/case-studies/wizecare/img-4oykmxaws0.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -43,7 +43,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-ehylbk97xs.png",
+          "src": "/case-studies/wizecare/img-ehylbk97xs.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -51,7 +51,7 @@
       ],
       "gridCols": 1,
       "imageDisplayMode": "carousel",
-      "splitRatio": 40,
+      "splitRatio": 30,
       "imageCarouselFit": "contain",
       "imageCarouselInterval": 1500
     },
@@ -68,7 +68,7 @@
           "fit": "contain",
           "wrapperBg": false,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-39wooi4v0w.jpg",
+          "src": "/case-studies/wizecare/img-39wooi4v0w.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -100,7 +100,8 @@
           "description": "No way to build from scratch — rigid templates didn't fit complex cases"
         }
       ],
-      "gridColumns": 3
+      "gridColumns": 3,
+      "splitRatio": 40
     },
     {
       "type": "problem",
@@ -115,7 +116,7 @@
           "fit": "contain",
           "wrapperBg": false,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-9ev1haqlc4.png",
+          "src": "/case-studies/wizecare/img-9ev1haqlc4.webp",
           "caption": "Field research — clinic visits and user interviews",
           "isVideo": false,
           "embedType": ""
@@ -162,13 +163,15 @@
       "cardHeight": "100",
       "kpisGridColumns": 2,
       "showKpisSection": true,
-      "goalsCardVariant": "minimal"
+      "goalsCardVariant": "minimal",
+      "splitRatio": 40
     },
     {
       "type": "chapter",
       "number": "01",
       "title": "Patient Management",
-      "subtitle": "The first place clinicians land — and where they spent most of their time feeling lost."
+      "subtitle": "The first place clinicians land — and where they spent most of their time feeling lost.",
+      "splitRatio": 40
     },
     {
       "type": "comparison",
@@ -183,7 +186,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-xu92y5bwo.png",
+          "src": "/case-studies/wizecare/img-xu92y5bwo.webp",
           "caption": "Old — cluttered tabs, buried adherence data",
           "isVideo": false,
           "embedType": ""
@@ -194,7 +197,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-7qfmd98x00.png",
+          "src": "/case-studies/wizecare/img-7qfmd98x00.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -207,7 +210,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-4chmer0xr4.png",
+          "src": "/case-studies/wizecare/img-4chmer0xr4.webp",
           "caption": "New — dedicated patient page, clear hierarchy",
           "isVideo": false,
           "embedType": ""
@@ -218,7 +221,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-3e9ywkzxfk.png",
+          "src": "/case-studies/wizecare/img-3e9ywkzxfk.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -249,7 +252,8 @@
       "type": "chapter",
       "number": "02",
       "title": "Care Plan Editing",
-      "subtitle": "The most frequent task in the platform — and the one with the most unnecessary steps."
+      "subtitle": "The most frequent task in the platform — and the one with the most unnecessary steps.",
+      "splitRatio": 40
     },
     {
       "type": "comparison",
@@ -264,7 +268,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-7qfmd98x00.png",
+          "src": "/case-studies/wizecare/img-7qfmd98x00.webp",
           "caption": "Old — multi-screen flow, dense exercise lists",
           "isVideo": false,
           "embedType": ""
@@ -275,7 +279,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-3icuntqcc0.png",
+          "src": "/case-studies/wizecare/img-3icuntqcc0.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -286,7 +290,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-fu77sazv3c.png",
+          "src": "/case-studies/wizecare/img-fu77sazv3c.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -297,7 +301,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-4k0tnag9eo.png",
+          "src": "/case-studies/wizecare/img-4k0tnag9eo.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -310,7 +314,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-3e9ywkzxfk.png",
+          "src": "/case-studies/wizecare/img-3e9ywkzxfk.webp",
           "caption": "New — single screen, exercise cards, inline editing",
           "isVideo": false,
           "embedType": ""
@@ -321,7 +325,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-4gqtt2o900.png",
+          "src": "/case-studies/wizecare/img-4gqtt2o900.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -332,7 +336,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-4t0xrhcg8w.png",
+          "src": "/case-studies/wizecare/img-4t0xrhcg8w.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -343,7 +347,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-20olxb6bo8.png",
+          "src": "/case-studies/wizecare/img-20olxb6bo8.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -354,7 +358,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-6yoff99cec.png",
+          "src": "/case-studies/wizecare/img-6yoff99cec.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -385,14 +389,16 @@
       "type": "chapter",
       "number": "03",
       "title": "Protocol Builder",
-      "subtitle": "Experienced physiotherapists want to build their own protocols — the old system gave them no way to do it."
+      "subtitle": "Experienced physiotherapists want to build their own protocols — the old system gave them no way to do it.",
+      "splitRatio": 40
     },
     {
       "type": "testimonial",
       "label": "Research Insight",
       "quote": "Physiotherapists prefer to create their own protocols rather than rely on predefined care plans. Each case requires specific adjustments — rigid templates just don't fit how they work.",
       "author": "Clinic interviews",
-      "role": "WizeCare user research, 2023"
+      "role": "WizeCare user research, 2023",
+      "splitRatio": 40
     },
     {
       "type": "comparison",
@@ -407,7 +413,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-db2ae7syo.png",
+          "src": "/case-studies/wizecare/img-db2ae7syo.webp",
           "caption": "Old — no creation flow, rigid templates only",
           "isVideo": false,
           "embedType": ""
@@ -418,7 +424,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-hxjw766x2s.png",
+          "src": "/case-studies/wizecare/img-hxjw766x2s.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -429,7 +435,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-1nmfkbclf0.png",
+          "src": "/case-studies/wizecare/img-1nmfkbclf0.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -440,7 +446,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/wizecare/img-aklnh5dvt8.png",
+          "src": "/case-studies/wizecare/img-aklnh5dvt8.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -508,13 +514,15 @@
       ],
       "showNumbers": false,
       "cardVariant": "default",
-      "gridColumns": 4
+      "gridColumns": 4,
+      "splitRatio": 40
     },
     {
       "type": "end",
       "title": "Thank You",
       "subtitle": "Designing systems that respect the people who use them.",
-      "cta": "Get in touch"
+      "cta": "Get in touch",
+      "splitRatio": 40
     }
   ]
 }
