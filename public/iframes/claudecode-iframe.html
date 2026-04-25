@@ -1,3 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code prototype</title>
+<style>
+  /* Pin the document shell so the inline iframe below can fill the
+     wrapper iframe perfectly. Without this, the browser's implicit body
+     margin (~8px) + auto height would let the inline iframe overflow,
+     surfacing a scrollbar on the outer wrapper. */
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #EC7E5C;
+  }
+</style>
+</head>
+<body>
 <iframe
   srcdoc="<!DOCTYPE html>
 <html lang=&quot;en&quot;>
@@ -153,7 +175,9 @@ html, body { overflow: hidden; overscroll-behavior: none; }
   height="100%"
   scrolling="no"
   frameborder="0"
-  style="border:0; display:block; width:100%; height:100%; min-height:480px; background:#EC7E5C; overflow:hidden;"
+  style="border:0; display:block; width:100%; height:100%; background:#EC7E5C; overflow:hidden;"
   loading="lazy"
   title="Claude Code interactive prototype">
 </iframe>
+</body>
+</html>
