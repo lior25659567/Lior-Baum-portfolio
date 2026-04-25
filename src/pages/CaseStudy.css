@@ -461,7 +461,10 @@ body.case-study-active .footer {
   gap: var(--slide-gap);
   flex: 1;
   min-height: 0;
-  align-items: center;
+  /* `stretch` (was `center`) so the image column fills the full row height
+     instead of collapsing to its content height. The text column already has
+     `height: 100%; justify-content: center` so it stays vertically centered. */
+  align-items: stretch;
 }
 
 .split-content {
