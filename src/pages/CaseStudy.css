@@ -6886,6 +6886,32 @@ textarea.editable-field {
   color: rgba(255, 88, 74, 0.85);
 }
 
+/* Secondary "Empty" tile — same shape as the Upload tile but neutral
+   so the upload one stays the visually dominant primary action. */
+.carousel-thumb-add-blank {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.7);
+  width: 64px;
+}
+
+.carousel-thumb-add-blank:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.45);
+  border-style: dashed;
+  box-shadow: none;
+  transform: none;
+}
+
+.carousel-thumb-add-blank .carousel-thumb-add-plus {
+  font-size: 1.1rem;
+}
+
+.carousel-thumb-add-blank .carousel-thumb-add-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.02em;
+}
+
 /* Per-slot remove badge — appears as a small × in the corner of each
    thumbnail. Hidden by default for filled slots so the strip stays
    clean, fades in on hover/active. Always visible for empty slots so

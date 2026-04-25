@@ -4046,13 +4046,91 @@ My instructions: `;
     };
     
     const addImage = () => {
-      const newImages = isArray 
-        ? [...images, { src: '', caption: '', position: 'center center', size: 'large', embedUrl: '' }] 
+      const newImages = isArray
+        ? [...images, { src: '', caption: '', position: 'center center', size: 'large', embedUrl: '' }]
         : [
-            { src: slide[field] || '', caption: slide[captionField] || '', position: slide.imagePosition || 'center center', size: slide.imageSize || 'large', embedUrl: slide[`${field}EmbedUrl`] || '' }, 
+            { src: slide[field] || '', caption: slide[captionField] || '', position: slide.imagePosition || 'center center', size: slide.imageSize || 'large', embedUrl: slide[`${field}EmbedUrl`] || '' },
             { src: '', caption: '', position: 'center center', size: 'large', embedUrl: '' }
           ];
       updateSlide(slideIndex, { [field]: newImages });
+    };
+
+    // Bulk upload — open the file picker in multi-select mode and drop the
+    // chosen files into the carousel in one shot. Empty slots are filled
+    // first (so the user's existing layout isn't disturbed); any extras
+    // append as new slots up to effectiveMaxImages. One updateSlide at the
+    // end avoids the cascade of single-image rewrites the per-file flow
+    // would otherwise produce.
+    const handleBulkUpload = () => {
+      const remaining = effectiveMaxImages - images.length;
+      const emptySlotCount = images.filter((img) => !img.src && !img.embedUrl).length;
+      const capacity = remaining + emptySlotCount;
+      if (capacity <= 0) {
+        alert(`Carousel is full (${images.length}/${effectiveMaxImages}).`);
+        return;
+      }
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*,video/mp4,video/webm,.gif';
+      input.multiple = true;
+      input.value = '';
+      input.onchange = async (e) => {
+        const files = Array.from(e.target.files || []);
+        if (files.length === 0) return;
+        if (files.length > capacity) {
+          alert(`Only ${capacity} more image${capacity === 1 ? '' : 's'} can fit. The first ${capacity} of your ${files.length} selected file${files.length === 1 ? '' : 's'} will be added.`);
+        }
+        const accepted = files.slice(0, capacity);
+
+        const maxVideoSize = 100; const maxGifSize = 40; const maxImageSize = 10;
+        const readFile = (file) => new Promise((resolve) => {
+          const isVideo = file.type.startsWith('video/');
+          const isGif = file.type === 'image/gif';
+          const isSvg = file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg');
+          const sizeMB = file.size / (1024 * 1024);
+          if (isVideo && sizeMB > maxVideoSize) { alert(`Skipped "${file.name}" — video over ${maxVideoSize}MB.`); resolve(null); return; }
+          if (isGif && sizeMB > maxGifSize) { alert(`Skipped "${file.name}" — GIF over ${maxGifSize}MB.`); resolve(null); return; }
+          if (!isVideo && !isGif && !isSvg && sizeMB > maxImageSize) { alert(`Skipped "${file.name}" — image over ${maxImageSize}MB.`); resolve(null); return; }
+          const reader = new FileReader();
+          reader.onerror = () => { console.error('Read error', file.name); resolve(null); };
+          reader.onload = async (ev) => {
+            const dataUrl = ev.target?.result;
+            if (!dataUrl) { resolve(null); return; }
+            if (isVideo || isGif || isSvg) {
+              resolve({ src: dataUrl, isVideo, isGif });
+            } else {
+              try { resolve({ src: await compressImage(dataUrl), isVideo: false }); }
+              catch { resolve({ src: dataUrl, isVideo: false }); }
+            }
+          };
+          reader.readAsDataURL(file);
+        });
+
+        // Read sequentially so giant videos don't all FileReader at once
+        // and choke memory on weak machines.
+        const loaded = [];
+        for (const f of accepted) {
+          const r = await readFile(f);
+          if (r) loaded.push(r);
+        }
+        if (loaded.length === 0) return;
+
+        // Fill empty slots first, then append. Single state write.
+        const next = [...images];
+        let q = 0;
+        for (let i = 0; i < next.length && q < loaded.length; i++) {
+          if (!next[i].src && !next[i].embedUrl) {
+            next[i] = { ...next[i], ...loaded[q], embedUrl: '', embedType: undefined };
+            q++;
+          }
+        }
+        while (q < loaded.length && next.length < effectiveMaxImages) {
+          next.push({ position: 'center center', size: 'large', fit: 'cover', wrapperBg: true, embedUrl: '', ...loaded[q] });
+          q++;
+        }
+        updateSlide(slideIndex, { [field]: next });
+      };
+      input.click();
     };
     
     const removeImage = (imgIndex) => {
@@ -4355,18 +4433,34 @@ My instructions: `;
                   );
                 })}
                 {imageCount < effectiveMaxImages && (
-                  <button
-                    type="button"
-                    className="carousel-thumb carousel-thumb-add"
-                    onMouseDown={(e) => e.stopPropagation()}
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); addImage(); }}
-                    title={`Add image (${imageCount}/${effectiveMaxImages})`}
-                    data-no-slide-advance="true"
-                  >
-                    <span className="carousel-thumb-add-plus" aria-hidden="true">+</span>
-                    <span className="carousel-thumb-add-label">Add</span>
-                    <span className="carousel-thumb-index carousel-thumb-index-add">{imageCount}/{effectiveMaxImages}</span>
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      className="carousel-thumb carousel-thumb-add"
+                      onMouseDown={(e) => e.stopPropagation()}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleBulkUpload(); }}
+                      title={`Upload one or more images (${imageCount}/${effectiveMaxImages})`}
+                      data-no-slide-advance="true"
+                    >
+                      <span className="carousel-thumb-add-plus" aria-hidden="true">+</span>
+                      <span className="carousel-thumb-add-label">Upload</span>
+                      <span className="carousel-thumb-index carousel-thumb-index-add">{imageCount}/{effectiveMaxImages}</span>
+                    </button>
+                    {/* Empty-slot fallback — keeps the prior single-click
+                        "add a blank slot, fill later" affordance discoverable
+                        next to the bulk upload tile. */}
+                    <button
+                      type="button"
+                      className="carousel-thumb carousel-thumb-add carousel-thumb-add-blank"
+                      onMouseDown={(e) => e.stopPropagation()}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); addImage(); }}
+                      title="Add empty slot"
+                      data-no-slide-advance="true"
+                    >
+                      <span className="carousel-thumb-add-plus" aria-hidden="true">+</span>
+                      <span className="carousel-thumb-add-label">Empty</span>
+                    </button>
+                  </>
                 )}
               </div>
             )}
