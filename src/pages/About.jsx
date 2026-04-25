@@ -156,19 +156,56 @@ const About = () => {
   }, [experience, updateAbout]);
 
 
+  // Re-encode an image data URL as WebP via canvas. Returns the original
+  // data URL on any failure (decode error, browser without WebP encoder,
+  // animated source) so the upload still works in the worst case.
+  const reEncodeAsWebp = (sourceDataUrl, quality = 0.85) => new Promise((resolve) => {
+    if (typeof document === 'undefined') return resolve({ dataUrl: sourceDataUrl, isWebp: false });
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return resolve({ dataUrl: sourceDataUrl, isWebp: false });
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob((blob) => {
+          if (!blob || blob.size === 0) return resolve({ dataUrl: sourceDataUrl, isWebp: false });
+          const r = new FileReader();
+          r.onload = () => resolve({ dataUrl: String(r.result || sourceDataUrl), isWebp: true });
+          r.onerror = () => resolve({ dataUrl: sourceDataUrl, isWebp: false });
+          r.readAsDataURL(blob);
+        }, 'image/webp', quality);
+      } catch {
+        resolve({ dataUrl: sourceDataUrl, isWebp: false });
+      }
+    };
+    img.onerror = () => resolve({ dataUrl: sourceDataUrl, isWebp: false });
+    img.src = sourceDataUrl;
+  });
+
   const handleImageUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    // Skip the WebP step for SVG (vector — re-encoding to raster ruins it)
+    // and GIF (animated — canvas would freeze the first frame).
+    const isSvg = file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg');
+    const isGif = file.type === 'image/gif';
     const reader = new FileReader();
     reader.onload = async (event) => {
-      const imageData = event.target?.result;
+      const sourceDataUrl = event.target?.result;
+      const { dataUrl: imageData, isWebp } = (isSvg || isGif)
+        ? { dataUrl: sourceDataUrl, isWebp: false }
+        : await reEncodeAsWebp(sourceDataUrl);
       // Keep the data URL in state for the rest of the session — always
       // renders, and skips the race where the browser requests the file
       // path before the API has finished writing it (which caches a 404
       // that then shows as a broken icon).
       setProfileImage(imageData);
       try {
-        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+        const sourceExt = (file.name.split('.').pop() || 'jpg').toLowerCase();
+        const ext = isWebp ? 'webp' : sourceExt;
         const base64data = imageData.split(',')[1];
         const res = await fetch('/api/save-about-image', {
           method: 'POST',

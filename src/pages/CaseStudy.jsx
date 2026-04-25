@@ -4228,37 +4228,51 @@ My instructions: `;
     const [carouselIdx, setCarouselIdx] = useState(0);
     const [dragSrcIdx, setDragSrcIdx] = useState(null);
     const [dragOverIdx, setDragOverIdx] = useState(null);
+    // Track whether this DynamicImages' slide is the current one. The
+    // auto-advance must NOT run while the slide is off-screen, otherwise
+    // by the time the user reaches the slide the index has already
+    // advanced past 0 and they see image 2/3/etc instead of image 1.
+    // Initialized via currentSlideRef.current so the carousel that's
+    // current on first render starts auto-advancing immediately.
+    const [isCurrentSlide, setIsCurrentSlide] = useState(
+      () => slideIndex === (currentSlideRef.current ?? 0)
+    );
+
+    // Listen for the parent's slide-change broadcast and rewind to image 1
+    // whenever the user navigates away. View mode only — edit mode keeps
+    // the user's selected thumb so active editing isn't disrupted.
+    useEffect(() => {
+      if (typeof window === 'undefined') return;
+      const onChange = (e) => {
+        const nowCurrent = e?.detail?.slide === slideIndex;
+        setIsCurrentSlide(nowCurrent);
+        if (!nowCurrent && imageDisplayMode === 'carousel' && !editMode) {
+          setCarouselIdx(0);
+        }
+      };
+      window.addEventListener('case-study:slide-change', onChange);
+      return () => window.removeEventListener('case-study:slide-change', onChange);
+    }, [editMode, imageDisplayMode, slideIndex]);
+
     const carouselRef = useRef(null);
 
-    // Auto-advance carousel
+    // Auto-advance carousel — only when this slide is actually current,
+    // so off-screen carousels don't burn through their images before the
+    // user gets there.
     const carouselInterval = slide[`${field}CarouselInterval`] || 4000;
     useEffect(() => {
       if (imageDisplayMode !== 'carousel' || imageCount <= 1 || editMode) return;
+      if (!isCurrentSlide) return;
       const timer = setInterval(() => {
         setCarouselIdx(prev => (prev + 1) % imageCount);
       }, carouselInterval);
       return () => clearInterval(timer);
-    }, [imageDisplayMode, imageCount, editMode, carouselInterval]);
+    }, [imageDisplayMode, imageCount, editMode, carouselInterval, isCurrentSlide]);
 
     // Reset index if images change or mode switches away
     useEffect(() => {
       if (imageDisplayMode !== 'carousel' || carouselIdx >= imageCount) setCarouselIdx(0);
     }, [imageCount, imageDisplayMode]);
-
-    // Restart the carousel from the first image whenever the user
-    // navigates away from this slide (view mode only). On their next
-    // visit they always see image 1 instead of wherever the auto-
-    // advance left off. Edit mode keeps the user's selected thumb so
-    // active editing isn't disrupted.
-    useEffect(() => {
-      if (typeof window === 'undefined') return;
-      if (editMode || imageDisplayMode !== 'carousel') return;
-      const onChange = (e) => {
-        if (e?.detail?.slide !== slideIndex) setCarouselIdx(0);
-      };
-      window.addEventListener('case-study:slide-change', onChange);
-      return () => window.removeEventListener('case-study:slide-change', onChange);
-    }, [editMode, imageDisplayMode, slideIndex]);
 
     if (images.length === 0 && !editMode) return null;
 
