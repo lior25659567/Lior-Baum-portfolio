@@ -34,7 +34,16 @@ function buildResponsiveWebp(src) {
   const srcset = entry.widths
     .map((w) => (w === full ? `${src} ${w}w` : `${base}@${w}.webp ${w}w`))
     .join(', ');
-  return { srcSet: srcset, sizes: '(max-width: 767px) 100vw, (max-width: 1440px) 75vw, 1440px' };
+  // `100vw` (was `75vw / 1440px`): tells the browser the image MAY occupy
+  // the full viewport. On retina (DPR=2) this was already pulling the top
+  // variant, so no change there. On Windows DPR=1 panels the previous
+  // `75vw` advertised a smaller render size and biased the browser into
+  // picking @960 — at the same physical display size that looks notably
+  // softer than the @1440/@1920 retina users get. Overestimating costs
+  // ~30% bandwidth on full-width slides but ends the Mac-vs-Windows
+  // sharpness gap. Split layouts that actually render at ~50vw will fetch
+  // a slightly larger variant than strictly needed — fine tradeoff.
+  return { srcSet: srcset, sizes: '100vw' };
 }
 
 function deriveVideoPoster(src) {
