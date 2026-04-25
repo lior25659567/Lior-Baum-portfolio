@@ -3980,15 +3980,25 @@ My instructions: `;
     } else if (slide[field] || slide[`${field}EmbedUrl`]) {
       const isVideoVal = slide[`${field}IsVideo`] || false;
       const isGifVal = slide[`${field}IsGif`] || false;
-      images = [{ 
-        src: slide[field] || '', 
-        caption: slide[captionField] || '', 
+      // Per-field overrides namespace as e.g. beforeImagePosition / afterImageWrapperBg.
+      // Legacy 'image*' keys remain the source of truth when field === 'image' and act
+      // as a fallback for new fields so existing slides keep their settings.
+      const nsKey = (suffix) => field === 'image' ? `image${suffix}` : `${field}${suffix}`;
+      const nsRead = (suffix, fallback) => {
+        const ns = slide[nsKey(suffix)];
+        if (ns !== undefined) return ns;
+        const legacy = slide[`image${suffix}`];
+        return legacy !== undefined ? legacy : fallback;
+      };
+      images = [{
+        src: slide[field] || '',
+        caption: slide[captionField] || '',
         isVideo: isVideoVal,
         isGif: isGifVal,
-        position: slide.imagePosition || 'center center',
-        size: slide.imageSize || 'large',
-        fit: slide.imageFit || 'cover',
-        wrapperBg: slide.imageWrapperBg !== undefined ? slide.imageWrapperBg : true,
+        position: nsRead('Position', 'center center'),
+        size: nsRead('Size', 'large'),
+        fit: nsRead('Fit', 'cover'),
+        wrapperBg: nsRead('WrapperBg', true),
         embedUrl: slide[`${field}EmbedUrl`] || '',
       }];
     }
@@ -4020,13 +4030,13 @@ My instructions: `;
           } else if (key === 'caption') {
             slideUpdates[captionField] = val;
           } else if (key === 'position') {
-            slideUpdates.imagePosition = val;
+            slideUpdates[field === 'image' ? 'imagePosition' : `${field}Position`] = val;
           } else if (key === 'size') {
-            slideUpdates.imageSize = val;
+            slideUpdates[field === 'image' ? 'imageSize' : `${field}Size`] = val;
           } else if (key === 'fit') {
-            slideUpdates.imageFit = val;
+            slideUpdates[field === 'image' ? 'imageFit' : `${field}Fit`] = val;
           } else if (key === 'wrapperBg') {
-            slideUpdates.imageWrapperBg = val;
+            slideUpdates[field === 'image' ? 'imageWrapperBg' : `${field}WrapperBg`] = val;
           } else if (key === 'isVideo') {
             slideUpdates[`${field}IsVideo`] = val;
           } else if (key === 'isGif') {

@@ -9528,30 +9528,66 @@ textarea.editable-field {
    pulse shows at all.
    ────────────────────────────────────────────────────────── */
 
-/* Pill variant: tint + pulsing halo on the inactive After button. */
+/* Pill variant: stronger tint + bigger halo + floating "Click ↓" chip. */
 .comparison-switcher[data-after-hint="true"] .comparison-tab:not(.active):last-child {
   color: var(--color-accent);
-  font-weight: 600;
-  background: rgba(255, 88, 74, 0.1);
-  animation: comparison-after-pulse 2.2s ease-in-out infinite;
+  font-weight: 700;
+  background: rgba(255, 88, 74, 0.22);
+  animation: comparison-after-pulse 1.6s ease-in-out infinite;
+  position: relative;
+  overflow: visible;
 }
 
-/* Flat variant: brighten the label + pulse a soft underline */
+/* Flat variant: brighten the label + pulse a soft underline + floating chip */
 .comparison-switcher-flat[data-after-hint="true"] .comparison-tab-flat:not(.active):last-child {
   color: var(--color-accent);
-  font-weight: 600;
-  border-bottom-color: rgba(255, 88, 74, 0.4);
-  animation: comparison-after-pulse-flat 2.2s ease-in-out infinite;
+  font-weight: 700;
+  border-bottom-color: rgba(255, 88, 74, 0.7);
+  animation: comparison-after-pulse-flat 1.6s ease-in-out infinite;
+  position: relative;
+  overflow: visible;
+}
+
+/* Floating "Click ↓" chip above the after tab — explicit call-to-action so the
+   nudge isn't ambiguous. The chip bounces gently to draw the eye. */
+.comparison-switcher[data-after-hint="true"] .comparison-tab:not(.active):last-child::before,
+.comparison-switcher-flat[data-after-hint="true"] .comparison-tab-flat:not(.active):last-child::before {
+  content: 'Click ↓';
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: var(--color-accent);
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(255, 88, 74, 0.35);
+  animation: comparison-after-bounce 1.2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 5;
 }
 
 @keyframes comparison-after-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 88, 74, 0.45); }
-  50%      { box-shadow: 0 0 0 8px rgba(255, 88, 74, 0); }
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 88, 74, 0.55), 0 4px 14px rgba(255, 88, 74, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(255, 88, 74, 0), 0 4px 18px rgba(255, 88, 74, 0.4);
+  }
 }
 
 @keyframes comparison-after-pulse-flat {
-  0%, 100% { border-bottom-color: rgba(255, 88, 74, 0.4); }
+  0%, 100% { border-bottom-color: rgba(255, 88, 74, 0.55); }
   50%      { border-bottom-color: rgba(255, 88, 74, 1); }
+}
+
+@keyframes comparison-after-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-4px); }
 }
 
 /* Content cross-fade when the tab switches — small, quick reward
@@ -9572,15 +9608,17 @@ textarea.editable-field {
   border-left: 1px solid var(--color-border);
 }
 
-/* Respect user motion preferences: keep the highlight, drop motion. */
+/* Respect user motion preferences: keep the highlight + chip, drop motion. */
 @media (prefers-reduced-motion: reduce) {
   .comparison-switcher[data-after-hint="true"] .comparison-tab:not(.active):last-child,
   .comparison-switcher-flat[data-after-hint="true"] .comparison-tab-flat:not(.active):last-child,
+  .comparison-switcher[data-after-hint="true"] .comparison-tab:not(.active):last-child::before,
+  .comparison-switcher-flat[data-after-hint="true"] .comparison-tab-flat:not(.active):last-child::before,
   .comparison-panel {
     animation: none !important;
   }
   .comparison-switcher[data-after-hint="true"] .comparison-tab:not(.active):last-child {
-    box-shadow: 0 0 0 2px rgba(255, 88, 74, 0.5);
+    box-shadow: 0 0 0 3px rgba(255, 88, 74, 0.6);
   }
 }
 
