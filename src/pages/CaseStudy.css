@@ -5047,7 +5047,11 @@ body.case-study-active .footer {
 
 /* Each individual slide becomes scrollable in edit mode */
 .case-study.edit-mode .slide {
-  overflow-y: auto;
+  /* `scroll` (not `auto`) forces the scrollbar to render even when content
+     happens to fit — so the rail is always visible, you never have to
+     guess whether the slide is scrollable, and on macOS overlay-scrollbar
+     setups the bar isn't hidden until you start scrolling. */
+  overflow-y: scroll;
   overflow-x: hidden;
   align-items: flex-start;
   /* Account for edit mode bar at top */
@@ -5055,14 +5059,25 @@ body.case-study-active .footer {
   /* Slide-sorter is `position: fixed; bottom: 0; max-height: 160px` and
      overlays the bottom of the viewport. Without this padding, content
      could extend behind the sorter without triggering overflow on the
-     slide — the user would see content cut off but no scrollbar. The
-     extra bottom padding pushes the bottom of slide-content above the
-     sorter so any taller content reliably triggers the scrollbar. */
+     slide. */
   padding-bottom: clamp(180px, 22vh, 220px);
-  /* Reserve the scrollbar track up-front so the scrollbar is always
-     visible (or always reserved) — avoids the "where is my scrollbar"
-     question on Macs with overlay scrollbars. */
-  scrollbar-gutter: stable;
+}
+
+/* Edit-mode-specific scrollbar — slightly more prominent than the
+   subtle view-mode rail since edit mode is a workspace, not a
+   reading view. */
+.case-study.edit-mode .slide::-webkit-scrollbar {
+  width: 12px;
+}
+.case-study.edit-mode .slide::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-text) 35%, transparent);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.case-study.edit-mode .slide::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--color-text) 55%, transparent);
+  background-clip: padding-box;
 }
 
 /* Slide inner: auto height so content can expand */
