@@ -74,7 +74,7 @@
       ],
       "gridCols": 1,
       "imageDisplayMode": "carousel",
-      "splitRatio": 40,
+      "splitRatio": 30,
       "cta": {
         "label": "View Project",
         "url": "https://technoh.webflow.io/"
@@ -101,7 +101,7 @@
           "embedType": ""
         }
       ],
-      "splitRatio": 45,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },
@@ -125,7 +125,7 @@
           "isGif": false
         }
       ],
-      "splitRatio": 30,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },
@@ -170,7 +170,7 @@
           "embedType": ""
         }
       ],
-      "splitRatio": 45,
+      "splitRatio": 40,
       "gridCols": 2,
       "imageDisplayMode": "carousel",
       "imageCarouselFit": "contain",
@@ -193,7 +193,8 @@
           "isGif": false
         }
       ],
-      "label": "Final Design"
+      "label": "Final Design",
+      "splitRatio": 40
     },
     {
       "type": "outcomes",
@@ -223,13 +224,15 @@
       ],
       "showNumbers": false,
       "cardVariant": "default",
-      "gridColumns": 4
+      "gridColumns": 4,
+      "splitRatio": 40
     },
     {
       "type": "end",
       "title": "Thank You",
       "subtitle": "Designing experiences that move with the content.",
-      "cta": "Visit the site"
+      "cta": "Visit the site",
+      "splitRatio": 40
     }
   ]
 }
