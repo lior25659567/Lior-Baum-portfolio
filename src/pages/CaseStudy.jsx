@@ -1308,9 +1308,17 @@ const CaseStudy = () => {
      slide as a fresh mount — no x-tween from the old end position. */
   const [projectNonce, setProjectNonce] = useState(0);
   /* Always-fresh mirror of currentSlide so memoized subtrees (DynamicImages)
-     can compute slide-distance without having currentSlide in their deps. */
+     can compute slide-distance without having currentSlide in their deps.
+     Also broadcasts a `case-study:slide-change` event so descendants
+     (e.g. carousels) can react to navigation without subscribing through
+     a stale closure. */
   const currentSlideRef = useRef(0);
-  useEffect(() => { currentSlideRef.current = currentSlide; }, [currentSlide]);
+  useEffect(() => {
+    currentSlideRef.current = currentSlide;
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('case-study:slide-change', { detail: { slide: currentSlide } }));
+    }
+  }, [currentSlide]);
   const [showTemplates, setShowTemplates] = useState(false);
   const [previewTemplate, setPreviewTemplate] = useState(null);
   const [showBuilder, setShowBuilder] = useState(false);
@@ -4194,6 +4202,21 @@ My instructions: `;
     useEffect(() => {
       if (imageDisplayMode !== 'carousel' || carouselIdx >= imageCount) setCarouselIdx(0);
     }, [imageCount, imageDisplayMode]);
+
+    // Restart the carousel from the first image whenever the user
+    // navigates away from this slide (view mode only). On their next
+    // visit they always see image 1 instead of wherever the auto-
+    // advance left off. Edit mode keeps the user's selected thumb so
+    // active editing isn't disrupted.
+    useEffect(() => {
+      if (typeof window === 'undefined') return;
+      if (editMode || imageDisplayMode !== 'carousel') return;
+      const onChange = (e) => {
+        if (e?.detail?.slide !== slideIndex) setCarouselIdx(0);
+      };
+      window.addEventListener('case-study:slide-change', onChange);
+      return () => window.removeEventListener('case-study:slide-change', onChange);
+    }, [editMode, imageDisplayMode, slideIndex]);
 
     if (images.length === 0 && !editMode) return null;
 
