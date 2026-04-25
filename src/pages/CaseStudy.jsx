@@ -1275,7 +1275,49 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
             {/* Edit controls */}
             {editMode && (
               <div className="carousel-edit-controls">
-                <button className="carousel-add-btn" onClick={() => updateSlide(index, { carouselImages: [...carouselImages, { src: '', caption: '' }] })}>+ Add Image</button>
+                <button
+                  className="carousel-add-btn"
+                  onClick={() => {
+                    // Multi-select upload — fill empty slots first, then
+                    // append new slots. Mirrors DynamicImages.handleBulkUpload
+                    // so both carousel implementations behave the same.
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.multiple = true;
+                    input.value = '';
+                    input.onchange = async (e) => {
+                      const files = Array.from(e.target.files || []);
+                      if (files.length === 0) return;
+                      const readOne = (file) => new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onerror = () => resolve(null);
+                        reader.onload = (ev) => resolve(ev.target?.result || null);
+                        reader.readAsDataURL(file);
+                      });
+                      const dataUrls = [];
+                      for (const f of files) {
+                        const u = await readOne(f);
+                        if (u) dataUrls.push(u);
+                      }
+                      if (dataUrls.length === 0) return;
+                      const next = [...carouselImages];
+                      let q = 0;
+                      for (let i = 0; i < next.length && q < dataUrls.length; i++) {
+                        if (!next[i].src) { next[i] = { ...next[i], src: dataUrls[q] }; q++; }
+                      }
+                      while (q < dataUrls.length) { next.push({ src: dataUrls[q], caption: '' }); q++; }
+                      updateSlide(index, { carouselImages: next });
+                    };
+                    input.click();
+                  }}
+                  title="Upload one or more images"
+                >+ Upload</button>
+                <button
+                  className="carousel-add-btn"
+                  onClick={() => updateSlide(index, { carouselImages: [...carouselImages, { src: '', caption: '' }] })}
+                  title="Add empty slot"
+                >+ Empty</button>
                 {carouselImages.length > 1 && (
                   <button className="carousel-remove-btn" onClick={() => {
                     const newImages = carouselImages.filter((_, ci) => ci !== carouselIndex);
