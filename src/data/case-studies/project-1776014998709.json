@@ -21,7 +21,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-2xjw0pwaio.png",
+          "src": "/case-studies/project-1776014998709/img-2xjw0pwaio.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -32,7 +32,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-b4gk9toqg0.png",
+          "src": "/case-studies/project-1776014998709/img-b4gk9toqg0.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -43,7 +43,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-6y3e4fy8w0.png",
+          "src": "/case-studies/project-1776014998709/img-6y3e4fy8w0.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -54,7 +54,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-bgbf9kr1q0.png",
+          "src": "/case-studies/project-1776014998709/img-bgbf9kr1q0.webp",
           "caption": "",
           "isVideo": false,
           "embedType": ""
@@ -87,7 +87,7 @@
           "size": "large",
           "fit": "contain",
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-i06atssrj0.png",
+          "src": "/case-studies/project-1776014998709/img-i06atssrj0.webp",
           "caption": "Old — three-panel split, static sidebar, blank content area",
           "isVideo": false,
           "embedType": ""
@@ -175,7 +175,7 @@
           "fit": "contain",
           "wrapperBg": false,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-ih6r6wqz8g.png",
+          "src": "/case-studies/project-1776014998709/img-ih6r6wqz8g.webp",
           "caption": "Old — static three-panel split",
           "isVideo": false,
           "embedType": ""
@@ -186,9 +186,9 @@
           "position": "center center",
           "size": "large",
           "fit": "contain",
-          "wrapperBg": false,
+          "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-mfyopmfbno.png",
+          "src": "/case-studies/project-1776014998709/img-mfyopmfbno.webp",
           "caption": "New — compact header, full canvas for editing",
           "isVideo": false,
           "embedType": ""
@@ -209,7 +209,7 @@
       "highlight": "The header replaced an entire panel — and made every action faster to reach.",
       "slideMode": "before-after",
       "switcherStyle": "pill",
-      "splitRatio": 40
+      "splitRatio": 30
     },
     {
       "type": "problem",
@@ -231,16 +231,83 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/vid-fay0vqurotc.mp4",
+          "src": "/case-studies/project-1776014998709/img-hs4e511h0.png",
           "caption": "Template picker and modular section builder",
-          "isVideo": true,
+          "isVideo": false,
           "embedType": "",
           "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-9c25aooao.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-1v3xk53sa0.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-eep6296pc0.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-35rxbmx9w0.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-z1u1z0y00.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-5s72t1zyj0.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-2pf70duwx4.png",
+          "isVideo": false
         }
       ],
-      "splitRatio": 40,
+      "splitRatio": 30,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "carousel",
+      "imageCarouselFit": "contain",
+      "imageCarouselInterval": 2000
     },
     {
       "type": "problem",
@@ -284,7 +351,7 @@
           "fit": "contain",
           "wrapperBg": false,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-mpp2k7l6t4.png",
+          "src": "/case-studies/project-1776014998709/img-mpp2k7l6t4.webp",
           "caption": "Old — Preview, Download PDF, Share via QR",
           "isVideo": false,
           "embedType": ""
