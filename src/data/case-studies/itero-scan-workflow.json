@@ -107,7 +107,7 @@
           "embedType": ""
         }
       ],
-      "splitRatio": 40,
+      "splitRatio": 30,
       "gridCols": 1,
       "imageDisplayMode": "grid",
       "imageCarouselInterval": 1500
@@ -214,7 +214,7 @@
           "isGif": false
         }
       ],
-      "splitRatio": 40,
+      "splitRatio": 30,
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },
@@ -482,20 +482,10 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-cd23wwt3nc.png",
+          "src": "/case-studies/itero-scan-workflow/img-6wrqetdb6w.png",
           "caption": "New — unified icons in a single collapsible toolbar",
           "isVideo": false,
-          "isGif": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-l87h2jkfv0.png",
-          "caption": "",
-          "isVideo": false,
+          "isGif": false,
           "embedType": ""
         },
         {
@@ -504,7 +494,18 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-ghr5xr5fic.png",
+          "src": "/case-studies/itero-scan-workflow/img-8r3hyaday4.png",
+          "isVideo": false,
+          "embedType": "",
+          "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-g3lsfkemtc.png",
           "isVideo": false
         },
         {
@@ -513,7 +514,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-7hhcoo5lfk.png",
+          "src": "/case-studies/itero-scan-workflow/img-jwg85at4lo.png",
           "isVideo": false
         },
         {
@@ -522,52 +523,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-dr7zump674.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-ing5tp683k.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-58re9pw3k.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-gru3233i98.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-6rhfrt04tw.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-2oamm2wj94.png",
+          "src": "/case-studies/itero-scan-workflow/img-9ixeeo5cec.png",
           "isVideo": false
         }
       ],
@@ -610,16 +566,83 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/vid-539c9v0rkkc.mp4",
+          "src": "/case-studies/itero-scan-workflow/img-75hrod5cu0.png",
           "caption": "",
-          "isVideo": true,
+          "isVideo": false,
           "embedType": "",
           "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-5ul2dshi2c.png",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-mdl2hftxfc.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-1xk93j5k1s.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-163xnxxw4w.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-hvfigv15y0.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-6e0lzwcho0.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-6fob43pyus.png",
+          "isVideo": false
         }
       ],
-      "splitRatio": 40,
+      "splitRatio": 30,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "carousel",
+      "imageCarouselFit": "contain",
+      "imageCarouselInterval": 2000
     },
     {
       "type": "comparison",
