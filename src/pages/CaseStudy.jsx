@@ -4101,7 +4101,10 @@ My instructions: `;
 
     return (
       <div className={`dynamic-images images-count-${imageCount} ${className}`}>
-        {editMode && imageCount >= 2 && (
+        {/* Layout picker — also visible at imageCount === 1 so single-image
+            slides (e.g. the default problem slide) can switch into a
+            carousel without first having to add a second image manually. */}
+        {editMode && imageCount >= 1 && (
           <div className="dynamic-grid-control">
             <span className="dynamic-grid-label">Layout</span>
             <div className="dynamic-grid-buttons">
