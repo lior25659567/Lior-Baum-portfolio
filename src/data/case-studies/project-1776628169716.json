@@ -82,7 +82,7 @@
           "isGif": false
         }
       ],
-      "splitRatio": 45,
+      "splitRatio": 30,
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },
@@ -113,7 +113,7 @@
           "isGif": false
         }
       ],
-      "splitRatio": 50,
+      "splitRatio": 30,
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },
@@ -216,7 +216,7 @@
           "isVideo": false
         }
       ],
-      "splitRatio": 40,
+      "splitRatio": 30,
       "gridCols": 1,
       "imageDisplayMode": "carousel",
       "imageCarouselFit": "contain",
@@ -312,7 +312,7 @@
           "isVideo": false
         }
       ],
-      "splitRatio": 40,
+      "splitRatio": 30,
       "gridCols": 1,
       "imageDisplayMode": "carousel",
       "imageCarouselInterval": 1500,
@@ -338,7 +338,7 @@
           "isGif": false
         }
       ],
-      "splitRatio": 45,
+      "splitRatio": 30,
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },
