@@ -5052,6 +5052,17 @@ body.case-study-active .footer {
   align-items: flex-start;
   /* Account for edit mode bar at top */
   padding-top: 5rem;
+  /* Slide-sorter is `position: fixed; bottom: 0; max-height: 160px` and
+     overlays the bottom of the viewport. Without this padding, content
+     could extend behind the sorter without triggering overflow on the
+     slide — the user would see content cut off but no scrollbar. The
+     extra bottom padding pushes the bottom of slide-content above the
+     sorter so any taller content reliably triggers the scrollbar. */
+  padding-bottom: clamp(180px, 22vh, 220px);
+  /* Reserve the scrollbar track up-front so the scrollbar is always
+     visible (or always reserved) — avoids the "where is my scrollbar"
+     question on Macs with overlay scrollbars. */
+  scrollbar-gutter: stable;
 }
 
 /* Slide inner: auto height so content can expand */
