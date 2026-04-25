@@ -52,7 +52,7 @@
       ],
       "gridCols": 1,
       "imageDisplayMode": "carousel",
-      "splitRatio": 30,
+      "splitRatio": 40,
       "imageCarouselFit": "contain",
       "imageCarouselInterval": 2500
     },
@@ -82,7 +82,7 @@
           "isGif": false
         }
       ],
-      "splitRatio": 30,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },
@@ -113,7 +113,7 @@
           "isGif": false
         }
       ],
-      "splitRatio": 30,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },
@@ -216,7 +216,7 @@
           "isVideo": false
         }
       ],
-      "splitRatio": 30,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "carousel",
       "imageCarouselFit": "contain",
@@ -338,7 +338,7 @@
           "isGif": false
         }
       ],
-      "splitRatio": 30,
+      "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid"
     },
@@ -370,13 +370,15 @@
       ],
       "showNumbers": false,
       "cardVariant": "default",
-      "gridColumns": 4
+      "gridColumns": 4,
+      "splitRatio": 40
     },
     {
       "type": "end",
       "title": "Thank You",
       "subtitle": "This project reflects how my role as a designer has changed.",
-      "cta": "Get in touch"
+      "cta": "Get in touch",
+      "splitRatio": 40
     }
   ]
 }
