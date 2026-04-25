@@ -404,11 +404,41 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/vid-47ggf6tvc0.mp4",
+          "src": "/case-studies/project-1776014998709/img-7zblvi8vj8.png",
           "caption": "New — Share Report modal with access control and multi-channel delivery",
-          "isVideo": true,
+          "isVideo": false,
           "embedType": "",
           "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-746o5piybo.png",
+          "caption": "",
+          "embedType": "",
+          "isVideo": false,
+          "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-7hxw7sh0g0.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-2ubkci5keo.png",
+          "isVideo": false
         }
       ],
       "beforeDescription": "Three buttons stacked in the sidebar — Preview, Download PDF, and Share via QR. No access control, no recipient management, no delivery options beyond a QR code.",
@@ -428,7 +458,10 @@
       "highlight": "Sharing stopped being an afterthought — it became a controlled, secure handoff.",
       "slideMode": "before-after",
       "switcherStyle": "pill",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "imageDisplayMode": "carousel",
+      "afterImageCarouselInterval": 2000,
+      "afterImageCarouselFit": "contain"
     },
     {
       "type": "testimonial",
