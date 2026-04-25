@@ -2038,9 +2038,16 @@ const CaseStudy = () => {
   const updateSlide = useCallback((slideIndex, updates) => {
     setProject(prev => ({
       ...prev,
-      slides: prev.slides.map((slide, i) => 
+      slides: prev.slides.map((slide, i) =>
         i === slideIndex ? { ...slide, ...updates } : slide
       )
+    }));
+  }, []);
+
+  const applyLayoutToAllSlides = useCallback((ratio) => {
+    setProject(prev => ({
+      ...prev,
+      slides: prev.slides.map(slide => ({ ...slide, splitRatio: ratio }))
     }));
   }, []);
 
@@ -7321,6 +7328,24 @@ My instructions: `;
                 <option value="ghost">Cards: Ghost</option>
                 <option value="elevated">Cards: Elevated</option>
                 <option value="accent-left">Cards: Accent Left</option>
+              </select>
+              <select
+                className="card-style-select"
+                value=""
+                onChange={(e) => {
+                  const v = parseInt(e.target.value, 10);
+                  if (Number.isNaN(v)) return;
+                  if (window.confirm(`Apply ${v}/${100 - v} layout to all slides? This overrides any per-slide layout you've set.`)) {
+                    applyLayoutToAllSlides(v);
+                  }
+                }}
+                title="Apply layout to all slides"
+              >
+                <option value="" disabled>Layout: All slides</option>
+                <option value="30">All slides → 30/70</option>
+                <option value="40">All slides → 40/60</option>
+                <option value="50">All slides → 50/50</option>
+                <option value="60">All slides → 60/40</option>
               </select>
               {IS_DEV_EDITOR && (
                 <button onClick={handleSaveToCode} className={saveStatus === 'saved-code' ? 'save-code-done' : ''}>
