@@ -1455,6 +1455,14 @@ const CaseStudy = () => {
   const isScrollingRef = useRef(false);
   const scrollTimeoutRef = useRef(null);
   const totalSlides = project.slides.length;
+  // Clamp currentSlide if the project shrinks under us (async IDB load,
+  // delete, import). Prevents `slides[currentSlide]` from going undefined
+  // and avoids visible jumps when nothing the user did warranted them.
+  useEffect(() => {
+    if (totalSlides > 0 && currentSlide >= totalSlides) {
+      setCurrentSlide(totalSlides - 1);
+    }
+  }, [totalSlides, currentSlide]);
   const [slideNavVisible, setSlideNavVisible] = useState(false);
   const slideNavHideTimeoutRef = useRef(null);
   const hideSlideNavRef = useRef(null);
@@ -1651,10 +1659,10 @@ const CaseStudy = () => {
         // Update with the real data from IndexedDB
         setProject(migrateCaseStudyImagePathsToWebp(asyncData));
         console.log('[loadProjectData] Updated project from IndexedDB');
-        // If we showed defaults initially, reset slide to 0 (unless preserving for tab return)
-        if (!preserveSlide && hasIdbMarker && !syncHasData && !hasMinimal) {
-          setCurrentSlide(0);
-        }
+        // Previously we reset to slide 0 here when we'd shown defaults first.
+        // That caused a jarring jump-back if the user had already navigated
+        // while waiting for the async load. The clamp effect below
+        // (currentSlide vs. totalSlides) handles out-of-range cases instead.
       } else if (hasIdbMarker && !syncHasData && !hasMinimal) {
         // Expected data from IndexedDB but got nothing - this shouldn't happen
         console.warn('[loadProjectData] Expected IndexedDB data but got null. Marker exists but data not found.');
@@ -1905,8 +1913,20 @@ const CaseStudy = () => {
     const handleWheel = (e) => {
       e.preventDefault();
       hideSlideNavRef.current?.();
-      if (isScrollingRef.current) return;
-      
+
+      // Refresh the lock timer on every wheel event. Trackpad momentum keeps
+      // firing wheel events for 1s+ after the user stops; without this, the
+      // 400ms lock expires mid-momentum and a stray event triggers a second
+      // (unwanted) slide change. Now the lock only releases once 400ms have
+      // passed with no wheel activity.
+      if (isScrollingRef.current) {
+        if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+        scrollTimeoutRef.current = setTimeout(() => {
+          isScrollingRef.current = false;
+        }, 400);
+        return;
+      }
+
       // Immediate response - no accumulation delay
       if (Math.abs(e.deltaY) > 20) {
         goToSlide(e.deltaY > 0 ? 1 : -1);

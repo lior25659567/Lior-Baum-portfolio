@@ -218,6 +218,12 @@ body.case-study-active .footer {
   --slide-pad-top: clamp(56px, 6.5vw, 128px);
   --slide-pad-bottom: clamp(56px, 6.5vw, 128px);
   --slide-gap: clamp(56px, 7vw, 144px);
+  /* Fluid spacing tokens for content rhythm inside slides — interpolate
+     smoothly between 1024px and 3000px so paragraphs / bullets / sections
+     breathe naturally on big screens without jumping at breakpoints. */
+  --rhythm-tight: clamp(0.4rem, 0.3vw + 0.3rem, 0.75rem);
+  --rhythm-md: clamp(0.85rem, 0.55vw + 0.55rem, 1.4rem);
+  --rhythm-lg: clamp(1.25rem, 1vw + 0.8rem, 2.25rem);
 }
 
 @media (max-width: 1023px) {
@@ -451,7 +457,6 @@ body.case-study-active .footer {
 .split-image-wrapper {
   width: 100%;
   height: 100%;
-  max-height: clamp(360px, 65vh, 720px);
   border-radius: 16px;
   overflow: hidden;
   position: relative;
@@ -500,6 +505,7 @@ body.case-study-active .footer {
   gap: var(--slide-gap);
   flex: 1;
   min-height: 0;
+  align-self: stretch;
   align-items: stretch;
   position: relative;
   z-index: 1;
@@ -548,7 +554,7 @@ body.case-study-active .footer {
   flex-direction: column;
   justify-content: center;
   gap: 0;
-  --intro-gap: 2rem;
+  --intro-gap: var(--rhythm-lg);
 }
 
 /* ── Label ── */
@@ -858,7 +864,6 @@ body.case-study-active .footer {
   width: 100%;
   height: 100%;
   max-width: 100%;
-  max-height: 100%;
   aspect-ratio: unset;
   border-radius: 16px;
 }
@@ -867,7 +872,6 @@ body.case-study-active .footer {
 .intro-image-wrapper {
   width: 100%;
   height: 100%;
-  max-height: clamp(360px, 65vh, 720px);
   border-radius: 16px;
   overflow: hidden;
   position: relative;
@@ -1277,6 +1281,7 @@ body.case-study-active .footer {
   gap: var(--slide-gap);
   flex: 1;
   min-height: 0;
+  align-self: stretch;
   align-items: stretch;
   width: 100%;
   max-width: var(--slide-max-w);
@@ -1286,7 +1291,7 @@ body.case-study-active .footer {
 .split-content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--rhythm-md);
   justify-content: center;
 }
 
@@ -1333,7 +1338,7 @@ body.case-study-active .footer {
   font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-muted);
-  margin-bottom: 1rem;
+  margin-bottom: var(--rhythm-md);
 }
 
 /* Highlight/conclusion style (same as problem-conclusion) */
@@ -1431,16 +1436,16 @@ body.case-study-active .footer {
   font-size: var(--text-body);
   line-height: 1.7;
   color: var(--color-text-muted);
-  margin-bottom: 1rem;
+  margin-bottom: var(--rhythm-md);
 }
 
 .problem-issues {
   list-style: none;
   padding: 0;
-  margin: 0 0 1rem 0;
+  margin: 0 0 var(--rhythm-md) 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--rhythm-tight);
 }
 
 .problem-issues li {
@@ -1469,7 +1474,7 @@ body.case-study-active .footer {
 }
 
 .slide-problem .problem-bullets-second {
-  margin-top: 1rem;
+  margin-top: var(--rhythm-md);
 }
 
 /* Quotes Slide */
@@ -1617,9 +1622,13 @@ body.case-study-active .footer {
   flex: 0 1 auto;
 }
 
-/* When both sections: keep top alignment */
+/* When both sections: vertically center the whole content block in the slide.
+   `flex: 1` is needed because the parent .slide-inner uses min-height (not
+   height), so percentage heights don't resolve and we need flex grow to
+   actually fill the column. */
 .slide-goals:not(.goals-single-section) .goals-content {
-  justify-content: flex-start;
+  flex: 1;
+  justify-content: center;
 }
 
 /* Goals section gaps */
@@ -1954,7 +1963,7 @@ body.case-study-active .footer {
   font-size: var(--text-body-sm);
   line-height: 1.7;
   color: var(--color-text-muted);
-  margin-bottom: 1rem;
+  margin-bottom: var(--rhythm-md);
 }
 
 .testing-conclusion {
@@ -3902,7 +3911,6 @@ body.case-study-active .footer {
   width: 100%;
   height: 100%;
   max-width: 100%;
-  max-height: 100%;
   aspect-ratio: unset;
 }
 
@@ -3956,7 +3964,7 @@ body.case-study-active .footer {
   width: 100%;
   height: 100%;
   max-width: 100%;
-  max-height: 100%;
+  max-height: clamp(440px, 78vh, 860px);
   aspect-ratio: unset;
 }
 
