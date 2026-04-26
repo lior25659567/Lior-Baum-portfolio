@@ -348,7 +348,7 @@
       "gridCols": 1,
       "imageDisplayMode": "carousel",
       "imageCarouselFit": "contain",
-      "imageCarouselInterval": 2000
+      "imageCarouselInterval": 1500
     },
     {
       "type": "comparison",
