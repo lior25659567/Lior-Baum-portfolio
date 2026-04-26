@@ -1514,39 +1514,115 @@ const CaseStudy = () => {
     currentScaleRef.current = baseFitScaleRef.current || 1;
   }, [currentSlide]);
 
-  // ── Goals-slide auto-shrink ──────────────────────────────────────────────
-  // When a .slide-goals has more content than can fit the viewport, scale
-  // the inner cards proportionally via a --fit-scale CSS var so no internal
-  // scrollbar ever appears. Runs whenever the active slide or project data
-  // changes; ResizeObserver handles viewport resize. No-op when content fits.
+  // ── View-mode slide-level fit-scaler ─────────────────────────────────────
+  // Unified replacement for the previous goals-only auto-shrink. In view
+  // mode only, measure the active slide's natural content height and, when
+  // it exceeds the available area, apply a transform: scale() to the entire
+  // .slide-inner via --fit-scale-slide. Falls back to the per-card pass
+  // (--fit-scale on .goals-cards-section / .kpis-section) only when the
+  // slide already fits at scale 1, so we never compound transforms.
   useEffect(() => {
-    const slides = document.querySelectorAll('.slide-goals');
-    if (!slides.length) return;
-    const apply = () => {
-      slides.forEach((slideEl) => {
-        const wrappers = slideEl.querySelectorAll('.goals-cards-section-wrapper, .kpis-section-wrapper');
-        wrappers.forEach((w) => {
-          const inner = w.querySelector('.goals-cards-section, .kpis-section');
-          if (inner) inner.style.setProperty('--fit-scale', '1');
-        });
-        // Force reflow so we read natural (unscaled) measurements.
-        void slideEl.offsetHeight;
-        wrappers.forEach((w) => {
-          const inner = w.querySelector('.goals-cards-section, .kpis-section');
-          if (!inner) return;
-          const avail = w.clientHeight;
-          const needed = inner.scrollHeight;
-          if (needed <= avail + 1) return;
-          const scale = Math.max(0.55, (avail / needed) * 0.98);
-          inner.style.setProperty('--fit-scale', String(scale));
+    if (editMode) {
+      // Strip any leftover view-mode transform state when entering edit mode.
+      document.querySelectorAll('.slide-inner[data-fit-active]').forEach((el) => {
+        el.style.removeProperty('--fit-scale-slide');
+        el.removeAttribute('data-fit-active');
+      });
+      document.querySelectorAll('.goals-cards-section, .kpis-section').forEach((el) => {
+        el.style.removeProperty('--fit-scale');
+      });
+      return;
+    }
+
+    const runCardLevelFitPass = (slideEl) => {
+      const wrappers = slideEl.querySelectorAll('.goals-cards-section-wrapper, .kpis-section-wrapper');
+      wrappers.forEach((w) => {
+        const target = w.querySelector('.goals-cards-section, .kpis-section');
+        if (!target) return;
+        target.style.setProperty('--fit-scale', '1');
+      });
+      // Force one reflow, then re-measure.
+      void slideEl.offsetHeight;
+      wrappers.forEach((w) => {
+        const target = w.querySelector('.goals-cards-section, .kpis-section');
+        if (!target) return;
+        const avail = w.clientHeight;
+        const needed = target.scrollHeight;
+        if (needed <= avail + 1) return;
+        target.style.setProperty('--fit-scale', String(Math.max(0.55, (avail / needed) * 0.98)));
+      });
+    };
+
+    const fitSlide = (slideEl) => {
+      if (!slideEl) return;
+      const inner = slideEl.querySelector(':scope > .slide-inner');
+      if (!inner) return;
+      // Phase 1: lift the view-mode cap and reset the scale so we can read
+      // the natural (unconstrained) content height.
+      inner.style.setProperty('--fit-scale-slide', '1');
+      inner.setAttribute('data-fit-active', 'true');
+      // Phase 2: measure the available content area and the natural needed height.
+      const cs = getComputedStyle(slideEl);
+      const avail = slideEl.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      const needed = inner.scrollHeight;
+      // Phase 3: if it fits, restore the cap (so content distributes to fill
+      // the slide visually) and run the secondary card-level pass. If it
+      // doesn't, keep the cap lifted and apply a uniform scale-down.
+      if (needed <= avail + 1) {
+        inner.removeAttribute('data-fit-active');
+        runCardLevelFitPass(slideEl);
+        return;
+      }
+      const FLOOR = 0.7;
+      const scale = Math.max(FLOOR, (avail / needed) * 0.99);
+      inner.style.setProperty('--fit-scale-slide', String(scale));
+      // data-fit-active stays true: cap stays lifted so the layout box can
+      // be tall while transform shrinks it visually within the .slide.
+    };
+
+    let rafId = null;
+    const schedule = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        // Double-rAF: one frame to settle CSS-driven layout (fonts, grids),
+        // a second to ensure scrollHeight reads are stable before we measure.
+        rafId = requestAnimationFrame(() => {
+          rafId = null;
+          const slides = document.querySelectorAll('.case-study-slides-wrapper .slide');
+          const active = slides[currentSlide] || document.querySelector('.slide.is-active');
+          fitSlide(active);
         });
       });
     };
-    apply();
-    const ro = new ResizeObserver(apply);
-    slides.forEach((s) => ro.observe(s));
-    return () => ro.disconnect();
-  }, [currentSlide, project]);
+
+    schedule();
+
+    // Observe the slides wrapper for size changes (devtools docking, OS
+    // chrome show/hide, browser window resize). visualViewport.resize
+    // covers browser-zoom changes that don't fire window resize.
+    const wrapper = document.querySelector('.case-study-slides-wrapper');
+    const ro = wrapper ? new ResizeObserver(schedule) : null;
+    if (ro && wrapper) ro.observe(wrapper);
+
+    window.addEventListener('resize', schedule);
+    const vv = window.visualViewport;
+    if (vv) vv.addEventListener('resize', schedule);
+
+    // Late-loading images can change scrollHeight after the initial measure.
+    // The capture-phase load listener catches them everywhere in the slide.
+    const onImgLoad = (e) => {
+      if (e.target instanceof HTMLImageElement) schedule();
+    };
+    document.addEventListener('load', onImgLoad, true);
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      if (ro) ro.disconnect();
+      window.removeEventListener('resize', schedule);
+      if (vv) vv.removeEventListener('resize', schedule);
+      document.removeEventListener('load', onImgLoad, true);
+    };
+  }, [currentSlide, project, editMode]);
 
   /* Warm the browser cache for the next two slides' images when the current
      slide changes. Images go through `new Image()` (cheap); videos are too

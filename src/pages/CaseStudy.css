@@ -222,9 +222,13 @@ body.case-study-active .footer {
 .case-study {
   --slide-max-w: min(2200px, 100%);
   --slide-pad-x: clamp(40px, 4.5vw, 144px);
-  --slide-pad-top: clamp(56px, 6.5vw, 128px);
-  --slide-pad-bottom: clamp(56px, 6.5vw, 128px);
-  --slide-gap: clamp(56px, 7vw, 144px);
+  /* Vertical padding/gap take the smaller of vw-driven and vh-driven clamps,
+     so on short viewports they shrink even when the window is wide. The
+     vw-derived ceiling preserves the original look on tall screens. */
+  --slide-pad-top: min(clamp(56px, 6.5vw, 128px), clamp(28px, 9vh, 96px));
+  --slide-pad-bottom: min(clamp(56px, 6.5vw, 128px), clamp(28px, 9vh, 96px));
+  --slide-gap: min(clamp(56px, 7vw, 144px), clamp(24px, 8vh, 96px));
+  --grid-gap: min(clamp(16px, 2vw, 32px), clamp(12px, 2.5vh, 28px));
   /* Fluid spacing tokens for content rhythm inside slides — interpolate
      smoothly between 1024px and 3000px so paragraphs / bullets / sections
      breathe naturally on big screens without jumping at breakpoints. */
@@ -285,7 +289,20 @@ body.case-study-active .footer {
     --slide-pad-top: 28px;
     --slide-pad-bottom: 28px;
     --slide-gap: 24px;
+    --grid-gap: 14px;
     --slide-title-gap: 0.5rem;
+  }
+}
+
+/* Devtools-docked / extreme-zoom territory. The slide-level scaler picks up
+   the rest, but tighter tokens get us further before we have to scale. */
+@media (max-height: 500px) {
+  .case-study {
+    --slide-pad-top: 16px;
+    --slide-pad-bottom: 16px;
+    --slide-gap: 16px;
+    --grid-gap: 10px;
+    --slide-title-gap: 0.4rem;
   }
 }
 
@@ -395,6 +412,31 @@ body.case-study-active .footer {
    .slide-inner at line ~5130. */
 .case-study:not(.edit-mode) .slide-inner {
   max-height: var(--vp-cap);
+  /* Slide-level fit-scale. JS drops --fit-scale-slide below 1 when content
+     exceeds the available height, so the entire .slide-inner shrinks
+     uniformly. transform-origin: top center keeps the visual content
+     anchored to the top of the slide's content area. */
+  --fit-scale-slide: 1;
+  transform: scale(var(--fit-scale-slide));
+  transform-origin: top center;
+  transition: transform 120ms ease-out;
+  will-change: transform;
+}
+
+/* When the JS scaler engages, lift the height cap so .slide-inner can take
+   its natural unscaled height; the parent .slide (overflow: hidden in view
+   mode) clips the layout box, and the transform shrinks the visual content
+   back into the visible region. */
+.case-study:not(.edit-mode) .slide-inner[data-fit-active="true"] {
+  max-height: none;
+  height: auto;
+  min-height: 0;
+}
+
+/* In view mode the scaler removes the need for inner scrolling. Edit mode
+   keeps `overflow: visible !important` (set later in the edit-mode block). */
+.case-study:not(.edit-mode) .slide {
+  overflow: hidden;
 }
 
 /* Non-split slides: centered both ways with consistent gap */
@@ -879,6 +921,16 @@ body.case-study-active .footer {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+/* View-mode: let the image wrapper expose its natural height upward so the
+   slide-level fit-scaler can measure correctly and shrink the whole layout
+   instead of cropping the image. */
+.case-study:not(.edit-mode) .intro-images-wrapper {
+  overflow: visible;
+}
+.case-study:not(.edit-mode) .slide-intro-layout {
+  min-height: 0;
+  align-items: stretch;
+}
 .intro-images-wrapper::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
 .intro-images-wrapper .dynamic-images {
@@ -1357,25 +1409,12 @@ body.case-study-active .footer {
   min-height: 0;
 }
 
-/* View-mode: when the text column has more content than the slide-inner
-   cap allows, scroll the column itself (with a barely-visible thin
-   scrollbar) rather than pushing the whole slide into vertical scroll.
-   The image column stays in view. Edit mode lets the column grow with
-   content as before (slide-inner has max-height: none in edit mode). */
+/* View-mode: don't introduce an inner scrollbar on the text column. The
+   slide-level fit-scaler (transform on .slide-inner) handles overflow by
+   scaling the whole layout uniformly, so .split-content stays visible end
+   to end. Edit mode lets the column grow naturally. */
 .case-study:not(.edit-mode) .split-content {
-  overflow-y: auto;
-  overflow-x: visible;
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--color-text) 18%, transparent) transparent;
-  /* A small inline-padding so a scrollbar doesn't crowd the text. */
-  padding-right: 0.25rem;
-}
-.case-study:not(.edit-mode) .split-content::-webkit-scrollbar {
-  width: 6px;
-}
-.case-study:not(.edit-mode) .split-content::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--color-text) 18%, transparent);
-  border-radius: 3px;
+  overflow: visible;
 }
 
 /* Ensure gap works properly with dynamic images */
@@ -1792,11 +1831,18 @@ body.case-study-active .footer {
 
 .goals-grid {
   display: grid;
-  gap: 2rem;
+  gap: var(--grid-gap);
   grid-auto-rows: 1fr;
   flex: 1;
   overflow: hidden;
   min-height: 0;
+}
+/* View-mode: surface natural content height to the slide-level scaler so
+   it can decide whether to shrink the whole slide. Edit-mode keeps the
+   default `overflow: hidden` so cards don't visually leak past the grid
+   while the editor is reorganising them. */
+.case-study:not(.edit-mode) .goals-grid {
+  overflow: visible;
 }
 
 .goals-grid .goal-item {
@@ -4086,6 +4132,18 @@ body.case-study-active .footer {
   padding-left: 0;
 }
 
+/* View-mode: comparison sides expose their natural height so the slide-level
+   fit-scaler can shrink the whole layout instead of clipping a column. The
+   switcher stays a fixed-size element so it doesn't get compressed away. */
+.case-study:not(.edit-mode) .slide-comparison-unified,
+.case-study:not(.edit-mode) .slide-comparison-unified .comparison-side {
+  overflow: visible;
+  min-height: 0;
+}
+.case-study:not(.edit-mode) .comparison-switcher {
+  flex: 0 0 auto;
+}
+
 /* ========== SPLIT RATIO CONTROL ========== */
 /* Draggable split handle */
 .split-drag-handle {
@@ -5267,6 +5325,12 @@ body.case-study-active .footer {
   height: auto;
   min-height: 0;
   max-height: none;
+  /* Defensive: guarantee the view-mode fit-scaler can't apply a transform
+     in edit mode even if the inline custom property lingers across a hot
+     toggle. The JS effect also strips the inline property; this is a belt
+     for the suspenders. */
+  --fit-scale-slide: 1;
+  transform: none !important;
 }
 
 /* slide-error / slide-chapter parity */
