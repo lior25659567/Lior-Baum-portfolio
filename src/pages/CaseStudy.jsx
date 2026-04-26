@@ -2681,14 +2681,14 @@ const CaseStudy = () => {
     }
   }, []);
 
-  /* Manually compress every base64 image in the current project (resize >2400w
+  /* Manually compress every base64 image in the current project (resize >2880w
      and re-encode through canvas at the project's quality settings). Runs only
      when the user clicks the button — uploads themselves are stored as-is. */
   const handleCompressImagesNow = useCallback(async () => {
     if (compressImagesStatus === 'running') return;
     if (!window.confirm(
       'Compress all base64 images in this case study?\n\n' +
-      '• Resizes anything wider than 2400px down to 2400px\n' +
+      '• Resizes anything wider than 2880px down to 2880px (hidpi cap)\n' +
       '• Re-encodes PNGs (lossless) and JPEGs (q=0.92)\n' +
       '• Only keeps the result if it is smaller than the original\n' +
       '• Videos / GIFs / SVGs are skipped'
