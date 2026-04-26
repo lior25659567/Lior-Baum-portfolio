@@ -158,7 +158,7 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-mfyopmfbno.webp",
+          "src": "/case-studies/project-1776014998709/img-1kpvq4sizhc.png",
           "caption": "New — compact header, full canvas for editing",
           "isVideo": false,
           "embedType": ""
@@ -179,7 +179,9 @@
       "highlight": "The header replaced an entire panel — and made every action faster to reach.",
       "slideMode": "before-after",
       "switcherStyle": "pill",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
     },
     {
       "type": "problem",
@@ -198,13 +200,11 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "contain",
+          "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-hs4e511h0.png",
-          "caption": "Template picker and modular section builder",
+          "src": "/case-studies/project-1776014998709/img-9d7zcuw3i8.png",
           "isVideo": false,
-          "embedType": "",
           "isGif": false
         },
         {
@@ -213,10 +213,9 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-9c25aooao.png",
-          "caption": "",
+          "src": "/case-studies/project-1776014998709/img-gflty6ufe0.png",
           "isVideo": false,
-          "embedType": ""
+          "isGif": false
         },
         {
           "position": "center center",
@@ -224,7 +223,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-1v3xk53sa0.png",
+          "src": "/case-studies/project-1776014998709/img-324afqhug8.png",
           "isVideo": false
         },
         {
@@ -233,7 +232,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-eep6296pc0.png",
+          "src": "/case-studies/project-1776014998709/img-1n6bnqqzoio.png",
           "isVideo": false
         },
         {
@@ -242,7 +241,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-35rxbmx9w0.png",
+          "src": "/case-studies/project-1776014998709/img-7br99f1k6o.png",
           "isVideo": false
         },
         {
@@ -251,7 +250,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-z1u1z0y00.png",
+          "src": "/case-studies/project-1776014998709/img-4pgnx6eoj4.png",
           "isVideo": false
         },
         {
@@ -260,7 +259,25 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-5s72t1zyj0.png",
+          "src": "/case-studies/project-1776014998709/img-7vc4bc2hzg.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-edpdx9mk8o.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-a7ul96shsc.png",
           "isVideo": false
         }
       ],
@@ -287,13 +304,11 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "contain",
+          "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-poyh2up2g.png",
-          "caption": "Annotation canvas and FDI tooth chart",
+          "src": "/case-studies/project-1776014998709/img-mlkys3yp6w.png",
           "isVideo": false,
-          "embedType": "",
           "isGif": false
         },
         {
@@ -302,10 +317,9 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-87shh9vrr4.png",
-          "caption": "",
+          "src": "/case-studies/project-1776014998709/img-n6hz4on1f4.png",
           "isVideo": false,
-          "embedType": ""
+          "isGif": false
         },
         {
           "position": "center center",
@@ -313,7 +327,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-c87wux3a2o.png",
+          "src": "/case-studies/project-1776014998709/img-4bk68uggf0.png",
           "isVideo": false
         },
         {
@@ -322,7 +336,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-2183xvxceo.png",
+          "src": "/case-studies/project-1776014998709/img-4q16mo67bk.png",
           "isVideo": false
         },
         {
@@ -331,7 +345,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-ojgbryqvo.png",
+          "src": "/case-studies/project-1776014998709/img-q2qezcur0c.png",
           "isVideo": false
         },
         {
@@ -340,7 +354,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-cazovgv934.png",
+          "src": "/case-studies/project-1776014998709/img-4fxx1cqmpo.png",
           "isVideo": false
         }
       ],
@@ -371,24 +385,10 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "contain",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-7zblvi8vj8.png",
-          "caption": "New — Share Report modal with access control and multi-channel delivery",
-          "isVideo": false,
-          "embedType": "",
-          "isGif": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-746o5piybo.png",
-          "caption": "",
-          "embedType": "",
+          "src": "/case-studies/project-1776014998709/img-9vfcz4002o.png",
           "isVideo": false,
           "isGif": false
         },
@@ -398,7 +398,17 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-7hxw7sh0g0.png",
+          "src": "/case-studies/project-1776014998709/img-a508ey41xs.png",
+          "isVideo": false,
+          "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-9nk0gkuos0.png",
           "isVideo": false
         },
         {
@@ -407,7 +417,16 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-2ubkci5keo.png",
+          "src": "/case-studies/project-1776014998709/img-186j8andvk.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-adpyo5ov7c.png",
           "isVideo": false
         }
       ],
