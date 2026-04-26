@@ -99,16 +99,19 @@ function useLowBandwidthMedia() {
 // the viewport, and asks the browser to fetch metadata only (~100KB)
 // instead of the whole file up front.
 // ─────────────────────────────────────────────────────────────────────────
-/* After the 2026-04-23 WebP conversion (commit eb4f5dc) the .png/.jpg files
-   under public/case-studies/ no longer exist on disk. Users who had edited
-   anything before that deploy still carry the old paths inside localStorage
-   and IndexedDB; when those are loaded verbatim, every <img> 404s and we get
-   broken-image icons everywhere. This walker rewrites any /case-studies/*
-   URL ending in .png/.jpg/.jpeg to .webp in-place so legacy saved data
-   renders against the files that actually exist. Cheap: no network, no
-   disk, just string replace. Safe to run on the same object more than once
-   (second pass is a no-op). Remove once we're confident no one still has
-   pre-conversion data cached locally. */
+/* Manifest-aware path adapter for case-study images.
+   PNG/JPG → WEBP rewrite happens only when a .webp variant for that exact
+   filename is registered in case-study-image-variants.json (produced by
+   scripts/convert-case-study-images-to-webp.sh). Behavior:
+     • Authors who upload PNG and don't run the conversion script → PNG
+       reference is left intact; the file is served as-is. Same for JPG.
+     • Authors who run the conversion script → manifest entry exists, the
+       URL is rewritten to .webp, and buildResponsiveWebp() picks up the
+       responsive variants.
+     • Legacy localStorage/IndexedDB data still pointing at .png filenames
+       whose .webp counterparts were generated will continue to migrate.
+   This replaces the unconditional rewrite that used to silently break new
+   PNG uploads with no .webp on disk. */
 function migrateCaseStudyImagePathsToWebp(node) {
   if (node == null) return node;
   if (Array.isArray(node)) return node.map(migrateCaseStudyImagePathsToWebp);
@@ -120,7 +123,11 @@ function migrateCaseStudyImagePathsToWebp(node) {
     return out;
   }
   if (typeof node === 'string' && /^\/case-studies\//.test(node)) {
-    return node.replace(/\.(png|jpe?g)(?=($|[?#]))/i, '.webp');
+    const m = node.match(/^([^?#]+?)\.(png|jpe?g)((?:[?#].*)?)$/i);
+    if (!m) return node;
+    const webpPath = m[1] + '.webp';
+    if (imageVariantManifest[webpPath]) return webpPath + m[3];
+    return node;
   }
   return node;
 }
