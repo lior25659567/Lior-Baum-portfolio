@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import AnimatedButton from '../components/AnimatedButton';
 import { useEdit } from '../context/EditContext';
-import { getCaseStudyData, getCaseStudyDataAsync, saveCaseStudyData, resetCaseStudyData, listSavedCaseStudies, slideTemplates, templateCategories, compressImage, defaultCaseStudies, contactDefaults } from '../data/caseStudyData';
+import { getCaseStudyData, getCaseStudyDataAsync, saveCaseStudyData, resetCaseStudyData, listSavedCaseStudies, slideTemplates, templateCategories, compressImage, compressDataImages, defaultCaseStudies, contactDefaults } from '../data/caseStudyData';
 import { slideTemplateDocs } from '../data/slideTemplateDocs';
 import { IFRAME_FILES } from '../iframes';
 import imageVariantManifest from '../data/case-study-image-variants.json';
@@ -941,8 +941,7 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
       r.onload = async (ev) => {
         try {
           const d = ev.target?.result;
-          if (f.type.startsWith('video/') || f.type === 'image/gif') { updatePsTab(tabIdx, { image: d, embedUrl: '' }); }
-          else { const c = await compressImage(d); updatePsTab(tabIdx, { image: c, embedUrl: '' }); }
+          updatePsTab(tabIdx, { image: d, embedUrl: '' });
         } catch { updatePsTab(tabIdx, { image: ev.target?.result, embedUrl: '' }); }
         inp.remove();
       };
@@ -1423,6 +1422,8 @@ const CaseStudy = () => {
   const [compressVideosSummary, setCompressVideosSummary] = useState('');
   const [imgVariantsStatus, setImgVariantsStatus] = useState(null);
   const [imgVariantsSummary, setImgVariantsSummary] = useState('');
+  const [compressImagesStatus, setCompressImagesStatus] = useState(null); // null | 'running' | 'done' | 'error'
+  const [compressImagesSummary, setCompressImagesSummary] = useState('');
   const [showImportJSON, setShowImportJSON] = useState(false);
   const [importJSONText, setImportJSONText] = useState('');
   const [importError, setImportError] = useState('');
@@ -2656,6 +2657,47 @@ const CaseStudy = () => {
       clearTimeout(timer);
     }
   }, []);
+
+  /* Manually compress every base64 image in the current project (resize >2400w
+     and re-encode through canvas at the project's quality settings). Runs only
+     when the user clicks the button — uploads themselves are stored as-is. */
+  const handleCompressImagesNow = useCallback(async () => {
+    if (compressImagesStatus === 'running') return;
+    if (!window.confirm(
+      'Compress all base64 images in this case study?\n\n' +
+      '• Resizes anything wider than 2400px down to 2400px\n' +
+      '• Re-encodes PNGs (lossless) and JPEGs (q=0.92)\n' +
+      '• Only keeps the result if it is smaller than the original\n' +
+      '• Videos / GIFs / SVGs are skipped'
+    )) return;
+    setCompressImagesStatus('running');
+    setCompressImagesSummary('');
+    try {
+      // Measure before/after by walking the project once to total base64 bytes.
+      const sumBase64Bytes = (obj) => {
+        if (typeof obj === 'string' && obj.startsWith('data:image') && !obj.startsWith('data:image/svg+xml')) {
+          return obj.length;
+        }
+        if (Array.isArray(obj)) return obj.reduce((n, v) => n + sumBase64Bytes(v), 0);
+        if (obj && typeof obj === 'object') return Object.values(obj).reduce((n, v) => n + sumBase64Bytes(v), 0);
+        return 0;
+      };
+      const before = sumBase64Bytes(project);
+      const compressed = await compressDataImages(project);
+      const after = sumBase64Bytes(compressed);
+      setProject(compressed);
+      const mb = (n) => (n / (1024 * 1024)).toFixed(2);
+      const saved = Math.max(0, before - after);
+      setCompressImagesSummary(`${mb(before)}MB → ${mb(after)}MB (saved ${mb(saved)}MB)`);
+      setCompressImagesStatus('done');
+      setTimeout(() => { setCompressImagesStatus(null); setCompressImagesSummary(''); }, 10_000);
+    } catch (err) {
+      console.error('[compress-images] Failed:', err);
+      window.alert(`Image compression failed: ${err && err.message ? err.message : 'unknown error'}`);
+      setCompressImagesStatus('error');
+      setTimeout(() => setCompressImagesStatus(null), 5_000);
+    }
+  }, [project, compressImagesStatus]);
 
   // ── Copy JSON for ChatGPT ──────────────────────────────────────
   const handleCopyJSON = useCallback(() => {
@@ -4166,17 +4208,12 @@ My instructions: `;
             try {
               const dataUrl = event.target.result;
               
-              // Don't compress videos, GIFs, or SVGs — use as-is
+              // Store raw bytes — no auto-compression. Use the explicit
+              // "Compress" button in edit mode when optimization is wanted.
               if (isVideo || isGif || isSvg) {
                 updateImage(imgIndex, { src: dataUrl, isVideo: isVideo, isGif: isGif });
               } else {
-                try {
-                  const compressed = await compressImage(dataUrl);
-                  updateImage(imgIndex, { src: compressed, isVideo: false });
-                } catch (err) {
-                  console.error('Error compressing image:', err);
-                  updateImage(imgIndex, { src: dataUrl, isVideo: false });
-                }
+                updateImage(imgIndex, { src: dataUrl, isVideo: false });
               }
             } catch (err) {
               console.error('Error processing file:', err);
@@ -4243,8 +4280,7 @@ My instructions: `;
             if (isVideo || isGif || isSvg) {
               resolve({ src: dataUrl, isVideo, isGif });
             } else {
-              try { resolve({ src: await compressImage(dataUrl), isVideo: false }); }
-              catch { resolve({ src: dataUrl, isVideo: false }); }
+              resolve({ src: dataUrl, isVideo: false });
             }
           };
           reader.readAsDataURL(file);
@@ -5489,17 +5525,12 @@ My instructions: `;
           try {
             const dataUrl = event.target.result;
             
-            // Don't compress videos, GIFs, or SVGs — use as-is
+            // Store raw bytes — no auto-compression. Use the explicit
+            // "Compress" button in edit mode when optimization is wanted.
             if (isVideo || isGif || isSvg) {
               updateSlide(slideIndex, { [field]: dataUrl, [`${field}IsVideo`]: isVideo, [`${field}IsGif`]: isGif });
             } else {
-              try {
-                const compressed = await compressImage(dataUrl);
-                updateSlide(slideIndex, { [field]: compressed, [`${field}IsVideo`]: false, [`${field}IsGif`]: false });
-              } catch (err) {
-                console.error('Error compressing image:', err);
-                updateSlide(slideIndex, { [field]: dataUrl, [`${field}IsGif`]: false });
-              }
+              updateSlide(slideIndex, { [field]: dataUrl, [`${field}IsVideo`]: false, [`${field}IsGif`]: false });
             }
           } catch (err) {
             console.error('Error processing file:', err);
@@ -7228,12 +7259,7 @@ My instructions: `;
                 reader.onload = (ev) => resolve(ev.target.result);
                 reader.readAsDataURL(file);
               });
-              try {
-                const compressed = await compressImage(dataUrl);
-                newImages.push({ src: compressed });
-              } catch {
-                newImages.push({ src: dataUrl });
-              }
+              newImages.push({ src: dataUrl });
             }
             updateSlide(index, { images: newImages });
           };
@@ -8125,6 +8151,20 @@ My instructions: `;
                       title="Commit & push to git"
                     >
                       {gitPushStatus === 'pushing' ? '⟳ Pushing...' : gitPushStatus === 'pushed' ? '✓ Pushed' : gitPushStatus === 'error' ? '⚠ Error' : '↑ Push to git'}
+                    </button>
+                    <button
+                      className={`slide-sorter-webp${compressImagesStatus ? ` webp-${compressImagesStatus}` : ''}`}
+                      onClick={handleCompressImagesNow}
+                      disabled={compressImagesStatus === 'running'}
+                      title={compressImagesSummary || 'Compress base64 images embedded in this case study (resize >2400w, re-encode PNG/JPEG). Skips video/GIF/SVG.'}
+                    >
+                      {compressImagesStatus === 'running'
+                        ? '⟳ Compressing…'
+                        : compressImagesStatus === 'done'
+                          ? (compressImagesSummary ? `✓ ${compressImagesSummary}` : '✓ Compressed')
+                          : compressImagesStatus === 'error'
+                            ? '⚠ Error'
+                            : '🗜 Compress'}
                     </button>
                     <button
                       className={`slide-sorter-webp${webpStatus ? ` webp-${webpStatus}` : ''}`}

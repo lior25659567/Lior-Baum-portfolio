@@ -1455,8 +1455,10 @@ export const compressImage = (dataUrl, maxWidth = 2400, quality = 0.92) => {
   });
 };
 
-// Compress all images in the data object recursively
-const compressDataImages = async (data) => {
+// Compress all images in the data object recursively.
+// Exported so the editor's manual "Compress" button can run it on demand —
+// auto-save no longer calls it (uploads are stored byte-for-byte).
+export const compressDataImages = async (data) => {
   if (!data) return data;
   
   if (typeof data === 'string' && data.startsWith('data:image')) {
@@ -1582,11 +1584,13 @@ export const getCaseStudyDataAsync = async (projectId) => {
 export const saveCaseStudyData = async (projectId, data) => {
   try {
     console.log(`[saveCaseStudyData] Starting save for projectId: ${projectId}`);
-    
-    // Compress images first
-    const compressedData = await compressDataImages(data);
-    console.log('[saveCaseStudyData] Images compressed');
-    
+
+    // Save the project as-is. Auto-compression on every save was stripping
+    // PNG metadata and re-quantizing through canvas; the editor now exposes
+    // an explicit "Compress" button (alongside WebP / Variants / Videos) so
+    // the user controls when that happens.
+    const compressedData = data;
+
     // Try IndexedDB first (much larger limit - 50MB+)
     const idbSuccess = await saveToIndexedDB(projectId, compressedData);
     console.log(`[saveCaseStudyData] IndexedDB save result: ${idbSuccess}`);
