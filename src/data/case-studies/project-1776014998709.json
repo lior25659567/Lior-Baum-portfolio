@@ -430,13 +430,13 @@
       "switcherStyle": "pill",
       "splitRatio": 40,
       "imageDisplayMode": "carousel",
-      "afterImageCarouselInterval": 2000,
+      "afterImageCarouselInterval": 1500,
       "afterImageCarouselFit": "contain"
     },
     {
       "type": "testimonial",
       "label": "Doctor Feedback",
-      "quote": "Full canvas to work with, every action in the header, and templates that actually fit how I write reports.",
+      "quote": "The templates actually match what I do, and everything I need is right there in front of me. ",
       "author": "Dr. N. Haddad",
       "role": "Orthodontist, iTero early access",
       "splitRatio": 40
