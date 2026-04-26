@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "predev": "lsof -ti:5173 | xargs kill -9 2>/dev/null || true",
-    "dev": "vite",
+    "dev": "vite --host",
     "dev:doctor": "node scripts/dev-doctor.js",
     "build": "vite build",
     "lint": "eslint .",
