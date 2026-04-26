@@ -1913,19 +1913,7 @@ const CaseStudy = () => {
     const handleWheel = (e) => {
       e.preventDefault();
       hideSlideNavRef.current?.();
-
-      // Refresh the lock timer on every wheel event. Trackpad momentum keeps
-      // firing wheel events for 1s+ after the user stops; without this, the
-      // 400ms lock expires mid-momentum and a stray event triggers a second
-      // (unwanted) slide change. Now the lock only releases once 400ms have
-      // passed with no wheel activity.
-      if (isScrollingRef.current) {
-        if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-        scrollTimeoutRef.current = setTimeout(() => {
-          isScrollingRef.current = false;
-        }, 400);
-        return;
-      }
+      if (isScrollingRef.current) return;
 
       // Immediate response - no accumulation delay
       if (Math.abs(e.deltaY) > 20) {
