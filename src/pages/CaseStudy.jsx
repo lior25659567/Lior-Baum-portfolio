@@ -821,10 +821,16 @@ const toIframeSrc = (input) => {
   return '/' + cleaned;
 };
 
-// Shared helper — used by ComparisonSlide and CaseStudy's getSplitStyle
-const getSplitStyleModule = (slide) => {
+// Shared helper — used by ComparisonSlide and CaseStudy's getSplitStyle.
+// In edit mode the SplitDragHandle is rendered as a third grid child between
+// the two columns; without an `auto` middle track the third item (the image
+// column) would wrap to a new row, leaving a big empty gap in the slide.
+const getSplitStyleModule = (slide, editMode = false) => {
   const ratio = slide.splitRatio || 50;
-  return { gridTemplateColumns: `${ratio}fr ${100 - ratio}fr` };
+  const cols = editMode
+    ? `${ratio}fr auto ${100 - ratio}fr`
+    : `${ratio}fr ${100 - ratio}fr`;
+  return { gridTemplateColumns: cols };
 };
 
 // ─── UNIFIED SPLIT SLIDE ────────────────────────────────────────────────────
@@ -965,7 +971,7 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
 
       {/* ── Edit-mode: style mode picker — only for comparison / problemSolution ── */}
 
-      <div className="slide-inner slide-split" style={getSplitStyleModule(slide)}>
+      <div className="slide-inner slide-split" style={getSplitStyleModule(slide, editMode)}>
         <div className="split-content">
           {/* Label + Title — always present */}
           <span className="slide-label">
@@ -1918,6 +1924,10 @@ const CaseStudy = () => {
     };
 
     const handleWheel = (e) => {
+      // Edit mode: the outer .case-study container is the scroll surface,
+      // so let the browser route wheel events natively. We only
+      // intercept in view mode to drive horizontal slide navigation.
+      if (editMode) return;
       e.preventDefault();
       hideSlideNavRef.current?.();
       if (isScrollingRef.current) return;
@@ -5436,12 +5446,15 @@ My instructions: `;
     return { '--slide-title-gap': value };
   };
 
-  // Helper to get split grid style based on ratio
+  // Helper to get split grid style based on ratio. Edit mode injects an
+  // `auto` middle track for the SplitDragHandle so the third grid child
+  // (the image column) doesn't wrap to a new row.
   const getSplitStyle = (slide) => {
     const ratio = slide.splitRatio || 50;
-    return {
-      gridTemplateColumns: `${ratio}fr ${100 - ratio}fr`
-    };
+    const cols = editMode
+      ? `${ratio}fr auto ${100 - ratio}fr`
+      : `${ratio}fr ${100 - ratio}fr`;
+    return { gridTemplateColumns: cols };
   };
 
   // CTA Editor Component (memoized for stable identity)

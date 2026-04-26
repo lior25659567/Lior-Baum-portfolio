@@ -734,10 +734,10 @@ body.case-study-active .footer {
 
 .intro-header-mode-btn {
   font-family: var(--font-body);
-  font-size: 0.72rem;
-  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.75rem;
   border: 1px solid var(--color-border);
-  border-radius: 4px;
+  border-radius: 5px;
   background: transparent;
   color: var(--color-text-muted);
   cursor: pointer;
@@ -2861,14 +2861,14 @@ body.case-study-active .footer {
 .add-image-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.1rem;
-  padding: 0.5rem 1rem;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
   margin-top: 0.75rem;
   border: 2px dashed var(--color-border);
   border-radius: 8px;
   background: transparent;
   color: var(--color-text-muted);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -3073,13 +3073,13 @@ body.case-study-active .footer {
 /* Bullet style toggle control */
 .bullet-style-control {
   display: flex;
-  gap: 0.25rem;
-  margin-bottom: 0.4rem;
+  gap: 0.4rem;
+  margin-bottom: 0.55rem;
 }
 
 .bullet-style-btn {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 5px;
   border: 1px solid var(--color-border);
   background: transparent;
@@ -3099,23 +3099,23 @@ body.case-study-active .footer {
 }
 
 .accent-preview {
-  width: 5px;
-  height: 5px;
+  width: 7px;
+  height: 7px;
   border-radius: 1px;
   background: var(--color-accent);
 }
 
 .minimal-preview {
-  width: 5px;
-  height: 5px;
+  width: 7px;
+  height: 7px;
   border-radius: 1px;
   background: var(--color-text-muted);
   opacity: 0.4;
 }
 
 .dark-preview {
-  width: 5px;
-  height: 5px;
+  width: 7px;
+  height: 7px;
   border-radius: 1px;
   background: var(--color-text);
 }
@@ -3197,12 +3197,12 @@ body.case-study-active .footer {
 
 .add-bullet-btn {
   margin-top: 0.5rem;
-  padding: 0.4rem 0.85rem;
+  padding: 0.55rem 1rem;
   border: 1px dashed var(--color-border);
   border-radius: 6px;
   background: transparent;
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -4054,16 +4054,18 @@ body.case-study-active .footer {
 
 .split-ratio-control {
   position: absolute;
-  top: 5rem;
-  left: 50%;
-  transform: translateX(-50%);
+  /* Anchor to the edit-mode bar via the edit-mode --edit-bar-h token,
+     and shift right of center so it doesn't collide with the
+     slide-edit-controls column on the right at 1440-1599px. */
+  top: calc(var(--edit-bar-h, 3.25rem) + 0.75rem);
+  right: 5.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  padding: 0.75rem 1.25rem;
+  padding: 0.85rem 1.5rem;
   z-index: 20;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
@@ -4148,16 +4150,18 @@ body.case-study-active .footer {
 /* Title Spacing Control */
 .title-spacing-control {
   position: absolute;
-  bottom: 2rem;
+  /* Sit above the slide-sorter using the edit-mode --sorter-h token. */
+  bottom: calc(var(--sorter-h, 160px) + 0.75rem);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.85rem;
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.85rem;
   z-index: 20;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
@@ -5017,80 +5021,105 @@ body.case-study-active .footer {
 
 /* ========== EDIT MODE STYLES ========== */
 
-/* --- Core edit mode overrides: enable scrolling within each slide --- */
+/* ─────────────────────────────────────────────────────────────────
+   Edit-mode scroll architecture
+   ─────────────────────────────────────────────────────────────────
+   In view mode .case-study is `position: fixed; height: 100vh;
+   overflow: hidden` and each .slide is its own vertical scroll
+   container — fine for one-screen-per-slide presentation.
+
+   In edit mode the slides need to grow with their (much taller)
+   content. Having each slide own its scroll while the parent is
+   `position: fixed; overflow: hidden` produced layered scroll
+   containers that fought fixed bars (edit-mode-bar, slide-sorter,
+   slide-edit-controls) and required a JS wheel-forwarding hack.
+
+   The fix: in edit mode the OUTER `.case-study` is the scroll
+   container and slides are content-height. The fixed bars overlay
+   the page-level scroll without competing for wheel ownership.
+   View-mode is untouched.
+   ───────────────────────────────────────────────────────────── */
+
 .case-study.edit-mode {
-  touch-action: auto;
-  padding-bottom: 170px; /* space for slide sorter */
-}
+  /* Spacing tokens: tighter frame (slide padding) so users have more
+     usable interior, looser interior rhythm so paragraphs/bullets
+     breathe. View-mode uses the global tokens from line ~217. */
+  --edit-bar-h: clamp(3.25rem, 2.5vw + 1.75rem, 4rem);
+  --sorter-h: clamp(160px, 18vh, 220px);
+  --slide-pad-x: clamp(48px, 4vw, 96px);
+  --slide-pad-top: clamp(40px, 3vw, 64px);
+  --slide-pad-bottom: clamp(40px, 3vw, 64px);
+  --rhythm-md: clamp(1rem, 0.7vw + 0.7rem, 1.6rem);
+  --rhythm-lg: clamp(1.5rem, 1.2vw + 1rem, 2.5rem);
 
-/* Each individual slide becomes scrollable in edit mode */
-.case-study.edit-mode .slide {
-  /* `scroll` (not `auto`) forces the scrollbar to render even when content
-     happens to fit — so the rail is always visible, you never have to
-     guess whether the slide is scrollable, and on macOS overlay-scrollbar
-     setups the bar isn't hidden until you start scrolling. */
-  overflow-y: scroll;
+  /* Outer container becomes the scroll surface. */
+  overflow-y: auto;
   overflow-x: hidden;
-  align-items: flex-start;
-  /* Account for edit mode bar at top */
-  padding-top: 5rem;
-  /* Slide-sorter is `position: fixed; bottom: 0; max-height: 160px` and
-     overlays the bottom of the viewport. Without this padding, content
-     could extend behind the sorter without triggering overflow on the
-     slide. */
-  padding-bottom: clamp(180px, 22vh, 220px);
+  touch-action: auto;
+  /* Make ScrollIntoView land cleanly past the fixed top bar / above
+     the fixed slide-sorter. */
+  scroll-padding-top: var(--edit-bar-h);
+  scroll-padding-bottom: var(--sorter-h);
 }
 
-/* Edit-mode-specific scrollbar — slightly more prominent than the
-   subtle view-mode rail since edit mode is a workspace, not a
-   reading view. */
-.case-study.edit-mode .slide::-webkit-scrollbar {
+/* Each slide flows naturally with its content; no inner scroll. */
+.case-study.edit-mode .slide {
+  height: auto !important;
+  min-height: calc(100dvh - var(--edit-bar-h) - var(--sorter-h));
+  overflow: visible !important;
+  align-items: stretch;
+  /* Top padding clears the fixed edit-mode-bar; bottom padding clears
+     the fixed slide-sorter so content never sits behind it. */
+  padding-top: calc(var(--edit-bar-h) + 1rem);
+  padding-bottom: calc(var(--sorter-h) + 1rem);
+}
+
+/* The track no longer needs to lock to the viewport height — let it
+   grow with whichever slide is tallest. */
+.case-study.edit-mode .slides-track {
+  min-height: 100%;
+  height: auto;
+}
+
+/* Edit-mode scrollbar — slightly more prominent than view-mode. */
+.case-study.edit-mode::-webkit-scrollbar {
   width: 14px;
   background: color-mix(in srgb, var(--color-text) 12%, transparent);
 }
-.case-study.edit-mode .slide::-webkit-scrollbar-track {
+.case-study.edit-mode::-webkit-scrollbar-track {
   background: color-mix(in srgb, var(--color-text) 12%, transparent);
   border-radius: 0;
   margin: 0;
 }
-.case-study.edit-mode .slide::-webkit-scrollbar-thumb {
+.case-study.edit-mode::-webkit-scrollbar-thumb {
   background: color-mix(in srgb, var(--color-text) 50%, transparent);
   border-radius: 8px;
   border: 3px solid transparent;
   background-clip: padding-box;
   min-height: 48px;
 }
-.case-study.edit-mode .slide::-webkit-scrollbar-thumb:hover {
+.case-study.edit-mode::-webkit-scrollbar-thumb:hover {
   background: color-mix(in srgb, var(--color-text) 70%, transparent);
   background-clip: padding-box;
 }
 
-/* Slide inner: auto height so content can expand */
+/* slide-inner can grow with content; we no longer pin it to a
+   viewport-relative min-height — the slide itself handles that. */
 .case-study.edit-mode .slide-inner {
   height: auto;
-  min-height: calc(100vh - 14rem); /* bar + sorter */
-  min-height: calc(100dvh - 14rem);
-  max-height: none;
-  padding-bottom: 2rem;
-}
-
-/* Override slide-type-specific fixed/max heights in edit mode */
-.case-study.edit-mode .slide-intro .slide-inner {
-  height: auto;
-  max-height: none;
-  min-height: calc(100vh - 14rem);
-  min-height: calc(100dvh - 14rem);
-}
-
-.case-study.edit-mode .slide-error .slide-inner {
+  min-height: 0;
   max-height: none;
 }
 
+/* slide-error / slide-chapter parity */
+.case-study.edit-mode .slide-error .slide-inner,
 .case-study.edit-mode .slide-chapter .slide-inner {
-  min-height: auto;
+  max-height: none;
+  min-height: 0;
 }
 
-/* Remove max-height on image wrappers in edit mode so they expand naturally */
+/* Image wrappers: don't cap height in edit mode; let them be sized
+   by their layout column. */
 .case-study.edit-mode .split-image-wrapper,
 .case-study.edit-mode .split-image,
 .case-study.edit-mode .image-visual,
@@ -5099,46 +5128,18 @@ body.case-study-active .footer {
   max-height: none;
 }
 
-/* Ensure grids/layouts don't clip content in edit mode */
+/* Layout containers: don't clip in edit mode. min-height: 0 lets
+   them participate in the now-flowing slide instead of fighting the
+   old viewport-height constraint. */
 .case-study.edit-mode .slide-split-layout,
 .case-study.edit-mode .slide-split,
 .case-study.edit-mode .slide-image-layout,
-.case-study.edit-mode .slide-intro-layout {
-  min-height: 0;
-  overflow: visible;
-}
-
-/* Project showcase & goals showcase: allow expansion in edit mode */
-.case-study.edit-mode .slide-project-showcase .slide-inner,
-.case-study.edit-mode .slide-goals-showcase .slide-inner {
-  height: auto;
-  min-height: calc(100vh - 14rem);
-  min-height: calc(100dvh - 14rem);
-}
-
+.case-study.edit-mode .slide-intro-layout,
 .case-study.edit-mode .project-showcase-layout,
 .case-study.edit-mode .goals-showcase-layout {
-  height: auto;
-  min-height: calc(100vh - 14rem);
-  min-height: calc(100dvh - 14rem);
+  min-height: 0;
   overflow: visible;
-}
-
-/* PS columns: auto height in edit mode */
-
-/* Solution showcase: auto height in edit mode */
-.case-study.edit-mode .slide-solution-showcase .slide-inner {
   height: auto;
-  min-height: calc(100vh - 14rem);
-  min-height: calc(100dvh - 14rem);
-}
-
-/* Image mosaic: auto height in edit mode */
-.case-study.edit-mode .slide-image-mosaic .slide-inner {
-  height: auto;
-  min-height: calc(100vh - 14rem);
-  min-height: calc(100dvh - 14rem);
-  overflow: visible;
 }
 
 /* Ensure images don't force the page to zoom out */
@@ -5185,48 +5186,89 @@ body.case-study-active .footer {
   visibility: visible;
 }
 
-/* Slide edit controls: absolutely positioned but account for top bar */
-.case-study.edit-mode .slide-edit-controls {
-  top: 5.5rem;
-}
+/* (slide-edit-controls top is now `calc(var(--edit-bar-h) + 1rem)` in
+   the base rule and adapts automatically via the --edit-bar-h token.) */
 
-/* Ensure controls don't overlap on medium screens */
+/* Ensure split-ratio / card-variant / title-spacing widgets clear the
+   edit-mode bar on medium screens. The control's anchor token
+   --edit-bar-h handles vertical placement; this block tightens
+   padding/font when horizontal room is tight. */
 @media (max-width: 1440px) {
-  .case-study.edit-mode .slide {
-    padding-top: 4.5rem;
-  }
-
-  .case-study.edit-mode .slide-edit-controls {
-    top: 5rem;
-  }
-
   .split-ratio-control {
-    top: 4.5rem;
-    padding: 0.4rem 0.75rem;
-    gap: 0.5rem;
-    font-size: 0.7rem;
+    padding: 0.55rem 1rem;
+    gap: 0.6rem;
+    font-size: 0.75rem;
   }
 
   .split-ratio-control .ratio-presets {
-    gap: 0.2rem;
+    gap: 0.25rem;
   }
 
   .split-ratio-control .ratio-preset {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.65rem;
-  }
-
-  .card-variant-control {
-    top: 4.5rem;
-    left: 1.5rem;
+    padding: 0.3rem 0.55rem;
+    font-size: 0.7rem;
   }
 
   .title-spacing-control {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
   }
 }
 
 /* --- Edit mode responsive: inherits --slide-* vars from non-edit breakpoints --- */
+
+/* --- Edit mode wide-screen tuning: 1920px+ -------------------------
+   Edit-mode chrome (toolbars, sorter, button column) scales up so it
+   stays proportional on large monitors. The slide *content* still
+   uses the same fluid clamps as view-mode — an editor that proportions
+   things differently than the live page would mislead the user. */
+@media (min-width: 1920px) {
+  .case-study.edit-mode {
+    --edit-bar-h: 3.75rem;
+    --sorter-h: 200px;
+  }
+  .case-study.edit-mode .edit-actions button,
+  .case-study.edit-mode .edit-actions select {
+    min-height: 36px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  .case-study.edit-mode .slide-edit-controls button {
+    width: 44px;
+    height: 44px;
+    font-size: 1.1rem;
+  }
+  .case-study.edit-mode .slide-sorter-actions button {
+    width: 32px;
+    height: 32px;
+  }
+  .case-study.edit-mode .slide-sorter-thumb {
+    width: clamp(180px, 11vw, 240px);
+  }
+  .case-study.edit-mode .split-ratio-control,
+  .case-study.edit-mode .title-spacing-control {
+    padding: 1rem 1.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* --- Edit mode wide-screen tuning: 2560px+ (4K / ultra-wide) ------- */
+@media (min-width: 2560px) {
+  .case-study.edit-mode {
+    --edit-bar-h: 4rem;
+    --sorter-h: 240px;
+  }
+  .case-study.edit-mode .slide-edit-controls button {
+    width: 48px;
+    height: 48px;
+    font-size: 1.15rem;
+  }
+  .case-study.edit-mode .slide-sorter-thumb {
+    width: clamp(200px, 10vw, 280px);
+  }
+  .case-study.edit-mode .slide-inner {
+    max-width: 2400px;
+  }
+}
 
 /* --- Edit mode responsive: 1599px --- */
 @media (max-width: 1599px) {
@@ -5424,45 +5466,37 @@ body.case-study-active .footer {
   z-index: 200;
   background: var(--color-accent);
   color: white;
-  padding: 0.5rem 1.5rem;
+  min-height: var(--edit-bar-h, 3.25rem);
+  padding: 0.5rem clamp(1rem, 1.5vw, 2rem);
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 0.8rem;
   font-weight: 500;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: clamp(0.5rem, 0.8vw, 1rem);
 }
 
 .edit-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: clamp(0.4rem, 0.6vw, 0.75rem);
   flex-wrap: wrap;
   align-items: center;
 }
 
 .edit-actions button,
 .edit-actions select {
-  font-size: 0.72rem;
-  padding: 0.35rem 0.7rem;
-  white-space: nowrap;
-}
-
-.edit-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.edit-actions button {
   background: rgba(255, 255, 255, 0.2);
   border: none;
   color: white;
-  padding: 0.5rem 1rem;
+  min-height: 32px;
+  padding: 0.4rem 0.85rem;
   border-radius: 6px;
-  font-size: 0.8rem;
+  font-size: clamp(0.72rem, 0.5vw + 0.55rem, 0.85rem);
   font-weight: 500;
   cursor: pointer;
   transition: background 0.2s ease;
+  white-space: nowrap;
 }
 
 .edit-actions button:hover {
@@ -5619,39 +5653,41 @@ body.case-study-active .footer {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
-  max-height: 160px;
+  /* --sorter-h is declared on .case-study.edit-mode; the sorter only
+     ever renders in edit mode, so the fallback is harmless. */
+  max-height: var(--sorter-h, 160px);
 }
 
 .slide-sorter-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.4rem 1rem;
+  padding: 0.6rem 1.25rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   flex-shrink: 0;
 }
 
 .slide-sorter-title {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.55);
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
 
 .slide-sorter-actions {
   display: flex;
-  gap: 0.1rem;
+  gap: 0.25rem;
 }
 
 .slide-sorter-actions button {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 6px;
   border: none;
   background: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.5);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -5740,8 +5776,8 @@ body.case-study-active .footer {
 
 .slide-sorter-track {
   display: flex;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  gap: 0.6rem;
+  padding: 0.6rem 1.25rem;
   overflow-x: auto;
   overflow-y: hidden;
   flex: 1;
@@ -5761,15 +5797,15 @@ body.case-study-active .footer {
 
 .slide-sorter-thumb {
   flex: 0 0 auto;
-  width: 160px;
-  padding: 0.5rem 0.6rem;
+  width: clamp(160px, 12vw, 220px);
+  padding: 0.6rem 0.75rem;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   cursor: grab;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.35rem;
   transition: all 0.15s ease;
   position: relative;
   user-select: none;
@@ -5893,10 +5929,14 @@ body.case-study-active .footer {
   color: #fff;
 }
 
-/* Push slide content up when sorter is open in edit mode */
-.case-study.edit-mode {
-  padding-bottom: 160px;
-}
+/* Removed `padding-bottom: 160px` from .case-study.edit-mode. Because the
+   case-study is `position: fixed; height: 100vh; overflow: hidden`, that
+   padding shrank the inner content area and clipped the bottom of every
+   slide — making scroll appear stuck at a position above the actual end.
+   The slide-sorter is `position: fixed; bottom: 0` and overlays the slide
+   without needing parent padding, and the slide has its own
+   `padding-bottom: clamp(180px, 22vh, 220px)` so content stays clear of
+   the sorter. */
 
 @media (max-width: 767px) {
   .slide-sorter-thumb {
@@ -5908,9 +5948,8 @@ body.case-study-active .footer {
     max-height: 130px;
   }
 
-  .case-study.edit-mode {
-    padding-bottom: 130px;
-  }
+  /* See note above: padding-bottom on the fixed/overflow:hidden
+     case-study clips the slide bottom, so we don't set it here either. */
 
   .thumb-actions {
     opacity: 1;
@@ -6553,22 +6592,22 @@ textarea.editable-field {
 /* Slide Edit Controls */
 .slide-edit-controls {
   position: absolute;
-  top: 5rem;
-  right: 2rem;
+  top: calc(var(--edit-bar-h, 3.25rem) + 1rem);
+  right: clamp(1rem, 1.5vw, 2rem);
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.65rem;
   z-index: 50;
 }
 
 .slide-edit-controls button {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 8px;
   border: 1px solid var(--color-border);
   background: var(--color-bg);
   color: var(--color-text);
-  font-size: 1rem;
+  font-size: 1.05rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -8275,14 +8314,14 @@ textarea.editable-field {
 .add-field-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.1rem;
-  padding: 0.5rem 1rem;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
   margin-top: 0.75rem;
   border: 2px dashed var(--color-border);
   border-radius: 8px;
   background: transparent;
   color: var(--color-text-muted);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
@@ -9495,9 +9534,9 @@ textarea.editable-field {
 .comparison-mode-control {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.65rem;
 }
 
 .comparison-mode-control-right {
@@ -9514,12 +9553,12 @@ textarea.editable-field {
 }
 
 .comparison-mode-btn {
-  padding: 0.2rem 0.6rem;
+  padding: 0.4rem 0.85rem;
   border-radius: 6px;
   border: 1px solid var(--color-border);
   background: transparent;
   font-family: inherit;
-  font-size: var(--text-caption);
+  font-size: 0.78rem;
   font-weight: 500;
   color: var(--color-text-muted);
   cursor: pointer;
