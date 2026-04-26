@@ -220,7 +220,7 @@ body.case-study-active .footer {
    tighter tuned values. */
 
 .case-study {
-  --slide-max-w: min(2200px, 100%);
+  --slide-max-w: min(1920px, 100%);
   --slide-pad-x: clamp(40px, 4.5vw, 144px);
   /* Vertical padding/gap take the smaller of vw-driven and vh-driven clamps,
      so on short viewports they shrink even when the window is wide. The
@@ -3495,6 +3495,7 @@ body.case-study-active .footer {
 
 .dynamic-image-wrapper {
   width: 100%;
+  height: 100%;
   flex: 1;
   min-height: 0;
   padding: 0;
