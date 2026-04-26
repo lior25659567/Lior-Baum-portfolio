@@ -5052,8 +5052,11 @@ body.case-study-active .footer {
   --rhythm-md: clamp(1rem, 0.7vw + 0.7rem, 1.6rem);
   --rhythm-lg: clamp(1.5rem, 1.2vw + 1rem, 2.5rem);
 
-  /* Outer container becomes the scroll surface. */
-  overflow-y: auto;
+  /* Outer container becomes the scroll surface. `scroll` (not `auto`)
+     forces the scrollbar rail to render even when content fits — so
+     the rail is always visible in edit mode and macOS overlay
+     scrollbars don't hide until first scroll. */
+  overflow-y: scroll;
   overflow-x: hidden;
   touch-action: auto;
   /* Make ScrollIntoView land cleanly past the fixed top bar / above
