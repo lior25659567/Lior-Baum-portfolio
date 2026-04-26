@@ -8147,11 +8147,9 @@ My instructions: `;
                 <path d="M12 4L8 10L12 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
-            {isMobileSlide && (
-              <span className="slide-nav-pill-counter" aria-live="polite">
-                {String(currentSlide + 1).padStart(2, '0')} / {String(totalSlides).padStart(2, '0')}
-              </span>
-            )}
+            <span className="slide-nav-pill-counter" aria-live="polite">
+              {currentSlide + 1} / {totalSlides}
+            </span>
             <span className="slide-nav-pill-divider" aria-hidden="true" />
             <button
               type="button"

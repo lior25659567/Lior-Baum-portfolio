@@ -162,6 +162,13 @@ body.case-study-active .footer {
   flex-shrink: 0;
 }
 
+/* View mode: the slide-nav-pill at the bottom now shows the counter,
+   so the top-bar progress duplicates information. Hide in view mode;
+   edit mode keeps it (the bottom pill is hidden in edit mode). */
+.case-study:not(.edit-mode) .nav-progress {
+  display: none;
+}
+
 .progress-current,
 .progress-total {
   font-family: var(--font-body);
@@ -177,7 +184,7 @@ body.case-study-active .footer {
 
 .progress-bar {
   min-width: 120px;
-  max-width: 280px;
+  max-width: clamp(200px, 18vw, 380px);
   height: 2px;
   background: var(--color-border);
   border-radius: 2px;
@@ -224,6 +231,20 @@ body.case-study-active .footer {
   --rhythm-tight: clamp(0.4rem, 0.3vw + 0.3rem, 0.75rem);
   --rhythm-md: clamp(0.85rem, 0.55vw + 0.55rem, 1.4rem);
   --rhythm-lg: clamp(1.25rem, 1vw + 0.8rem, 2.25rem);
+
+  /* View-mode responsive tokens. Each slide should fit the viewport
+     (no inner scrollbar) across 1280–2560+. --vp-cap pins slide-inner
+     max-height to the visible region; --card-min/--ib-min/--stat-min
+     are floors for auto-fit grids so columns reflow gracefully. Edit
+     mode shadows these to neutral fallbacks (none/0) at line ~5045. */
+  --vp-cap: calc(100dvh - var(--slide-pad-top) - var(--slide-pad-bottom));
+  --card-min: clamp(220px, 18vw, 340px);
+  --stat-min: clamp(180px, 14vw, 260px);
+  --tool-min: clamp(200px, 14vw, 280px);
+  --ib-min: clamp(220px, 18vw, 340px);
+  --kpi-min: clamp(180px, 14vw, 260px);
+  --outcome-min: clamp(240px, 20vw, 380px);
+  --process-min: clamp(220px, 16vw, 320px);
 }
 
 @media (max-width: 1023px) {
@@ -366,6 +387,16 @@ body.case-study-active .footer {
   gap: 0;
 }
 
+/* View-mode: cap the inner box at the visible viewport so flex children
+   with `min-height: 0` (split layouts, scroll-aware grids) actually
+   shrink to fit instead of pushing the slide into vertical scroll.
+   Edit mode neutralizes this via `--vp-cap: none` at the edit-mode
+   token block (line ~5054) and via the explicit max-height: none on
+   .slide-inner at line ~5130. */
+.case-study:not(.edit-mode) .slide-inner {
+  max-height: var(--vp-cap);
+}
+
 /* Non-split slides: centered both ways with consistent gap */
 .slide-process .slide-inner,
 .slide-tools .slide-inner,
@@ -443,6 +474,11 @@ body.case-study-active .footer {
   gap: var(--slide-title-gap, 1rem);
   height: 100%;
   justify-content: center;
+  /* `min-width: 0` and `min-height: 0` let this flex child shrink to the
+     bounded column when slide-inner is capped; without them the natural
+     content size wins and the column overflows the cap visually. */
+  min-width: 0;
+  min-height: 0;
 }
 
 .split-image-container {
@@ -636,7 +672,7 @@ body.case-study-active .footer {
 /* ── Meta row — dynamic items ── */
 .intro-meta-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(clamp(120px, 9vw, 180px), 1fr));
   gap: 0;
   row-gap: 1rem;
   margin-top: var(--intro-gap);
@@ -711,7 +747,7 @@ body.case-study-active .footer {
 .intro-logo-in-title-position .intro-logo-img img,
 .intro-logo-img-title-size img {
   max-height: clamp(3rem, 6vw, 5rem);
-  max-width: min(100%, 320px);
+  max-width: min(100%, clamp(280px, 18vw, 460px));
 }
 
 /* Header mode toggles (edit mode) */
@@ -967,7 +1003,7 @@ body.case-study-active .footer {
 
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(var(--card-min, 220px), 1fr));
   gap: 2rem;
 }
 
@@ -1138,7 +1174,7 @@ body.case-study-active .footer {
 /* Image Slide Layout - Uses unified split */
 .slide-image-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
   gap: var(--slide-gap);
   flex: 1;
   min-height: 0;
@@ -1150,6 +1186,24 @@ body.case-study-active .footer {
   flex-direction: column;
   gap: 1rem;
   justify-content: center;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* View-mode: same graceful overflow handling as .split-content. */
+.case-study:not(.edit-mode) .image-text-content {
+  overflow-y: auto;
+  overflow-x: visible;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-text) 18%, transparent) transparent;
+  padding-right: 0.25rem;
+}
+.case-study:not(.edit-mode) .image-text-content::-webkit-scrollbar {
+  width: 6px;
+}
+.case-study:not(.edit-mode) .image-text-content::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-text) 18%, transparent);
+  border-radius: 3px;
 }
 
 .image-visual {
@@ -1223,8 +1277,14 @@ body.case-study-active .footer {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(var(--stat-min, 180px), 1fr));
   gap: 1.5rem;
+}
+
+/* View-mode: override JSX inline `repeat(${gridColumns||3}, 1fr)` so cards
+   reflow gracefully across breakpoints. Edit mode keeps the explicit count. */
+.case-study:not(.edit-mode) .stats-grid {
+  grid-template-columns: repeat(auto-fit, minmax(var(--stat-min, 180px), 1fr)) !important;
 }
 
 .stat-item {
@@ -1236,7 +1296,7 @@ body.case-study-active .footer {
   border-radius: var(--radius-lg);
   border: 1px solid rgba(255, 88, 74, 0.35);
   transition: transform var(--transition-medium), border-color var(--transition-medium);
-  min-width: 160px;
+  min-width: 0;
 }
 
 .stat-value {
@@ -1293,6 +1353,29 @@ body.case-study-active .footer {
   flex-direction: column;
   gap: var(--rhythm-md);
   justify-content: center;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* View-mode: when the text column has more content than the slide-inner
+   cap allows, scroll the column itself (with a barely-visible thin
+   scrollbar) rather than pushing the whole slide into vertical scroll.
+   The image column stays in view. Edit mode lets the column grow with
+   content as before (slide-inner has max-height: none in edit mode). */
+.case-study:not(.edit-mode) .split-content {
+  overflow-y: auto;
+  overflow-x: visible;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-text) 18%, transparent) transparent;
+  /* A small inline-padding so a scrollbar doesn't crowd the text. */
+  padding-right: 0.25rem;
+}
+.case-study:not(.edit-mode) .split-content::-webkit-scrollbar {
+  width: 6px;
+}
+.case-study:not(.edit-mode) .split-content::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-text) 18%, transparent);
+  border-radius: 3px;
 }
 
 /* Ensure gap works properly with dynamic images */
@@ -1517,12 +1600,18 @@ body.case-study-active .footer {
 
 .quotes-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(var(--card-min, 220px), 1fr));
   grid-auto-rows: 1fr;
   gap: 1.5rem;
   align-items: stretch;
   align-content: start;
   width: 100%;
+}
+
+/* View-mode: same rationale as stats/issues — JSX inline grid uses fixed
+   column count from `slide.gridColumns`. Reflow at view time. */
+.case-study:not(.edit-mode) .quotes-grid {
+  grid-template-columns: repeat(auto-fit, minmax(var(--card-min, 220px), 1fr)) !important;
 }
 
 .slide-quotes .quotes-bullets {
@@ -1892,6 +1981,13 @@ body.case-study-active .footer {
   width: 100%;
 }
 
+/* View-mode: when the user-set column count would force cells narrower than
+   the floor `--kpi-min`, fall back to an auto-fit grid so cards reflow
+   instead of overflowing. Edit mode keeps the explicit user-chosen count. */
+.case-study:not(.edit-mode) .kpis-grid {
+  grid-template-columns: repeat(auto-fit, minmax(var(--kpi-min, 180px), 1fr));
+}
+
 .slide-goals .kpis-grid {
   flex: 1;
   min-height: 0;
@@ -1992,10 +2088,15 @@ body.case-study-active .footer {
 
 .outcomes-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(var(--outcome-min, 240px), 1fr));
   grid-auto-rows: 1fr;
   gap: 2rem;
-  align-content: center;
+  align-content: start;
+}
+
+/* View-mode: override JSX inline `repeat(${gridColumns||2}, 1fr)`. */
+.case-study:not(.edit-mode) .outcomes-grid {
+  grid-template-columns: repeat(auto-fit, minmax(var(--outcome-min, 240px), 1fr)) !important;
 }
 
 .outcome-item {
@@ -2197,7 +2298,7 @@ body.case-study-active .footer {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  margin-top: 72px;
+  margin-top: clamp(2rem, 8vh, 6rem);
   padding-bottom: 1rem;
   width: 100%;
   margin-left: auto;
@@ -2269,8 +2370,8 @@ body.case-study-active .footer {
 .slide-nav-pill {
   position: absolute;
   left: 50%;
-  bottom: clamp(1rem, 2vh, 1.75rem);
-  transform: translateX(-50%) translateY(4px);
+  bottom: clamp(0.75rem, 1.5vh, 1.25rem);
+  transform: translateX(-50%);
   z-index: 51;
   display: flex;
   align-items: center;
@@ -2278,17 +2379,17 @@ body.case-study-active .footer {
   gap: 0;
   padding: 0;
   min-width: 96px;
-  height: 44px;
+  height: 36px;
   border-radius: var(--radius-md, 12px);
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  opacity: 0;
-  pointer-events: none;
-  /* Snappy reveal — 0.4s (--transition-medium) felt sluggish for a hover
-     affordance. 160ms reads as "follows the cursor" without feeling popped. */
-  transition: opacity 0.16s ease-out,
-              transform 0.16s ease-out;
+  /* Always visible — removed hover-gated reveal so navigation is
+     persistent. Hover zone in JSX still calls show/hide handlers but
+     they no longer affect display. */
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.16s ease-out;
 }
 
 [data-theme="dark"] .slide-nav-pill {
@@ -2298,15 +2399,14 @@ body.case-study-active .footer {
 .slide-nav-pill--visible {
   opacity: 1;
   pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
 }
 
 .slide-nav-pill-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   padding: 0;
   border: none;
   background: none;
@@ -2330,21 +2430,22 @@ body.case-study-active .footer {
 
 .slide-nav-pill-btn svg {
   display: block;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 }
 
 .slide-nav-pill-divider {
   width: 1px;
-  height: 20px;
+  height: 16px;
   background: var(--color-border);
   flex-shrink: 0;
 }
 
 .slide-nav-pill-counter {
-  display: none;
+  display: inline-flex;
+  align-items: center;
   font-family: var(--font-body);
-  font-size: var(--text-caption);
+  font-size: 0.8rem;
   font-weight: var(--fw-medium);
   color: var(--color-text-muted);
   letter-spacing: 0.02em;
@@ -2356,35 +2457,28 @@ body.case-study-active .footer {
 @media (max-width: 1023px) {
   .slide-nav-pill {
     min-width: 88px;
-    height: 40px;
-    bottom: clamp(0.75rem, 1.5vh, 1.25rem);
+    height: 34px;
+    bottom: clamp(0.5rem, 1.2vh, 1rem);
   }
 
   .slide-nav-pill-btn {
-    width: 40px;
-    height: 40px;
-  }
-
-  .slide-nav-pill-btn svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  .slide-nav-pill-divider {
-    height: 18px;
+    width: 34px;
+    height: 34px;
   }
 }
 
 @media (max-width: 767px) {
   .slide-nav-pill {
-    min-width: 80px;
-    height: 36px;
-    bottom: 0.75rem;
+    min-width: 96px;
+    /* Mobile keeps 44px to match the touch-target override at line ~14550
+       — accessibility floor for tap targets. Desktop stays compact at 36px. */
+    height: 44px;
+    bottom: 0.6rem;
   }
 
   .slide-nav-pill-btn {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
   }
 
   .slide-nav-pill-btn svg {
@@ -2393,7 +2487,12 @@ body.case-study-active .footer {
   }
 
   .slide-nav-pill-divider {
-    height: 16px;
+    height: 18px;
+  }
+
+  .slide-nav-pill-counter {
+    font-size: 0.78rem;
+    padding: 0 0.45rem;
   }
 }
 
@@ -5019,6 +5118,44 @@ body.case-study-active .footer {
   }
 }
 
+/* ========== VIEW-MODE WIDE-SCREEN TUNING ==========
+   Lift the slide box and grid floors at 1920+ and 2560+ for view mode
+   only. Edit mode has its own wide-screen block below; these rules use
+   `.case-study:not(.edit-mode)` so they cannot leak into the editor
+   (which already overrode --slide-max-w / --vp-cap separately). */
+
+@media (min-width: 1600px) {
+  .case-study:not(.edit-mode) {
+    --slide-max-w: min(2300px, 100%);
+  }
+}
+
+@media (min-width: 1920px) {
+  .case-study:not(.edit-mode) {
+    --slide-max-w: min(2400px, 100%);
+    --card-min: clamp(260px, 16vw, 380px);
+    --stat-min: clamp(220px, 13vw, 300px);
+    --tool-min: clamp(240px, 13vw, 320px);
+    --ib-min: clamp(260px, 16vw, 380px);
+    --kpi-min: clamp(220px, 13vw, 300px);
+    --outcome-min: clamp(280px, 18vw, 420px);
+    --process-min: clamp(260px, 14vw, 360px);
+  }
+}
+
+@media (min-width: 2560px) {
+  .case-study:not(.edit-mode) {
+    --slide-max-w: min(2600px, 100%);
+    --card-min: clamp(300px, 14vw, 440px);
+    --stat-min: clamp(260px, 12vw, 360px);
+    --tool-min: clamp(280px, 12vw, 380px);
+    --ib-min: clamp(300px, 14vw, 440px);
+    --kpi-min: clamp(260px, 12vw, 360px);
+    --outcome-min: clamp(320px, 16vw, 480px);
+    --process-min: clamp(300px, 13vw, 420px);
+  }
+}
+
 /* ========== EDIT MODE STYLES ========== */
 
 /* ─────────────────────────────────────────────────────────────────
@@ -5051,6 +5188,8 @@ body.case-study-active .footer {
   --slide-pad-bottom: clamp(40px, 3vw, 64px);
   --rhythm-md: clamp(1rem, 0.7vw + 0.7rem, 1.6rem);
   --rhythm-lg: clamp(1.5rem, 1.2vw + 1rem, 2.5rem);
+  /* Neutralize view-mode caps so editor flow grows with content. */
+  --vp-cap: none;
 
   /* Outer container becomes the scroll surface. `scroll` (not `auto`)
      forces the scrollbar rail to render even when content fits — so
@@ -9797,8 +9936,8 @@ textarea.editable-field {
 /* Process */
 .process-steps {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(var(--process-min, 220px), 1fr));
+  gap: clamp(1rem, 1.2vw, 1.75rem);
   align-content: start;
   overflow: visible;
 }
@@ -10026,7 +10165,7 @@ textarea.editable-field {
   text-align: center;
   margin-bottom: 2rem;
   position: relative;
-  max-width: 800px;
+  max-width: clamp(560px, 50vw, 1100px);
 }
 
 .testimonial-quote::before {
@@ -10167,9 +10306,9 @@ textarea.editable-field {
 /* Tools */
 .tools-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--tool-min, 200px), 1fr));
   grid-auto-flow: row;
-  gap: 1rem;
+  gap: clamp(0.75rem, 1vw, 1.5rem);
 }
 
 .tool-item {
@@ -10336,11 +10475,21 @@ textarea.editable-field {
 
 .issues-breakdown-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--ib-min, 220px), 1fr));
   gap: clamp(0.5rem, 1.2vw, 1rem);
   grid-auto-rows: 1fr;
   width: 100%;
   max-width: 100%;
   overflow: visible;
+}
+
+/* View-mode: the JSX sets `gridTemplateColumns: repeat(N, minmax(0,1fr))`
+   inline based on the user's chosen `gridColumns`. At 1280 with 4 cards
+   that puts each card under ~270px and pushes descriptions to 8+ wraps,
+   blowing past the viewport cap. Force auto-fit at view time (the
+   editor still sees their explicit column count). */
+.case-study:not(.edit-mode) .issues-breakdown-grid {
+  grid-template-columns: repeat(auto-fit, minmax(var(--ib-min, 220px), 1fr)) !important;
 }
 
 @media (max-width: 480px) {
@@ -10487,6 +10636,18 @@ textarea.editable-field {
   line-height: var(--lh-body);
   color: var(--color-text-muted);
   margin: 0;
+}
+
+/* View-mode: at 1280 with 4 cards, descriptions can wrap 8+ lines and push
+   a card past the viewport cap. Soft-clamp to 6 lines with a fade mask so
+   the card height stays bounded. Edit mode shows the full text so authors
+   can see what they're writing. */
+.case-study:not(.edit-mode) .issue-breakdown-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Remove issue button: always visible in edit mode */
@@ -10650,7 +10811,7 @@ textarea.editable-field {
 
 .achieve-goals-columns {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(clamp(280px, 24vw, 480px), 1fr));
   gap: var(--slide-gap);
   width: 100%;
   min-width: 0;
@@ -11097,6 +11258,24 @@ textarea.editable-field {
   gap: 1.5rem;
   flex: 1;
   min-height: 0;
+  min-width: 0;
+}
+
+/* View-mode: graceful overflow inside the info column when content is
+   too tall for the bounded slide. Same thin-scrollbar pattern as
+   .split-content. Edit mode lets the column grow with content. */
+.case-study:not(.edit-mode) .project-showcase-info {
+  overflow-y: auto;
+  overflow-x: visible;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-text) 18%, transparent) transparent;
+}
+.case-study:not(.edit-mode) .project-showcase-info::-webkit-scrollbar {
+  width: 6px;
+}
+.case-study:not(.edit-mode) .project-showcase-info::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-text) 18%, transparent);
+  border-radius: 3px;
 }
 
 /* When there's no number, center content vertically in the slide */
@@ -12335,10 +12514,12 @@ textarea.editable-field {
 }
 
 /* ========== IMAGE MOSAIC SLIDE ========== */
-/* Tiled image background with centered title overlay – less padding (128px) than other slides */
+/* Tiled image background with centered title overlay – fluid padding so
+   the 6×4 tile grid keeps room to breathe across 1280–2560+ without
+   eating viewport at narrow desktops. */
 .slide-image-mosaic {
   background: var(--color-bg);
-  padding: 8rem;
+  padding: clamp(3rem, 6vw, 8rem);
 }
 
 @media (max-width: 1023px) {
@@ -13261,7 +13442,7 @@ textarea.editable-field {
   top: 50%;
   transform: translateY(-50%);
   font-family: var(--font-body);
-  font-size: clamp(16rem, 28vw, 26rem);
+  font-size: clamp(16rem, 30vw, 36rem);
   font-weight: 800;
   line-height: 1;
   color: var(--color-accent);
@@ -13329,7 +13510,7 @@ textarea.editable-field {
   font-weight: 400;
   color: var(--color-text-muted);
   line-height: 1.55;
-  max-width: 34rem;
+  max-width: clamp(28rem, 40vw, 56rem);
 }
 
 /* Chapter mockup (edit panel preview) */
