@@ -227,81 +227,32 @@
           "caption": "Old — rigid multi-step setup sequence",
           "isVideo": false,
           "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "",
+          "caption": ""
+        },
+        {
+          "src": "",
+          "caption": "",
+          "position": "center center",
+          "size": "large",
+          "embedUrl": ""
         }
       ],
       "afterImage": [
         {
           "position": "center center",
           "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-5xjosagu64.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-2c477ox0yo.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-4ia2al00ec.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-8oo7wy3bo8.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-1w2ve8n9eo.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-6tols6qi64.png",
-          "caption": "New — inline setup, immediate scan access",
-          "isVideo": false,
-          "isGif": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-4a434ejgwg.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-33g5kbbgzo.png",
+          "src": "/case-studies/itero-scan-workflow/img-5xjosagu64.png",
           "isVideo": false
         }
       ],
@@ -317,7 +268,7 @@
         "Patient context stays visible throughout",
         "Procedure selection tied to teeth structure"
       ],
-      "gridCols": 3,
+      "gridCols": 1,
       "imageDisplayMode": "carousel",
       "splitRatio": 40,
       "slideMode": "before-after",
@@ -337,7 +288,7 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-c18bmcovzg.webp",
+          "src": "/case-studies/itero-scan-workflow/img-108q6prepok.png",
           "caption": "Old — one modal per tooth, no overview",
           "isVideo": false,
           "embedType": ""
@@ -436,7 +387,7 @@
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "gridCols": 1,
-      "imageDisplayMode": "carousel",
+      "imageDisplayMode": "grid",
       "splitRatio": 40,
       "afterImageCarouselFit": "contain",
       "afterImageCarouselInterval": 2000,
