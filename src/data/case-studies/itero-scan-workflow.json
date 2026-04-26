@@ -249,11 +249,59 @@
         {
           "position": "center center",
           "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-3iouixta6w.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-ci5p9rz4lc.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-6s57kfmq7o.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-5zxvdpxe88.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-l2uav3nae8.png",
+          "caption": "",
+          "isVideo": false,
+          "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-5xjosagu64.png",
-          "isVideo": false
+          "src": "/case-studies/itero-scan-workflow/img-4v5lzkwh2o.png",
+          "isVideo": false,
+          "isGif": false
         }
       ],
       "beforeDescription": "A rigid setup sequence blocked users before scanning could begin.",
@@ -425,21 +473,9 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-6wrqetdb6w.png",
+          "src": "/case-studies/itero-scan-workflow/img-9ck3jq30yo.png",
           "caption": "New — unified icons in a single collapsible toolbar",
           "isVideo": false,
-          "isGif": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-8r3hyaday4.png",
-          "isVideo": false,
-          "embedType": "",
           "isGif": false
         },
         {
@@ -448,7 +484,17 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-g3lsfkemtc.png",
+          "src": "/case-studies/itero-scan-workflow/img-k19yigcasg.png",
+          "isVideo": false,
+          "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-9c8jecasrc.png",
           "isVideo": false
         },
         {
@@ -457,7 +503,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-jwg85at4lo.png",
+          "src": "/case-studies/itero-scan-workflow/img-t6og3qruo0.png",
           "isVideo": false
         },
         {
@@ -466,7 +512,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-9ixeeo5cec.png",
+          "src": "/case-studies/itero-scan-workflow/img-4gnykp544g.png",
           "isVideo": false
         }
       ],
@@ -506,13 +552,11 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "contain",
+          "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-75hrod5cu0.png",
-          "caption": "",
+          "src": "/case-studies/itero-scan-workflow/img-1a24bv6csak.png",
           "isVideo": false,
-          "embedType": "",
           "isGif": false
         },
         {
@@ -521,10 +565,9 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-5ul2dshi2c.png",
-          "caption": "",
+          "src": "/case-studies/itero-scan-workflow/img-178ho63ect0.png",
           "isVideo": false,
-          "embedType": ""
+          "isGif": false
         },
         {
           "position": "center center",
@@ -532,7 +575,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-mdl2hftxfc.png",
+          "src": "/case-studies/itero-scan-workflow/img-1crp5ftfldc.png",
           "isVideo": false
         },
         {
@@ -541,7 +584,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-1xk93j5k1s.png",
+          "src": "/case-studies/itero-scan-workflow/img-gbt60p4dc0.png",
           "isVideo": false
         },
         {
@@ -550,7 +593,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-163xnxxw4w.png",
+          "src": "/case-studies/itero-scan-workflow/img-zh5bmjp60.png",
           "isVideo": false
         },
         {
@@ -559,7 +602,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-hvfigv15y0.png",
+          "src": "/case-studies/itero-scan-workflow/img-kq0vcpx8fo.png",
           "isVideo": false
         },
         {
@@ -568,7 +611,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-6e0lzwcho0.png",
+          "src": "/case-studies/itero-scan-workflow/img-108q6prepok.png",
           "isVideo": false
         },
         {
@@ -577,7 +620,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-6fob43pyus.png",
+          "src": "/case-studies/itero-scan-workflow/img-1hklwqa8auc.png",
           "isVideo": false
         }
       ],
