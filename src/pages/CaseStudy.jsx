@@ -5561,7 +5561,26 @@ My instructions: `;
         reader.onload = async (event) => {
           try {
             const dataUrl = event.target.result;
-            
+
+            // Hidpi check: warn (don't block) when a raster upload is below
+            // 1920w. The pipeline can't synthesize hidpi pixels, so a
+            // 1280w upload will look soft on retina displays even after
+            // WebP conversion + variant generation. SVGs scale infinitely.
+            // Videos / GIFs get their own quality concerns elsewhere.
+            if (!isVideo && !isGif && !isSvg) {
+              const probe = new Image();
+              probe.onload = () => {
+                if (probe.naturalWidth && probe.naturalWidth < 1920) {
+                  console.warn(
+                    `[upload] "${file.name}" is ${probe.naturalWidth}×${probe.naturalHeight} — ` +
+                    'below the hidpi target (1920w). It will look soft on retina displays. ' +
+                    'Re-export at ≥1920w (ideally ~2880w for 14"/16" MacBook native scaling).'
+                  );
+                }
+              };
+              probe.src = dataUrl;
+            }
+
             // Mobile auto-compresses (storage / memory pressure on phones).
             // Desktop keeps raw bytes — use the "Compress" button when wanted.
             if (isVideo || isGif || isSvg) {

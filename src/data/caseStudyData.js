@@ -1398,11 +1398,11 @@ for (const [id, data] of Object.entries(savedCaseStudies)) {
 // Helper functions for localStorage
 
 // Process an image - compress for storage efficiency.
-// 2400 / 0.92 (was 1600 / 0.8): the previous defaults capped sources well
-// below what retina laptops need at full slide width — every variant the
-// pipeline could generate was already source-limited and looked soft. 2400w
-// + q=0.92 gives a noticeably sharper retina render with a modest size bump.
-export const compressImage = (dataUrl, maxWidth = 2400, quality = 0.92) => {
+// 2880 (was 2400): matches the largest variant produced by
+// scripts/generate-image-variants.mjs so manual/mobile compression doesn't
+// degrade sources below what retina laptops at native-scaling slide width
+// need. Anything under 2880w stays at native size (no upscaling).
+export const compressImage = (dataUrl, maxWidth = 2880, quality = 0.92) => {
   return new Promise((resolve) => {
     // If not a data URL or not an image, return as-is
     if (!dataUrl || !dataUrl.startsWith('data:image')) {

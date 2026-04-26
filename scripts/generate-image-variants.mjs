@@ -26,11 +26,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..');
 const ROOT = path.join(REPO_ROOT, 'public', 'case-studies');
 const PUBLIC_PREFIX = '/case-studies';
-// 1920 added so retina laptops at full slide width get a variant that
-// actually meets their physical-pixel target instead of being upscaled
-// from @1440. Variants are skipped automatically when the source is
-// smaller than the target width, so nothing gets upscaled.
-const TARGET_WIDTHS = [480, 960, 1440, 1920];
+// 1920 covers 1× displays full-bleed; 2880 covers 14"/16" MacBook
+// retina at native scaling (DPR≈2 of ~1440 CSS) and most retina laptops
+// rendering a slide at 100vw. Variants are skipped automatically when
+// the source is smaller than the target width (withoutEnlargement: true
+// below), so nothing gets upscaled.
+const TARGET_WIDTHS = [480, 960, 1440, 1920, 2880];
 const QUALITY = 92;
 const EFFORT = 6;
 
