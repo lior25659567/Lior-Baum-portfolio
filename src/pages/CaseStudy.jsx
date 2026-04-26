@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import AnimatedButton from '../components/AnimatedButton';
 import { useEdit } from '../context/EditContext';
-import { getCaseStudyData, getCaseStudyDataAsync, saveCaseStudyData, resetCaseStudyData, listSavedCaseStudies, slideTemplates, templateCategories, compressImage, compressDataImages, defaultCaseStudies, contactDefaults } from '../data/caseStudyData';
+import { getCaseStudyData, getCaseStudyDataAsync, saveCaseStudyData, resetCaseStudyData, listSavedCaseStudies, slideTemplates, templateCategories, compressImage, compressDataImages, isMobileViewport, defaultCaseStudies, contactDefaults } from '../data/caseStudyData';
 import { slideTemplateDocs } from '../data/slideTemplateDocs';
 import { IFRAME_FILES } from '../iframes';
 import imageVariantManifest from '../data/case-study-image-variants.json';
@@ -941,7 +941,13 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
       r.onload = async (ev) => {
         try {
           const d = ev.target?.result;
-          updatePsTab(tabIdx, { image: d, embedUrl: '' });
+          // Mobile only: auto-compress images (skip video/GIF). Desktop stores raw.
+          if (f.type.startsWith('video/') || f.type === 'image/gif' || !isMobileViewport()) {
+            updatePsTab(tabIdx, { image: d, embedUrl: '' });
+          } else {
+            const c = await compressImage(d);
+            updatePsTab(tabIdx, { image: c, embedUrl: '' });
+          }
         } catch { updatePsTab(tabIdx, { image: ev.target?.result, embedUrl: '' }); }
         inp.remove();
       };
@@ -4208,10 +4214,18 @@ My instructions: `;
             try {
               const dataUrl = event.target.result;
               
-              // Store raw bytes — no auto-compression. Use the explicit
-              // "Compress" button in edit mode when optimization is wanted.
+              // Mobile auto-compresses (storage / memory pressure on phones).
+              // Desktop keeps raw bytes — use the "Compress" button when wanted.
               if (isVideo || isGif || isSvg) {
                 updateImage(imgIndex, { src: dataUrl, isVideo: isVideo, isGif: isGif });
+              } else if (isMobileViewport()) {
+                try {
+                  const compressed = await compressImage(dataUrl);
+                  updateImage(imgIndex, { src: compressed, isVideo: false });
+                } catch (err) {
+                  console.error('Error compressing image:', err);
+                  updateImage(imgIndex, { src: dataUrl, isVideo: false });
+                }
               } else {
                 updateImage(imgIndex, { src: dataUrl, isVideo: false });
               }
@@ -4279,6 +4293,9 @@ My instructions: `;
             if (!dataUrl) { resolve(null); return; }
             if (isVideo || isGif || isSvg) {
               resolve({ src: dataUrl, isVideo, isGif });
+            } else if (isMobileViewport()) {
+              try { resolve({ src: await compressImage(dataUrl), isVideo: false }); }
+              catch { resolve({ src: dataUrl, isVideo: false }); }
             } else {
               resolve({ src: dataUrl, isVideo: false });
             }
@@ -5525,10 +5542,18 @@ My instructions: `;
           try {
             const dataUrl = event.target.result;
             
-            // Store raw bytes — no auto-compression. Use the explicit
-            // "Compress" button in edit mode when optimization is wanted.
+            // Mobile auto-compresses (storage / memory pressure on phones).
+            // Desktop keeps raw bytes — use the "Compress" button when wanted.
             if (isVideo || isGif || isSvg) {
               updateSlide(slideIndex, { [field]: dataUrl, [`${field}IsVideo`]: isVideo, [`${field}IsGif`]: isGif });
+            } else if (isMobileViewport()) {
+              try {
+                const compressed = await compressImage(dataUrl);
+                updateSlide(slideIndex, { [field]: compressed, [`${field}IsVideo`]: false, [`${field}IsGif`]: false });
+              } catch (err) {
+                console.error('Error compressing image:', err);
+                updateSlide(slideIndex, { [field]: dataUrl, [`${field}IsVideo`]: false, [`${field}IsGif`]: false });
+              }
             } else {
               updateSlide(slideIndex, { [field]: dataUrl, [`${field}IsVideo`]: false, [`${field}IsGif`]: false });
             }
@@ -7259,7 +7284,17 @@ My instructions: `;
                 reader.onload = (ev) => resolve(ev.target.result);
                 reader.readAsDataURL(file);
               });
-              newImages.push({ src: dataUrl });
+              // Mobile only: auto-compress. Desktop keeps raw bytes.
+              if (isMobileViewport()) {
+                try {
+                  const compressed = await compressImage(dataUrl);
+                  newImages.push({ src: compressed });
+                } catch {
+                  newImages.push({ src: dataUrl });
+                }
+              } else {
+                newImages.push({ src: dataUrl });
+              }
             }
             updateSlide(index, { images: newImages });
           };

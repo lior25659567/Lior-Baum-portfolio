@@ -1581,15 +1581,22 @@ export const getCaseStudyDataAsync = async (projectId) => {
   return fallbackData;
 };
 
+// Mobile auto-compresses on save/upload (storage + memory pressure on
+// phones). Desktop keeps the original bytes — the user runs the explicit
+// "Compress" / "WebP" / "Variants" buttons when they want to optimize.
+export const isMobileViewport = () =>
+  typeof window !== 'undefined' &&
+  typeof window.matchMedia === 'function' &&
+  window.matchMedia('(max-width: 767px)').matches;
+
 export const saveCaseStudyData = async (projectId, data) => {
   try {
     console.log(`[saveCaseStudyData] Starting save for projectId: ${projectId}`);
 
-    // Save the project as-is. Auto-compression on every save was stripping
-    // PNG metadata and re-quantizing through canvas; the editor now exposes
-    // an explicit "Compress" button (alongside WebP / Variants / Videos) so
-    // the user controls when that happens.
-    const compressedData = data;
+    // Mobile only: auto-compress to keep IndexedDB / localStorage usage in
+    // check on phones. Desktop keeps the project as-is so PNG quality is
+    // preserved; the explicit "Compress" button handles optimization.
+    const compressedData = isMobileViewport() ? await compressDataImages(data) : data;
 
     // Try IndexedDB first (much larger limit - 50MB+)
     const idbSuccess = await saveToIndexedDB(projectId, compressedData);
