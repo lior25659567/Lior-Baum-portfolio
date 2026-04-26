@@ -5077,8 +5077,24 @@ body.case-study-active .footer {
   padding-bottom: calc(var(--sorter-h) + 1rem);
 }
 
-/* The track no longer needs to lock to the viewport height — let it
-   grow with whichever slide is tallest. */
+/* The track and the wrappers above it need to grow with content too,
+   not just the slide. By default `.slides-container` is
+   `position: absolute; inset: 0; overflow: hidden` (clips view-mode
+   slides at 100vh) and `.case-study-slides-wrapper` is `height: 100%`
+   — both clip the now-tall slide and starve `.case-study` of any
+   overflow to scroll. Unwind the clipping in edit mode so vertical
+   overflow propagates up to the outer scroll container. */
+.case-study.edit-mode .case-study-slides-wrapper {
+  height: auto;
+  min-height: 100%;
+}
+.case-study.edit-mode .slides-container {
+  position: relative;
+  inset: auto;
+  height: auto;
+  min-height: 100%;
+  overflow: visible;
+}
 .case-study.edit-mode .slides-track {
   min-height: 100%;
   height: auto;
