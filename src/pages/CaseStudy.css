@@ -431,6 +431,16 @@ body.case-study-active .footer {
      .case-nav. With top-center the scaled content moved inward
      symmetrically and visually misaligned with the nav. */
   --fit-scale-slide: 1;
+  /* Pre-inflate the natural width by 1/scale so the post-scale visual
+     width still spans the full slide content area, reaching the same
+     right edge as .case-nav. Without this, transform: scale() shrinks
+     both axes and the image column visually pulls inward from the
+     right. The .slide has overflow: hidden in view mode, so the
+     pre-inflated layout box (overflowing horizontally by 1/scale - 1)
+     is clipped; the transform shrinks the visual rendering back to
+     100%. When scale == 1 (no fit-scaling) this evaluates to 100% and
+     is a no-op. */
+  width: calc(100% / var(--fit-scale-slide));
   transform: scale(var(--fit-scale-slide));
   transform-origin: top left;
   transition: transform 120ms ease-out;

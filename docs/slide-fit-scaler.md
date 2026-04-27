@@ -100,6 +100,7 @@ The corresponding CSS:
 .case-study:not(.edit-mode) .slide-inner {
   max-height: var(--vp-cap);
   --fit-scale-slide: 1;
+  width: calc(100% / var(--fit-scale-slide));
   transform: scale(var(--fit-scale-slide));
   transform-origin: top left;
   transition: transform 120ms ease-out;
@@ -114,6 +115,8 @@ The corresponding CSS:
 ```
 
 When the scaler engages, the layout box of `.slide-inner` takes its natural (taller-than-viewport) height, and `transform: scale()` shrinks the visual content uniformly back into the slide. `transform-origin: top left` anchors the scaled content to the top-left of the slide's content area, so the visual left edge stays at `--slide-pad-x` from the viewport — same place as `.nav-back-btn` in `.case-nav`. (Earlier this was `top center`, which symmetrically pulled the visual content inward and produced a misalignment between the nav and slides when scale < 1.)
+
+To keep the **right** edge aligned with `.case-nav` too, `.slide-inner` pre-inflates its natural width by `1/scale` (`width: calc(100% / var(--fit-scale-slide))`). With `scale = 0.7`, the layout box is `100% / 0.7 ≈ 142.86%` of the slide content area; `transform: scale(0.7)` then renders it visually at `142.86% × 0.7 = 100%`, so both edges align with the nav. The `.slide`'s `overflow: hidden` clips the pre-inflated layout box. When `scale == 1` the expression evaluates to `100%` — a no-op.
 
 ## Why a 0.7 floor (not 0.55)
 
