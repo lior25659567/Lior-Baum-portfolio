@@ -4222,19 +4222,33 @@ body.case-study-active .footer {
   min-height: 0;
 }
 
-/* Edit-mode size presets (img-size-small / -medium) clamp the wrapper to
-   50% / 75% with margin: auto. In view mode we want the wrapper to span
-   the full column regardless of preset, so the image div reaches the
-   right edge of .case-nav and the bottom of the slide. The image itself
-   keeps its fit setting (cover/contain) — only the wrapper's outer
-   dimensions are forced to fill. */
-.case-study:not(.edit-mode) .split-images-wrapper .dynamic-image-item.img-size-small .dynamic-image-wrapper,
-.case-study:not(.edit-mode) .split-images-wrapper .dynamic-image-item.img-size-medium .dynamic-image-wrapper,
-.case-study:not(.edit-mode) .intro-images-wrapper .dynamic-image-item.img-size-small .dynamic-image-wrapper,
-.case-study:not(.edit-mode) .intro-images-wrapper .dynamic-image-item.img-size-medium .dynamic-image-wrapper {
-  max-width: 100%;
-  max-height: 100%;
-  margin: 0;
+/* In view mode, every image wrapper inside .split-images-wrapper /
+   .intro-images-wrapper must fill its column edge to edge — regardless of
+   img-size-small/-medium/-large preset, regardless of any sibling rule
+   that clamps width/height/max-* in tablet/mobile media queries. The
+   image element inside keeps its object-fit (cover/contain), so the
+   visual fitting is unchanged — only the wrapper box is forced to fill.
+   !important is intentional here: there are several @media tablet/mobile
+   blocks elsewhere in this file that set max-height/min-height with
+   !important on the same selectors, and we want the desktop view-mode
+   path to win unconditionally inside these column wrappers. */
+.case-study:not(.edit-mode) .split-images-wrapper .dynamic-image-wrapper,
+.case-study:not(.edit-mode) .intro-images-wrapper .dynamic-image-wrapper {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+}
+.case-study:not(.edit-mode) .split-images-wrapper .dynamic-image-item,
+.case-study:not(.edit-mode) .intro-images-wrapper .dynamic-image-item {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
 }
 
 /* ========== SPLIT RATIO CONTROL ========== */
