@@ -4222,6 +4222,21 @@ body.case-study-active .footer {
   min-height: 0;
 }
 
+/* Edit-mode size presets (img-size-small / -medium) clamp the wrapper to
+   50% / 75% with margin: auto. In view mode we want the wrapper to span
+   the full column regardless of preset, so the image div reaches the
+   right edge of .case-nav and the bottom of the slide. The image itself
+   keeps its fit setting (cover/contain) — only the wrapper's outer
+   dimensions are forced to fill. */
+.case-study:not(.edit-mode) .split-images-wrapper .dynamic-image-item.img-size-small .dynamic-image-wrapper,
+.case-study:not(.edit-mode) .split-images-wrapper .dynamic-image-item.img-size-medium .dynamic-image-wrapper,
+.case-study:not(.edit-mode) .intro-images-wrapper .dynamic-image-item.img-size-small .dynamic-image-wrapper,
+.case-study:not(.edit-mode) .intro-images-wrapper .dynamic-image-item.img-size-medium .dynamic-image-wrapper {
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
+}
+
 /* ========== SPLIT RATIO CONTROL ========== */
 /* Draggable split handle */
 .split-drag-handle {
