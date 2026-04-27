@@ -1,15 +1,19 @@
 #!/usr/bin/env node
 // Video media pipeline for public/case-studies/*.mp4.
 //
-//   1. Desktop re-encode (in-place, H.264 CRF 28, +faststart) — only when the
-//      source is > SIZE_THRESHOLD_MB and the result is meaningfully smaller.
-//   2. Mobile variant `<name>.mobile.mp4` (720p cap, CRF 30, aac 64k) — for
-//      every video, so phones on cellular download ~1/3 the bytes.
-//   3. Poster frame `<name>.poster.webp` (first frame @ q80) — for every
-//      video, so the slide has an instant preview instead of a blank frame.
+// Desktop originals are LEFT UNTOUCHED — no transcode, no resize, no
+// re-encode. Whatever the user uploaded is what desktop serves.
 //
-// Originals are copied into backups/case-studies-videos-<ts>/ before desktop
-// re-encode. Mobile + poster steps never touch the original.
+// For every desktop mp4 we generate two siblings:
+//   1. <name>.mobile.mp4  — 720p cap, CRF 30, AAC 64k. LazyVideo serves
+//      this on mobile + saveData + slow-2g/2g/3g connections so phones
+//      on cellular download ~1/3 the bytes.
+//   2. <name>.poster.webp — first frame at q80, so the slide has an
+//      instant preview before the video bytes land.
+//
+// Both siblings are idempotent: regenerated only when missing. Pass
+// --force to rebuild them even when they already exist (e.g. after
+// tuning the mobile encoder settings).
 //
 // Run: node scripts/compress-videos.js
 // Dry: node scripts/compress-videos.js --dry
@@ -22,31 +26,12 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..');
 const ROOT = path.join(REPO_ROOT, 'public', 'case-studies');
-const SIZE_THRESHOLD_MB = 2;
-// CRF 12 on a 2560-wide frame with `-tune animation` is effectively
-// archival-quality for UI screencasts — visibly indistinguishable from
-// source short of A/B pixel-peeping. Further drops give diminishing
-// returns at a steep size cost.
-const CRF_DESKTOP = 12;
 const CRF_MOBILE = 30;
-const DESKTOP_MAX_W = 2560;
 const PRESET = 'slow';
-// x264 tuning — `animation` is built for large flat regions and crisp
-// edges (cartoons, UI screencasts), which matches the portfolio content
-// better than the default tune. No effect on playback compatibility.
-const TUNE_DESKTOP = 'animation';
 const DRY = process.argv.includes('--dry');
-// `--from-backup` restores the pristine original from the most recent
-// backups/case-studies-videos-* dir before running the desktop encode +
-// mobile/poster rebuild, so we re-encode from clean source instead of
-// recompressing an already-degraded file.
-const FROM_BACKUP = process.argv.includes('--from-backup');
-// `--force` re-runs the desktop compression even if the current file is
-// under SIZE_THRESHOLD_MB (e.g. after CRF / resolution tuning).
-const FORCE = process.argv.includes('--force') || FROM_BACKUP;
+const FORCE = process.argv.includes('--force');
 
 const isMobileVariant = (f) => /\.mobile\.mp4$/i.test(f);
-const isPosterFile = (f) => /\.poster\.webp$/i.test(f);
 
 function walk(dir, acc = []) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -71,30 +56,12 @@ function run(cmd, args) {
   }
 }
 
-function compressDesktop(file) {
-  const tmp = file + '.compressing.mp4';
+function buildMobile(file, outPath) {
   // Screen-recording sources are full-range (Y: 0-255) but the default
   // H.264 pipeline tags output as TV range (16-235). Browsers then expand
-  // a file that's already full-range, crushing shadows and making the
-  // video read as darker than sibling images on the same slide. Forcing
+  // a file that's already full-range, crushing shadows. Forcing
   // `in_range=pc`/`out_range=pc` + `-color_range pc` preserves the data
-  // and tells the decoder not to expand it.
-  run('ffmpeg', [
-    '-y', '-i', file,
-    '-vf', `scale='min(${DESKTOP_MAX_W},iw)':'-2':in_range=pc:out_range=pc`,
-    '-c:v', 'libx264', '-crf', String(CRF_DESKTOP), '-preset', PRESET,
-    '-tune', TUNE_DESKTOP,
-    '-pix_fmt', 'yuv420p',
-    '-color_range', 'pc',
-    '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709',
-    '-movflags', '+faststart',
-    '-c:a', 'aac', '-b:a', '96k',
-    tmp,
-  ]);
-  return tmp;
-}
-
-function buildMobile(file, outPath) {
+  // and tells the decoder not to re-expand it.
   run('ffmpeg', [
     '-y', '-i', file,
     '-vf', "scale='min(1280,iw)':'-2':in_range=pc:out_range=pc",
@@ -118,59 +85,9 @@ function buildPoster(file, outPath) {
   }
 }
 
-function backupOriginal(file, backupDir) {
-  const rel = path.relative(ROOT, file);
-  const dest = path.join(backupDir, rel);
-  fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.copyFileSync(file, dest);
-}
-
 if (!fs.existsSync(ROOT)) {
   console.error(`Directory not found: ${ROOT}`);
   process.exit(1);
-}
-
-// With --from-backup, restore pristine originals from the most recent
-// backups/case-studies-videos-* directory before the compression pass.
-// Also deletes the existing mobile + poster so they get rebuilt from
-// clean source at the new quality settings.
-const restoredFromBackup = new Set();
-if (FROM_BACKUP && !DRY) {
-  const backupsRoot = path.join(REPO_ROOT, 'backups');
-  const backupDirs = fs.existsSync(backupsRoot)
-    ? fs.readdirSync(backupsRoot).filter((n) => n.startsWith('case-studies-videos-'))
-    : [];
-  if (backupDirs.length === 0) {
-    console.error('--from-backup: no backups/case-studies-videos-* directory found');
-    process.exit(1);
-  }
-  backupDirs.sort();
-  const src = path.join(backupsRoot, backupDirs[backupDirs.length - 1]);
-  console.log(`--from-backup: restoring originals from ${path.relative(REPO_ROOT, src)}/\n`);
-  const restoreWalk = (dir) => {
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      const full = path.join(dir, entry.name);
-      if (entry.isDirectory()) { restoreWalk(full); continue; }
-      if (!entry.isFile() || !entry.name.toLowerCase().endsWith('.mp4')) continue;
-      if (isMobileVariant(entry.name)) continue;
-      const rel = path.relative(src, full);
-      const dest = path.join(ROOT, rel);
-      fs.mkdirSync(path.dirname(dest), { recursive: true });
-      fs.copyFileSync(full, dest);
-      // Drop the derived artifacts so the pipeline rebuilds them from
-      // the restored source.
-      const base = path.basename(dest, path.extname(dest));
-      const siblingDir = path.dirname(dest);
-      const mobilePath = path.join(siblingDir, `${base}.mobile.mp4`);
-      const posterPath = path.join(siblingDir, `${base}.poster.webp`);
-      if (fs.existsSync(mobilePath)) fs.unlinkSync(mobilePath);
-      if (fs.existsSync(posterPath)) fs.unlinkSync(posterPath);
-      restoredFromBackup.add(dest);
-      console.log(`  restored ${rel}`);
-    }
-  };
-  restoreWalk(src);
-  console.log('');
 }
 
 const files = walk(ROOT);
@@ -179,17 +96,9 @@ if (files.length === 0) {
   process.exit(0);
 }
 
-const ts = new Date().toISOString().replace(/[:.]/g, '-');
-const backupDir = path.join(REPO_ROOT, 'backups', `case-studies-videos-${ts}`);
+console.log(`${DRY ? '[dry run] ' : ''}Processing ${files.length} mp4 file(s)`);
+console.log('Desktop originals are not modified. Generating mobile + poster siblings only.\n');
 
-console.log(`${DRY ? '[dry run] ' : ''}Processing ${files.length} mp4 file(s)\n`);
-if (!DRY) {
-  fs.mkdirSync(backupDir, { recursive: true });
-  console.log(`Backups → ${path.relative(REPO_ROOT, backupDir)}/\n`);
-}
-
-let totalBefore = 0;
-let totalAfter = 0;
 let mobileGenerated = 0;
 let postersGenerated = 0;
 let failed = 0;
@@ -197,74 +106,42 @@ let failed = 0;
 for (const file of files) {
   const rel = path.relative(process.cwd(), file);
   const sizeBefore = fs.statSync(file).size;
-  totalBefore += sizeBefore;
   const dir = path.dirname(file);
   const base = path.basename(file, path.extname(file));
   const mobilePath = path.join(dir, `${base}.mobile.mp4`);
   const posterPath = path.join(dir, `${base}.poster.webp`);
-  // With --from-backup, only re-encode files that were actually restored
-  // from the backup — files without a backup counterpart are already
-  // lossy-compressed, and re-encoding them just degrades them further.
-  const skipDueToNoBackup = FROM_BACKUP && !restoredFromBackup.has(file);
-  const needsDesktop = !skipDueToNoBackup && (FORCE || sizeBefore > SIZE_THRESHOLD_MB * 1024 * 1024);
-  const needsMobile = !fs.existsSync(mobilePath);
-  const needsPoster = !fs.existsSync(posterPath);
+  const needsMobile = FORCE || !fs.existsSync(mobilePath);
+  const needsPoster = FORCE || !fs.existsSync(posterPath);
 
   process.stdout.write(`→ ${rel} (${fmtMB(sizeBefore)})`);
 
   if (DRY) {
-    const steps = [
-      needsDesktop ? 'desktop' : null,
-      needsMobile ? 'mobile' : null,
-      needsPoster ? 'poster' : null,
-    ].filter(Boolean);
+    const steps = [needsMobile ? 'mobile' : null, needsPoster ? 'poster' : null].filter(Boolean);
     console.log(steps.length ? `  [${steps.join('+')}]` : '  (up to date)');
-    totalAfter += sizeBefore;
     continue;
   }
 
-  let sizeAfter = sizeBefore;
   try {
-    if (needsDesktop) {
-      backupOriginal(file, backupDir);
-      const tmp = compressDesktop(file);
-      const compressedSize = fs.statSync(tmp).size;
-      // With --force we always replace — the user asked for the new
-      // quality target even if the file grows. Without --force, skip
-      // the swap if the gain is negligible.
-      if (!FORCE && compressedSize >= sizeBefore * 0.95) {
-        fs.unlinkSync(tmp);
-        process.stdout.write('  desktop: kept original');
-      } else {
-        fs.renameSync(tmp, file);
-        sizeAfter = compressedSize;
-        const pct = ((1 - compressedSize / sizeBefore) * 100).toFixed(1);
-        process.stdout.write(`  desktop: ${fmtMB(compressedSize)} (−${pct}%)`);
-      }
-    }
-
     if (needsMobile) {
       buildMobile(file, mobilePath);
       mobileGenerated++;
       process.stdout.write(`  mobile: ${fmtMB(fs.statSync(mobilePath).size)}`);
     }
-
     if (needsPoster) {
       buildPoster(file, posterPath);
       postersGenerated++;
       process.stdout.write(`  poster: ${fmtMB(fs.statSync(posterPath).size)}`);
     }
-
+    if (!needsMobile && !needsPoster) {
+      process.stdout.write('  (up to date)');
+    }
     console.log('');
   } catch (err) {
     console.log(`  FAILED — ${err.message}`);
     failed++;
   }
-
-  totalAfter += sizeAfter;
 }
 
-console.log(`\nDesktop total: ${fmtMB(totalBefore)} → ${fmtMB(totalAfter)} (saved ${fmtMB(totalBefore - totalAfter)})`);
-console.log(`Mobile variants generated: ${mobileGenerated}`);
+console.log(`\nMobile variants generated: ${mobileGenerated}`);
 console.log(`Posters generated: ${postersGenerated}`);
 if (failed) console.log(`Failed: ${failed}`);

@@ -499,9 +499,10 @@ export function saveCaseStudyPlugin() {
         return { stdout: result.stdout, stderr: result.stderr, elapsedMs };
       }));
 
-      // Runs scripts/compress-videos.js — produces desktop re-encode,
-      // .mobile.mp4, and .poster.webp siblings. Idempotent; originals go
-      // into backups/case-studies-videos-<ts>/. Long timeout because ffmpeg
+      // Runs scripts/compress-videos.js — generates .mobile.mp4 and
+      // .poster.webp siblings for every desktop mp4. The desktop original
+      // is never touched; LazyVideo serves it as-is. Idempotent (siblings
+      // are only built when missing). Long timeout because ffmpeg
       // preset=slow can take minutes across a full library.
       server.middlewares.use('/api/compress-videos', wrap('/api/compress-videos', async (req) => {
         assertMethod(req, 'POST');
