@@ -5194,15 +5194,12 @@ body.case-study-active .footer {
    `.case-study:not(.edit-mode)` so they cannot leak into the editor
    (which already overrode --slide-max-w / --vp-cap separately). */
 
-@media (min-width: 1600px) {
-  .case-study:not(.edit-mode) {
-    --slide-max-w: min(2300px, 100%);
-  }
-}
-
+/* --slide-max-w stays `none` at every viewport in view mode (set above
+   at line ~415) so slide content always fills the .slide content-box,
+   matching .case-nav. The wide-screen blocks below only retune grid
+   floors so cards reflow gracefully on larger displays. */
 @media (min-width: 1920px) {
   .case-study:not(.edit-mode) {
-    --slide-max-w: min(2400px, 100%);
     --card-min: clamp(260px, 16vw, 380px);
     --stat-min: clamp(220px, 13vw, 300px);
     --tool-min: clamp(240px, 13vw, 320px);
@@ -5215,7 +5212,6 @@ body.case-study-active .footer {
 
 @media (min-width: 2560px) {
   .case-study:not(.edit-mode) {
-    --slide-max-w: min(2600px, 100%);
     --card-min: clamp(300px, 14vw, 440px);
     --stat-min: clamp(260px, 12vw, 360px);
     --tool-min: clamp(280px, 12vw, 380px);
