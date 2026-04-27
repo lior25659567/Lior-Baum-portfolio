@@ -425,11 +425,14 @@ body.case-study-active .footer {
   max-height: var(--vp-cap);
   /* Slide-level fit-scale. JS drops --fit-scale-slide below 1 when content
      exceeds the available height, so the entire .slide-inner shrinks
-     uniformly. transform-origin: top center keeps the visual content
-     anchored to the top of the slide's content area. */
+     uniformly. transform-origin: top left keeps the visual left edge
+     anchored to .slide-inner's natural left edge — i.e. at --slide-pad-x
+     from the viewport, the same position as the .nav-back-btn in
+     .case-nav. With top-center the scaled content moved inward
+     symmetrically and visually misaligned with the nav. */
   --fit-scale-slide: 1;
   transform: scale(var(--fit-scale-slide));
-  transform-origin: top center;
+  transform-origin: top left;
   transition: transform 120ms ease-out;
   will-change: transform;
 }
