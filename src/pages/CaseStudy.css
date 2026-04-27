@@ -957,6 +957,12 @@ body.case-study-active .footer {
 .case-study:not(.edit-mode) .slide-intro-layout {
   min-height: 0;
   align-items: stretch;
+  /* Force the implicit grid row to fill the container's available height
+     instead of sizing to max-content. Without this, the row collapses to
+     the text column's natural height (because the absolutely-positioned
+     image inside .intro-images-wrapper contributes 0 to in-flow height),
+     leaving the image column visually short. */
+  grid-auto-rows: 1fr;
 }
 .intro-images-wrapper::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
@@ -1417,6 +1423,12 @@ body.case-study-active .footer {
 .slide-split {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  /* Force the (single, implicit) row to take 1fr of the grid container's
+     height so the image column stretches to the full slide-inner height
+     instead of collapsing to the text column's natural height — the
+     absolutely-positioned image inside .split-images-wrapper contributes
+     0 to in-flow height, so without this the row sizes to max-content. */
+  grid-auto-rows: 1fr;
   gap: var(--slide-gap);
   flex: 1;
   min-height: 0;
