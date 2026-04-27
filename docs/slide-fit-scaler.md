@@ -43,6 +43,8 @@ Three height breakpoints add stepped reductions for very short viewports:
 @media (max-height: 500px) { /* 16px paddings, 16px gap — devtools/zoom territory */ }
 ```
 
+View-mode also drops the `--slide-max-w` cap (`--slide-max-w: none` under `.case-study:not(.edit-mode)`) so slide content aligns horizontally with `.case-nav` — both span the full viewport width minus `--slide-pad-x`. Edit mode keeps the base `min(1920px, 100%)` cap because the editor controls were tuned against that width.
+
 Inner overflow rules that used to introduce stray scrollbars now expose natural content height upward so the JS scaler can see it:
 
 - `.case-study:not(.edit-mode) .split-content { overflow: visible }` — was `overflow-y: auto` (the inner-scrollbar source)

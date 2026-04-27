@@ -404,6 +404,17 @@ body.case-study-active .footer {
   gap: 0;
 }
 
+/* View-mode: align the slide content area with the .case-nav, which is
+   full-width with `padding: 0 var(--slide-pad-x)` and no max-width. Drop
+   the max-width cap on slide-inner / slide-intro-layout / slide-split so
+   they all stretch edge-to-edge minus --slide-pad-x, matching the nav.
+   Edit mode keeps the original min(1920px, 100%) cap from the base
+   .case-study token block — its layout and editor controls were tuned
+   against that width. */
+.case-study:not(.edit-mode) {
+  --slide-max-w: none;
+}
+
 /* View-mode: cap the inner box at the visible viewport so flex children
    with `min-height: 0` (split layouts, scroll-aware grids) actually
    shrink to fit instead of pushing the slide into vertical scroll.
