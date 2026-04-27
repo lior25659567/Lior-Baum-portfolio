@@ -440,11 +440,14 @@ body.case-study-active .footer {
 /* When the JS scaler engages, lift the height cap so .slide-inner can take
    its natural unscaled height; the parent .slide (overflow: hidden in view
    mode) clips the layout box, and the transform shrinks the visual content
-   back into the visible region. */
+   back into the visible region. We KEEP the base min-height (vp-cap) so
+   the inner can never shrink below the visible region — that guarantees
+   the grid row inside .slide-split / .slide-intro-layout always stretches
+   to at least the full slide content area, so the image column fills its
+   side instead of collapsing to the text column's natural height. */
 .case-study:not(.edit-mode) .slide-inner[data-fit-active="true"] {
   max-height: none;
   height: auto;
-  min-height: 0;
 }
 
 /* In view mode the scaler removes the need for inner scrolling. Edit mode
@@ -4157,6 +4160,44 @@ body.case-study-active .footer {
 }
 .case-study:not(.edit-mode) .comparison-switcher {
   flex: 0 0 auto;
+}
+
+/* View-mode: pin the dynamic-image chain to a definite height so the image
+   div always fills the rest of the slide-inner column (split layouts and
+   the intro hero column alike). Without explicit height: 100% on each
+   level the absolutely-positioned <img>/<video> inside contributes 0 to
+   the natural height, so the column can collapse to the text column's
+   height in the scaled state. The image element itself keeps its
+   object-fit: cover behaviour so it just refits inside whatever box the
+   wrapper ends up at — no distortion. */
+.case-study:not(.edit-mode) .split-images-wrapper,
+.case-study:not(.edit-mode) .intro-images-wrapper {
+  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.case-study:not(.edit-mode) .split-images-wrapper > .dynamic-images,
+.case-study:not(.edit-mode) .intro-images-wrapper > .dynamic-images {
+  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.case-study:not(.edit-mode) .split-images-wrapper .dynamic-images-grid,
+.case-study:not(.edit-mode) .intro-images-wrapper .dynamic-images-grid {
+  height: 100%;
+  min-height: 0;
+}
+.case-study:not(.edit-mode) .split-images-wrapper .dynamic-image-item,
+.case-study:not(.edit-mode) .intro-images-wrapper .dynamic-image-item {
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+}
+.case-study:not(.edit-mode) .split-images-wrapper .dynamic-image-wrapper,
+.case-study:not(.edit-mode) .intro-images-wrapper .dynamic-image-wrapper {
+  height: 100%;
+  width: 100%;
+  min-height: 0;
 }
 
 /* ========== SPLIT RATIO CONTROL ========== */
