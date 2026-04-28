@@ -21,15 +21,35 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/vid-r884htmvpnk.mp4",
+          "src": "/case-studies/itero-scan-workflow/img-6s57kfmq7o.png",
           "caption": "",
-          "isVideo": true,
-          "isGif": false,
-          "embedType": ""
+          "isVideo": false,
+          "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-morqwmjyo.png",
+          "caption": "",
+          "embedType": "",
+          "isVideo": false,
+          "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-4gnykp544g.png",
+          "isVideo": false
         }
       ],
       "gridCols": 1,
-      "imageDisplayMode": "grid",
+      "imageDisplayMode": "carousel",
       "splitRatio": 40,
       "introHeaderMode": "both",
       "logo": "",
@@ -249,59 +269,13 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-3iouixta6w.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-ci5p9rz4lc.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-6s57kfmq7o.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-5zxvdpxe88.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-l2uav3nae8.png",
-          "caption": "",
-          "isVideo": false,
-          "isGif": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-4v5lzkwh2o.png",
-          "isVideo": false,
-          "isGif": false
+          "src": "/case-studies/itero-scan-workflow/vid-aouv40ns6o0.mp4",
+          "isVideo": true,
+          "isGif": false,
+          "embedType": ""
         }
       ],
       "beforeDescription": "A rigid setup sequence blocked users before scanning could begin.",
@@ -317,7 +291,7 @@
         "Procedure selection tied to teeth structure"
       ],
       "gridCols": 1,
-      "imageDisplayMode": "carousel",
+      "imageDisplayMode": "grid",
       "splitRatio": 40,
       "slideMode": "before-after",
       "switcherStyle": "pill",
@@ -346,58 +320,13 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "cover",
+          "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-1lmur40xew.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-jdb8sw8648.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-33osvqlhm0.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-morqwmjyo.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-13ppzspjls.png",
-          "isVideo": false,
-          "isGif": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-8scq4b0bbc.png",
-          "isVideo": false,
-          "isGif": false
+          "src": "/case-studies/itero-scan-workflow/vid-581c99ziag0.mp4",
+          "isVideo": true,
+          "isGif": false,
+          "embedType": ""
         }
       ],
       "beforeDescription": "Every tooth needed its own modal — click, confirm, close, repeat. No overview.",
@@ -415,7 +344,7 @@
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "gridCols": 1,
-      "imageDisplayMode": "carousel",
+      "imageDisplayMode": "grid",
       "splitRatio": 40,
       "afterImageCarouselFit": "contain",
       "afterImageCarouselInterval": 2000,
@@ -453,47 +382,11 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-9ck3jq30yo.png",
+          "src": "/case-studies/itero-scan-workflow/vid-g2r58c0dp9s.mp4",
           "caption": "New — unified icons in a single collapsible toolbar",
-          "isVideo": false,
-          "isGif": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-k19yigcasg.png",
-          "isVideo": false,
-          "isGif": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-9c8jecasrc.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-t6og3qruo0.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-4gnykp544g.png",
-          "isVideo": false
+          "isVideo": true,
+          "isGif": false,
+          "embedType": ""
         }
       ],
       "beforeDescription": "Icons accumulated from different sources with no shared style — and no permanent home.",
@@ -509,7 +402,7 @@
         "Scalable — new tools slot in without disruption"
       ],
       "gridCols": 1,
-      "imageDisplayMode": "carousel",
+      "imageDisplayMode": "grid",
       "splitRatio": 40,
       "slideMode": "before-after",
       "switcherStyle": "pill",
@@ -532,81 +425,18 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "cover",
+          "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-1a24bv6csak.png",
-          "isVideo": false,
+          "src": "/case-studies/itero-scan-workflow/vid-539c9v0rkkc.mp4",
+          "isVideo": true,
+          "embedType": "",
           "isGif": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-178ho63ect0.png",
-          "isVideo": false,
-          "isGif": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-1crp5ftfldc.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-gbt60p4dc0.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-zh5bmjp60.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-kq0vcpx8fo.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-108q6prepok.png",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-1hklwqa8auc.png",
-          "isVideo": false
         }
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "carousel",
+      "imageDisplayMode": "grid",
       "imageCarouselFit": "contain",
       "imageCarouselInterval": 2000
     },
