@@ -21,18 +21,45 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776628169716/vid-22oa6bsba78.mp4",
+          "src": "/case-studies/project-1776628169716/img-8dznv70e80.png",
           "caption": "",
-          "isVideo": true,
-          "embedType": "",
+          "isVideo": false,
           "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-83eugahcc0.png",
+          "isVideo": false,
+          "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-c9ao2nbhh8.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-9c9dvnaw5c.png",
+          "isVideo": false
         }
       ],
       "gridCols": 1,
-      "imageDisplayMode": "grid",
+      "imageDisplayMode": "carousel",
       "splitRatio": 40,
       "imageCarouselFit": "contain",
-      "imageCarouselInterval": 2500
+      "imageCarouselInterval": 2000
     },
     {
       "type": "problem",
