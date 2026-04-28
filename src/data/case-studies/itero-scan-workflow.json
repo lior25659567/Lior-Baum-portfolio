@@ -56,7 +56,7 @@
       "logoIsVideo": false,
       "logoIsGif": false,
       "imageCarouselFit": "contain",
-      "imageCarouselInterval": 1500
+      "imageCarouselInterval": 2000
     },
     {
       "type": "problem",
