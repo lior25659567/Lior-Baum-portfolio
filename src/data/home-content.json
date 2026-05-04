@@ -20,7 +20,7 @@
         "What sets me apart is where design meets technology. I teach designers at Shenkar to build real products using AI-assisted tools like Cursor and Claude, and I bring that same mindset to my own work. I'm not just delivering Figma files — I prototype in code, move faster, and collaborate with engineers from a place of real understanding.",
         "I thrive in environments where design has actual ownership over the product, not just the pixels."
       ],
-      "email": "lior@example.com",
+      "email": "lior2565967@gmail.com",
       "skillsTitle": "Skills & Expertise",
       "skills": [
         {
@@ -132,16 +132,6 @@
       "sectionTitle": "Selected Projects",
       "items": [
         {
-          "id": "project-1776628169716",
-          "title": "Design System in Claude Code",
-          "category": "Design Systems · Scalable UI built with AI.",
-          "image": "",
-          "year": "2026",
-          "tag": "work",
-          "mediaMode": "template",
-          "iframeSrc": "/iframes/designsys-iframe (2).html"
-        },
-        {
           "id": "itero-scan-workflow",
           "title": "iTero Scan Workflow",
           "category": "Product Design · Redesigning a complex clinical flow.",
@@ -150,6 +140,16 @@
           "mediaMode": "template",
           "imageFit": "cover",
           "iframeSrc": "/iframes/scanview-iframe (7).html"
+        },
+        {
+          "id": "project-1776628169716",
+          "title": "Design System in Claude Code",
+          "category": "Design Systems · Scalable UI built with AI.",
+          "image": "",
+          "year": "2026",
+          "tag": "work",
+          "mediaMode": "template",
+          "iframeSrc": "/iframes/designsys-iframe (2).html"
         },
         {
           "id": "project-1776014998709",
