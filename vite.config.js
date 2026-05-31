@@ -1,89 +1,57 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import fs from 'node:fs'
-import path from 'node:path'
-import { saveCaseStudyPlugin } from './vite-plugin-save-case-study.js'
-
-// Exposes `virtual:iframe-manifest` with an auto-generated list of every
-// .html file in /public/iframes/. The CaseStudy iframe-embed dropdown reads
-// from this, so adding a file to that folder makes it appear with no code edit.
-// In dev: fs.watch invalidates the module + triggers a full reload on add/remove.
-// In build: the list is baked into the bundle at build time.
-function iframeManifestPlugin() {
-  const VIRT = 'virtual:iframe-manifest'
-  const RESOLVED = '\0' + VIRT
-  const dir = path.resolve(process.cwd(), 'public/iframes')
-
-  const toLabel = (filename) =>
-    filename.replace(/\.html?$/i, '').replace(/[-_]+/g, ' ')
-
-  const readManifest = () => {
-    try {
-      return fs.readdirSync(dir)
-        .filter((f) => /\.html?$/i.test(f) && !f.startsWith('.'))
-        .sort((a, b) => a.localeCompare(b))
-        .map((f) => ({ path: `iframes/${f}`, label: toLabel(f) }))
-    } catch {
-      return []
-    }
-  }
-
-  return {
-    name: 'iframe-manifest',
-    resolveId(id) { if (id === VIRT) return RESOLVED },
-    load(id) {
-      if (id !== RESOLVED) return
-      return `export const IFRAME_FILES = ${JSON.stringify(readManifest())};`
-    },
-    configureServer(server) {
-      let watcher
-      try {
-        watcher = fs.watch(dir, { persistent: false }, () => {
-          const mod = server.moduleGraph.getModuleById(RESOLVED)
-          if (mod) server.moduleGraph.invalidateModule(mod)
-          server.ws.send({ type: 'full-reload' })
-        })
-      } catch {}
-      server.httpServer?.once('close', () => watcher?.close())
-    },
-  }
-}
+import {
+  portfolioServerAndPreviewDefaults,
+  portfolioViteCacheDir,
+  iframeManifestPlugin,
+} from './vite.shared.mjs'
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react(), saveCaseStudyPlugin(), iframeManifestPlugin()],
-  server: {
-    port: 5173,
-    strictPort: true,
-    // Listen on LAN so you can open http://<your-mac-ip>:5173 on a phone (same Wi‑Fi).
-    host: true,
-    // Explicit HMR — omit `host` so the client uses the page hostname (localhost *or* LAN IP).
-    // Pinning localhost breaks phone testing (WS would target the phone itself).
-    hmr: {
-      protocol: 'ws',
-      port: 5173,
-      overlay: true,
-    },
-    watch: {
-      // Large or auto-generated trees — excluded so Save All / git writes
-      // don't kick off a rebuild in the middle of the save.
-      ignored: [
-        '**/public/case-studies/**',
-        '**/public/about/**',
-        '**/public/fonts/**',
-        '**/dist/**',
-        '**/.git/**',
-        '**/node_modules/**',
+export default defineConfig(async () => {
+  const { saveCaseStudyPlugin } = await import('./vite-plugin-save-case-study.js')
+  const sharedDefaults = portfolioServerAndPreviewDefaults()
+  return {
+    cacheDir: portfolioViteCacheDir(),
+    plugins: [react(), saveCaseStudyPlugin(), iframeManifestPlugin()],
+    // Force pre-bundle these packages at server startup so the first
+    // browser load is instant instead of waiting 30-60s.
+    optimizeDeps: {
+      // Pin the dep-scanner to the real SPA entry. Without this, Vite's scanner
+      // globs EVERY *.html in the repo (my-app/, public/iframes/**,
+      // public/case-studies/**, docs/*.html) and wedges on that tree — which
+      // hangs every dev-server request indefinitely. Crawl only from index.html.
+      entries: ['index.html'],
+      // Don't hold browser requests until dep optimization finishes.
+      // Heavy deps (jspdf, html2canvas) can take 20-30s to bundle;
+      // with holdUntilCrawlEnd=true that blocks the ENTIRE first page load.
+      holdUntilCrawlEnd: false,
+      include: [
+        'react', 'react-dom', 'react-dom/client',
+        'react-router-dom',
+        'gsap', 'gsap/ScrollTrigger',
+        'framer-motion',
+        'dexie',
+        'html2canvas',
+        'jspdf',
+        'react-zoom-pan-pinch',
+        'dompurify',
       ],
-      usePolling: false,
     },
-    fs: {
-      // Don't let Vite serve files from the OS home dir even if a route asks
-      strict: true,
+    ...sharedDefaults,
+    server: {
+      ...sharedDefaults.server,
+      warmup: {
+        clientFiles: [
+          './src/main.jsx',
+          './src/App.jsx',
+          './src/pages/Home.jsx',
+          './src/components/Hero.jsx',
+          './src/components/Projects.jsx',
+          './src/components/Navigation.jsx',
+          './src/context/EditContext.jsx',
+          './src/index.css',
+        ],
+      },
     },
-  },
-  preview: {
-    port: 5173,
-    strictPort: true,
-  },
+  }
 })

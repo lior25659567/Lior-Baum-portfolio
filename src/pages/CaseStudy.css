@@ -70,7 +70,7 @@ body.case-study-active .footer {
 
 [data-theme="dark"] .save-status-saved {
   background: rgba(34, 197, 94, 0.2);
-  color: #4ade80;
+  color: var(--color-success);
 }
 
 .save-status-error {
@@ -80,7 +80,7 @@ body.case-study-active .footer {
 
 [data-theme="dark"] .save-status-error {
   background: rgba(239, 68, 68, 0.2);
-  color: #f87171;
+  color: var(--color-error);
 }
 
 .save-status-unsaved {
@@ -154,6 +154,16 @@ body.case-study-active .footer {
   cursor: text;
 }
 
+/* View-mode: scale the nav slide label up to the design-system Body tier
+   (24px Medium) — the case-nav sits outside the artboard so the canvas
+   overrides don't reach it. Edit mode keeps the compact editable label. */
+.case-study:not(.edit-mode) .nav-slide-label {
+  font-size: var(--slide-font-tag);
+  line-height: var(--slide-leading-tag);
+  letter-spacing: var(--slide-tracking-normal);
+  font-weight: var(--slide-weight-medium);
+}
+
 /* Right progress */
 .nav-progress {
   display: flex;
@@ -198,6 +208,95 @@ body.case-study-active .footer {
   transition: width var(--transition-medium);
 }
 
+/* PDF export button (case-nav) */
+.nav-pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 2rem;
+  padding: 0 0.7rem;
+  margin-right: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.18s, border-color 0.18s, opacity 0.18s;
+}
+.nav-pdf-btn:hover:not(:disabled) {
+  background: var(--color-border);
+  border-color: var(--color-text);
+}
+.nav-pdf-btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+.nav-pdf-spinner {
+  animation: nav-pdf-spin 0.9s linear infinite;
+}
+@keyframes nav-pdf-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* PDF export progress overlay */
+.pdf-export-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+.pdf-export-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  min-width: 320px;
+  max-width: 92vw;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+.pdf-export-title {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 0.25rem;
+}
+.pdf-export-detail {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin: 0 0 0.85rem;
+  text-transform: lowercase;
+}
+.pdf-export-bar {
+  height: 3px;
+  background: var(--color-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.pdf-export-bar-fill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+.pdf-export-hint {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  margin: 0.6rem 0 0;
+}
+
 /* Slides Container - No scrolling */
 .slides-container {
   position: absolute;
@@ -219,7 +318,90 @@ body.case-study-active .footer {
    (≤767) keep their dedicated breakpoints below since stacked layouts need
    tighter tuned values. */
 
+/* ═══════════════════════════════════════════════════════════════════════
+   Slide Typography System — DM Sans · 1920×1080px canvas · px only
+   Source of truth: figma.com/design/X3mrAaCCY8J2fkrq5k1vWr  node 1041:3526
+   16 tokens · 3 weights (Regular 400 / Medium 500 / Bold 700)
+   ═══════════════════════════════════════════════════════════════════════ */
+:root {
+  /* ── Display ─────────────────────────────────────────────────────── */
+  --slide-font-display:    80px;   /* Display/Display  Bold  lh 1.08  ls -0.02em  */
+  --slide-font-stat:       80px;   /* Special/Stat     Bold  lh 1.00  ls -0.03em  */
+
+  /* ── Headings ────────────────────────────────────────────────────── */
+  --slide-font-title:      64px;   /* Headings/Title      Medium  lh 1.18  ls -0.015em */
+  --slide-font-header:     56px;   /* Headings/Subtitle   Medium  lh 1.20  ls -0.012em */
+  --slide-font-h1:         56px;   /* alias → Headings/Subtitle */
+  --slide-font-h2:         48px;   /* Headings/Heading    Medium  lh 1.20  ls -0.012em */
+  --slide-font-h3:         36px;   /* Headings/Subheading Medium  lh 1.22  ls -0.01em  */
+
+  /* ── Body ────────────────────────────────────────────────────────── */
+  --slide-font-body-lg:    32px;   /* Body/Body Large  Regular  lh 1.50  ls -0.005em */
+  --slide-font-body-md:    28px;   /* Body/Body Medium Regular  lh 1.50  ls -0.005em */
+  --slide-font-body:       24px;   /* Body/Body        Regular  lh 1.52  ls -0.005em */
+  --slide-font-caption:    20px;   /* Body/Body Small  Regular  lh 1.48  ls  0       */
+
+  /* ── Meta ────────────────────────────────────────────────────────── */
+  --slide-font-meta-label: 28px;   /* Meta/Meta Label  Regular  lh 1.30  ls -0.005em */
+  --slide-font-meta-value: 28px;   /* Meta/Meta Value  Medium   lh 1.30  ls -0.005em */
+
+  /* ── Utility ─────────────────────────────────────────────────────── */
+  --slide-font-number:     24px;   /* Utility/Number   Medium   lh 1.20  ls +0.06em  */
+  --slide-font-tag:        18px;   /* Utility/Tag      Medium   lh 1.20  ls  0       */
+  --slide-font-meta:       16px;   /* Utility/Caption  Regular  lh 1.40  ls  0       */
+  --slide-font-label:      14px;   /* Utility/Label    Medium   lh 1.20  ls +0.08em UC */
+
+  /* ── Special ─────────────────────────────────────────────────────── */
+  --slide-font-quote:      32px;   /* Special/Quote    Regular  lh 1.45  ls -0.005em */
+
+  /* ── Line heights (Figma % → unitless) ───────────────────────────── */
+  --slide-leading-tight:    1.1;   /* kept for edit-mode / non-canvas use */
+  --slide-leading-normal:   1.4;
+  --slide-leading-loose:    1.6;
+  --slide-leading-display:  1.08;
+  --slide-leading-stat:     1.00;
+  --slide-leading-title:    1.18;
+  --slide-leading-heading:  1.20;  /* Subtitle + Heading */
+  --slide-leading-subhead:  1.22;  /* Subheading */
+  --slide-leading-body-lg:  1.50;
+  --slide-leading-body-md:  1.50;  /* Body Medium */
+  --slide-leading-body:     1.52;
+  --slide-leading-caption:  1.48;
+  --slide-leading-meta:     1.30;  /* Meta Label + Value */
+  --slide-leading-number:   1.20;
+  --slide-leading-tag:      1.20;
+  --slide-leading-util:     1.40;  /* Utility/Caption */
+  --slide-leading-label:    1.20;
+  --slide-leading-quote:    1.45;
+
+  /* ── Letter spacing (Figma % → em) ──────────────────────────────── */
+  --slide-tracking-tight:    -0.02em;  /* kept for non-canvas use */
+  --slide-tracking-normal:    0;
+  --slide-tracking-wide:      0.08em;
+  --slide-tracking-display:  -0.02em;
+  --slide-tracking-stat:     -0.03em;
+  --slide-tracking-title:    -0.015em;
+  --slide-tracking-heading:  -0.012em;  /* Subtitle + Heading */
+  --slide-tracking-subhead:  -0.01em;
+  --slide-tracking-body:     -0.005em;  /* Body + Meta + Quote */
+  --slide-tracking-number:    0.06em;
+  --slide-tracking-label:     0.08em;
+
+  /* ── Weights ─────────────────────────────────────────────────────── */
+  --slide-weight-regular:  400;
+  --slide-weight-medium:   500;
+  --slide-weight-semibold: 600;
+  --slide-weight-bold:     700;
+}
+
 .case-study {
+  /* Case studies are DM Sans only (Figma source of truth). Redefine the
+     global font tokens at the case-study root so every var(--font-body) /
+     var(--font-display) reference inside slides resolves to DM Sans —
+     view AND edit mode — overriding the site defaults (Mona Sans / Crimson
+     Text) without touching the rest of the site. */
+  --font-body: 'DM Sans', sans-serif;
+  --font-display: 'DM Sans', sans-serif;
   --slide-max-w: min(1920px, 100%);
   --slide-pad-x: clamp(40px, 4.5vw, 144px);
   /* Vertical padding/gap take the smaller of vw-driven and vh-driven clamps,
@@ -421,31 +603,1694 @@ body.case-study-active .footer {
    Edit mode neutralizes this via `--vp-cap: none` at the edit-mode
    token block (line ~5054) and via the explicit max-height: none on
    .slide-inner at line ~5130. */
+/* Figma-canvas mode (view mode only). Each .slide-inner is a fixed
+   1920×1080 artboard absolutely positioned at the center of the
+   safe area (between top and bottom nav overlays). transform: scale
+   shrinks it to fit; transform-origin: center center keeps it
+   centered as it scales. Padding fixed in px so the canvas looks
+   identical at every viewport width. */
 .case-study:not(.edit-mode) .slide-inner {
-  max-height: var(--vp-cap);
-  /* Slide-level fit-scale. JS drops --fit-scale-slide below 1 when content
-     exceeds the available height, so the entire .slide-inner shrinks
-     uniformly. transform-origin: top left keeps the visual left edge
-     anchored to .slide-inner's natural left edge — i.e. at --slide-pad-x
-     from the viewport, the same position as the .nav-back-btn in
-     .case-nav. With top-center the scaled content moved inward
-     symmetrically and visually misaligned with the nav. */
-  --fit-scale-slide: 1;
-  /* Pre-inflate the natural width by 1/scale so the post-scale visual
-     width still spans the full slide content area, reaching the same
-     right edge as .case-nav. Without this, transform: scale() shrinks
-     both axes and the image column visually pulls inward from the
-     right. The .slide has overflow: hidden in view mode, so the
-     pre-inflated layout box (overflowing horizontally by 1/scale - 1)
-     is clipped; the transform shrinks the visual rendering back to
-     100%. When scale == 1 (no fit-scaling) this evaluates to 100% and
-     is a no-op. */
-  width: calc(100% / var(--fit-scale-slide));
-  transform: scale(var(--fit-scale-slide));
-  transform-origin: top left;
-  transition: transform 120ms ease-out;
+  position: absolute;
+  top: calc(var(--slide-safe-top, 0px) + (100% - var(--slide-safe-top, 0px) - var(--slide-safe-bottom, 0px)) / 2);
+  left: 50%;
+  width: 1920px;
+  height: 1080px;
+  max-width: none;
+  max-height: none;
+  min-height: 0;
+  margin: 0;
+  /* Uniform artboard padding across all slide templates: 96px all sides */
+  padding: 96px 96px;
+  box-sizing: border-box;
+  justify-content: center;
+  transform: translate(-50%, -50%) scale(var(--slide-canvas-scale, 1));
+  transform-origin: center center;
+  /* No transition by default: the very first scale is applied pre-paint by the
+     useLayoutEffect scaler, so we must NOT animate it (that produced the
+     visible "shrink/reset into place" on entry). The transition is armed only
+     after the first scale via the .canvas-ready rule below, so genuine
+     viewport-resize re-scales still animate smoothly. */
+  transition: none;
   will-change: transform;
 }
+
+/* Arm the artboard scale transition only after the first scale pass
+   (JS adds .canvas-ready to .case-study once --slide-canvas-scale is set). */
+.case-study.canvas-ready:not(.edit-mode) .slide-inner {
+  transition: transform 120ms ease-out;
+}
+
+/* Split-layout artboards: keep the natural full-height stretching (the
+   existing .slide-split grid-auto-rows: 1fr fills the artboard). With
+   the slide now centering against the visible area between nav overlays,
+   the content reads as properly centered without artificial row caps. */
+
+/* Pin slide-pad tokens to their 1920px-resolved px values inside the
+   artboard. Children of .slide-inner (cards, grids, headings) that read
+   var(--slide-pad-x)/--slide-gap/--grid-gap get fixed values so the
+   layout is identical at every viewport width. Rhythm tokens bumped
+   ~30-40% over their natural-clamp values so typography reads at the
+   intended size after canvas downscale (scale ~0.63 on 1440px screens). */
+.case-study:not(.edit-mode) {
+  --slide-pad-x:      96px;
+  --slide-pad-top:    96px;
+  --slide-pad-bottom: 96px;
+  --slide-gap: 64px;
+  --grid-gap: 24px;
+  --slide-max-w: 1920px;
+  --rhythm-tight: 12px;
+  --rhythm-xs: 8px;
+  --rhythm-sm: 12px;
+  --rhythm-md: 24px;
+  --rhythm-lg: 32px;
+  --rhythm-xl: 48px;
+  --slide-title-gap: 16px;
+
+  /* Grid-track minimums — pinned to their max-tier clamp values so
+     minmax(--*-min, 1fr) grids stop reflowing with viewport. Card
+     counts per row now identical at every screen width. */
+  --card-min: 340px;
+  --stat-min: 260px;
+  --tool-min: 280px;
+  --ib-min: 340px;
+  --kpi-min: 260px;
+  --outcome-min: 380px;
+  --process-min: 320px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Canvas-mode typography — 1920×1080 artboard · DM Sans · px only
+   Figma source: figma.com/design/X3mrAaCCY8J2fkrq5k1vWr  node 1041:3526
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Base */
+.case-study:not(.edit-mode) .slide-inner {
+  font-family: 'DM Sans', sans-serif;
+  font-size: var(--slide-font-body);
+  line-height: var(--slide-leading-body);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-regular);
+}
+
+/* ── DISPLAY  80px Semi Bold  lh 1.08  ls -0.02em ── */
+.case-study:not(.edit-mode) .slide-inner .stat-value,
+.case-study:not(.edit-mode) .slide-inner .stat-suffix,
+.case-study:not(.edit-mode) .slide-inner .goals-showcase-number,
+.case-study:not(.edit-mode) .slide-inner .chapter-bg-number,
+.case-study:not(.edit-mode) .slide-inner .ratio-value,
+.case-study:not(.edit-mode) .slide-inner .info-metric-value,
+.case-study:not(.edit-mode) .slide-inner .intro-metric-value {
+  font-size: var(--slide-font-display);
+  line-height: var(--slide-leading-display);
+  letter-spacing: var(--slide-tracking-display);
+  font-weight: var(--slide-weight-semibold);
+}
+
+/* ── STAT  80px Bold  lh 1.00  ls -0.03em  (KPI impact numbers) ── */
+.case-study:not(.edit-mode) .slide-inner .chapter-number {
+  font-size: var(--slide-font-stat);
+  line-height: var(--slide-leading-stat);
+  letter-spacing: var(--slide-tracking-stat);
+  font-weight: var(--slide-weight-bold);
+}
+
+/* ── TITLE  64px Medium  lh 1.18  ls -0.015em ── */
+.case-study:not(.edit-mode) .slide-inner .intro-title,
+.case-study:not(.edit-mode) .slide-inner .info-title {
+  font-size: var(--slide-font-title);
+  line-height: var(--slide-leading-title);
+  letter-spacing: var(--slide-tracking-title);
+  font-weight: var(--slide-weight-medium);
+}
+
+/* ── HEADER / H1  56px Medium  lh 1.20  ls -0.012em ── */
+.case-study:not(.edit-mode) .slide-inner h1,
+.case-study:not(.edit-mode) .slide-inner h2,
+.case-study:not(.edit-mode) .slide-inner .end-title,
+.case-study:not(.edit-mode) .slide-inner .chapter-title,
+.case-study:not(.edit-mode) .slide-inner .image-title,
+.case-study:not(.edit-mode) .slide-inner .goals-title,
+.case-study:not(.edit-mode) .slide-inner .showcase-title,
+.case-study:not(.edit-mode) .slide-inner .goals-showcase-title,
+.case-study:not(.edit-mode) .slide-inner .text-title,
+.case-study:not(.edit-mode) .slide-inner .stats-title,
+.case-study:not(.edit-mode) .slide-inner .split-title,
+.case-study:not(.edit-mode) .slide-inner .comparison-title,
+.case-study:not(.edit-mode) .slide-inner .process-title,
+.case-study:not(.edit-mode) .slide-inner .outcomes-title,
+.case-study:not(.edit-mode) .slide-inner .tools-title,
+.case-study:not(.edit-mode) .slide-inner .timeline-title,
+.case-study:not(.edit-mode) .slide-inner .problem-title,
+.case-study:not(.edit-mode) .slide-inner .quotes-title,
+.case-study:not(.edit-mode) .slide-inner .testing-title,
+.case-study:not(.edit-mode) .slide-inner .video-title,
+.case-study:not(.edit-mode) .slide-inner .twi-title,
+.case-study:not(.edit-mode) .slide-inner .dyn-title,
+.case-study:not(.edit-mode) .slide-inner .achieve-goals-title,
+.case-study:not(.edit-mode) .slide-inner .context-title,
+.case-study:not(.edit-mode) .slide-inner .ideation-title,
+.case-study:not(.edit-mode) .slide-inner .reflection-title,
+.case-study:not(.edit-mode) .slide-inner .issues-breakdown-title,
+.case-study:not(.edit-mode) .slide-inner .old-experience-title,
+.case-study:not(.edit-mode) .slide-inner .ps-title {
+  font-size: var(--slide-font-header);
+  line-height: var(--slide-leading-heading);
+  letter-spacing: var(--slide-tracking-heading);
+  font-weight: var(--slide-weight-medium);
+}
+
+/* ── HEADING  48px Medium  lh 1.20  ls -0.012em ── */
+.case-study:not(.edit-mode) .slide-inner .chapter-subtitle,
+.case-study:not(.edit-mode) .slide-inner .category-title,
+.case-study:not(.edit-mode) .slide-inner .quote-author,
+.case-study:not(.edit-mode) .slide-inner .testimonial-author,
+.case-study:not(.edit-mode) .slide-inner .author-name,
+.case-study:not(.edit-mode) .slide-inner .issues-breakdown-subtitle,
+.case-study:not(.edit-mode) .slide-inner .issues-breakdown-cards-title,
+.case-study:not(.edit-mode) .slide-inner .mosaic-title-badge {
+  font-size: var(--slide-font-h2);
+  line-height: var(--slide-leading-heading);
+  letter-spacing: var(--slide-tracking-heading);
+  font-weight: var(--slide-weight-medium);
+}
+
+/* ── SUBHEADING  36px Medium  lh 1.22  ls -0.01em ── */
+.case-study:not(.edit-mode) .slide-inner h3,
+.case-study:not(.edit-mode) .slide-inner h4,
+.case-study:not(.edit-mode) .slide-inner .card-title,
+.case-study:not(.edit-mode) .slide-inner .goal-card-title,
+.case-study:not(.edit-mode) .slide-inner .kpi-title,
+.case-study:not(.edit-mode) .slide-inner .stat-label,
+.case-study:not(.edit-mode) .slide-inner .outcome-card-title,
+.case-study:not(.edit-mode) .slide-inner .process-step-title,
+.case-study:not(.edit-mode) .slide-inner .tool-card-title,
+.case-study:not(.edit-mode) .slide-inner .timeline-item-title,
+.case-study:not(.edit-mode) .slide-inner .info-card-title,
+.case-study:not(.edit-mode) .slide-inner .step-title,
+.case-study:not(.edit-mode) .slide-inner .goal-title-text,
+.case-study:not(.edit-mode) .slide-inner .achieve-goals-column-title,
+.case-study:not(.edit-mode) .slide-inner .ideation-card-name,
+.case-study:not(.edit-mode) .slide-inner .ideation-chosen-name,
+.case-study:not(.edit-mode) .slide-inner .dyn-subtitle,
+.case-study:not(.edit-mode) .slide-inner .ps-subtitle,
+.case-study:not(.edit-mode) .slide-inner .issue-breakdown-heading,
+.case-study:not(.edit-mode) .slide-inner .outcome-title,
+.case-study:not(.edit-mode) .slide-inner .info-metric-label,
+.case-study:not(.edit-mode) .slide-inner .info-methodology-name,
+.case-study:not(.edit-mode) .slide-inner .info-phase-name,
+.case-study:not(.edit-mode) .slide-inner .intro-metric-label {
+  font-size: var(--slide-font-h3);
+  line-height: var(--slide-leading-subhead);
+  letter-spacing: var(--slide-tracking-subhead);
+  font-weight: var(--slide-weight-medium);
+}
+
+/* ── BODY LARGE  32px Regular  lh 1.50  ls -0.005em ── */
+.case-study:not(.edit-mode) .slide-inner .intro-description,
+.case-study:not(.edit-mode) .slide-inner .intro-subtitle,
+.case-study:not(.edit-mode) .slide-inner .problem-text,
+.case-study:not(.edit-mode) .slide-inner .context-text,
+.case-study:not(.edit-mode) .slide-inner .feature-description,
+.case-study:not(.edit-mode) .slide-inner .end-subtitle,
+.case-study:not(.edit-mode) .slide-inner .info-intro-hook,
+.case-study:not(.edit-mode) .slide-inner .comparison-side-description {
+  font-size: var(--slide-font-body-lg);
+  line-height: var(--slide-leading-body-lg);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-regular);
+}
+
+/* ── BODY MEDIUM  28px Regular  lh 1.50  ls -0.005em ── */
+.case-study:not(.edit-mode) .slide-inner .body-medium,
+.case-study:not(.edit-mode) .slide-inner .quotes-intro,
+.case-study:not(.edit-mode) .slide-inner .dynamic-text {
+  font-size: var(--slide-font-body-md);
+  line-height: var(--slide-leading-body-md);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-regular);
+}
+
+/* ── QUOTE  32px Regular  lh 1.45  ls -0.005em ── */
+.case-study:not(.edit-mode) .slide-inner .testimonial-quote {
+  font-size: var(--slide-font-quote);
+  line-height: var(--slide-leading-quote);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-regular);
+}
+
+/* ── BODY  24px Regular  lh 1.52  ls -0.005em ── */
+.case-study:not(.edit-mode) .slide-inner p,
+.case-study:not(.edit-mode) .slide-inner li,
+.case-study:not(.edit-mode) .slide-inner .quote-text,
+.case-study:not(.edit-mode) .slide-inner .body-text,
+.case-study:not(.edit-mode) .slide-inner .info-description,
+.case-study:not(.edit-mode) .slide-inner .card-description,
+.case-study:not(.edit-mode) .slide-inner .goal-card-description,
+.case-study:not(.edit-mode) .slide-inner .kpi-description,
+.case-study:not(.edit-mode) .slide-inner .outcome-card-description,
+.case-study:not(.edit-mode) .slide-inner .process-step-description,
+.case-study:not(.edit-mode) .slide-inner .tool-card-description,
+.case-study:not(.edit-mode) .slide-inner .timeline-item-description,
+.case-study:not(.edit-mode) .slide-inner .info-card-description,
+.case-study:not(.edit-mode) .slide-inner .step-description,
+.case-study:not(.edit-mode) .slide-inner .showcase-description,
+.case-study:not(.edit-mode) .slide-inner .goals-showcase-description,
+.case-study:not(.edit-mode) .slide-inner .goal-description,
+.case-study:not(.edit-mode) .slide-inner .goal-content,
+.case-study:not(.edit-mode) .slide-inner .step-content,
+.case-study:not(.edit-mode) .slide-inner .twi-image-description,
+.case-study:not(.edit-mode) .slide-inner .preview-description,
+.case-study:not(.edit-mode) .slide-inner .reflection-learned,
+.case-study:not(.edit-mode) .slide-inner .achieve-goal-text,
+.case-study:not(.edit-mode) .slide-inner .ideation-tradeoffs,
+.case-study:not(.edit-mode) .slide-inner .testimonial-context,
+.case-study:not(.edit-mode) .slide-inner .ideation-chosen-rationale,
+.case-study:not(.edit-mode) .slide-inner .end-contact-value,
+.case-study:not(.edit-mode) .slide-inner .issue-breakdown-desc,
+.case-study:not(.edit-mode) .slide-inner .info-value,
+.case-study:not(.edit-mode) .slide-inner .kpi-card-desc,
+.case-study:not(.edit-mode) .slide-inner .ps-paragraph,
+.case-study:not(.edit-mode) .slide-inner .info-phase-desc,
+.case-study:not(.edit-mode) .slide-inner .author-role {
+  font-size: var(--slide-font-body);
+  line-height: var(--slide-leading-body);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-regular);
+}
+
+/* ── BODY SMALL  20px Regular  lh 1.48  ls 0 ── */
+.case-study:not(.edit-mode) .slide-inner .problem-highlight,
+.case-study:not(.edit-mode) .slide-inner .quotes-highlight,
+.case-study:not(.edit-mode) .slide-inner .testing-highlight,
+.case-study:not(.edit-mode) .slide-inner .timeline-highlight,
+.case-study:not(.edit-mode) .slide-inner .video-highlight,
+.case-study:not(.edit-mode) .slide-inner .issues-breakdown-highlight,
+.case-study:not(.edit-mode) .slide-inner .achieve-goals-highlight,
+.case-study:not(.edit-mode) .slide-inner .tools-highlight,
+.case-study:not(.edit-mode) .slide-inner .cs-highlight,
+.case-study:not(.edit-mode) .slide-inner .showcase-highlight,
+.case-study:not(.edit-mode) .slide-inner .goals-showcase-highlight,
+.case-study:not(.edit-mode) .slide-inner .bullets-section-title,
+.case-study:not(.edit-mode) .slide-inner .twi-image-bullets-title,
+.case-study:not(.edit-mode) .slide-inner .image-caption,
+.case-study:not(.edit-mode) .slide-inner .figure-caption,
+.case-study:not(.edit-mode) .slide-inner .split-image-caption,
+.case-study:not(.edit-mode) .slide-inner .stat-context,
+.case-study:not(.edit-mode) .slide-inner .carousel-caption,
+.case-study:not(.edit-mode) .slide-inner .dyn-image-caption,
+.case-study:not(.edit-mode) .slide-inner .dynamic-image-caption,
+.case-study:not(.edit-mode) .slide-inner .twi-caption,
+.case-study:not(.edit-mode) .slide-inner .video-caption,
+.case-study:not(.edit-mode) .slide-inner .reflection-footnote,
+.case-study:not(.edit-mode) .slide-inner .text-highlight,
+.case-study:not(.edit-mode) .slide-inner .info-highlight,
+.case-study:not(.edit-mode) .slide-inner .info-metric-context,
+.case-study:not(.edit-mode) .slide-inner .intro-metric-context,
+.case-study:not(.edit-mode) .slide-inner .mosaic-manager-label {
+  font-size: var(--slide-font-caption);
+  line-height: var(--slide-leading-caption);
+  letter-spacing: var(--slide-tracking-normal);
+  font-weight: var(--slide-weight-regular);
+}
+
+/* Highlight callout — Figma 1045:3526: soft accent tint, accent body-small
+   text, 8px radius, 22/20 padding, no border. */
+.case-study:not(.edit-mode) .slide-inner .problem-highlight,
+.case-study:not(.edit-mode) .slide-inner .quotes-highlight,
+.case-study:not(.edit-mode) .slide-inner .testing-highlight,
+.case-study:not(.edit-mode) .slide-inner .timeline-highlight,
+.case-study:not(.edit-mode) .slide-inner .video-highlight,
+.case-study:not(.edit-mode) .slide-inner .issues-breakdown-highlight,
+.case-study:not(.edit-mode) .slide-inner .achieve-goals-highlight,
+.case-study:not(.edit-mode) .slide-inner .tools-highlight,
+.case-study:not(.edit-mode) .slide-inner .cs-highlight,
+.case-study:not(.edit-mode) .slide-inner .showcase-highlight,
+.case-study:not(.edit-mode) .slide-inner .goals-showcase-highlight,
+.case-study:not(.edit-mode) .slide-inner .context-highlight,
+.case-study:not(.edit-mode) .slide-inner .feature-highlight,
+.case-study:not(.edit-mode) .slide-inner .comparison-highlight,
+.case-study:not(.edit-mode) .slide-inner .text-highlight,
+.case-study:not(.edit-mode) .slide-inner .info-highlight {
+  padding: 22px 20px;
+  border-radius: 8px;
+  margin-top: 32px;
+  background: color-mix(in srgb, var(--color-accent) 6%, var(--color-bg));
+  border: none;
+  color: var(--color-accent);
+  /* Body (24px) from the design-system scale, not Body Small (20px). */
+  font-size: var(--slide-font-body);
+  line-height: var(--slide-leading-body);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-regular);
+}
+
+/* Bullets section title — Figma 1045:3526: Subheading 36px Medium, dark
+   text, NO pill. Overrides the legacy accent-pill / bordered-box treatment
+   across all view-mode slides. */
+.case-study:not(.edit-mode) .slide-inner .bullets-section-title,
+.case-study:not(.edit-mode) .slide-inner .twi-image-bullets-title {
+  display: inline-flex;
+  padding: 0 !important;
+  margin-bottom: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--color-text) !important;
+  font-size: var(--slide-font-h3) !important;
+  line-height: var(--slide-leading-subhead) !important;
+  letter-spacing: var(--slide-tracking-subhead) !important;
+  font-weight: var(--slide-weight-medium) !important;
+  text-transform: none !important;
+}
+
+/* ── META VALUE  28px Medium  lh 1.30  ls -0.005em ── */
+.case-study:not(.edit-mode) .slide-inner .intro-meta-value,
+.case-study:not(.edit-mode) .slide-inner .quote-author-name {
+  font-size: var(--slide-font-meta-value);
+  line-height: var(--slide-leading-meta);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-medium);
+}
+
+/* ── META LABEL  28px Regular  lh 1.30  ls -0.005em ── */
+.case-study:not(.edit-mode) .slide-inner .ratio-label,
+.case-study:not(.edit-mode) .slide-inner .info-phase-num {
+  font-size: var(--slide-font-meta-label);
+  line-height: var(--slide-leading-meta);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-regular);
+}
+
+/* ── UTILITY/NUMBER  24px Medium  lh 1.20  ls +0.06em ── */
+.case-study:not(.edit-mode) .slide-inner .step-number,
+.case-study:not(.edit-mode) .slide-inner .goal-number,
+.case-study:not(.edit-mode) .slide-inner .preview-number,
+.case-study:not(.edit-mode) .slide-inner .thumb-number,
+.case-study:not(.edit-mode) .slide-inner .achieve-goal-number {
+  font-size: var(--slide-font-number);
+  line-height: var(--slide-leading-number);
+  letter-spacing: var(--slide-tracking-number);
+  font-weight: var(--slide-weight-medium);
+}
+
+/* ── UTILITY/TAG  18px Medium  lh 1.20  ls 0 ── */
+.case-study:not(.edit-mode) .slide-inner .kpis-label,
+.case-study:not(.edit-mode) .slide-inner .goals-cards-label {
+  font-size: var(--slide-font-tag);
+  line-height: var(--slide-leading-tag);
+  letter-spacing: var(--slide-tracking-normal);
+  font-weight: var(--slide-weight-medium);
+}
+
+/* ── UTILITY/CAPTION  16px Regular  lh 1.40  ls 0 ── */
+.case-study:not(.edit-mode) .slide-inner .intro-meta-label,
+.case-study:not(.edit-mode) .slide-inner .quote-author-role,
+.case-study:not(.edit-mode) .slide-inner .info-methodology-eyebrow {
+  font-size: var(--slide-font-meta);
+  line-height: var(--slide-leading-util);
+  letter-spacing: var(--slide-tracking-normal);
+  font-weight: var(--slide-weight-regular);
+}
+
+/* ── UTILITY/LABEL  14px Medium UC  lh 1.20  ls +0.08em ── */
+.case-study:not(.edit-mode) .slide-inner .slide-label,
+.case-study:not(.edit-mode) .slide-inner .intro-label,
+.case-study:not(.edit-mode) .slide-inner .info-label,
+.case-study:not(.edit-mode) .slide-inner .preview-label,
+.case-study:not(.edit-mode) .slide-inner .ps-col-label,
+.case-study:not(.edit-mode) .slide-inner .ps-solution-label,
+.case-study:not(.edit-mode) .slide-inner .showcase-desc-label,
+.case-study:not(.edit-mode) .slide-inner .reflection-learned-label,
+.case-study:not(.edit-mode) .slide-inner .ideation-chosen-label,
+.case-study:not(.edit-mode) .slide-inner .ideation-tradeoffs-label,
+.case-study:not(.edit-mode) .slide-inner .outcomes-toggle-label,
+.case-study:not(.edit-mode) .slide-inner .timeline-step-label,
+.case-study:not(.edit-mode) .slide-inner .process-step-label,
+.case-study:not(.edit-mode) .slide-inner .outcome-card-label,
+.case-study:not(.edit-mode) .slide-inner .tool-card-label,
+.case-study:not(.edit-mode) .slide-inner .comparison-mode-label {
+  font-size: var(--slide-font-label);
+  line-height: var(--slide-leading-label);
+  letter-spacing: var(--slide-tracking-label);
+  font-weight: var(--slide-weight-medium);
+  color: var(--color-accent);
+  text-transform: uppercase;
+}
+
+/* Bold/strong → Medium weight (DM Sans emphasis step) */
+.case-study:not(.edit-mode) .slide-inner strong,
+.case-study:not(.edit-mode) .slide-inner b {
+  font-weight: var(--slide-weight-medium);
+}
+
+/* Intro meta row spacing */
+.case-study:not(.edit-mode) .slide-inner .intro-meta-row {
+  gap: 32px;
+  margin-top: 24px;
+}
+
+/* ─── Canvas layout overrides — pin remaining fluid units in view mode
+   Each property that still used raw clamp() with vw/vh is pinned to its
+   max-tier value (what would render at the 1920px design viewport).
+   Edit mode keeps the source clamp() so the editor's responsive UI is
+   untouched. */
+.case-study:not(.edit-mode) .progress-bar { max-width: 380px; }
+.case-study:not(.edit-mode) .slide-error .slide-inner { padding: 32px; }
+.case-study:not(.edit-mode) .slide-text .slide-inner { gap: 16px; }
+.case-study:not(.edit-mode) .slide-inner .goals-showcase-highlight { padding: 16px 20px; }
+.case-study:not(.edit-mode) .slide-inner .process-steps { gap: 24px; }
+.case-study:not(.edit-mode) .slide-inner .testimonial-quote { max-width: 1100px; }
+.case-study:not(.edit-mode) .slide-inner .tools-grid { gap: 20px; }
+.case-study:not(.edit-mode) .slide-inner .issues-breakdown-grid { gap: 16px; }
+.case-study:not(.edit-mode) .slide-inner .achieve-goals-column { gap: 24px; }
+.case-study:not(.edit-mode) .slide-inner .achieve-goals-list { gap: 24px; }
+.case-study:not(.edit-mode) .slide-inner .achieve-goal-item { gap: 20px; }
+.case-study:not(.edit-mode) .slide-inner .achieve-goal-number { width: 36px; height: 36px; }
+.case-study:not(.edit-mode) .slide-inner .slide-dynamic-inner { gap: 32px; }
+.case-study:not(.edit-mode) .slide-inner .dyn-image-grid { gap: 20px; }
+.case-study:not(.edit-mode) .slide-image-mosaic { padding: 96px; }
+.case-study:not(.edit-mode) .slide-inner .chapter-subtitle { max-width: 896px; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Accessibility: focus-visible rings on view-mode interactive elements.
+   Edit mode has its own focus styles for inputs; this block covers the
+   nav-back button, slide-nav-pill prev/next buttons, the PDF export
+   button, and the slide-nav-pill counter (when made focusable). 2px
+   solid accent + 2px offset keeps the ring inside the touch target and
+   outside the button's own border, which clears WCAG 2.4.7.
+   ═══════════════════════════════════════════════════════════════════════ */
+.case-study .nav-back-btn:focus-visible,
+.case-study .nav-pdf-btn:focus-visible,
+.case-study .slide-nav-pill-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* The pill counter is informational; if/when it becomes focusable for
+   keyboard slide-jump, this rule will style its focus state too. */
+.case-study .slide-nav-pill-counter:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Reduced-motion guard for canvas-mode transitions. When the user has
+   `prefers-reduced-motion: reduce`, neutralize the artboard scale
+   transition (was `transform 120ms ease-out` on .slide-inner) and any
+   transform-based reveal animations inside slide content. Existing
+   `:where(:not(.no-reduced-motion))` patterns in the codebase stay
+   untouched — this is a global view-mode guard.
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .case-study:not(.edit-mode) .slide-inner {
+    transition: none !important;
+  }
+  .case-study:not(.edit-mode) .slide-nav-pill,
+  .case-study:not(.edit-mode) .slide-nav-pill-btn,
+  .case-study:not(.edit-mode) .nav-back-btn,
+  .case-study:not(.edit-mode) .nav-pdf-btn {
+    transition: none !important;
+  }
+  /* Catch-all for slide-content animations that go through CSS keyframes. */
+  .case-study:not(.edit-mode) .slide-inner *,
+  .case-study:not(.edit-mode) .slide-inner *::before,
+  .case-study:not(.edit-mode) .slide-inner *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Title + dynamic-paragraph grouping ──────────────────────────────────
+   Visually group the slide title with the immediately-following dynamic
+   description paragraph — same pattern as .dynamic-bullets (title chip
+   sits 8px above the bullet list). Achieved by reducing the gap inside
+   .split-content (and other content stacks) to 0 and applying explicit
+   margins per adjacent-sibling pair: tight (12px) between title and its
+   description, normal (24px) between everything else.
+   ──────────────────────────────────────────────────────────────────── */
+.case-study:not(.edit-mode) .split-content,
+.case-study:not(.edit-mode) .intro-content,
+.case-study:not(.edit-mode) .image-text-content,
+.case-study:not(.edit-mode) .goals-content,
+.case-study:not(.edit-mode) .stats-content,
+.case-study:not(.edit-mode) .text-content,
+.case-study:not(.edit-mode) .info-content {
+  gap: 0;
+}
+
+/* Default rhythm between adjacent children */
+.case-study:not(.edit-mode) .split-content > * + *,
+.case-study:not(.edit-mode) .intro-content > * + *,
+.case-study:not(.edit-mode) .image-text-content > * + *,
+.case-study:not(.edit-mode) .goals-content > * + *,
+.case-study:not(.edit-mode) .stats-content > * + *,
+.case-study:not(.edit-mode) .text-content > * + *,
+.case-study:not(.edit-mode) .info-content > * + * {
+  margin-top: 24px;
+}
+
+/* Tight (12px) gap when a title (h1/h2/h3) is immediately followed by
+   its description wrapper — visually groups them like .dynamic-bullets
+   groups its section title + list. */
+.case-study:not(.edit-mode) .slide-inner h1 + .problem-text-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .problem-text-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .comparison-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .comparison-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .info-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .info-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .feature-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .feature-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .text-content-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .text-content-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .context-text-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .context-text-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .stats-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .stats-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .goals-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .goals-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .outcomes-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .outcomes-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .process-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .process-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .timeline-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .timeline-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .tools-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .tools-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .video-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .video-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .twi-image-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .twi-image-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .two-column-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .two-column-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .achieve-goals-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .achieve-goals-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .goals-showcase-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .goals-showcase-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .issues-breakdown-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .issues-breakdown-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h1 + .old-experience-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner h2 + .old-experience-description-wrapper,
+.case-study:not(.edit-mode) .slide-inner .intro-title + .intro-description,
+.case-study:not(.edit-mode) .slide-inner h1 + p,
+.case-study:not(.edit-mode) .slide-inner h2 + p {
+  margin-top: 12px;
+}
+
+/* Eyebrow label sits tight above its title — same visual group. */
+.case-study:not(.edit-mode) .slide-inner .slide-label + h1,
+.case-study:not(.edit-mode) .slide-inner .slide-label + h2,
+.case-study:not(.edit-mode) .slide-inner .intro-label + .intro-title,
+.case-study:not(.edit-mode) .slide-inner .info-label + h2 {
+  margin-top: 8px;
+}
+
+/* Bullets section title (Subheading) → its list: 20px (Figma 1045:3526). */
+.case-study:not(.edit-mode) .slide-inner .bullets-section-title + ul,
+.case-study:not(.edit-mode) .slide-inner .twi-image-bullets-title + ul {
+  margin-top: 20px !important;
+}
+
+/* Space between two stacked bullet sections. */
+.case-study:not(.edit-mode) .slide-inner .dynamic-bullets + .dynamic-bullets {
+  margin-top: 28px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Text + Image content slide — Figma node 1045:3526
+   ─────────────────────────────────────────────────────────────────────
+   Slides: problem · context · feature · testing · comparison-unified ·
+   problem-solution. Block rhythm and type roles match the Figma exactly:
+     title (Subtitle 56)  →32→  description (Body Large 32)
+     description          →40→  bullets group
+       section title (Subheading 36)  →20→  list   ·  rows 12 apart
+     bullets group        →40→  highlight (Body Small 20, accent)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Bullet rows: muted body text + round accent dot (BODY group already sets 24px). */
+.case-study:not(.edit-mode) .slide-inner .dynamic-bullets .bullet-list li {
+  color: var(--color-text-muted);
+  padding-left: 30px;
+  margin-bottom: 16px;
+}
+.case-study:not(.edit-mode) .slide-inner .dynamic-bullets .bullet-list li::before {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  top: 0.6em;
+  left: 4px;
+}
+
+/* Block rhythm inside the text column: 40px between blocks
+   (description → bullets, bullets → highlight). */
+.case-study:not(.edit-mode) :is(.slide-problem,.slide-context,.slide-feature,.slide-testing,.slide-comparison-unified,.slide-problem-solution) .slide-inner .split-content > * + * {
+  margin-top: 40px !important;
+}
+/* Hidden eyebrow label leaves no leading gap above the title. */
+.case-study:not(.edit-mode) :is(.slide-problem,.slide-context,.slide-feature,.slide-testing,.slide-comparison-unified,.slide-problem-solution) .slide-inner .split-content > .slide-label + * {
+  margin-top: 0 !important;
+}
+/* Title → its description: 32px (tighter than the 40px block rhythm).
+   !important so it wins over the legacy tight-grouping (12px) rule and any
+   inline --slide-title-gap the JSX sets on the slide. */
+.case-study:not(.edit-mode) :is(.slide-problem,.slide-context,.slide-feature,.slide-testing,.slide-comparison-unified,.slide-problem-solution) .slide-inner .split-content > h1 + *,
+.case-study:not(.edit-mode) :is(.slide-problem,.slide-context,.slide-feature,.slide-testing,.slide-comparison-unified,.slide-problem-solution) .slide-inner .split-content > h2 + * {
+  margin-top: 28px !important;
+}
+/* Zero the title's legacy `margin-bottom: 0.5rem` (8px from the unified
+   title rule). In a flex column margins don't collapse, so it would add to
+   the 32px above and make the gap 40px. The 32px margin-top owns the gap. */
+.case-study:not(.edit-mode) :is(.slide-problem,.slide-context,.slide-feature,.slide-testing,.slide-comparison-unified,.slide-problem-solution) .slide-inner .split-content > h1,
+.case-study:not(.edit-mode) :is(.slide-problem,.slide-context,.slide-feature,.slide-testing,.slide-comparison-unified,.slide-problem-solution) .slide-inner .split-content > h2 {
+  margin-bottom: 0 !important;
+}
+/* The highlight's wrapper carries the 40px gap — zero its intrinsic margin. */
+.case-study:not(.edit-mode) :is(.slide-problem,.slide-context,.slide-feature,.slide-testing,.slide-comparison-unified,.slide-problem-solution) .slide-inner .optional-field-wrapper > * {
+  margin-top: 0;
+}
+/* Goals cards section → KPIs section breathing room. */
+.case-study:not(.edit-mode) .slide-inner .goals-cards-section + .kpis-section {
+  margin-top: 48px;
+}
+
+/* ═══ Goals slide — Figma 1096:3526 ═══
+   Two columns side by side: left = numbered "KPI Goals" list, right =
+   "Key Metrics" big-number rows, split by a vertical divider. Each row is
+   a flat line with a 1px bottom divider — no cards. View-mode only. */
+.case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  column-gap: 48px;
+  row-gap: 40px;
+  align-content: start;
+  height: 100%;
+  flex: 1;
+}
+/* Header (+ optional description / highlight) spans both columns. */
+.case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-content > .slide-label,
+.case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-content > .goals-title,
+.case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-content > .goals-description-wrapper,
+.case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-content > .optional-field-wrapper {
+  grid-column: 1 / -1;
+}
+.case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-content > .goals-title {
+  margin-bottom: 0;
+}
+.case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-cards-section-wrapper {
+  grid-column: 1;
+  grid-row: 2;
+  margin-bottom: 0;
+  flex: none;
+  overflow: visible;
+  justify-content: flex-start;
+}
+.case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .kpis-section-wrapper {
+  grid-column: 2;
+  grid-row: 2;
+  margin-bottom: 0;
+  flex: none;
+  overflow: visible;
+  border-left: 1px solid var(--color-border);
+  padding-left: 48px;
+  justify-content: flex-start;
+}
+
+/* Section labels (KPI Goals / Key Metrics): Subheading 36px Medium, dark,
+   no pill. 20px gap down to the first row. */
+.case-study:not(.edit-mode) .slide-goals .slide-inner .goals-cards-label,
+.case-study:not(.edit-mode) .slide-goals .slide-inner .kpis-label {
+  display: block;
+  width: auto;
+  padding: 0;
+  margin: 0 0 20px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: var(--color-text);
+  font-size: var(--slide-font-h3);
+  line-height: var(--slide-leading-subhead);
+  letter-spacing: var(--slide-tracking-subhead);
+  font-weight: var(--slide-weight-medium);
+  text-transform: none;
+}
+
+/* Left column — numbered goal rows. */
+.case-study:not(.edit-mode) .slide-goals .goals-grid {
+  display: flex !important;
+  flex-direction: column;
+  gap: 0;
+  grid-template-columns: none !important;
+  overflow: visible;
+}
+.case-study:not(.edit-mode) .slide-goals .goals-grid .goal-item {
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  background: transparent;
+  padding: 16px 0;
+  gap: 16px;
+  align-items: center;
+}
+.case-study:not(.edit-mode) .slide-goals .goals-grid .goal-item:hover {
+  transform: none;
+  border-color: transparent;
+  border-bottom-color: var(--color-border);
+}
+.case-study:not(.edit-mode) .slide-goals .goals-grid .goal-number {
+  width: 52px;
+  min-width: 52px;
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-accent);
+  display: block;
+  text-align: left;
+}
+.case-study:not(.edit-mode) .slide-goals .goal-title-text {
+  color: var(--color-text);
+  font-size: var(--slide-font-body);
+  line-height: var(--slide-leading-body);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-regular);
+}
+
+/* Right column — Key Metrics: big accent value + muted label per row. */
+.case-study:not(.edit-mode) .slide-goals .kpis-grid {
+  display: flex !important;
+  flex-direction: column;
+  gap: 0;
+  grid-template-columns: none !important;
+}
+.case-study:not(.edit-mode) .slide-goals .kpi-card {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  padding: 16px 0;
+  gap: 6px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
+  /* Metric value — Subheading 36px Medium, accent. */
+  color: var(--color-accent);
+  font-size: var(--slide-font-h3);
+  line-height: var(--slide-leading-subhead);
+  letter-spacing: var(--slide-tracking-subhead);
+  font-weight: var(--slide-weight-medium);
+}
+.case-study:not(.edit-mode) .slide-goals .kpi-card:hover {
+  filter: none;
+  box-shadow: none;
+}
+.case-study:not(.edit-mode) .slide-goals .kpi-card .editable-field,
+.case-study:not(.edit-mode) .slide-goals .kpi-card span {
+  text-align: left;
+}
+/* Metric label — Body 24px Regular, muted (size from BODY group). */
+.case-study:not(.edit-mode) .slide-goals .kpi-card-desc {
+  color: var(--color-text-muted);
+  font-weight: var(--slide-weight-regular);
+}
+
+/* KPI rows with no description: only the metric value line is present, so
+   tighten the vertical padding so the row collapses to fit. Type style
+   (Subheading 36px accent) is unchanged. */
+.case-study:not(.edit-mode) .slide-goals .kpi-card:not(:has(.kpi-card-desc)) {
+  padding: 12px 0;
+}
+
+/* Equal-height quote cards. */
+.case-study:not(.edit-mode) .slide-inner .quotes-grid {
+  grid-auto-rows: 1fr;
+}
+
+/* ═══ Quotes slide — Figma 1170:3526 ═══ */
+/* Top-anchored: header (title → subtitle 8px) then card grid, 40px apart. */
+.case-study:not(.edit-mode) .slide-quotes .slide-inner {
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0;
+}
+.case-study:not(.edit-mode) .slide-quotes .slide-inner > * + * { margin-top: 40px; }
+.case-study:not(.edit-mode) .slide-quotes .slide-inner > .slide-label + * { margin-top: 16px; }
+.case-study:not(.edit-mode) .slide-quotes .slide-inner > .quotes-title + .optional-field-wrapper { margin-top: 8px; }
+
+/* Quote card — surface fill, neutral border, 24px radius/pad, 12px stack. */
+.case-study:not(.edit-mode) .slide-inner .quote-card {
+  gap: 12px;
+  padding: 24px;
+  border-radius: 24px;
+  border: 1px solid var(--color-border);
+  background: #fff;
+  overflow: visible;
+  height: 100%;
+}
+.case-study:not(.edit-mode) .slide-inner .quote-card:hover {
+  border-color: var(--color-border);
+  box-shadow: none;
+}
+/* Intro paragraph above the quote grid fills the full content width (no 700px cap). */
+.case-study:not(.edit-mode) .slide-inner .quotes-intro {
+  max-width: none;
+  width: 100%;
+}
+/* Issues-breakdown cards match the outcomes card look in view mode: white fill,
+   rounded, soft border, no hover lift. The accent number circle is unchanged. */
+.case-study:not(.edit-mode) .slide-inner .issue-breakdown-card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  padding: 36px;
+  gap: 12px;
+  height: 100%;
+}
+.case-study:not(.edit-mode) .slide-inner .issue-breakdown-card:hover {
+  transform: none;
+  border-color: var(--color-border);
+  box-shadow: none;
+}
+/* Bigger number in the issue circle, on the slide typography scale (h3 = 36px),
+   with a roomier circle to match. */
+.case-study:not(.edit-mode) .slide-inner .issue-breakdown-number {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  min-height: 56px;
+  font-size: var(--slide-font-h3);
+  font-weight: var(--slide-weight-medium);
+}
+/* Problem (issues) + quotes vertical layout: pin the label + title (+ subheader)
+   to the TOP, float the card grid to the centre of the remaining space. The
+   auto margins centre the grid while it stays compact and equal-height. */
+.case-study:not(.edit-mode) .issues-breakdown-content {
+  justify-content: flex-start;
+}
+.case-study:not(.edit-mode) .issues-breakdown-content > .issues-breakdown-grid {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.case-study:not(.edit-mode) .slide-quotes .slide-inner > .quotes-grid {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.case-study:not(.edit-mode) .slide-inner .quote-text {
+  color: var(--color-text);
+  margin: 0;
+}
+/* Decorative opening quote mark — 40px Bold accent. */
+.case-study:not(.edit-mode) .slide-inner .quote-mark {
+  font-size: 40px;
+  line-height: 1;
+}
+.case-study:not(.edit-mode) .slide-inner .quote-avatar {
+  font-size: var(--slide-font-meta);
+  font-weight: var(--slide-weight-medium);
+}
+
+/* Quote text → author: tight gap (any mode/context).
+   Overrides the base `.quote-author { margin-top: auto }` bottom-pin. */
+.quote-card .quote-text + .quote-author {
+  margin-top: 16px;
+}
+
+/* ═══ Outcomes slide — Figma 1117:3557 (view/canvas mode) ═══
+   Header (Subtitle 56) left-aligned at top → 2-up card grid, 20px gutters.
+   Each card: soft accent wash (#fff5f4 ≈ accent 6%), 12px radius, 36px pad,
+   12px stack — metric (Heading 48 accent Medium) → title (Subheading 36) →
+   description (Body 24 muted). No number badge, no hover lift. */
+.case-study:not(.edit-mode) .slide-outcomes .slide-inner {
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0;
+}
+.case-study:not(.edit-mode) .slide-outcomes .outcomes-title {
+  text-align: left;
+  margin: 0;
+}
+.case-study:not(.edit-mode) .slide-outcomes .slide-inner > .outcomes-grid {
+  margin-top: 64px;
+}
+.case-study:not(.edit-mode) .slide-outcomes .slide-inner > .optional-field-wrapper {
+  margin-top: 40px;
+}
+.case-study:not(.edit-mode) .slide-outcomes .outcomes-grid {
+  /* Column count comes from the JSX inline `repeat(${gridColumns||2}, 1fr)` so the
+     edit-mode grid control actually works (press 3 → 3 across). */
+  grid-auto-rows: auto;
+  align-content: center;
+  gap: 20px;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+}
+.case-study:not(.edit-mode) .slide-outcomes .outcome-number {
+  display: none;
+}
+.case-study:not(.edit-mode) .slide-outcomes .outcome-item {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  padding: 36px;
+  gap: 12px;
+  height: 100%;
+}
+.case-study:not(.edit-mode) .slide-outcomes .outcome-item:hover {
+  transform: none;
+  border-color: var(--color-border);
+  box-shadow: none;
+}
+.case-study:not(.edit-mode) .slide-outcomes .outcome-metric {
+  font-size: var(--slide-font-h2);
+  line-height: var(--slide-leading-heading);
+  letter-spacing: var(--slide-tracking-heading);
+  font-weight: var(--slide-weight-medium);
+  color: var(--color-accent);
+  margin: 0;
+}
+.case-study:not(.edit-mode) .slide-outcomes .outcome-title {
+  margin: 0;
+  color: var(--color-text);
+}
+.case-study:not(.edit-mode) .slide-outcomes .outcome-item:hover .outcome-title {
+  color: var(--color-text);
+}
+.case-study:not(.edit-mode) .slide-outcomes .outcome-description {
+  color: var(--color-text-muted);
+  margin: 0;
+  flex: none;
+}
+
+/* ═══ End slide — Figma close (view/canvas mode) ═══
+   Scale the closing slide up to the 1920 artboard: Display 80px title,
+   Body Large 32px subtitle, generous spacing, and full-size pill buttons
+   (Tag 18px Medium with roomy padding). Edit mode keeps its fluid sizes. */
+.case-study:not(.edit-mode) .slide-end .end-headline {
+  gap: 24px;
+}
+.case-study:not(.edit-mode) .slide-end .end-title {
+  font-size: var(--slide-font-display);
+  line-height: var(--slide-leading-display);
+  letter-spacing: var(--slide-tracking-display);
+  font-weight: var(--slide-weight-semibold);
+  margin: 0;
+}
+.case-study:not(.edit-mode) .slide-end .end-subtitle {
+  font-size: var(--slide-font-body-lg);
+  line-height: var(--slide-leading-body-lg);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-regular);
+  max-width: 760px;
+  margin: 0;
+}
+/* CTA group sits 24px below the headline; 24px between buttons. */
+.case-study:not(.edit-mode) .slide-end .end-cta-group {
+  gap: 24px;
+  margin-top: 24px;
+}
+/* Pill buttons — Tag 18px Medium, roomy padding, larger icon gap. */
+.case-study:not(.edit-mode) .slide-end .animated-btn {
+  padding: 18px 36px;
+  font-size: var(--slide-font-tag);
+  line-height: var(--slide-leading-tag);
+  font-weight: var(--slide-weight-medium);
+}
+.case-study:not(.edit-mode) .slide-end .animated-btn .btn-inner {
+  gap: 12px;
+}
+/* Contact row — Body 24px, larger icons, more breathing room.
+   Cap the row width and center it so the equal columns sit close together
+   instead of spreading across the full artboard. */
+.case-study:not(.edit-mode) .slide-end .end-contact-info {
+  margin-top: 260px;
+  width: 100%;
+  max-width: 1100px;
+  justify-content: center;
+  gap: 64px;
+}
+.case-study:not(.edit-mode) .slide-end .end-contact-item {
+  /* Natural width, centered with a fixed gap — moderate spread, capped
+     so they don't push to the artboard edges. */
+  flex: 0 0 auto;
+  gap: 12px;
+  font-size: var(--slide-font-body);
+  line-height: var(--slide-leading-body);
+  letter-spacing: var(--slide-tracking-body);
+}
+.case-study:not(.edit-mode) .slide-end .end-contact-item svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* ═══ Process slide — Figma 1117:3526 (view/canvas mode) ═══
+   Header top-left (Subtitle 56) → flat 4-column row: each column is just a
+   Subheading title (36 dark) + Body description (24 muted). No number badge,
+   no card border/fill, no hover lift. */
+.case-study:not(.edit-mode) .slide-process .slide-inner {
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0;
+}
+.case-study:not(.edit-mode) .slide-process .process-title {
+  text-align: left;
+  margin: 0;
+}
+/* Optional subtitle — Body Large muted, tight under the title. */
+.case-study:not(.edit-mode) .slide-process .slide-inner > .optional-field-wrapper:has(.process-subtitle) {
+  margin-top: 16px;
+}
+.case-study:not(.edit-mode) .slide-process .process-subtitle {
+  font-size: var(--slide-font-body-lg);
+  line-height: var(--slide-leading-body-lg);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-regular);
+  color: var(--color-text-muted);
+  margin: 0;
+  max-width: 1100px;
+}
+.case-study:not(.edit-mode) .slide-process .slide-inner > .process-steps {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.case-study:not(.edit-mode) .slide-process .process-steps {
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 40px !important;
+  align-content: start;
+  width: 100%;
+  position: relative;
+}
+/* Connector line links the numbered markers into an ordered sequence —
+   only drawn when steps actually carry numbers (showNumbers !== false). */
+.case-study:not(.edit-mode) .slide-process .process-steps:has(.step-number)::before {
+  content: '';
+  position: absolute;
+  top: 28px;
+  left: 28px;
+  right: 28px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-border));
+  z-index: 0;
+}
+.case-study:not(.edit-mode) .slide-process .process-step {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+}
+.case-study:not(.edit-mode) .slide-process .process-step:hover {
+  transform: none;
+  border-color: transparent;
+}
+/* Numbered accent disc marker — sits on the connector line as a "bead",
+   matching the tools-slide circle language. Number uses Utility/Number. */
+.case-study:not(.edit-mode) .slide-process .step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: var(--slide-font-number);
+  line-height: var(--slide-leading-number);
+  letter-spacing: var(--slide-tracking-number);
+  font-weight: var(--slide-weight-medium);
+  margin: 0 0 24px;
+}
+.case-study:not(.edit-mode) .slide-process .process-step:hover .step-number {
+  transform: none;
+}
+.case-study:not(.edit-mode) .slide-process .step-title {
+  color: var(--color-text);
+  margin: 0 0 12px;
+}
+.case-study:not(.edit-mode) .slide-process .process-step:hover .step-title {
+  color: var(--color-text);
+}
+.case-study:not(.edit-mode) .slide-process .step-description {
+  color: var(--color-text-muted);
+}
+
+/* ═══ Timeline slide — design-system typography (view/canvas mode) ═══
+   Header top-left → horizontal event row on a connector line. Each event:
+   an accent dot on the line, DATE (Body Medium 28 · accent), TITLE
+   (Subheading 36 · dark, via the h3 override), DESCRIPTION (Body 24 · muted).
+   Flat editorial layout — the old bordered event card is dropped so the
+   type carries the hierarchy. Fixes the tiny --text-caption date. */
+.case-study:not(.edit-mode) .slide-timeline .slide-inner {
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0;
+}
+.case-study:not(.edit-mode) .slide-timeline .timeline-title {
+  text-align: left;
+  margin: 0;
+}
+/* Optional subtitle — Body Large muted, tight under the title. */
+.case-study:not(.edit-mode) .slide-timeline .slide-inner > .optional-field-wrapper:has(.timeline-subtitle) {
+  margin-top: 16px;
+}
+.case-study:not(.edit-mode) .slide-timeline .timeline-subtitle {
+  font-size: var(--slide-font-body-lg);
+  line-height: var(--slide-leading-body-lg);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-regular);
+  color: var(--color-text-muted);
+  margin: 0;
+  max-width: 1100px;
+}
+.case-study:not(.edit-mode) .slide-timeline .slide-inner > .timeline-events {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.case-study:not(.edit-mode) .slide-timeline .slide-inner > .optional-field-wrapper:has(.timeline-highlight) {
+  margin-top: 40px;
+}
+.case-study:not(.edit-mode) .slide-timeline .timeline-events {
+  gap: 40px;
+  width: 100%;
+  align-items: stretch;
+}
+.case-study:not(.edit-mode) .slide-timeline .timeline-events::before {
+  left: 10px;
+  right: 0;
+  top: 19px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-border));
+}
+.case-study:not(.edit-mode) .slide-timeline .timeline-event {
+  padding: 56px 40px 0 0;
+  gap: 0;
+}
+.case-study:not(.edit-mode) .slide-timeline .timeline-event::before {
+  top: 10px;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-accent) 14%, transparent);
+}
+.case-study:not(.edit-mode) .slide-timeline .event-date {
+  font-size: var(--slide-font-body-md);
+  line-height: var(--slide-leading-body-md);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-medium);
+  color: var(--color-accent);
+  margin: 0 0 12px;
+}
+.case-study:not(.edit-mode) .slide-timeline .event-content {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+.case-study:not(.edit-mode) .slide-timeline .timeline-event:hover .event-content {
+  border-color: transparent;
+}
+.case-study:not(.edit-mode) .slide-timeline .event-content h3 {
+  color: var(--color-text);
+  margin: 0 0 12px;
+}
+.case-study:not(.edit-mode) .slide-timeline .event-content p {
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ═══ Tools slide — Figma 1121:3526 (view/canvas mode) ═══
+   Eyebrow label → title (Subtitle 56) → 3×2 card grid (20px gutters). Each
+   card: soft accent wash, 12px radius, 36px pad, solid accent circle on top,
+   title (Subheading 36) → description (Body 24 muted). No border, no lift. */
+.case-study:not(.edit-mode) .slide-tools .slide-inner {
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0;
+}
+.case-study:not(.edit-mode) .slide-tools .tools-title {
+  text-align: left;
+  margin: 0;
+}
+.case-study:not(.edit-mode) .slide-tools .slide-inner > .tools-grid {
+  margin-top: 48px;
+}
+.case-study:not(.edit-mode) .slide-tools .tools-grid {
+  grid-template-columns: repeat(3, 1fr) !important;
+  grid-auto-rows: 1fr;
+  gap: 20px !important;
+  width: 100%;
+  flex: 1;
+  align-content: center;
+}
+.case-study:not(.edit-mode) .slide-tools .tool-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: color-mix(in srgb, var(--color-accent) 6%, var(--color-bg));
+  border: none;
+  border-radius: 12px;
+  padding: 36px;
+  height: 100%;
+}
+.case-study:not(.edit-mode) .slide-tools .tool-item:hover {
+  transform: none;
+  border-color: transparent;
+}
+/* Solid accent circle marker at the top of each card. */
+.case-study:not(.edit-mode) .slide-tools .tool-item::before {
+  content: '';
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  flex-shrink: 0;
+  margin-bottom: 8px;
+}
+.case-study:not(.edit-mode) .slide-tools .tool-item h3 {
+  color: var(--color-text);
+  margin: 0;
+}
+.case-study:not(.edit-mode) .slide-tools .tool-item p {
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ═══ Reflection slide — Figma 1126:3544 (view/canvas mode) ═══
+   Title (Subtitle 56) → 3 cards (20px gutters), each: soft accent wash, 12px
+   radius, 36px pad. Inside: an icon (✓ accent / ✕ muted / → accent) above a
+   Subheading 36 dark heading, then an accent-dot bullet list (Body 24 muted). */
+.case-study:not(.edit-mode) .slide-reflection .slide-inner {
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0;
+}
+.case-study:not(.edit-mode) .slide-reflection .reflection-title {
+  text-align: left;
+  margin: 0;
+}
+/* Optional subtitle: Body Large muted, tight under the title. */
+.case-study:not(.edit-mode) .slide-reflection .slide-inner > .reflection-subtitle-wrapper {
+  margin-top: 16px;
+}
+.case-study:not(.edit-mode) .slide-reflection .reflection-subtitle {
+  font-size: var(--slide-font-body-lg);
+  line-height: var(--slide-leading-body-lg);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-regular);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+.case-study:not(.edit-mode) .slide-reflection .slide-inner > .reflection-grid {
+  margin-top: 64px;
+}
+.case-study:not(.edit-mode) .slide-reflection .reflection-grid {
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 0;
+  /* Fill the space below the title and center the cards vertically in it. */
+  flex: 1;
+  min-height: 0;
+  align-content: center;
+}
+.case-study:not(.edit-mode) .slide-reflection .reflection-col {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  padding: 36px;
+}
+.case-study:not(.edit-mode) .slide-reflection .reflection-col h3 {
+  font-size: var(--slide-font-h3);
+  line-height: var(--slide-leading-subhead);
+  letter-spacing: var(--slide-tracking-subhead);
+  font-weight: var(--slide-weight-medium);
+  color: var(--color-text);
+  text-transform: none;
+  border-bottom: none;
+  padding: 0;
+  margin: 0 0 24px;
+}
+.case-study:not(.edit-mode) .slide-reflection .reflection-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.case-study:not(.edit-mode) .slide-reflection .reflection-col li {
+  position: relative;
+  padding-left: 24px;
+  color: var(--color-text-muted);
+}
+.case-study:not(.edit-mode) .slide-reflection .reflection-col li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0.6em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+/* Optional per-card description — Body 24 muted, sits between the heading
+   and the bullets. */
+.case-study:not(.edit-mode) .slide-reflection .reflection-col-desc {
+  font-size: var(--slide-font-body);
+  line-height: var(--slide-leading-body);
+  letter-spacing: var(--slide-tracking-body);
+  color: var(--color-text-muted);
+  margin: 0;
+  padding-right: 0;
+}
+.case-study:not(.edit-mode) .slide-reflection .reflection-col > .optional-field-wrapper {
+  margin: 0 0 16px;
+}
+
+/* ═══ Before / After slide — Figma 1126:3526 ═══
+   Static two-column layout: title spans the top, then Before + After columns
+   side by side. Each column: label → image → description. Replaces the old
+   switcher/toggle. Base (mode-agnostic) layout here; view-mode refines below. */
+.ba-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  width: 100%;
+}
+.ba-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.ba-col-label {
+  font-size: var(--text-caption);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+}
+.ba-col-after .ba-col-label {
+  color: var(--color-accent);
+}
+.ba-col-desc {
+  font-size: var(--text-body-sm);
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+@media (max-width: 1023px) {
+  .ba-columns {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+/* View/canvas mode — title top-left, two equal columns fill the artboard. */
+.case-study:not(.edit-mode) .slide-before-after .slide-inner {
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0;
+}
+.case-study:not(.edit-mode) .slide-before-after .ba-title {
+  text-align: left;
+  margin: 0;
+}
+.case-study:not(.edit-mode) .slide-before-after .slide-inner > .ba-columns {
+  margin-top: 40px;
+}
+.case-study:not(.edit-mode) .slide-before-after .slide-inner > .comparison-description-wrapper {
+  margin-top: 24px;
+}
+.case-study:not(.edit-mode) .slide-before-after .ba-columns {
+  gap: 48px;
+  flex: 1;
+  min-height: 0;
+  align-content: stretch;
+}
+.case-study:not(.edit-mode) .slide-before-after .ba-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 100%;
+  min-height: 0;
+  position: relative;
+}
+/* Label — overlaid badge inside the image, top-left. Refactoring-UI:
+   emphasis through contrast. The BEFORE badge is a quiet glass chip (muted
+   text, hairline border) so the problem state recedes; the AFTER badge is a
+   solid accent pill with a soft glow so the win advances. */
+.case-study:not(.edit-mode) .slide-before-after .ba-col-label {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 2;
+  margin: 0;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--slide-font-tag);
+  line-height: var(--slide-leading-tag);
+  letter-spacing: var(--slide-tracking-normal);
+  font-weight: var(--slide-weight-medium);
+  text-transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.case-study:not(.edit-mode) .slide-before-after .ba-col-after .ba-col-label {
+  background: var(--color-accent);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 35%, transparent);
+}
+/* Image fills the rest of the column regardless of description length.
+   The image area takes the leftover space via flex-basis 0 (flex: 1 1 0) —
+   NOT a rigid height: 100% on the outer block, which would force it to the
+   full column height and then let flexbox shrink it in proportion to the
+   description's length (so a shorter description shrank the image). With
+   basis 0 it simply fills whatever space remains below the description. The
+   inner chain keeps height: 100% so the actual image fills that flex box. */
+.case-study:not(.edit-mode) .slide-before-after .ba-col-images {
+  width: 100%;
+  min-height: 0;
+  flex: 1 1 0;
+}
+.case-study:not(.edit-mode) .slide-before-after .ba-col-images .dynamic-images,
+.case-study:not(.edit-mode) .slide-before-after .ba-col-images .dynamic-images-grid,
+.case-study:not(.edit-mode) .slide-before-after .ba-col-images .dynamic-image-item,
+.case-study:not(.edit-mode) .slide-before-after .ba-col-images .dynamic-image-wrapper {
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+/* Description / bullets are intrinsic-height and never shrink — the image
+   area owns all the leftover vertical space. */
+.case-study:not(.edit-mode) .slide-before-after .ba-col > .optional-field-wrapper,
+.case-study:not(.edit-mode) .slide-before-after .ba-col > .comparison-side-bullets {
+  flex: 0 0 auto;
+}
+/* Both image frames share the same neutral surface; only the overlaid label
+   chips differentiate Before (glass) from After (accent). */
+.case-study:not(.edit-mode) .slide-before-after .ba-col-images .dynamic-image-wrapper {
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+}
+/* Empty image slots render a placeholder box. In view mode, hide each empty
+   cell so a real image + extra empty slots shows just the image; and hide the
+   whole image block only when the column has no real media at all (so a
+   bullets-only column doesn't show an empty framed rectangle). */
+.case-study:not(.edit-mode) .slide-before-after .ba-col-images .dynamic-image-item:has(.image-placeholder) {
+  display: none;
+}
+.case-study:not(.edit-mode) .slide-before-after .ba-col-images:not(:has(img, iframe, video)) {
+  display: none;
+}
+/* Description wrapper — sits below the image with a clear gap. */
+.case-study:not(.edit-mode) .slide-before-after .ba-col > .optional-field-wrapper {
+  margin-top: 24px;
+}
+/* Divider + bottom breathing room only when bullets follow below. With no
+   bullets the bullets element isn't rendered in view mode, so :has() drops
+   the divider and the extra padding. */
+.case-study:not(.edit-mode) .slide-before-after .ba-col > .optional-field-wrapper:has(+ .comparison-side-bullets) {
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+/* Description — Body 24 muted, sits below the image. */
+.case-study:not(.edit-mode) .slide-before-after .ba-col-desc {
+  font-size: var(--slide-font-body);
+  line-height: var(--slide-leading-body);
+  letter-spacing: var(--slide-tracking-body);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+/* Bullets sit below the divider with matching breathing room. */
+.case-study:not(.edit-mode) .slide-before-after .ba-col > .comparison-side-bullets {
+  margin-top: 40px;
+}
+/* Clear, larger gap between the two columns and the highlight below them. */
+.case-study:not(.edit-mode) .slide-before-after .slide-inner > .optional-field-wrapper:has(.problem-highlight) {
+  margin-top: 48px;
+}
+/* Equalize the Before and After columns so the image frames line up no matter
+   which side has the longer description or more bullets. Same subgrid technique
+   as the Ideation/directions slide: the columns grid gets three row tracks —
+   image (1fr), description (auto), bullets (auto) — and each column is a subgrid
+   spanning all three, so a taller description/bullet list grows that row for BOTH
+   columns at once instead of shrinking just its own image. */
+.case-study:not(.edit-mode) .slide-before-after .ba-columns {
+  grid-template-rows: 1fr auto auto;
+  row-gap: 0;
+}
+.case-study:not(.edit-mode) .slide-before-after .ba-col {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 3;
+  height: auto;
+}
+.case-study:not(.edit-mode) .slide-before-after .ba-col > .ba-col-images {
+  flex: none;
+  height: 100%;
+  min-height: 0;
+}
+
+/* ═══ Ideation Directions slide ═══
+   Reuses the Before/After column layout (.slide-before-after + .ba-* classes)
+   but renders up to three "direction" columns, each with an Accepted / Rejected
+   status chip overlaid on the image. Accepted = solid accent pill (the win);
+   Rejected = the quiet glass chip (recedes), matching the Before/After language. */
+
+/* Direction chip — base/edit-mode styling (pill). The view-mode overlay
+   styling is inherited from the .ba-col-label rules above. */
+.dir-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-muted);
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+  cursor: default;
+}
+button.dir-chip {
+  cursor: pointer;
+  transition: filter 0.15s ease, border-color 0.15s ease;
+}
+button.dir-chip:hover {
+  border-color: var(--color-accent);
+}
+/* Accepted = accent fill; Rejected keeps the quiet neutral chip. */
+.dir-col--accepted .dir-chip {
+  background: var(--color-accent);
+  color: #fff;
+  border-color: transparent;
+}
+
+/* Edit-mode count control (2 / 3 directions). */
+.dir-count-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.dir-count-label {
+  font-size: var(--text-caption);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+.dir-count-btn {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm, 6px);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.dir-count-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.dir-count-btn.active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+/* View/canvas mode: three equal columns; drop to two when only two render. */
+.case-study:not(.edit-mode) .slide-directions .ba-columns {
+  grid-template-columns: repeat(3, 1fr);
+}
+.case-study:not(.edit-mode) .slide-directions .ba-columns:has(> .dir-col:nth-child(2):last-child) {
+  grid-template-columns: repeat(2, 1fr);
+}
+/* Equalize image heights across all direction columns regardless of how
+   long each description is. The columns grid gets two explicit row tracks —
+   image (1fr) and description (auto). Each column is a subgrid spanning both
+   tracks, so every image shares the SAME 1fr row height and every description
+   shares the SAME auto row height: a longer description grows the description
+   track for ALL columns at once instead of shrinking just its own image.
+   (Replaces the per-column flex sizing, which let each column's image shrink
+   independently when its description was taller.) */
+.case-study:not(.edit-mode) .slide-directions .ba-columns {
+  grid-template-rows: 1fr auto;
+  column-gap: 48px;
+  row-gap: 0;
+  align-content: stretch;
+}
+.case-study:not(.edit-mode) .slide-directions .dir-col {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 2;
+  gap: 0;
+  height: auto;
+}
+/* Image fills the 1fr row. The visible gap to the description is owned by the
+   description's own margin-top below (NOT the grid row-gap) so it shows
+   reliably even where subgrid row-gap behaves oddly. */
+.case-study:not(.edit-mode) .slide-directions .dir-col > .ba-col-images {
+  flex: none;
+  height: 100%;
+  min-height: 0;
+}
+/* Clear, explicit gap between the image and the description. */
+.case-study:not(.edit-mode) .slide-directions .dir-col > .optional-field-wrapper {
+  margin-top: 28px !important;
+}
+/* Accepted chip — solid accent pill with a soft glow (the win advances),
+   matching the Before/After "after" badge. Rejected stays the glass chip. */
+.case-study:not(.edit-mode) .slide-directions .dir-col--accepted .ba-col-label {
+  background: var(--color-accent);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 35%, transparent);
+}
+
+/* Token-based canvas typography layer governs view-mode sizes:
+   display=96px, header/h1=56px, h2=40px, h3=28px, body=24px,
+   body-lg=28px, caption=20px, meta=16px. */
 
 /* When the JS scaler engages, lift the height cap so .slide-inner can take
    its natural unscaled height; the parent .slide (overflow: hidden in view
@@ -460,10 +2305,21 @@ body.case-study-active .footer {
   height: auto;
 }
 
-/* In view mode the scaler removes the need for inner scrolling. Edit mode
-   keeps `overflow: visible !important` (set later in the edit-mode block). */
+/* Figma-canvas mode: .slide is the visible deck row (100% × 100dvh);
+   the 1920×1080 .slide-inner artboard is absolutely positioned at the
+   center of the safe area (between case-nav top overlay and
+   slide-nav-pill bottom overlay) and scaled by --slide-canvas-scale.
+   Absolute positioning sidesteps multi-layer flex centering pitfalls
+   (slideControls/titleSpacingControl siblings, deck-row flex axis). */
 .case-study:not(.edit-mode) .slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100dvh;
+  position: relative;
   overflow: hidden;
+  --slide-canvas-scale: 1;
+  --slide-safe-top: 56px;
+  --slide-safe-bottom: 64px;
 }
 
 /* Non-split slides: centered both ways with consistent gap */
@@ -638,7 +2494,7 @@ body.case-study-active .footer {
 .slide-intro .intro-logo-subtitle-group .intro-logo { animation: none; }
 .slide-intro .intro-description { animation: intro-rise 0.55s ease-out both; animation-delay: 0.52s; }
 .slide-intro .intro-meta-row    { animation: intro-rise 0.55s ease-out both; animation-delay: 0.62s; }
-.slide-intro .intro-images-wrapper { animation: intro-scale-reveal 0.85s ease-out both; animation-delay: 0.1s; }
+.slide-intro .intro-media-panel { animation: intro-scale-reveal 0.85s ease-out both; animation-delay: 0.1s; }
 
 /* Disable in edit mode */
 .case-study.edit-mode .slide-intro .intro-label,
@@ -1525,7 +3381,6 @@ body.case-study-active .footer {
 .tools-highlight,
 .cs-highlight,
 .showcase-highlight,
-.project-showcase-highlight,
 .goals-showcase-highlight {
   font-size: var(--text-body-sm);
   color: var(--color-text-muted);
@@ -1686,10 +3541,12 @@ body.case-study-active .footer {
   width: 100%;
 }
 
-/* View-mode: same rationale as stats/issues — JSX inline grid uses fixed
-   column count from `slide.gridColumns`. Reflow at view time. */
+/* View-mode: Figma 1170:3526 — 3 cards per row, 20px gutters; extra cards
+   wrap to the next row. Forced over the JSX inline gridColumns so the grid
+   always matches the Figma 3-up layout. */
 .case-study:not(.edit-mode) .quotes-grid {
-  grid-template-columns: repeat(auto-fit, minmax(var(--card-min, 220px), 1fr)) !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 20px;
 }
 
 .slide-quotes .quotes-bullets {
@@ -1742,6 +3599,63 @@ body.case-study-active .footer {
   border-radius: 100px;
   width: fit-content;
   align-self: flex-end;
+}
+
+/* Quote card internals — quote mark, divider, attribution row (avatar +
+   name/role). Figma 1170:3526. Mode-agnostic structure; canvas-mode layer
+   handles the precise type sizes. */
+.quote-mark {
+  font-family: var(--font-body);
+  font-weight: 700;
+  color: var(--color-accent);
+  line-height: 0.8;
+  font-size: 2.5rem;
+  align-self: flex-start;
+}
+.quote-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--color-border);
+  flex-shrink: 0;
+}
+.quote-attribution {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+.quote-avatar {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-accent) 8%, var(--color-bg));
+  color: var(--color-accent);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 1rem;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.quote-author-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  text-align: left;
+}
+.quote-author-name {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  font-weight: 500;
+}
+.quote-author-role {
+  font-family: var(--font-body);
+  color: var(--color-text-muted);
+  font-weight: 400;
 }
 
 /* Goals Slide */
@@ -2179,10 +4093,8 @@ body.case-study-active .footer {
   align-content: start;
 }
 
-/* View-mode: override JSX inline `repeat(${gridColumns||2}, 1fr)`. */
-.case-study:not(.edit-mode) .outcomes-grid {
-  grid-template-columns: repeat(auto-fit, minmax(var(--outcome-min, 240px), 1fr)) !important;
-}
+/* View-mode: respect the JSX inline `repeat(${gridColumns||2}, 1fr)` so the grid
+   control works. (Previously forced auto-fit with !important, which ignored it.) */
 
 .outcome-item {
   display: flex;
@@ -2539,6 +4451,45 @@ body.case-study-active .footer {
   font-variant-numeric: tabular-nums;
 }
 
+.slide-nav-pill-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: 0;
+  padding: 0 0.55rem;
+  height: 100%;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: var(--fw-medium);
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.slide-nav-pill-hint:hover {
+  color: var(--color-text);
+}
+
+.slide-nav-pill-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: var(--fw-medium);
+  line-height: 1;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+
 @media (max-width: 1023px) {
   .slide-nav-pill {
     min-width: 88px;
@@ -2578,6 +4529,14 @@ body.case-study-active .footer {
   .slide-nav-pill-counter {
     font-size: 0.78rem;
     padding: 0 0.45rem;
+  }
+
+  .slide-nav-pill-hint-text {
+    display: none;
+  }
+
+  .slide-nav-pill-hint {
+    padding: 0 0.5rem;
   }
 }
 
@@ -2937,7 +4896,7 @@ body.case-study-active .footer {
 
 .twi-bullet-actions .remove-field-inline-btn:hover {
   opacity: 1;
-  color: #e53935;
+  color: var(--color-error);
 }
 
 .twi-add-field {
@@ -3947,7 +5906,6 @@ body.case-study-active .footer {
 .img-fit-contain .showcase-image-wrapper,
 .img-fit-contain .mosaic-tile,
 .img-fit-contain .mosaic-source-item,
-.img-fit-contain .project-showcase-image-wrapper,
 .img-fit-contain .goals-showcase-image-wrapper {
   background: transparent;
   border-radius: 0;
@@ -3967,7 +5925,6 @@ body.case-study-active .footer {
 .img-fit-contain .showcase-image-wrapper img,
 .img-fit-contain .mosaic-tile img,
 .img-fit-contain .mosaic-source-item img,
-.img-fit-contain .project-showcase-image-wrapper img,
 .img-fit-contain .goals-showcase-image-wrapper img {
   position: relative;
   width: auto;
@@ -4184,6 +6141,51 @@ body.case-study-active .footer {
   flex: 0 0 auto;
 }
 
+/* ═══ Comparison Before/After pills — scaled up for the 1920 canvas ═══
+   The base pills are sized in rem for the fluid editor; in view mode they
+   read tiny against the 56px title / 32px body. Bump them to the Tag token
+   (18px Medium) with generous padding so the toggle reads as a real control
+   sitting alongside the problem-style text column. */
+.case-study:not(.edit-mode) .slide-inner .comparison-switcher {
+  padding: 4px;
+  gap: 0;
+  border-radius: 999px;
+}
+.case-study:not(.edit-mode) .slide-inner .comparison-tab {
+  padding: 8px 22px;
+  border-radius: 999px;
+  font-size: var(--slide-font-meta);
+  line-height: var(--slide-leading-tag);
+  letter-spacing: var(--slide-tracking-label);
+  font-weight: var(--slide-weight-medium);
+}
+/* Flat (underline) variant. */
+.case-study:not(.edit-mode) .slide-inner .comparison-tab-flat {
+  padding: 8px 20px;
+  font-size: var(--slide-font-meta);
+  line-height: var(--slide-leading-tag);
+  letter-spacing: var(--slide-tracking-normal);
+  font-weight: var(--slide-weight-medium);
+}
+
+/* Match the problem slide's rhythm exactly: the description sits right
+   under the title (32px via the :is() title rule) and every following
+   block is 40px apart. Zero the legacy margin-bottom on these wrappers so
+   they don't stack extra space onto the block-rhythm margin-top (flex
+   columns don't collapse margins). The .comparison-panel's own 0.75rem
+   internal gap (description → bullets) is kept. */
+.case-study:not(.edit-mode) .slide-comparison-unified .comparison-description-wrapper,
+.case-study:not(.edit-mode) .slide-comparison-unified .comparison-panel {
+  margin-bottom: 0;
+}
+
+/* The switcher drives the panel directly below it, so pull the panel up
+   tight (16px) instead of the 40px block rhythm. */
+.case-study:not(.edit-mode) .slide-comparison-unified .split-content > .comparison-switcher + .comparison-panel,
+.case-study:not(.edit-mode) .slide-comparison-unified .split-content > .comparison-switcher-flat + .comparison-panel {
+  margin-top: 16px !important;
+}
+
 /* View-mode: pin the dynamic-image chain to a definite height so the image
    div always fills the rest of the slide-inner column (split layouts and
    the intro hero column alike). Without explicit height: 100% on each
@@ -4249,6 +6251,153 @@ body.case-study-active .footer {
   max-height: 100% !important;
   min-height: 0 !important;
   margin: 0 !important;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   Intro redesign (view/canvas mode only): circular logo chip, a
+   divider-line meta table, and a phone device frame on a tinted panel.
+   Scoped to :not(.edit-mode) so the edit surface keeps its plain layout
+   and image-editing affordances. Built on the slide design tokens.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── Circular logo chip (top of the left column) ── */
+.case-study:not(.edit-mode) .slide-intro .intro-logo-chip {
+  display: flex;
+  margin: 0;
+}
+.case-study:not(.edit-mode) .slide-intro .intro-logo-chip .intro-logo-img {
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+  background: var(--color-bg-secondary);
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 24px;
+  box-sizing: border-box;
+}
+.case-study:not(.edit-mode) .slide-intro .intro-logo-chip .intro-logo-img img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ── Meta table: muted label (left) + dark value (right), divider per row ── */
+.case-study:not(.edit-mode) .slide-inner .intro-meta-row {
+  display: flex;
+  flex-direction: column;
+  grid-template-columns: none;
+  gap: 0;
+  row-gap: 0;
+  margin-top: 48px;
+  padding-top: 0;
+  border-top: none;
+}
+/* Figma: 220px label column, value fills the rest, rows vertically
+   centered with 24px vertical padding and a 1px divider under every row. */
+.case-study:not(.edit-mode) .slide-intro .intro-meta-item {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  align-items: center;
+  gap: 0;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.case-study:not(.edit-mode) .slide-intro .intro-meta-item::after { content: none; }
+.case-study:not(.edit-mode) .slide-intro .intro-meta-item + .intro-meta-item { padding-left: 0; }
+
+/* Meta Label  28px Regular  lh 1.30  ls -0.005em  (muted) */
+.case-study:not(.edit-mode) .slide-inner .intro-meta-label {
+  color: var(--color-text-muted);
+  font-size: var(--slide-font-meta-label);
+  line-height: var(--slide-leading-meta);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-regular);
+}
+/* Meta Value  28px Medium  lh 1.30  ls -0.005em  (text) */
+.case-study:not(.edit-mode) .slide-inner .intro-meta-value {
+  color: var(--color-text);
+  font-size: var(--slide-font-meta-value);
+  line-height: var(--slide-leading-meta);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-medium);
+}
+
+/* ── Right column: tinted panel ── */
+.case-study:not(.edit-mode) .slide-intro .intro-media-panel {
+  /* Full-bleed to the TRUE slide edges (top/right/bottom). The 1920×1080
+     artboard is letterboxed inside the safe area (56px nav top + 64px pill
+     bottom) and scaled by --slide-canvas-scale, so to reach the real slide
+     edges the panel must extend past the artboard by:
+       • 128px to undo the slide-inner artboard padding, plus
+       • each safe-area inset ÷ the canvas scale (so it lands exactly on the
+         real edge after the artboard's scale transform).
+     The nav-pill (position:absolute, z-index 51) floats above the artboard,
+     so it never clips or reserves space against the panel. Left edge stays
+     at the grid column boundary so the left content keeps its inset. */
+  height: calc(100% + 256px + (var(--slide-safe-top, 56px) + var(--slide-safe-bottom, 64px)) / var(--slide-canvas-scale, 1));
+  width: auto;
+  min-height: 0;
+  margin-top: calc(-128px - var(--slide-safe-top, 56px) / var(--slide-canvas-scale, 1));
+  margin-right: -128px;
+  margin-bottom: 0;
+  margin-left: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 64px;
+  box-sizing: border-box;
+  /* Figma right panel = warm accent tint (#fff5f4). color-mix keeps it
+     theme-safe (light: soft pink wash; dark: subtle warm panel). */
+  background: color-mix(in srgb, var(--color-accent) 6%, var(--color-bg));
+  border-radius: 0;
+  overflow: visible;
+}
+/* Paint the panel background across the horizontal letterbox gap (the deck is
+   slightly wider than 16:9, so the scaled artboard's right edge stops short of
+   the true slide edge). This strip extends past the artboard and is clipped by
+   .slide's overflow:hidden at the real edge — the phone keeps its centering
+   because the panel's own content box is unchanged. */
+.case-study:not(.edit-mode) .slide-intro .intro-media-panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100%;
+  width: 100vw;
+  background: color-mix(in srgb, var(--color-accent) 6%, var(--color-bg));
+  pointer-events: none;
+}
+
+/* ── Image fills the tinted panel directly (device frame removed) ── */
+.case-study:not(.edit-mode) .slide-intro .intro-media-panel > .intro-images-wrapper {
+  position: relative;
+  flex: 1;
+  align-self: stretch;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border-radius: 24px;
+  overflow: hidden;
+}
+.case-study:not(.edit-mode) .slide-intro .intro-media-panel .intro-images-wrapper .dynamic-image-wrapper {
+  border-radius: 24px !important;
+}
+/* Default (Fill) — cover. Scoped to :not(.img-fit-contain) so the per-image
+   "Fit" toggle (.img-fit-contain → contain) is honoured and not overridden. */
+.case-study:not(.edit-mode) .slide-intro .intro-media-panel .intro-images-wrapper .dynamic-image-item:not(.img-fit-contain) img,
+.case-study:not(.edit-mode) .slide-intro .intro-media-panel .intro-images-wrapper .dynamic-image-item:not(.img-fit-contain) video {
+  object-fit: cover !important;
+  border-radius: 24px;
+}
+/* Fit mode — contain. Let the image fit fully inside the panel. */
+.case-study:not(.edit-mode) .slide-intro .intro-media-panel .intro-images-wrapper .dynamic-image-item.img-fit-contain .dynamic-image-wrapper img,
+.case-study:not(.edit-mode) .slide-intro .intro-media-panel .intro-images-wrapper .dynamic-image-item.img-fit-contain .dynamic-image-wrapper video {
+  object-fit: contain !important;
+  border-radius: 24px;
 }
 
 /* ========== SPLIT RATIO CONTROL ========== */
@@ -4332,6 +6481,36 @@ body.case-study-active .footer {
   padding: 0.85rem 1.5rem;
   z-index: 20;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  cursor: grab;
+}
+.split-ratio-control:active {
+  cursor: grabbing;
+}
+.split-ratio-control.is-dragged {
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+}
+
+/* Drag grip — visual affordance that the panel is movable */
+.ratio-drag-grip {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding: 2px 4px;
+  margin-right: -0.25rem;
+  cursor: grab;
+  flex-shrink: 0;
+}
+.ratio-drag-grip span {
+  display: block;
+  width: 14px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-text-muted);
+  opacity: 0.5;
+}
+.ratio-drag-grip:hover span {
+  opacity: 0.85;
 }
 
 .ratio-label {
@@ -4595,24 +6774,24 @@ body.case-study-active .footer {
     max-height: 30vh !important;
   }
 
-  .intro-title {
+  .case-study.edit-mode .intro-title {
     font-size: clamp(1.75rem, 7vw, 2.5rem) !important;
   }
 
-  .context-title,
-  .problem-title,
-  .feature-title,
-  .testing-title,
-  .image-title {
+  .case-study.edit-mode .context-title,
+  .case-study.edit-mode .problem-title,
+  .case-study.edit-mode .feature-title,
+  .case-study.edit-mode .testing-title,
+  .case-study.edit-mode .image-title {
     font-size: clamp(1.2rem, 5vw, 1.6rem) !important;
     margin-bottom: 0.25rem !important;
   }
 
   /* Tighter text in split slides */
-  .problem-text,
-  .context-text,
-  .feature-text,
-  .testing-text {
+  .case-study.edit-mode .problem-text,
+  .case-study.edit-mode .context-text,
+  .case-study.edit-mode .feature-text,
+  .case-study.edit-mode .testing-text {
     font-size: 0.85rem !important;
     line-height: 1.5 !important;
     margin-bottom: 0.25rem !important;
@@ -4624,16 +6803,16 @@ body.case-study-active .footer {
     margin-bottom: 0.5rem !important;
   }
 
-  .problem-issues li,
-  .context-issues li {
+  .case-study.edit-mode .problem-issues li,
+  .case-study.edit-mode .context-issues li {
     font-size: 0.8rem !important;
     line-height: 1.4 !important;
     padding-left: 1rem !important;
   }
 
-  .problem-conclusion,
-  .context-highlight,
-  .problem-highlight {
+  .case-study.edit-mode .problem-conclusion,
+  .case-study.edit-mode .context-highlight,
+  .case-study.edit-mode .problem-highlight {
     font-size: 0.8rem !important;
     padding: 0.6rem 0.75rem !important;
     margin-top: 0.5rem !important;
@@ -4729,7 +6908,7 @@ body.case-study-active .footer {
 
 /* --- 2560px+ — Ultra-wide --- */
 @media (min-width: 2560px) {
-  .slide-label {
+  .case-study.edit-mode .slide-label {
     font-size: 0.85rem;
     margin-bottom: 1rem;
   }
@@ -4889,7 +7068,7 @@ body.case-study-active .footer {
     justify-content: flex-start;
   }
 
-  .slide-label {
+  .case-study.edit-mode .slide-label {
     font-size: 0.7rem;
     margin-bottom: 0.35rem;
   }
@@ -4916,7 +7095,7 @@ body.case-study-active .footer {
     max-width: 100%;
   }
 
-  .end-title {
+  .case-study.edit-mode .end-title {
     font-size: clamp(1.5rem, 6vw, 2.5rem);
   }
 
@@ -4970,11 +7149,11 @@ body.case-study-active .footer {
   }
 
   /* Testimonial: smaller quote */
-  .testimonial-quote {
+  .case-study.edit-mode .testimonial-quote {
     font-size: var(--text-h4);
   }
 
-  .testimonial-quote::before {
+  .case-study.edit-mode .testimonial-quote::before {
     font-size: 3rem;
     top: -1.5rem;
   }
@@ -4991,7 +7170,7 @@ body.case-study-active .footer {
     text-align: left;
   }
 
-  .intro-title {
+  .case-study.edit-mode .intro-title {
     font-size: clamp(1.5rem, 5vw, 2rem);
   }
 
@@ -5000,15 +7179,15 @@ body.case-study-active .footer {
     gap: 2rem;
   }
 
-  .intro-meta-label {
+  .case-study.edit-mode .intro-meta-label {
     font-size: 0.75rem;
   }
 
-  .intro-meta-value {
+  .case-study.edit-mode .intro-meta-value {
     font-size: 0.875rem;
   }
 
-  .context-highlight {
+  .case-study.edit-mode .context-highlight {
     padding: 0.875rem 1rem;
     font-size: var(--text-body-sm);
   }
@@ -5044,7 +7223,7 @@ body.case-study-active .footer {
     gap: 0.25rem;
   }
 
-  .goals-grid .goal-number {
+  .case-study.edit-mode .goals-grid .goal-number {
     width: 28px;
     height: 28px;
     min-width: 28px;
@@ -5052,11 +7231,11 @@ body.case-study-active .footer {
     font-size: 0.7rem;
   }
 
-  .goal-title-text {
+  .case-study.edit-mode .goal-title-text {
     font-size: 0.8rem !important;
   }
 
-  .goal-description {
+  .case-study.edit-mode .goal-description {
     font-size: 0.75rem !important;
   }
 
@@ -5065,28 +7244,28 @@ body.case-study-active .footer {
     gap: 0.5rem;
   }
 
-  .kpi-card {
+  .case-study.edit-mode .kpi-card {
     padding: 0.6rem 0.75rem;
     font-size: 0.75rem;
   }
 
-  .kpi-card-desc {
+  .case-study.edit-mode .kpi-card-desc {
     font-size: 0.75rem !important;
   }
 
-  .kpis-label {
+  .case-study.edit-mode .kpis-label {
     font-size: 0.75rem;
     padding: 0.2rem 0.5rem;
     margin-bottom: 0.5rem;
   }
 
-  .goals-cards-label {
+  .case-study.edit-mode .goals-cards-label {
     font-size: 0.75rem;
     padding: 0.2rem 0.5rem;
     margin-bottom: 0.5rem;
   }
 
-  .outcome-number {
+  .case-study.edit-mode .outcome-number {
     width: 2rem;
     height: 2rem;
     min-width: 2rem;
@@ -5094,7 +7273,7 @@ body.case-study-active .footer {
     font-size: 0.7rem;
   }
 
-  .step-number {
+  .case-study.edit-mode .step-number {
     width: 2rem;
     height: 2rem;
     min-width: 2rem;
@@ -5106,7 +7285,7 @@ body.case-study-active .footer {
     gap: 0.5rem;
   }
 
-  .slide-goals .goals-title {
+  .case-study.edit-mode .slide-goals .goals-title {
     font-size: clamp(1.1rem, 4.5vw, 1.5rem) !important;
     margin-bottom: 0;
   }
@@ -5125,7 +7304,7 @@ body.case-study-active .footer {
     gap: 0.75rem;
   }
 
-  .image-caption {
+  .case-study.edit-mode .image-caption {
     font-size: 0.75rem;
   }
 
@@ -5166,12 +7345,12 @@ body.case-study-active .footer {
     font-size: 1rem;
   }
 
-  .slide-label {
+  .case-study.edit-mode .slide-label {
     font-size: 0.65rem;
     letter-spacing: 0.12em;
   }
 
-  .intro-subtitle {
+  .case-study.edit-mode .intro-subtitle {
     font-size: 0.875rem;
     margin-bottom: 0.75rem;
   }
@@ -5180,7 +7359,7 @@ body.case-study-active .footer {
     gap: 0.3rem;
   }
 
-  .info-label {
+  .case-study.edit-mode .info-label {
     font-size: 0.75rem;
   }
 
@@ -5237,13 +7416,13 @@ body.case-study-active .footer {
     height: 2.25rem;
   }
 
-  .intro-title {
+  .case-study.edit-mode .intro-title {
     font-size: clamp(1.5rem, 5vh, 2.5rem);
   }
 
-  .info-title,
-  .text-title,
-  .stats-title {
+  .case-study.edit-mode .info-title,
+  .case-study.edit-mode .text-title,
+  .case-study.edit-mode .stats-title {
     font-size: clamp(1.25rem, 4vh, 2rem);
     margin-bottom: 0.75rem;
   }
@@ -5257,7 +7436,7 @@ body.case-study-active .footer {
     gap: 2rem;
   }
 
-  .stat-value {
+  .case-study.edit-mode .stat-value {
     font-size: clamp(1.5rem, 5vh, 3rem);
   }
 
@@ -5269,7 +7448,7 @@ body.case-study-active .footer {
     max-height: 50vh;
   }
 
-  .end-title {
+  .case-study.edit-mode .end-title {
     font-size: clamp(1.5rem, 5vh, 3rem);
   }
 
@@ -5460,7 +7639,6 @@ body.case-study-active .footer {
 .case-study.edit-mode .slide-split,
 .case-study.edit-mode .slide-image-layout,
 .case-study.edit-mode .slide-intro-layout,
-.case-study.edit-mode .project-showcase-layout,
 .case-study.edit-mode .goals-showcase-layout {
   min-height: 0;
   overflow: visible;
@@ -6040,12 +8218,12 @@ body.case-study-active .footer {
 
 .slide-sorter-git-push.git-push-pushed {
   background: rgba(34, 197, 94, 0.25) !important;
-  color: #4ade80 !important;
+  color: var(--color-success) !important;
 }
 
 .slide-sorter-git-push.git-push-error {
   background: rgba(239, 68, 68, 0.25) !important;
-  color: #f87171 !important;
+  color: var(--color-error) !important;
 }
 
 .slide-sorter-save-all {
@@ -6063,12 +8241,12 @@ body.case-study-active .footer {
 
 .slide-sorter-save-all.save-all-saved {
   background: rgba(34, 197, 94, 0.25) !important;
-  color: #4ade80 !important;
+  color: var(--color-success) !important;
 }
 
 .slide-sorter-save-all.save-all-error {
   background: rgba(239, 68, 68, 0.25) !important;
-  color: #f87171 !important;
+  color: var(--color-error) !important;
 }
 
 /* WebP conversion trigger — mirrors save-all styling for a cohesive header. */
@@ -6091,12 +8269,12 @@ body.case-study-active .footer {
 
 .slide-sorter-webp.webp-done {
   background: rgba(34, 197, 94, 0.25) !important;
-  color: #4ade80 !important;
+  color: var(--color-success) !important;
 }
 
 .slide-sorter-webp.webp-error {
   background: rgba(239, 68, 68, 0.25) !important;
-  color: #f87171 !important;
+  color: var(--color-error) !important;
 }
 
 .slide-sorter-track {
@@ -6227,7 +8405,7 @@ body.case-study-active .footer {
 }
 
 .thumb-actions button.thumb-delete:hover {
-  background: #e53935;
+  background: var(--color-error);
   color: #fff;
 }
 
@@ -6951,12 +9129,12 @@ textarea.editable-field {
 }
 
 .slide-edit-controls button.delete {
-  color: #e53935;
+  color: var(--color-error);
 }
 
 .slide-edit-controls button.delete:hover {
-  background: #e53935;
-  border-color: #e53935;
+  background: var(--color-error);
+  border-color: var(--color-error);
   color: white;
 }
 
@@ -7997,66 +10175,6 @@ textarea.editable-field {
   gap: 1rem;
 }
 
-/* Project Showcase Mockup */
-.mockup-project-showcase {
-  display: grid;
-  grid-template-columns: 38% 62%;
-  width: 100%;
-  height: 100%;
-  gap: 0;
-}
-
-.mockup-ps-info {
-  background: var(--color-bg);
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  justify-content: center;
-}
-
-.mockup-ps-number {
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 200;
-  color: var(--color-text);
-  opacity: 0.12;
-  line-height: 0.9;
-}
-
-.mockup-ps-title {
-  font-family: var(--font-body);
-  font-size: 0.55rem;
-  font-weight: 500;
-  margin: 0;
-}
-
-.mockup-ps-tags {
-  font-size: 0.3rem;
-  color: var(--color-text-muted);
-}
-
-.mockup-ps-logo {
-  width: 14px;
-  height: 14px;
-  background: var(--color-accent);
-  border-radius: 3px;
-  margin-top: auto;
-}
-
-.mockup-ps-visual {
-  background: rgba(255, 88, 74, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.3rem;
-}
-
-.mockup-ps-visual .mockup-image {
-  width: 100%;
-  height: 100%;
-}
-
 /* Goals Showcase Mockup */
 .mockup-goals-showcase {
   display: grid;
@@ -8629,8 +10747,8 @@ textarea.editable-field {
 }
 
 .remove-cta-btn:hover {
-  border-color: #ff4444;
-  color: #ff4444;
+  border-color: var(--color-error);
+  color: var(--color-error);
   background: rgba(255, 68, 68, 0.1);
 }
 
@@ -8685,12 +10803,13 @@ textarea.editable-field {
 .edit-mode .kpi-card:hover .remove-item-btn,
 .edit-mode .stat-item:hover .remove-item-btn,
 .edit-mode .issue-item:hover .remove-item-btn,
+.edit-mode .intro-meta-item:hover .remove-item-btn,
 .edit-mode .outcome-item:hover .remove-item-btn {
   opacity: 1;
 }
 
 .remove-item-btn:hover {
-  background: #ff4444;
+  background: var(--color-error);
   transform: scale(1.1);
 }
 
@@ -8731,7 +10850,7 @@ textarea.editable-field {
 }
 
 .remove-field-btn:hover {
-  background: #ef4444;
+  background: var(--color-error);
   transform: scale(1.1);
   box-shadow: 0 3px 10px rgba(239, 68, 68, 0.4);
 }
@@ -10319,6 +12438,18 @@ textarea.editable-field {
   line-height: 1.5;
 }
 
+/* Optional subtitle (process + timeline) — base/edit-mode styling; the
+   view-mode canvas layer scales it to Body Large. */
+.process-subtitle,
+.timeline-subtitle {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  margin: 0;
+  max-width: 850px;
+}
+
 /* Testimonial */
 .slide-testimonial {
   background: var(--color-bg-secondary);
@@ -10426,7 +12557,7 @@ textarea.editable-field {
 }
 
 .cs-block.challenge h3 {
-  color: #e53935;
+  color: var(--color-error);
 }
 
 .cs-block.solution h3 {
@@ -11288,7 +13419,7 @@ textarea.editable-field {
 }
 
 @media (max-width: 767px) {
-  .showcase-title {
+  .case-study.edit-mode .showcase-title {
     font-size: clamp(1.5rem, 5vw, 2rem);
   }
 
@@ -11313,11 +13444,11 @@ textarea.editable-field {
     font-size: 0.75rem;
   }
 
-  .showcase-desc-label {
+  .case-study.edit-mode .showcase-desc-label {
     font-size: 0.75rem;
   }
 
-  .showcase-desc-text {
+  .case-study.edit-mode .showcase-desc-text {
     font-size: 0.9rem;
   }
 }
@@ -11396,385 +13527,7 @@ textarea.editable-field {
 
 /* Responsive intro layout - handled in main responsive section */
 
-/* ========== PROJECT SHOWCASE SLIDE ========== */
-.slide-project-showcase {
-  background: var(--color-bg);
-}
-
-.slide-project-showcase .slide-inner {
-  padding: 0;
-  height: 100%;
-  max-width: none;
-}
-
-.project-showcase-layout {
-  display: grid;
-  grid-template-columns: 38% 62%;
-  height: 100%;
-  width: 100%;
-}
-
-/* Wrapper around left panel - highlight-style card */
-/* Left Panel - Info */
-.project-showcase-info {
-  background: transparent;
-  padding: var(--slide-pad-top) var(--slide-pad-x) var(--slide-pad-bottom);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 1.5rem;
-  flex: 1;
-  min-height: 0;
-  min-width: 0;
-}
-
-/* View-mode: graceful overflow inside the info column when content is
-   too tall for the bounded slide. Same thin-scrollbar pattern as
-   .split-content. Edit mode lets the column grow with content. */
-.case-study:not(.edit-mode) .project-showcase-info {
-  overflow-y: auto;
-  overflow-x: visible;
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--color-text) 18%, transparent) transparent;
-}
-.case-study:not(.edit-mode) .project-showcase-info::-webkit-scrollbar {
-  width: 6px;
-}
-.case-study:not(.edit-mode) .project-showcase-info::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--color-text) 18%, transparent);
-  border-radius: 3px;
-}
-
-/* When there's no number, center content vertically in the slide */
-.project-showcase-info--no-number {
-  justify-content: center;
-}
-
-.project-showcase-info--no-number .project-showcase-logo {
-  margin-top: 0;
-}
-
-.project-showcase-number-wrapper {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  flex-shrink: 0;
-}
-
-.project-showcase-number {
-  font-family: var(--font-body);
-  font-size: var(--text-display);
-  font-weight: 200;
-  color: #ff584a;
-  opacity: 1;
-  line-height: 0.9;
-  letter-spacing: -0.02em;
-}
-
-.project-showcase-number .editable-field {
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  color: #ff584a;
-  opacity: 1;
-  background: transparent;
-  border: 1px dashed transparent;
-  width: 100px;
-  padding: 0;
-}
-
-.project-showcase-number .editable-field:focus {
-  border-color: var(--color-accent);
-}
-
-.toggle-number-btn {
-  padding: 0.35rem 0.65rem;
-  border: 1px dashed var(--color-border);
-  border-radius: 6px;
-  background: transparent;
-  color: var(--color-text-muted);
-  font-size: 0.7rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  margin-top: 0.5rem;
-}
-
-.toggle-number-btn:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-.project-showcase-title {
-  font-family: var(--font-body);
-  font-size: var(--text-h1);
-  font-weight: 500;
-  line-height: 1.1;
-  color: var(--color-text);
-  margin: 0;
-}
-
-.project-showcase-subtitle {
-  font-family: var(--font-body);
-  font-size: var(--text-subtitle);
-  font-weight: 400;
-  line-height: 1.7;
-  color: var(--color-text-muted);
-  margin: 0 0 0.75rem;
-}
-
-.project-showcase-subtitle .toggle-subtitle-btn {
-  display: inline-block;
-  margin-left: 0.5rem;
-  padding: 0.2rem 0.4rem;
-  font-size: 0.7rem;
-  border: 1px dashed var(--color-border);
-  border-radius: 4px;
-  background: transparent;
-  color: var(--color-text-muted);
-  cursor: pointer;
-}
-
-.project-showcase-subtitle .toggle-subtitle-btn:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-.project-showcase-description {
-  font-size: var(--text-body);
-  line-height: 1.7;
-  color: var(--color-text-muted);
-  margin: 0;
-  margin-bottom: 2rem;
-}
-
-.project-showcase-tags {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  font-size: 0.9rem;
-  color: var(--color-accent);
-}
-
-.project-showcase-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.1rem;
-  position: relative;
-}
-
-.tag-separator {
-  margin: 0 0.25rem;
-  opacity: 0.5;
-}
-
-.remove-tag-btn {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255, 68, 68, 0.8);
-  color: white;
-  font-size: 12px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.2s;
-  line-height: 1;
-  margin-left: 0.25rem;
-}
-
-.project-showcase-tag:hover .remove-tag-btn {
-  opacity: 1;
-}
-
-.add-tag-btn {
-  padding: 0.25rem 0.5rem;
-  border: 1px dashed var(--color-border);
-  border-radius: 4px;
-  background: transparent;
-  color: var(--color-text-muted);
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.add-tag-btn:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-/* Project showcase header mode: Title only | Logo only | Title + Logo */
-.project-showcase-header-mode {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.project-showcase-header-mode-label {
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.project-showcase-header-mode-btns {
-  display: flex;
-  gap: 0.1rem;
-  flex-wrap: wrap;
-}
-
-.project-showcase-header-mode .header-mode-btn {
-  padding: 0.3rem 0.6rem;
-  font-size: 0.7rem;
-  border: 1px dashed var(--color-border);
-  border-radius: 6px;
-  background: transparent;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.project-showcase-header-mode .header-mode-btn:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-.project-showcase-header-mode .header-mode-btn.active {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: white;
-}
-
-.project-showcase-title .project-showcase-remove-title,
-.project-showcase-title .remove-title-btn {
-  display: inline-block;
-  margin-left: 0.5rem;
-  padding: 0.2rem 0.4rem;
-  font-size: 0.7rem;
-  border: 1px dashed var(--color-border);
-  border-radius: 4px;
-  background: transparent;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  vertical-align: middle;
-}
-
-.project-showcase-title .project-showcase-remove-title:hover,
-.project-showcase-title .remove-title-btn:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-.project-showcase-logo {
-  margin-top: auto;
-  background: transparent;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
-}
-
-/* Logo in title position (when "Logo only" is selected) */
-.project-showcase-logo-in-title-position {
-  margin-top: 0;
-  margin-bottom: 0.25rem;
-}
-
-.project-showcase-logo-in-title-position .project-logo-wrapper {
-  width: 160px;
-  height: 160px;
-}
-
-.project-showcase-remove-logo,
-.project-showcase-logo .remove-logo-btn {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.7rem;
-  border: 1px dashed var(--color-border);
-  border-radius: 4px;
-  background: transparent;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
-}
-
-.project-showcase-remove-logo:hover,
-.project-showcase-logo .remove-logo-btn:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-.project-logo-wrapper {
-  width: 140px;
-  height: 140px;
-  border-radius: 12px;
-  overflow: hidden;
-  background: transparent !important;
-  border: none;
-  cursor: pointer;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.project-logo-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 0.5rem;
-  background: transparent !important;
-}
-
-.project-logo-wrapper .image-placeholder {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.7rem;
-  color: var(--color-text-muted);
-  background: transparent;
-  border: none;
-  border-radius: 12px;
-}
-
-/* Right Panel - Visual */
-.project-showcase-visual {
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  position: relative;
-  border-radius: 0;
-  overflow: visible;
-}
-
-/* Highlight-style wrapper around the image (right panel) */
-.project-showcase-image-highlight-wrapper {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 88, 74, 0.08);
-  border-radius: 14px;
-  border: 1px solid rgba(255, 88, 74, 0.15);
-  padding: 1rem;
-  overflow: hidden;
-}
-
 /* DynamicImages within slide containers */
-.project-showcase-dynamic,
 .goals-showcase-dynamic,
 .challenge-solution-dynamic,
 .comparison-dynamic,
@@ -11784,7 +13537,6 @@ textarea.editable-field {
   height: 100%;
 }
 
-.project-showcase-dynamic .dynamic-image-wrapper,
 .goals-showcase-dynamic .dynamic-image-wrapper,
 .challenge-solution-dynamic .dynamic-image-wrapper {
   border-radius: 12px;
@@ -11841,116 +13593,6 @@ textarea.editable-field {
   background: var(--color-bg-secondary);
 }
 
-.project-showcase-image-wrapper {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--color-bg-secondary);
-  cursor: pointer;
-  position: relative;
-}
-
-.project-showcase-image-wrapper img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 0;
-}
-
-.project-showcase-image-wrapper .image-placeholder {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem;
-  color: var(--color-text-muted);
-  background: var(--color-bg-secondary);
-  border: none;
-  border-radius: 12px;
-}
-
-/* Add image button for showcase and goals slides */
-.project-showcase-add-image {
-  width: 100%;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  background: var(--color-bg-secondary);
-  border: 2px dashed var(--color-border);
-  border-radius: 12px;
-  color: var(--color-text-muted);
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.project-showcase-add-image:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-  background: rgba(255, 88, 74, 0.05);
-}
-
-.project-showcase-add-image .add-image-icon {
-  font-size: 2.5rem;
-  opacity: 0.5;
-}
-
-/* Project Showcase Responsive */
-@media (max-width: 1023px) {
-  .project-showcase-layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-  }
-
-  .project-showcase-info {
-    min-height: auto;
-  }
-
-  .project-showcase-number {
-    font-size: clamp(3rem, 6vw, 5rem);
-  }
-
-  .project-showcase-visual {
-    padding: var(--slide-pad-x);
-  }
-}
-
-@media (max-width: 767px) {
-  .project-showcase-image-highlight-wrapper {
-    padding: 0.75rem;
-    border-radius: 10px;
-  }
-
-  .project-showcase-info {
-    gap: 1rem;
-  }
-
-  .project-showcase-number {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-  }
-
-  .project-showcase-title {
-    font-size: clamp(1.5rem, 4vw, 2rem);
-  }
-
-  .project-showcase-description {
-    font-size: var(--text-body-sm);
-  }
-
-  .project-showcase-visual {
-    padding: var(--slide-pad-x);
-  }
-}
-
 /* ========================================
    GOALS SHOWCASE TEMPLATE
 ======================================== */
@@ -11991,7 +13633,7 @@ textarea.editable-field {
   font-family: var(--font-body);
   font-size: var(--text-display);
   font-weight: 200;
-  color: #ff584a;
+  color: var(--color-accent);
   opacity: 1;
   line-height: 0.9;
   letter-spacing: -0.02em;
@@ -12001,7 +13643,7 @@ textarea.editable-field {
   font-family: inherit;
   font-size: inherit;
   font-weight: inherit;
-  color: #ff584a;
+  color: var(--color-accent);
   opacity: 1;
   background: transparent;
   border: 1px dashed transparent;
@@ -12199,7 +13841,7 @@ textarea.editable-field {
     min-height: auto;
   }
 
-  .goals-showcase-number {
+  .case-study.edit-mode .goals-showcase-number {
     font-size: clamp(3rem, 6vw, 5rem);
   }
 
@@ -12213,11 +13855,11 @@ textarea.editable-field {
     gap: 1rem;
   }
 
-  .goals-showcase-number {
+  .case-study.edit-mode .goals-showcase-number {
     font-size: clamp(2.5rem, 5vw, 4rem);
   }
 
-  .goals-showcase-description {
+  .case-study.edit-mode .goals-showcase-description {
     font-size: var(--text-body-sm);
   }
 
@@ -12230,7 +13872,7 @@ textarea.editable-field {
     gap: 0.75rem;
   }
 
-  .goal-number {
+  .case-study.edit-mode .goal-number {
     font-size: 1.25rem;
     min-width: 1.5rem;
   }
@@ -12317,8 +13959,8 @@ textarea.editable-field {
 
 .dynamic-block-controls button.delete:hover:not(:disabled) {
   background: rgba(255, 68, 68, 0.1);
-  border-color: #ff4444;
-  color: #ff4444;
+  border-color: var(--color-error);
+  color: var(--color-error);
 }
 
 .dynamic-block-controls button:disabled {
@@ -13459,8 +15101,8 @@ textarea.editable-field {
 }
 
 .ps-remove-img:hover {
-  border-color: #e74c3c;
-  color: #e74c3c;
+  border-color: var(--color-error);
+  color: var(--color-error);
 }
 
 .ps-add-img {
@@ -13549,10 +15191,10 @@ textarea.editable-field {
     min-height: calc(100vh - 8rem);
     min-height: calc(100dvh - 8rem);
   }
-  .ps-subtitle {
+  .case-study.edit-mode .ps-subtitle {
     font-size: var(--text-body-sm);
   }
-  .ps-paragraph {
+  .case-study.edit-mode .ps-paragraph {
     font-size: var(--text-body-sm);
   }
   .ps-split-image-panel .ps-img-wrap {
@@ -13680,6 +15322,94 @@ textarea.editable-field {
   max-width: clamp(28rem, 40vw, 56rem);
 }
 
+/* ═══ Chapter slide — editorial "big index" divider (view/canvas mode) ═══
+   A confident section marker instead of a faint watermark. Layout reads as
+   one tight, left-aligned group, vertically centered in the artboard:
+
+     Chapter eyebrow (accent label + rule)
+     ──────────────────────────────────────
+     02                 ← large solid-accent index (the hero marker)
+     The Design Process ← Display 80px title
+     supporting line…   ← Body Large muted subtitle
+
+   The old 320px ghost watermark is dropped (it read as noise and gave the
+   content nothing to anchor to). A soft full-bleed accent wash panel on the
+   right edge adds depth without competing with the type. Edit mode keeps
+   the plain centered layout. */
+.case-study:not(.edit-mode) .slide-chapter {
+  /* Subtle warm wash bleeding in from the right — quiet depth, theme-safe. */
+  background:
+    linear-gradient(
+      105deg,
+      var(--color-bg) 56%,
+      color-mix(in srgb, var(--color-accent) 6%, var(--color-bg)) 100%
+    );
+}
+/* Drop the dot-grid texture in view mode — the wash carries the depth now. */
+.case-study:not(.edit-mode) .slide-chapter::after {
+  display: none;
+}
+.case-study:not(.edit-mode) .slide-chapter .slide-inner {
+  justify-content: center;
+  align-items: flex-start;
+}
+/* Hide the faint watermark — replaced by the solid accent index below. */
+.case-study:not(.edit-mode) .slide-chapter .slide-inner .chapter-bg-number {
+  display: none;
+}
+/* Chapter index block: big solid-accent numeral with a short rule beneath,
+   sitting tight above the title. The base `.chapter-header` is the wrapper;
+   its ::before dash is repurposed into the rule under the number. */
+.case-study:not(.edit-mode) .slide-chapter .chapter-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  margin: 0 0 36px;
+  position: relative;
+  z-index: 1;
+}
+.case-study:not(.edit-mode) .slide-chapter .chapter-header::before {
+  order: 2;            /* rule sits under the number */
+  width: 72px;
+  height: 4px;
+  border-radius: 2px;
+  margin: 0;
+}
+.case-study:not(.edit-mode) .slide-chapter .chapter-number {
+  order: 1;
+  font-family: var(--font-body);
+  font-size: 132px;
+  line-height: 0.9;
+  font-weight: var(--slide-weight-bold);
+  letter-spacing: -0.04em;
+  text-transform: none;
+  color: var(--color-accent);
+}
+.case-study:not(.edit-mode) .slide-chapter .slide-inner .chapter-title {
+  position: relative;
+  z-index: 1;
+  font-size: var(--slide-font-display);
+  line-height: var(--slide-leading-display);
+  letter-spacing: var(--slide-tracking-display);
+  font-weight: 600;
+  text-transform: none;
+  color: var(--color-text);
+  max-width: 1000px;
+  margin: 0 0 20px;
+}
+.case-study:not(.edit-mode) .slide-chapter .slide-inner .chapter-subtitle {
+  position: relative;
+  z-index: 1;
+  font-size: var(--slide-font-body-lg);
+  line-height: var(--slide-leading-body-lg);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-regular);
+  color: var(--color-text-muted);
+  max-width: 760px;
+  margin: 0;
+}
+
 /* Chapter mockup (edit panel preview) */
 .mockup-chapter {
   display: flex;
@@ -13739,12 +15469,12 @@ textarea.editable-field {
 }
 
 @media (max-width: 767px) {
-  .chapter-bg-number {
+  .case-study.edit-mode .chapter-bg-number {
     font-size: clamp(10rem, 38vw, 16rem);
     opacity: 0.035;
   }
 
-  .chapter-title {
+  .case-study.edit-mode .chapter-title {
     font-size: clamp(2.5rem, 10vw, 4rem);
   }
 }
@@ -14263,18 +15993,18 @@ textarea.editable-field {
     background: var(--color-bg);
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.04);
 
-    /* Typography — computed values at 1440px viewport */
-    --text-display: 5.5rem;
-    --text-hero: 4.1rem;
-    --text-stat: 4rem;
-    --text-h1: 3rem;
-    --text-h2: 2.75rem;
-    --text-h3: 2.25rem;
-    --text-h4: 1.85rem;
-    --text-subtitle: 1.47rem;
-    --text-body: 1.125rem;
-    --text-body-sm: 1.01rem;
-    --text-caption: 0.87rem;
+    /* Typography — Figma scale px ÷ 16 = rem for the 1440×810 mobile artboard */
+    --text-display:   5rem;    /* Display/Display + Special/Stat  80px */
+    --text-hero:      4rem;    /* Headings/Title  64px */
+    --text-stat:      5rem;    /* alias for --text-display */
+    --text-h1:        3.5rem;  /* Headings/Subtitle  56px */
+    --text-h2:        3rem;    /* Headings/Heading  48px */
+    --text-h3:        2.25rem; /* Headings/Subheading  36px */
+    --text-h4:        2rem;    /* Body/Body Large  32px */
+    --text-subtitle:  1.75rem; /* Meta/Meta Value  28px */
+    --text-body:      1.5rem;  /* Body/Body  24px */
+    --text-body-sm:   1.25rem; /* Body/Body Small  20px */
+    --text-caption:   1rem;    /* Utility/Caption  16px */
 
     /* Spacing — desktop base */
     --spacing-xs: 0.5rem;
@@ -14769,4 +16499,762 @@ textarea.editable-field {
     from { opacity: 1; }
     to   { opacity: 0; }
   }
+}
+
+/* ──────────────────────────────────────────────────────────
+   Project Overview enhancements (intro + info)
+   ────────────────────────────────────────────────────────── */
+
+/* Headline metric on the intro slide — sits between description and meta */
+.intro-headline-metric {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.6rem 0.85rem;
+  margin: 1rem 0 0.25rem;
+  padding: 0.85rem 1rem;
+  border-left: 3px solid var(--color-accent);
+  background: var(--color-border-soft, rgba(0,0,0,0.03));
+  border-radius: 4px;
+  position: relative;
+}
+.intro-metric-value {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  line-height: 1;
+  font-weight: var(--fw-medium);
+  color: var(--color);
+  flex-shrink: 0;
+}
+.intro-metric-label {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: var(--fw-medium);
+  color: var(--color-text);
+}
+.intro-metric-context {
+  flex-basis: 100%;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+.intro-headline-metric-add,
+.info-headline-metric-add,
+.info-methodology-add {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: var(--fw-medium);
+  color: var(--color-text-muted);
+  background: transparent;
+  border: 1px dashed var(--color-border);
+  border-radius: 4px;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.intro-headline-metric-add:hover,
+.info-headline-metric-add:hover,
+.info-methodology-add:hover {
+  border-color: var(--color-text);
+  color: var(--color-text);
+}
+.intro-metric-remove,
+.info-metric-remove,
+.info-methodology-remove {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 1.4rem; height: 1.4rem;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.intro-metric-remove:hover,
+.info-metric-remove:hover,
+.info-methodology-remove:hover {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+/* Hook sentence on the info slide — vivid one-liner above metadata */
+.info-intro-hook {
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  line-height: 1.4;
+  font-weight: var(--fw-medium);
+  color: var(--color-text);
+  margin: 0.25rem 0 1.25rem;
+  padding-left: 1rem;
+  border-left: 3px solid var(--color-accent);
+}
+
+/* Headline metric on the info slide */
+.info-headline-metric {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.1rem 1.25rem;
+  margin: 0 0 1.5rem;
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 4px;
+  background: var(--color-bg);
+}
+.info-metric-numbers {
+  display: flex; align-items: baseline; gap: 0.85rem; flex-wrap: wrap;
+}
+.info-metric-value {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  line-height: 1;
+  font-weight: var(--fw-medium);
+  color: var(--color);
+}
+.info-metric-label {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: var(--fw-medium);
+  color: var(--color-text);
+}
+.info-metric-context {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* Methodology block on the info slide */
+.info-methodology {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+  position: relative;
+}
+.info-methodology-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.info-methodology-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  font-weight: var(--fw-medium);
+}
+.info-methodology-name {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: var(--fw-medium);
+  color: var(--color-accent);
+}
+.info-methodology-phases {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.85rem;
+}
+.info-phase {
+  display: flex;
+  gap: 0.65rem;
+  padding: 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-bg);
+  position: relative;
+}
+.info-phase-num {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: var(--fw-medium);
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.info-phase-body { flex: 1; min-width: 0; }
+.info-phase-name {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: var(--fw-medium);
+  color: var(--color-text);
+  margin-bottom: 0.25rem;
+}
+.info-phase-desc {
+  display: block;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 768px) {
+  .info-methodology-phases { grid-template-columns: 1fr; }
+}
+
+/* ──────────────────────────────────────────────────────────
+   Added templates: define · ideation · wireframes · iteration
+                    keyScreens · impact · reflection
+   ────────────────────────────────────────────────────────── */
+
+/* Shared annotation numbering */
+.annotation-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4em;
+  height: 1.4em;
+  margin-right: 0.5em;
+  border-radius: 50%;
+  background: var(--color-border);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.7em;
+  font-weight: var(--fw-medium);
+  flex-shrink: 0;
+}
+
+/* ── Ideation ─────────────────────────────────────────── */
+.slide-ideation .ideation-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  margin: 0.5rem 0 1.5rem;
+  line-height: 1.15;
+}
+.ideation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.ideation-card {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.9rem;
+  background: var(--color-bg);
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+.ideation-card--rejected { opacity: 0.6; }
+.ideation-card--rejected .ideation-card-name,
+.ideation-card--rejected .ideation-card-desc { text-decoration: line-through; }
+.ideation-thumb {
+  aspect-ratio: 4 / 3;
+  background: var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  cursor: zoom-in;
+}
+.ideation-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.ideation-thumb--empty {
+  font-size: 0.75rem; color: var(--color-text-muted);
+  font-family: var(--font-body); text-transform: uppercase; letter-spacing: 0.05em;
+}
+.ideation-card-name {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: var(--fw-medium);
+  margin: 0;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.ideation-rejected-badge {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+}
+.ideation-card-desc { font-size: 0.85rem; line-height: 1.4; margin: 0; color: var(--color-text-muted); }
+.ideation-card-reason {
+  margin: 0; padding: 0.4rem 0.5rem;
+  background: rgba(239,68,68,0.06);
+  border-left: 2px solid var(--color-error);
+  font-size: 0.78rem; line-height: 1.4;
+  color: var(--color-text);
+}
+.ideation-card-reason span {
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.7rem;
+  display: block;
+  margin-bottom: 0.15rem;
+  color: var(--color-error);
+  text-decoration: none;
+}
+.ideation-chosen {
+  border: 1px solid var(--color-accent);
+  border-radius: 6px;
+  padding: 1.25rem;
+  background: var(--color-bg);
+  margin-bottom: 1.25rem;
+}
+.ideation-chosen-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-accent);
+  font-weight: var(--fw-medium);
+  display: block; margin-bottom: 0.75rem;
+}
+.ideation-chosen-body { display: flex; gap: 1.25rem; align-items: flex-start; }
+.ideation-chosen-img {
+  width: 35%; max-width: 280px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover; border-radius: 4px;
+  background: var(--color-border);
+  cursor: zoom-in;
+}
+.ideation-chosen-name {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  margin: 0 0 0.4rem;
+  color: var(--color);
+}
+.ideation-chosen-rationale { margin: 0; font-size: 0.95rem; line-height: 1.5; }
+.ideation-tradeoffs {
+  padding: 0.85rem 1rem;
+  border-top: 1px solid var(--color-border);
+}
+.ideation-tradeoffs-label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  margin-bottom: 0.4rem;
+}
+.ideation-tradeoffs ul { margin: 0; padding-left: 1.1rem; }
+.ideation-tradeoffs li { font-size: 0.9rem; line-height: 1.45; }
+@media (max-width: 768px) {
+  .ideation-chosen-body { flex-direction: column; }
+  .ideation-chosen-img { width: 100%; max-width: 100%; }
+}
+
+/* ── Reflection ───────────────────────────────────────── */
+.slide-reflection .reflection-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  margin: 0.5rem 0 1.5rem;
+  line-height: 1.15;
+}
+.reflection-subtitle-wrapper {
+  position: relative;
+  width: 100%;
+  margin: -0.75rem 0 1.5rem;
+}
+.reflection-subtitle {
+  font-size: var(--text-body);
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  margin: 0;
+  max-width: 850px;
+}
+.reflection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.reflection-col {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 1rem;
+  background: var(--color-bg);
+}
+.reflection-col h3 {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+.reflection-col--worked h3 { color: #10b981; }
+.reflection-col--failed h3 { color: var(--color-error); }
+.reflection-col--differently h3 { color: var(--color-accent); }
+.reflection-col ul { margin: 0; padding-left: 1.1rem; }
+.reflection-col li { font-size: 0.92rem; line-height: 1.5; padding: 0.25rem 0; }
+.reflection-learned {
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--color-accent);
+  background: var(--color-border-soft, rgba(0,0,0,0.03));
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+.reflection-learned-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-accent);
+  font-weight: var(--fw-medium);
+  margin-bottom: 0.4rem;
+}
+.reflection-learned p { margin: 0; font-size: 1rem; line-height: 1.55; }
+.reflection-footnotes { display: flex; flex-direction: column; gap: 0.5rem; }
+.reflection-footnote {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+.reflection-footnote span {
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.7rem;
+  color: var(--color-text);
+  margin-right: 0.4rem;
+}
+@media (max-width: 768px) {
+  .reflection-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Template preview mockups — refreshed to match the redesigned view-mode
+   slides. Appended last so these win over the earlier duplicate .mockup-*
+   blocks by source order. Preview-only (docs showcase + template modal).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Directions (Ideation): 3 image-tile columns, each with a status chip */
+.mockup-directions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+  height: 100%;
+}
+.mockup-directions-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  flex: 1;
+  min-height: 0;
+}
+.mockup-direction {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-height: 0;
+}
+.mockup-direction-img {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  border-radius: 4px;
+  background: var(--color-bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.mockup-direction-img .mockup-img-icon { font-size: 1rem; opacity: 0.4; }
+.mockup-direction .line {
+  height: 3px;
+  background: var(--color-border);
+  border-radius: 2px;
+}
+.mockup-dir-chip {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  font-size: 0.3rem;
+  font-weight: 500;
+  padding: 1px 4px;
+  border-radius: 999px;
+  line-height: 1.4;
+}
+.mockup-dir-chip.rejected {
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+.mockup-dir-chip.accepted {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+/* Reflection: 3 columns, icon + accent-dot bullets */
+.mockup-reflection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+  height: 100%;
+}
+.mockup-reflection-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  flex: 1;
+}
+.mockup-reflection-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.4rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-bg);
+}
+.mockup-reflection-icon {
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.mockup-reflection-icon.worked { color: #10b981; }
+.mockup-reflection-icon.failed { color: var(--color-error); }
+.mockup-reflection-icon.next { color: var(--color-accent); }
+.mockup-reflection-bullet {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.mockup-reflection-bullet > span {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  flex-shrink: 0;
+}
+.mockup-reflection-bullet .line {
+  flex: 1;
+  height: 3px;
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+/* Timeline horizontal: dots on a connector line */
+.mockup-timeline-h {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+  width: 100%;
+  align-items: start;
+  padding-top: 0.3rem;
+}
+.mockup-timeline-h::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-border));
+}
+.mockup-tl-event {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  position: relative;
+}
+.mockup-tl-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+.mockup-tl-event .event-date {
+  font-size: 0.4rem;
+  font-weight: 500;
+  color: var(--color-accent);
+}
+.mockup-tl-event .line {
+  height: 3px;
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+/* Goals two-column: KPI goals list + key metrics, vertical divider */
+.mockup-goals-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  width: 100%;
+  height: 100%;
+  align-content: center;
+}
+.mockup-goals-col2 {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.mockup-goals-metrics {
+  border-left: 1px solid var(--color-border);
+  padding-left: 0.6rem;
+}
+.mockup-goals-2col .mockup-col-title {
+  font-size: 0.42rem;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: 0.1rem;
+}
+.mockup-goal-row {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+.mockup-goal-row > span {
+  font-size: 0.42rem;
+  font-weight: 500;
+  color: var(--color-accent);
+}
+.mockup-goal-row .line {
+  flex: 1;
+  height: 3px;
+  background: var(--color-border);
+  border-radius: 2px;
+}
+.mockup-metric-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+.mockup-metric-row > strong {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--color-accent);
+}
+.mockup-metric-row .line {
+  flex: 1;
+  height: 3px;
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+/* Outcomes 2-up metric cards (metric leads, no number badge) */
+.mockup-outcome .mockup-outcome-metric {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-accent);
+  display: block;
+  line-height: 1;
+}
+.mockup-outcome .mockup-title-sm {
+  font-size: 0.42rem;
+  margin: 0.15rem 0;
+}
+.mockup-outcome .line {
+  width: 80%;
+  height: 3px;
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+/* Tools: accent circle marker */
+.mockup-tool .mockup-tool-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  display: block;
+  margin-bottom: 0.15rem;
+}
+.mockup-tool .line {
+  width: 80%;
+  height: 3px;
+  background: var(--color-border);
+  border-radius: 2px;
+  margin-top: 0.1rem;
+}
+
+/* Quotes: divider + avatar attribution row */
+.mockup-quote-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--color-border);
+  margin: 0.15rem 0;
+}
+.mockup-quote-attr {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+}
+.mockup-quote-avatar {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-accent) 18%, var(--color-bg));
+  flex-shrink: 0;
+}
+
+/* Process: numbered accent discs on a connector line */
+.mockup-process {
+  position: relative;
+}
+.mockup-process::before {
+  content: '';
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  right: 7px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-border));
+  z-index: 0;
+}
+.mockup-process .mockup-step {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.mockup-step .mockup-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 0.4rem;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+}
+.mockup-process .mockup-step .line {
+  width: 80%;
+  height: 3px;
+  background: var(--color-border);
+  border-radius: 2px;
+  margin-top: 0.15rem;
+}
+
+/* Chapter: large left-aligned accent index number + rule */
+.mockup-chapter {
+  align-items: flex-start;
+  text-align: left;
+}
+.mockup-chapter-number {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--color-accent);
+  opacity: 1;
+  line-height: 0.9;
+}
+.mockup-chapter-rule {
+  width: 18px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--color-accent);
+  margin: 0.15rem 0;
 }

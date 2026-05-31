@@ -1,0 +1,214 @@
+/* ============================================================================
+   CaseStudy.site.css — Regular Site (scrolling page) display mode
+
+   Additive overrides only. Rules are scoped under `.case-study.case-study--site`
+   (the outer wrapper, two classes — matches the specificity of the view-mode
+   rules `.case-study:not(.edit-mode) .slide-inner` we need to override) or
+   `.case-study-site` (the new vertical container). When the author hasn't
+   opted into Site mode, this file contributes nothing because none of these
+   selectors match.
+
+   The neutralization pattern mirrors how edit mode unwinds the slide-deck
+   constraints (CaseStudy.css ~line 5341): drop the fixed-viewport caps,
+   reset the fit-scale transform, free the wrapper / container / track to
+   grow with content. We also keep the in-slide label visible because the
+   nav-bar's "current slide" label has no meaning in a single-page layout.
+
+   See plan: ~/.claude/plans/i-want-to-add-woolly-pudding.md
+   ============================================================================ */
+
+/* ─── Outer wrapper: switch from fixed-viewport deck to scrolling page ──── */
+.case-study.case-study--site {
+  position: static;
+  inset: auto;
+  width: 100%;
+  height: auto;
+  min-height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  touch-action: auto;
+  /* Neutralize the view-mode viewport cap that pins .slide-inner to the
+     visible region. With this token at `none`, the max-height rule at
+     CaseStudy.css:425 evaluates to `max-height: none` and slides grow
+     with content. Mirrors the edit-mode pattern at CaseStudy.css:5353. */
+  --vp-cap: none;
+  overscroll-behavior: contain;
+}
+
+/* The wrapper that hosts the slides-track in deck mode. In Site mode it's
+   replaced by `.case-study-site` (the vertical stack), but the wrapper is
+   still rendered around it — let it grow with its children. */
+.case-study.case-study--site .case-study-slides-wrapper {
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+}
+
+/* Keep the top nav visible while the page scrolls. In deck mode the parent
+   is a fixed 100dvh box so absolute positioning works; in Site mode the
+   parent grows past the viewport, so absolute positioning would scroll the
+   nav out of sight. Sticky pins it. */
+.case-study.case-study--site .case-nav {
+  position: sticky;
+  top: 0;
+}
+
+/* The progress meter (slide N / total) is meaningless in Site mode. */
+.case-study.case-study--site .nav-progress {
+  display: none;
+}
+
+/* ─── Vertical stack container ──────────────────────────────────────────── */
+.case-study-site {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.case-study-site .site-section {
+  width: 100%;
+  position: relative;
+}
+
+/* ─── Slide → section translation ───────────────────────────────────────── */
+/* Each `<div class="slide">` was a 100dvh flex pane. Free it from the
+   fixed-viewport sizing AND from the view-mode `overflow: hidden` clip.
+   `!important` matches the edit-mode pattern (CaseStudy.css:5370) — the
+   view-mode rules use !important too, so we have to as well. */
+.case-study.case-study--site .slide {
+  flex: 0 0 auto;
+  width: 100%;
+  height: auto !important;
+  min-height: 0;
+  max-height: none;
+  align-items: stretch;
+  overflow: visible !important;
+}
+
+/* Drop the `min-height: 100dvh` floor on .slide-inner, lift the max-height
+   cap, and reset the view-mode `--fit-scale-slide` transform machinery —
+   that's a deck-only zoom-fit hack that shrinks content to fit a fixed
+   viewport. In a scrolling page we want sections to grow naturally. */
+.case-study.case-study--site .slide-inner {
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  --fit-scale-slide: 1;
+  transform: none !important;
+  width: 100%;
+}
+
+/* Slide-inner positioning: when there's room, content centers (deck-feel);
+   when there isn't, it tops-out so nothing gets pushed below the fold. */
+.case-study.case-study--site .slide-inner[data-fit-active="true"] {
+  height: auto;
+  max-height: none;
+}
+
+/* ─── In-slide label visibility ─────────────────────────────────────────── */
+/* The deck hides per-slide `.slide-label` in view mode because the nav bar
+   shows the current slide's label. In Site mode there is no "current slide"
+   — the nav reflects whichever slide is at the top of the scroll, which
+   feels stale. Show the label inline instead so each section is identified
+   by its own header. Specificity (0,3,0) matches the rule we're overriding. */
+.case-study.case-study--site .slide-label {
+  display: inline-block;
+}
+
+/* ─── Media sizing ──────────────────────────────────────────────────────── */
+/* Cap natural-height media at ~85vh so a tall portrait asset can't push one
+   section past the viewport. width: 100% + object-fit: contain keep aspect
+   ratio without distortion. */
+.case-study-site img,
+.case-study-site video {
+  max-height: 85vh;
+  height: auto;
+  width: 100%;
+  object-fit: contain;
+}
+
+/* Iframes (Figma embeds, site embeds) — same height cap; width fills. */
+.case-study-site iframe {
+  max-height: 85vh;
+  width: 100%;
+}
+
+/* ─── Responsive layout collapses ───────────────────────────────────────── */
+/* Most slide types are column-flex and already stack vertically. The
+   exceptions are split layouts using a side-by-side grid set inline via
+   `getSplitStyle`. Force-collapse them at tablet and below so text doesn't
+   shrink to a column too narrow to read. */
+@media (max-width: 1023px) {
+  .case-study.case-study--site .slide-intro-layout,
+  .case-study.case-study--site .slide-split,
+  .case-study.case-study--site .slide-split-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+    gap: clamp(24px, 4vw, 48px);
+  }
+}
+
+/* Image mosaic — let the natural CSS Grid breathe vertically rather than
+   trying to fit-into-viewport. Children already have aspect-ratio rules. */
+.case-study-site .imagemosaic-grid,
+.case-study-site .image-mosaic-grid {
+  height: auto;
+  max-height: none;
+}
+
+/* ─── Section rhythm ────────────────────────────────────────────────────── */
+/* Subtle separator between adjacent sections so same-color slides don't
+   visually run together. Pulls from the design tokens already defined on
+   the case-study root. */
+.case-study-site .site-section + .site-section .slide {
+  border-top: 1px solid color-mix(in srgb, var(--color-border, currentColor) 60%, transparent);
+}
+
+/* ─── Display-mode toggle (segmented control inside slide-sorter) ───────── */
+.display-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  margin-right: 8px;
+}
+
+.display-mode-btn {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--color-text);
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  opacity: 0.7;
+}
+
+.display-mode-btn:hover {
+  opacity: 1;
+}
+
+.display-mode-btn.is-active {
+  background: var(--color-accent, #4a90e2);
+  color: var(--color-bg, #fff);
+  opacity: 1;
+}
+
+/* ─── Edit-mode controls inside Site mode ───────────────────────────────── */
+/* Slide edit overlays (.slide-edit-controls) are positioned absolute to
+   .slide. In a tall section the buttons could float far from where the
+   author is editing — pin them to the top-right corner of each section. */
+.case-study--site.edit-mode .slide-edit-controls {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}

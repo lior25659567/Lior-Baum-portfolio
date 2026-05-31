@@ -1,0 +1,18 @@
+{
+  "edits": {
+    "slides.0.description": "Inside WizeCare, three everyday physiotherapist tasks — finding a patient, editing a care plan, building an exercise protocol — fought clinicians at every step. I rebuilt all three around one familiar pattern, so the platform finally felt like it was saving time instead of costing it.",
+    "slides.3.title": "Clinicians had stopped seeing the friction — so I stopped asking and started watching",
+    "slides.3.content": "Across 6 clinic visits and 8 interviews, every therapist described the same workarounds — but treated them as just how the job worked, not problems anyone could fix. Years of daily use had made the friction invisible. So I trusted what I watched them do over what they told me.",
+    "slides.3.highlight": "These weren't edge cases. They were the daily routine — which is exactly why I watched instead of asked.",
+    "slides.5.sections.0.content": "I sat with 8 physiotherapists across 6 clinics and watched them work — what designers call contextual inquiry — to map the manual habits hiding behind the friction.",
+    "slides.5.sections.1.content": "I moved from rough sketches to detailed flows, sharpening each one against what clinicians told me in feedback sessions.",
+    "slides.9.title": "Editing a plan shouldn't feel like reading a map — so I flattened it into one screen",
+    "slides.9.afterDescription": "One screen. Each exercise is its own card you can edit in place, and the patient's details stay pinned the whole time. In tests, clinicians edited a plan without jumping back and forth between screens.",
+    "slides.9.highlight": "I swapped pop-up windows for editing right on the page — therapists told me \"I lose context when things pop up.\" The trade-off: I cut custom animations to ship on time.",
+    "slides.10.dir3Desc": "The drag-and-drop builder won — a board where you drag exercise cards into place, like arranging sticky notes. It reuses the same card pattern from the rest of the app, gives experts full control over a protocol, and removes the save-test-redo loop they described.",
+    "slides.13.afterDescription": "A board where therapists drag exercise cards into place to build a protocol — exercise library on the left, the plan taking shape on the right. It reuses the same card pattern as the care-plan editor, so there's no new way of working to learn.",
+    "slides.13.highlight": "One familiar card pattern — the same building block in the patient view, the editor, and the builder — is the spine of this redesign. A new tool that feels like one clinicians already know.",
+    "slides.14.outcomes.2.title": "Former non-users now opening it every day"
+  },
+  "setFields": {}
+}

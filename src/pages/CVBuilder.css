@@ -77,9 +77,9 @@
 }
 
 .cv-reset-btn:hover {
-  background: rgba(255, 68, 68, 0.08) !important;
-  border-color: rgba(255, 68, 68, 0.4) !important;
-  color: #e53935 !important;
+  background: var(--color-error-soft) !important;
+  border-color: var(--color-error) !important;
+  color: var(--color-error) !important;
 }
 
 /* Fit badge — live overflow indicator */
@@ -97,15 +97,15 @@
 }
 
 .cv-fit-badge--ok {
-  background: rgba(64, 176, 92, 0.08);
-  border-color: rgba(64, 176, 92, 0.4);
-  color: #2f9049;
+  background: var(--color-success-soft);
+  border-color: var(--color-success);
+  color: var(--color-success);
 }
 
 .cv-fit-badge--warn {
-  background: rgba(220, 150, 30, 0.08);
-  border-color: rgba(220, 150, 30, 0.4);
-  color: #c17a12;
+  background: var(--color-warning-soft);
+  border-color: var(--color-warning);
+  color: var(--color-warning);
 }
 
 .cv-fit-badge-dot {
@@ -280,7 +280,7 @@
 }
 
 .cv-field-count--warn {
-  color: #c17a12;
+  color: var(--color-warning);
 }
 
 /* Cards in editor */
@@ -295,6 +295,8 @@
 
 .cv-card:hover { border-color: var(--color-accent); }
 .cv-card--compact { padding: 0.9rem 1rem; }
+.cv-card--borderless,
+.cv-card--borderless:hover { border-color: transparent; }
 
 .cv-card-header {
   display: flex;
@@ -317,8 +319,8 @@
   min-height: 32px;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 68, 68, 0.08);
-  color: #e53935;
+  background: var(--color-error-soft);
+  color: var(--color-error);
   font-size: 0.95rem;
   cursor: pointer;
   display: flex;
@@ -327,7 +329,7 @@
   transition: all 0.2s;
 }
 
-.cv-remove:hover { background: rgba(255, 68, 68, 0.2); }
+.cv-remove:hover { background: var(--color-error-soft); filter: brightness(0.9); }
 .cv-remove:disabled { opacity: 0.15; cursor: not-allowed; }
 
 .cv-bullet-row {
@@ -355,7 +357,7 @@
   transition: all 0.15s;
 }
 
-.cv-bullet-remove:hover { color: #e53935; }
+.cv-bullet-remove:hover { color: var(--color-error); }
 .cv-bullet-remove:disabled { opacity: 0.15; cursor: not-allowed; }
 
 .cv-add-small {
@@ -823,7 +825,6 @@
   margin-bottom: 0.8rem;
   padding: 0.55rem 0.8rem;
   background: rgba(255, 88, 74, 0.06);
-  border: 1px solid rgba(255, 88, 74, 0.15);
   border-radius: 8px;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -873,13 +874,17 @@
 .cv-doc-exp-item {
   margin-bottom: 0.65rem;
   padding-bottom: 0.55rem;
-  border-bottom: 1px solid var(--color-border);
 }
 
 .cv-doc-exp-item:last-child {
   margin-bottom: 0;
   padding-bottom: 0;
-  border-bottom: none;
+}
+
+/* ── Service entries (no border, mirrors education layout) ── */
+.cv-doc-srv-item {
+  padding: 0.45rem 0;
+  margin-bottom: 0.4rem;
 }
 
 .cv-doc-exp-header {
@@ -935,14 +940,7 @@
 /* ── Education cards ── */
 .cv-doc-edu-card {
   padding: 0.45rem 0.7rem;
-  border: 1px solid rgba(255, 88, 74, 0.15);
-  border-radius: 8px;
   margin-bottom: 0.4rem;
-  transition: border-color 0.2s;
-}
-
-.cv-doc-edu-card:hover {
-  border-color: rgba(255, 88, 74, 0.35);
 }
 
 .cv-doc-edu-card strong {
@@ -1106,9 +1104,7 @@
   border: none;
   border-radius: 0;
   padding: 0;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: 0.9rem;
+  margin-bottom: 0.6rem;
 }
 
 .cv-style-minimal .cv-doc-exp-item {
@@ -1263,9 +1259,8 @@
   .cv-style-minimal .cv-doc-summary {
     background: none !important;
     border: none !important;
-    border-bottom: 1px solid #ddd !important;
     padding: 0 !important;
-    padding-bottom: 0.9rem !important;
+    margin-bottom: 0.6rem !important;
   }
 
   .cv-style-minimal .cv-doc-period-badge {
@@ -1528,6 +1523,10 @@
 }
 .cv-preview-editorial .ed-entry:first-of-type {
   padding-top: 0.15em;
+  border-top: 0;
+}
+.cv-preview-editorial .ed-entry--flat,
+.cv-preview-editorial .ed-entry--flat:first-of-type {
   border-top: 0;
 }
 .cv-preview-editorial .ed-entry-head {

@@ -1,14 +1,168 @@
 import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import html2canvas from 'html2canvas';
 import { useEdit } from '../context/EditContext';
 import { slideTemplates, templateCategories } from '../data/caseStudyData';
-import { sharedComponentsDocs } from '../data/slideTemplateDocs';
+import { sharedComponentsDocs, slideTemplateDocs } from '../data/slideTemplateDocs';
 import {
   buildTemplateDocumentation,
   getUndocumentedTemplates,
 } from '../data/templateIntrospection';
 import { TemplatePreview } from './CaseStudy';
 import './SlideDocumentation.css';
+
+/* ── Markdown builders ─────────────────────────────────── */
+function md_h(level, text) { return `${'#'.repeat(level)} ${text}`; }
+function md_kv(k, v) { return v == null || v === '' ? null : `- **${k}:** ${v}`; }
+function md_codeBlock(text, lang = '') { return `\`\`\`${lang}\n${text}\n\`\`\``; }
+function formatLimitVal(limits) {
+  if (limits.max != null && limits.min != null) return `min ${limits.min}, max ${limits.max}`;
+  if (limits.max != null) return `max ${limits.max}`;
+  if (limits.min != null) return `min ${limits.min}`;
+  return '—';
+}
+
+export function buildTemplateMarkdown(doc) {
+  const { key, type, category, fields, fieldCount, hasDocumentation, docs } = doc;
+  const tpl = slideTemplates[key];
+  const lines = [];
+  lines.push(md_h(2, `\`${key}\``));
+  lines.push('');
+  const meta = [
+    `**Category:** ${category}`,
+    key !== type ? `**Type:** \`${type}\`` : null,
+    `**Fields:** ${fieldCount}`,
+    hasDocumentation ? null : '⚠️ _No human documentation written yet_',
+  ].filter(Boolean);
+  lines.push(meta.join(' · '));
+  lines.push('');
+
+  if (docs?.shortDescription) {
+    lines.push(`> ${docs.shortDescription}`);
+    lines.push('');
+  }
+
+  if (docs) {
+    const block = [];
+    if (docs.purpose) block.push(md_kv('Purpose', docs.purpose));
+    if (docs.whenToUse) block.push(md_kv('When to use', docs.whenToUse));
+    if (docs.layoutDescription) block.push(md_kv('Layout', docs.layoutDescription));
+    block.filter(Boolean).forEach((l) => lines.push(l));
+    if (block.length) lines.push('');
+  }
+
+  // Media support
+  if (docs?.mediaFields) {
+    lines.push(md_h(3, 'Media support'));
+    if (docs.mediaFields.length === 0) {
+      lines.push('_Text-only template — no media fields._');
+    } else {
+      lines.push('| Field | Type | Description |');
+      lines.push('|---|---|---|');
+      docs.mediaFields.forEach((mf) => {
+        lines.push(`| \`${mf.field}\` | ${mf.type} | ${(mf.description || '').replace(/\n/g, ' ')} |`);
+      });
+    }
+    lines.push('');
+  }
+
+  // Required / optional fields
+  if (docs?.requiredFields?.length) {
+    lines.push(md_h(3, 'Required fields'));
+    lines.push(docs.requiredFields.map((f) => `\`${f}\``).join(', '));
+    lines.push('');
+  }
+  if (docs?.optionalFields?.length) {
+    lines.push(md_h(3, 'Optional fields'));
+    lines.push(docs.optionalFields.map((f) => `\`${f}\``).join(', '));
+    lines.push('');
+  }
+
+  // Content limits
+  if (docs?.contentLimits && Object.keys(docs.contentLimits).length) {
+    lines.push(md_h(3, 'Content limits'));
+    lines.push('| Field | Limit | Recommended | Notes |');
+    lines.push('|---|---|---|---|');
+    Object.entries(docs.contentLimits).forEach(([f, l]) => {
+      const notes = l.note || (l.default ? `Default: ${l.default}` : '');
+      lines.push(`| \`${f}\` | ${formatLimitVal(l)} | ${l.recommended || '—'} | ${(notes || '—').replace(/\n/g, ' ')} |`);
+    });
+    lines.push('');
+  }
+
+  // AI selection hints
+  if (docs?.aiSelectionHints) {
+    lines.push(md_h(3, 'AI selection hints'));
+    const ah = docs.aiSelectionHints;
+    if (ah.priority != null) lines.push(md_kv('Priority', `${ah.priority} (lower = more important)`));
+    if (ah.required) lines.push('- **Required in every case study**');
+    if (ah.signals?.length) lines.push(md_kv('Trigger signals', ah.signals.map((s) => `\`${s}\``).join(', ')));
+    lines.push('');
+  }
+
+  // Special behaviors
+  if (docs?.specialBehaviors?.length) {
+    lines.push(md_h(3, 'Special behaviors'));
+    docs.specialBehaviors.forEach((b) => lines.push(`- ${b}`));
+    lines.push('');
+  }
+
+  // Field inventory
+  lines.push(md_h(3, `Field inventory (${fieldCount} fields)`));
+  lines.push('| Field | Type | Default |');
+  lines.push('|---|---|---|');
+  Object.entries(fields).forEach(([name, info]) => {
+    const ty = info.semantic === 'unknown' ? info.jsType : `${info.jsType} / ${info.semantic}`;
+    const def = (info.defaultDisplay || '').toString().replace(/\|/g, '\\|').replace(/\n/g, ' ');
+    lines.push(`| \`${name}\` | \`${ty}\` | ${def || '—'} |`);
+  });
+  lines.push('');
+
+  // Default JSON
+  lines.push(md_h(3, 'Default template JSON'));
+  lines.push(md_codeBlock(JSON.stringify(tpl, null, 2), 'json'));
+  lines.push('');
+
+  // Example usage
+  if (docs?.exampleUsage) {
+    lines.push(md_h(3, 'Example usage'));
+    lines.push(md_codeBlock(JSON.stringify(docs.exampleUsage, null, 2), 'json'));
+    lines.push('');
+  }
+
+  return lines.join('\n');
+}
+
+export function buildAllTemplatesMarkdown(allDocs, grouped) {
+  const lines = [];
+  lines.push(md_h(1, 'Slide template documentation'));
+  lines.push('');
+  lines.push(`Auto-generated reference for all ${allDocs.length} slide templates across ${grouped.length} categories.`);
+  lines.push('');
+  lines.push(md_h(2, 'Table of contents'));
+  grouped.forEach((g) => {
+    lines.push(`- **${g.category}**`);
+    g.templates.forEach((t) => {
+      lines.push(`  - [\`${t.key}\`](#${t.key})`);
+    });
+  });
+  lines.push('');
+  lines.push('---');
+  lines.push('');
+
+  grouped.forEach((g) => {
+    lines.push(md_h(1, g.category));
+    lines.push('');
+    g.templates.forEach((t) => {
+      lines.push(`<a id="${t.key}"></a>`);
+      lines.push(buildTemplateMarkdown(t));
+      lines.push('---');
+      lines.push('');
+    });
+  });
+
+  return lines.join('\n');
+}
 
 /* ── Semantic badge ─────────────────────────────────────── */
 function Badge({ children, variant = 'default' }) {
@@ -28,6 +182,39 @@ function FieldType({ field }) {
 function TemplateCard({ doc }) {
   const { key, type, category, fields, fieldCount, hasDocumentation, docs } = doc;
   const fieldEntries = Object.entries(fields);
+  const [copied, setCopied] = useState(null);
+
+  const copyJson = (variant) => {
+    let text;
+    if (variant === 'template') {
+      text = JSON.stringify(slideTemplates[key], null, 2);
+    } else if (variant === 'full') {
+      text = JSON.stringify(
+        {
+          key,
+          type,
+          category,
+          template: slideTemplates[key],
+          documentation: slideTemplateDocs[key] || null,
+          fields,
+        },
+        null,
+        2
+      );
+    } else if (variant === 'md') {
+      text = buildTemplateMarkdown(doc);
+    }
+    navigator.clipboard.writeText(text).then(
+      () => {
+        setCopied(variant);
+        setTimeout(() => setCopied(null), 1800);
+      },
+      () => {
+        setCopied('error');
+        setTimeout(() => setCopied(null), 1800);
+      }
+    );
+  };
 
   return (
     <div className="docs-template-card" id={`template-${key}`}>
@@ -39,6 +226,30 @@ function TemplateCard({ doc }) {
           {key !== type && <Badge variant="type">type: {type}</Badge>}
           <Badge variant="count">{fieldCount} fields</Badge>
           {!hasDocumentation && <Badge variant="warn">needs docs</Badge>}
+          <button
+            type="button"
+            className="docs-card-copy-btn"
+            onClick={() => copyJson('template')}
+            title="Copy this template's default JSON"
+          >
+            {copied === 'template' ? '✓ copied' : 'Copy JSON'}
+          </button>
+          <button
+            type="button"
+            className="docs-card-copy-btn"
+            onClick={() => copyJson('full')}
+            title="Copy template + documentation as one JSON object"
+          >
+            {copied === 'full' ? '✓ copied' : 'Copy + docs'}
+          </button>
+          <button
+            type="button"
+            className="docs-card-copy-btn"
+            onClick={() => copyJson('md')}
+            title="Copy this template's documentation as Markdown"
+          >
+            {copied === 'md' ? '✓ copied' : 'Copy MD'}
+          </button>
         </div>
       </div>
 
@@ -206,6 +417,48 @@ const SlideDocumentation = () => {
   const navigate = useNavigate();
   const contentRef = useRef(null);
   const [copyStatus, setCopyStatus] = useState(null);
+
+  // Allow the Design Agent (running on a different port) to bypass edit-mode
+  // gating when it loads this page in an iframe with ?screenshot=1
+  const screenshotMode = typeof window !== 'undefined'
+    && new URLSearchParams(window.location.search).get('screenshot') === '1';
+
+  // postMessage handler — Design Agent embeds this page in an iframe and
+  // requests captures of specific templates. We respond with base64 dataURLs.
+  useEffect(() => {
+    if (!screenshotMode) return;
+    async function handleMessage(ev) {
+      const msg = ev.data;
+      if (!msg || msg.type !== 'capture-template') return;
+      const key = msg.key;
+      try {
+        // Find the rendered TemplatePreview for this key in the showcase grid
+        const el = document.querySelector(`[data-template-preview="${key}"]`);
+        if (!el) {
+          ev.source?.postMessage({ type: 'capture-result', key, error: `template element for "${key}" not found` }, ev.origin);
+          return;
+        }
+        // Wait a tick for any lazy media to settle
+        await new Promise((r) => setTimeout(r, 250));
+        const canvas = await html2canvas(el, {
+          backgroundColor: getComputedStyle(document.body).backgroundColor || '#ffffff',
+          scale: 1.5,
+          useCORS: true,
+          logging: false,
+        });
+        const dataURL = canvas.toDataURL('image/jpeg', 0.85);
+        ev.source?.postMessage({ type: 'capture-result', key, dataURL }, ev.origin);
+      } catch (err) {
+        ev.source?.postMessage({ type: 'capture-result', key, error: String(err.message || err) }, ev.origin);
+      }
+    }
+    window.addEventListener('message', handleMessage);
+    // Tell parent we're ready
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({ type: 'screenshot-ready' }, '*');
+    }
+    return () => window.removeEventListener('message', handleMessage);
+  }, [screenshotMode]);
   const [previewSlide, setPreviewSlide] = useState(null); // template key for full-screen preview
 
   // Keyboard navigation for slide preview
@@ -227,8 +480,9 @@ const SlideDocumentation = () => {
   }, [previewSlide]);
 
   useEffect(() => {
+    if (screenshotMode) return;
     if (!editMode) navigate('/', { replace: true });
-  }, [editMode, navigate]);
+  }, [editMode, navigate, screenshotMode]);
 
   const allDocs = useMemo(() => {
     return buildTemplateDocumentation();
@@ -278,7 +532,86 @@ const SlideDocumentation = () => {
     });
   }, []);
 
-  if (!editMode) return null;
+  const [jsonMenuOpen, setJsonMenuOpen] = useState(false);
+  const [jsonCopied, setJsonCopied] = useState(null);
+
+  const copyAllJson = useCallback((variant) => {
+    let text;
+    let mime = 'text/plain';
+    if (variant === 'templates') {
+      text = JSON.stringify(slideTemplates, null, 2);
+      mime = 'application/json';
+    } else if (variant === 'full') {
+      const payload = {};
+      for (const docEntry of allDocs) {
+        payload[docEntry.key] = {
+          key: docEntry.key,
+          type: docEntry.type,
+          category: docEntry.category,
+          template: slideTemplates[docEntry.key],
+          documentation: slideTemplateDocs[docEntry.key] || null,
+          fields: docEntry.fields,
+        };
+      }
+      text = JSON.stringify(payload, null, 2);
+      mime = 'application/json';
+    } else if (variant === 'md') {
+      text = buildAllTemplatesMarkdown(allDocs, grouped);
+      mime = 'text/markdown';
+    }
+    navigator.clipboard.writeText(text).then(
+      () => {
+        setJsonCopied(variant);
+        setJsonMenuOpen(false);
+        setTimeout(() => setJsonCopied(null), 2000);
+      },
+      () => {
+        setJsonCopied('error');
+        setTimeout(() => setJsonCopied(null), 2000);
+      }
+    );
+    // Stash for download button
+    lastBuiltRef.current = { text, mime, variant };
+  }, [allDocs, grouped]);
+
+  const downloadAll = useCallback((variant) => {
+    let text, mime, filename;
+    if (variant === 'templates') {
+      text = JSON.stringify(slideTemplates, null, 2);
+      mime = 'application/json';
+      filename = 'slide-templates.json';
+    } else if (variant === 'full') {
+      const payload = {};
+      for (const docEntry of allDocs) {
+        payload[docEntry.key] = {
+          key: docEntry.key,
+          type: docEntry.type,
+          category: docEntry.category,
+          template: slideTemplates[docEntry.key],
+          documentation: slideTemplateDocs[docEntry.key] || null,
+          fields: docEntry.fields,
+        };
+      }
+      text = JSON.stringify(payload, null, 2);
+      mime = 'application/json';
+      filename = 'slide-templates.full.json';
+    } else if (variant === 'md') {
+      text = buildAllTemplatesMarkdown(allDocs, grouped);
+      mime = 'text/markdown';
+      filename = 'slide-templates.md';
+    }
+    const blob = new Blob([text], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setJsonMenuOpen(false);
+  }, [allDocs, grouped]);
+
+  const lastBuiltRef = useRef(null);
+
+  if (!editMode && !screenshotMode) return null;
 
   return (
     <div className="docs-page">
@@ -286,6 +619,82 @@ const SlideDocumentation = () => {
       <button className={`docs-copy-btn ${copyStatus ? 'docs-copy-btn--done' : ''}`} onClick={handleCopyAll}>
         {copyStatus === 'copied' ? 'Copied!' : copyStatus === 'selected' ? 'Selected!' : 'Copy All for ChatGPT'}
       </button>
+
+      {/* Sticky JSON copy menu */}
+      <div className="docs-copy-json-wrap">
+        <button
+          type="button"
+          className={`docs-copy-json-btn ${jsonCopied ? 'docs-copy-json-btn--done' : ''}`}
+          onClick={() => setJsonMenuOpen((v) => !v)}
+        >
+          {jsonCopied === 'templates'
+            ? '✓ templates copied'
+            : jsonCopied === 'full'
+              ? '✓ full JSON copied'
+              : jsonCopied === 'error'
+                ? 'copy failed'
+                : 'Copy JSON ↓'}
+        </button>
+        {jsonMenuOpen && (
+          <>
+            <div className="docs-copy-json-backdrop" onClick={() => setJsonMenuOpen(false)} />
+            <div className="docs-copy-json-menu">
+              <button
+                type="button"
+                className="docs-copy-json-item"
+                onClick={() => copyAllJson('templates')}
+              >
+                <span className="docs-copy-json-item-title">All template defaults</span>
+                <span className="docs-copy-json-item-sub">
+                  {`{ ${Object.keys(slideTemplates).length} keys → default slide JSON }`}
+                </span>
+              </button>
+              <button
+                type="button"
+                className="docs-copy-json-item"
+                onClick={() => copyAllJson('full')}
+              >
+                <span className="docs-copy-json-item-title">All templates + explanations</span>
+                <span className="docs-copy-json-item-sub">
+                  Each key has template, documentation, fields, category
+                </span>
+              </button>
+              <button
+                type="button"
+                className="docs-copy-json-item"
+                onClick={() => copyAllJson('md')}
+              >
+                <span className="docs-copy-json-item-title">All templates as Markdown</span>
+                <span className="docs-copy-json-item-sub">
+                  Human-readable docs · TOC, per-template sections, examples, field tables
+                </span>
+              </button>
+              <div className="docs-copy-json-divider">Download instead ↓</div>
+              <button
+                type="button"
+                className="docs-copy-json-item docs-copy-json-item--small"
+                onClick={() => downloadAll('templates')}
+              >
+                Download templates.json
+              </button>
+              <button
+                type="button"
+                className="docs-copy-json-item docs-copy-json-item--small"
+                onClick={() => downloadAll('full')}
+              >
+                Download templates.full.json
+              </button>
+              <button
+                type="button"
+                className="docs-copy-json-item docs-copy-json-item--small"
+                onClick={() => downloadAll('md')}
+              >
+                Download templates.md
+              </button>
+            </div>
+          </>
+        )}
+      </div>
 
       <div ref={contentRef}>
         {/* Header */}
@@ -308,7 +717,7 @@ const SlideDocumentation = () => {
           <div className="docs-showcase-grid">
             {Object.keys(slideTemplates).map((key) => (
               <button key={key} type="button" className="docs-showcase-card" onClick={() => setPreviewSlide(key)}>
-                <div className="docs-showcase-preview">
+                <div className="docs-showcase-preview" data-template-preview={key}>
                   <TemplatePreview type={key} />
                 </div>
                 <div className="docs-showcase-name">{key}</div>

@@ -374,14 +374,14 @@ export const EditProvider = ({ children }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content, styles }),
     });
-    const json = await res.json();
+    const json = await res.json().catch(() => ({ ok: false, error: `HTTP ${res.status} (no API on this host)` }));
     if (!json.ok) throw new Error(json.error || 'Save failed');
     return json;
   };
 
   const gitPush = async () => {
     const res = await fetch('/api/git-push', { method: 'POST' });
-    const json = await res.json();
+    const json = await res.json().catch(() => ({ ok: false, error: `HTTP ${res.status} (no API on this host)` }));
     if (!json.ok) throw new Error(json.error || 'Push failed');
     return json;
   };

@@ -30,16 +30,39 @@ export const slideTemplates = {
     introHeaderMode: 'both', // 'both' = title + logo at bottom, 'logo' = logo only in title position
     splitRatio: 50,
     cta: null, // { label, url } — optional call-to-action button
+    // Front-load role + timeline + team + tools so the recruiter can infer
+    // seniority in the first 3 lines (overrides legacy client/focus when present).
+    metaItems: [
+      { label: 'Role', value: 'Lead Product Designer' },
+      { label: 'Timeline', value: '6 weeks · Q1 2025' },
+      { label: 'Team', value: '1 PM · 2 engineers · 1 researcher' },
+      { label: 'Tools', value: 'Figma · Maze · Notion' },
+    ],
+    // Headline impact metric surfaced near the title so it's caught in the
+    // first 6 seconds of scanning. Hero image still uses the existing `image`
+    // field on the right side of the split layout.
+    headlineMetric: null, // { value: '+47%', label: 'Task completion', context: '12K sessions' }
   },
   info: {
     type: 'info',
     title: 'Project Overview',
+    // One-line vivid hook that establishes user pain and stakes — shown above
+    // metadata so the reader cares before scanning project details.
+    intro: '',
+    // Headline impact metric — rendered as a prominent banner under the title
+    // so hiring managers catch the result in the first 6 seconds.
+    headlineMetric: null, // { value: '+47%', label: 'Task completion', context: '12K sessions, 4 weeks post-launch' }
     items: [
+      { label: 'Role', value: 'Lead Product Designer' },
+      { label: 'Timeline', value: '6 weeks · Q1 2025' },
+      { label: 'Team', value: '1 PM · 2 eng · 1 researcher' },
+      { label: 'Tools', value: 'Figma · Maze · Notion' },
       { label: 'Client', value: 'Client Name' },
-      { label: 'Role', value: 'Your Role' },
-      { label: 'Duration', value: 'Timeline' },
-      { label: 'Deliverables', value: 'What you delivered' },
+      { label: 'Project type', value: 'Greenfield · B2B SaaS' },
     ],
+    // Methodology — named upfront with one-line phase breakdown, each phase
+    // optionally linked to the case study section that proves it.
+    methodology: null, // { name: 'Double Diamond', phases: [{ name: 'Discover', description: 'Stakeholder interviews + analytics audit' }, ...] }
     cta: null,
   },
   media: {
@@ -88,11 +111,15 @@ export const slideTemplates = {
     type: 'stats',
     label: 'Results',
     title: 'Impact Metrics',
+    // Featured headline stat — the single most impressive number, leads the scan.
+    headline: null, // { value: '+47%', label: 'Task completion rate', context: 'measured across 12K sessions, 4 weeks post-launch' }
     stats: [
       { value: '50%', label: 'Improvement metric' },
       { value: '30%', label: 'Another metric' },
       { value: '95%', label: 'Success metric' },
     ],
+    // One sentence connecting the result back to the original problem.
+    linkbackToProblem: '',
   },
   outcomes: {
     type: 'outcomes',
@@ -221,20 +248,6 @@ export const slideTemplates = {
     role: 'CEO, Company',
   },
   
-  // Project Showcase - Two column layout with info panel and image
-  projectShowcase: {
-    type: 'projectShowcase',
-    slideNumber: '03',
-    title: 'Project Name',
-    subtitle: '',
-    description: 'Brief description of the project and what it does.',
-    tags: ['UX', 'Design', 'Development'],
-    logo: '',
-    projectShowcaseHeader: 'both', // 'both' | 'title' | 'logo'
-    image: '',
-  },
-
-
   // Image Mosaic - Tiled images background with centered title overlay
   imageMosaic: {
     type: 'imageMosaic',
@@ -250,6 +263,36 @@ export const slideTemplates = {
     subtitle: 'Understanding the problem space',
   },
 
+  // === ADDED FOR FULL CASE-STUDY COVERAGE ===
+
+  // Ideation — before/after-style columns (up to 3), each a design direction
+  // with an Accepted / Rejected status chip, image, and description.
+  directions: {
+    type: 'directions',
+    label: 'Ideation',
+    title: 'Directions explored',
+    directionCount: 3,
+    dir1Status: 'rejected',
+    dir1Desc: 'Direction A — explored but set aside.',
+    dir2Status: 'rejected',
+    dir2Desc: 'Direction B — explored but set aside.',
+    dir3Status: 'accepted',
+    dir3Desc: 'Chosen direction — best balance of user value and feasibility.',
+  },
+
+  // Reflection — self-aware, structured. Senior signal: name what failed,
+  // what you couldn't measure, what you'd test next.
+  reflection: {
+    type: 'reflection',
+    label: 'Reflection',
+    title: "What I'd do differently",
+    whatWorked: ['Early test rounds caught the inverted mental model in week 2'],
+    whatFailed: ['I scoped the personas too late — they ended up post-rationalizing decisions'],
+    whatYoudDoDifferently: ['Pair with engineering before final designs, not after — would have avoided two costly rework cycles'],
+    whatYouLearned: 'Stakeholder alignment is more about cadence than artifacts. Weekly 30-min syncs beat polished biweekly reviews every time.',
+    whatYouCouldntMeasure: 'Long-term retention impact — would need 6+ months of post-launch data.',
+    nextIteration: 'A/B test the simpler reduced-density version against the current production version.',
+  },
 
 };
 
@@ -258,11 +301,11 @@ export const templateCategories = {
   'Introduction': ['intro', 'info', 'chapter'],
   'Visual': ['media', 'imageMosaic'],
   'Layout': ['testimonial'],
-  'Showcase': ['projectShowcase'],
   'Research': ['textAndImage', 'issuesBreakdown', 'quotes'],
+  'Define': ['directions'],
   'Process': ['goals', 'achieveGoals', 'process', 'timeline'],
   'Features': ['comparison', 'tools'],
-  'Results': ['stats', 'outcomes', 'end'],
+  'Results': ['stats', 'outcomes', 'reflection', 'end'],
 };
 
 export const defaultCaseStudies = {
@@ -950,19 +993,6 @@ export const defaultCaseStudies = {
         image: '',
         splitRatio: 50,
       },
-      // ─── projectShowcase ───
-      {
-        type: 'projectShowcase',
-        label: 'projectShowcase',
-        slideNumber: '01',
-        title: 'Project Showcase',
-        subtitle: 'Feature highlight template',
-        description: 'Two-column layout with large number, title, description, and tag chips on the left. Full image on the right.',
-        tags: ['UX Design', 'Interaction', 'MedTech'],
-        projectShowcaseHeader: 'both',
-        image: '',
-        splitRatio: 50,
-      },
       // ─── imageMosaic ───
       {
         type: 'imageMosaic',
@@ -1275,15 +1305,6 @@ export const defaultCaseStudies = {
         title: 'Rebuilding around real workflows',
         content: 'Rather than making isolated UI improvements, the redesign focused on restructuring the product around the three workflows that mattered most.\n\nEach flow was addressed independently, while maintaining consistency across the system.',
       },
-      // Slide 9: Flow 01 - Patient Management Title
-      {
-        type: 'projectShowcase',
-        number: '01',
-        title: 'Patient Management',
-        description: 'Finding and understanding patient information',
-        tags: ['Workflow', 'Information Architecture', 'Navigation'],
-        image: '',
-      },
       // Slide 10: Flow 01 - Before/After
       {
         type: 'comparison',
@@ -1295,15 +1316,6 @@ export const defaultCaseStudies = {
           { label: 'The Solution', columnLabel: 'The Solution:', image: '', embedUrl: '', bullets: ['A dedicated patient page centralized all patient-related information', 'Clear separation between patient info, plans, and progress', 'Adherence metrics made prominent', 'Predictable navigation between views'], bulletsTitle: '' },
         ],
       },
-      // Slide 11: Flow 02 - Care Plan Editing Title
-      {
-        type: 'projectShowcase',
-        number: '02',
-        title: 'Care Plan Editing',
-        description: 'Reducing everyday friction in routine tasks',
-        tags: ['Workflow', 'UI Design', 'Efficiency'],
-        image: '',
-      },
       // Slide 12: Flow 02 - Before/After
       {
         type: 'comparison',
@@ -1314,15 +1326,6 @@ export const defaultCaseStudies = {
           { label: 'The Problem', columnLabel: 'The Problem:', image: '', embedUrl: '', bullets: ['Editing a care plan required navigating through 4–5 different screens, causing loss of context and cognitive fatigue. Exercises were displayed in cluttered lists, making errors more likely.'], bulletsTitle: '' },
           { label: 'The Solution', columnLabel: 'The Solution:', image: '', embedUrl: '', bullets: ['Care plan editor redesigned into a single focused screen', 'Exercises displayed as modular cards', 'Inline editing without modals or page changes', 'Patient health data pinned as a constant reference'], bulletsTitle: '' },
         ],
-      },
-      // Slide 13: Flow 03 - Protocol Builder Title
-      {
-        type: 'projectShowcase',
-        number: '03',
-        title: 'Creating a Protocol',
-        description: 'Supporting expert customization from scratch',
-        tags: ['Workflow', 'Drag & Drop', 'Expert Users'],
-        image: '',
       },
       // Slide 14: Flow 03 - Insight
       {

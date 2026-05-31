@@ -39,6 +39,121 @@
   background: #28a745;
 }
 
+/* JSON copy menu — sticky, sits below the Copy-All button */
+.docs-copy-json-wrap {
+  position: sticky;
+  top: 130px;
+  float: right;
+  clear: right;
+  z-index: 99;
+  margin-top: 8px;
+}
+.docs-copy-json-btn {
+  padding: 0.5em 1em;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.docs-copy-json-btn:hover {
+  background: var(--color-border);
+  border-color: var(--color-text);
+}
+.docs-copy-json-btn--done {
+  background: #28a745;
+  color: #fff;
+  border-color: #28a745;
+}
+.docs-copy-json-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+.docs-copy-json-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 101;
+  min-width: 280px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+  overflow: hidden;
+}
+.docs-copy-json-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.75em 1em;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  transition: background 0.15s;
+}
+.docs-copy-json-item:last-child {
+  border-bottom: none;
+}
+.docs-copy-json-item:hover {
+  background: var(--color-border);
+}
+.docs-copy-json-item-title {
+  display: block;
+  font-size: var(--text-body);
+  font-weight: var(--fw-medium);
+  margin-bottom: 2px;
+}
+.docs-copy-json-item-sub {
+  display: block;
+  font-size: var(--text-caption);
+  opacity: 0.7;
+}
+.docs-copy-json-divider {
+  padding: 0.45em 1em;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text);
+  opacity: 0.55;
+  background: var(--color-border);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+.docs-copy-json-item--small {
+  padding: 0.55em 1em;
+  font-size: var(--text-caption);
+}
+
+/* Per-template card copy buttons */
+.docs-card-copy-btn {
+  padding: 3px 9px;
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  margin-left: 4px;
+}
+.docs-card-copy-btn:hover {
+  background: var(--color-border);
+  border-color: var(--color-text);
+}
+
 /* Open section (replaces collapsibles) */
 .docs-open-section {
   margin: var(--spacing-xs) 0;

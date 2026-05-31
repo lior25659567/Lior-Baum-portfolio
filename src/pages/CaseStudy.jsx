@@ -1,5 +1,5 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useRef, useState, useEffect, useCallback, Component, memo, useMemo } from 'react';
+import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useRef, useState, useEffect, useLayoutEffect, useCallback, Component, memo, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import AnimatedButton from '../components/AnimatedButton';
@@ -9,6 +9,8 @@ import { slideTemplateDocs } from '../data/slideTemplateDocs';
 import { IFRAME_FILES } from '../iframes';
 import imageVariantManifest from '../data/case-study-image-variants.json';
 import './CaseStudy.css';
+import './CaseStudy.site.css';
+import { exportCaseStudyToPdf } from '../utils/exportCaseStudyPdf';
 
 // ─── Responsive media helpers ────────────────────────────────────────────
 // The build pipeline emits:
@@ -405,20 +407,21 @@ const TemplatePreview = ({ type }) => {
     media: 'Full media slide supporting images, videos, Figma embeds, and video URL embeds.',
     textAndImage: 'Split layout: text (label, title, body, bullets, optional conclusion, highlight) on the left, image on the right.',
     quotes: 'User research quotes displayed in a card grid layout.',
-    goals: 'Goals with numbered items and KPI cards at the bottom.',
+    goals: 'Two columns: numbered KPI goals on the left, big-number key metrics on the right, split by a divider.',
     stats: 'Large statistics display with values and labels in a grid.',
-    outcomes: 'Results grid showing outcomes with titles and descriptions.',
+    outcomes: 'Results as cards, each leading with a big accent metric, then title and description.',
     end: 'Thank you slide with CTA buttons.',
     comparison: 'Before/After comparison with two images side by side.',
+    directions: 'Up to three explored directions side by side — each with an image, an Accepted/Rejected status chip, and a description. Styled like the Before/After slide.',
     process: 'Process steps displayed horizontally with numbers and descriptions.',
-    timeline: 'Vertical timeline showing project phases or events.',
-    tools: 'Tools and technologies grid with names and descriptions.',
+    timeline: 'Horizontal timeline of project phases or events on a connector line.',
+    tools: 'Tools and technologies as soft accent cards, each with a circle marker.',
     testimonial: 'Large quote/testimonial centered on the slide.',
     issuesBreakdown: 'Issues displayed in a 2x2 grid with numbered circles. Includes conclusion box.',
     achieveGoals: 'Two-column layout with KPIs on the left and Key Metrics on the right, each with numbered items.',
-    projectShowcase: 'Two-column layout with large number, title, description, tags, and optional logo on left. Full image on right.',
     imageMosaic: 'Tiled image grid background with a centered title overlay. Perfect for showing old versions, screen collections, or visual overviews.',
-    chapter: 'Section divider slide with large number, title, and optional subtitle. Use to separate case study chapters.',
+    chapter: 'Section divider with a large accent index number, title, and optional subtitle.',
+    reflection: 'Three columns — what worked, what to change, what\'s next — as accent-dot bullet lists.',
   };
 
   return (
@@ -484,33 +487,32 @@ const TemplatePreview = ({ type }) => {
           )}
           {type === 'quotes' && (
             <div className="mockup-quotes">
-              <div className="mockup-quote-card">
-                <span className="quote-mark">"</span>
-                <div className="line" />
-                <div className="mockup-quote-author" />
-              </div>
-              <div className="mockup-quote-card">
-                <span className="quote-mark">"</span>
-                <div className="line" />
-                <div className="mockup-quote-author" />
-              </div>
-              <div className="mockup-quote-card">
-                <span className="quote-mark">"</span>
-                <div className="line" />
-                <div className="mockup-quote-author" />
-              </div>
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="mockup-quote-card">
+                  <span className="quote-mark">"</span>
+                  <div className="line" />
+                  <div className="line short" />
+                  <div className="mockup-quote-divider" />
+                  <div className="mockup-quote-attr">
+                    <span className="mockup-quote-avatar" />
+                    <div className="mockup-quote-author" />
+                  </div>
+                </div>
+              ))}
             </div>
           )}
           {type === 'goals' && (
-            <div className="mockup-goals-detailed">
-              <div className="mockup-goals-list">
-                <div className="mockup-goal"><span>1</span><div className="mockup-goal-content"><div className="line" /></div></div>
-                <div className="mockup-goal"><span>2</span><div className="mockup-goal-content"><div className="line" /></div></div>
-                <div className="mockup-goal"><span>3</span><div className="mockup-goal-content"><div className="line" /></div></div>
+            <div className="mockup-goals-2col">
+              <div className="mockup-goals-col2">
+                <div className="mockup-col-title">KPI Goals</div>
+                <div className="mockup-goal-row"><span>1</span><div className="line" /></div>
+                <div className="mockup-goal-row"><span>2</span><div className="line short" /></div>
+                <div className="mockup-goal-row"><span>3</span><div className="line" /></div>
               </div>
-              <div className="mockup-kpis">
-                <div className="mockup-kpi">KPI 1</div>
-                <div className="mockup-kpi">KPI 2</div>
+              <div className="mockup-goals-col2 mockup-goals-metrics">
+                <div className="mockup-col-title">Key Metrics</div>
+                <div className="mockup-metric-row"><strong>40%</strong><div className="line short" /></div>
+                <div className="mockup-metric-row"><strong>2.5x</strong><div className="line short" /></div>
               </div>
             </div>
           )}
@@ -523,10 +525,8 @@ const TemplatePreview = ({ type }) => {
           )}
           {type === 'outcomes' && (
             <div className="mockup-outcomes">
-              <div className="mockup-outcome"><span>📈</span><div className="line">Result 1</div></div>
-              <div className="mockup-outcome"><span>⭐</span><div className="line">Result 2</div></div>
-              <div className="mockup-outcome"><span>🎯</span><div className="line">Result 3</div></div>
-              <div className="mockup-outcome"><span>💎</span><div className="line">Result 4</div></div>
+              <div className="mockup-outcome"><span className="mockup-outcome-metric">40%</span><div className="mockup-title-sm">Faster workflows</div><div className="line short" /></div>
+              <div className="mockup-outcome"><span className="mockup-outcome-metric">3x</span><div className="mockup-title-sm">Higher confidence</div><div className="line short" /></div>
             </div>
           )}
           {type === 'end' && (
@@ -548,23 +548,54 @@ const TemplatePreview = ({ type }) => {
               <div className="mockup-image" style={{ width: '100%' }}><span className="mockup-img-icon">📷</span></div>
             </div>
           )}
+          {type === 'directions' && (
+            <div className="mockup-directions">
+              <div className="mockup-title-sm">Directions explored</div>
+              <div className="mockup-directions-cols">
+                <div className="mockup-direction">
+                  <div className="mockup-direction-img">
+                    <span className="mockup-dir-chip rejected">Rejected</span>
+                    <span className="mockup-img-icon">🖼</span>
+                  </div>
+                  <div className="line short" />
+                </div>
+                <div className="mockup-direction">
+                  <div className="mockup-direction-img">
+                    <span className="mockup-dir-chip rejected">Rejected</span>
+                    <span className="mockup-img-icon">🖼</span>
+                  </div>
+                  <div className="line short" />
+                </div>
+                <div className="mockup-direction">
+                  <div className="mockup-direction-img">
+                    <span className="mockup-dir-chip accepted">Accepted</span>
+                    <span className="mockup-img-icon">🖼</span>
+                  </div>
+                  <div className="line short" />
+                </div>
+              </div>
+            </div>
+          )}
           {type === 'process' && (
             <div className="mockup-process">
-              <div className="mockup-step"><span>01</span><div className="step-title">Research</div></div>
-              <div className="mockup-step-arrow">→</div>
-              <div className="mockup-step"><span>02</span><div className="step-title">Design</div></div>
-              <div className="mockup-step-arrow">→</div>
-              <div className="mockup-step"><span>03</span><div className="step-title">Test</div></div>
-              <div className="mockup-step-arrow">→</div>
-              <div className="mockup-step"><span>04</span><div className="step-title">Launch</div></div>
+              {[['01', 'Research'], ['02', 'Design'], ['03', 'Test'], ['04', 'Launch']].map(([n, label]) => (
+                <div key={n} className="mockup-step">
+                  <span className="mockup-step-num">{n}</span>
+                  <div className="step-title">{label}</div>
+                  <div className="line short" />
+                </div>
+              ))}
             </div>
           )}
           {type === 'timeline' && (
-            <div className="mockup-timeline">
-              <div className="mockup-event"><span className="event-date">Q1</span><div className="event-content">Phase 1</div></div>
-              <div className="mockup-event"><span className="event-date">Q2</span><div className="event-content">Phase 2</div></div>
-              <div className="mockup-event"><span className="event-date">Q3</span><div className="event-content">Phase 3</div></div>
-              <div className="mockup-event"><span className="event-date">Q4</span><div className="event-content">Phase 4</div></div>
+            <div className="mockup-timeline-h">
+              {['Q1', 'Q2', 'Q3', 'Q4'].map((q) => (
+                <div key={q} className="mockup-tl-event">
+                  <span className="mockup-tl-dot" />
+                  <span className="event-date">{q}</span>
+                  <div className="line short" />
+                </div>
+              ))}
             </div>
           )}
           {type === 'testimonial' && (
@@ -576,9 +607,9 @@ const TemplatePreview = ({ type }) => {
           )}
           {type === 'tools' && (
             <div className="mockup-tools">
-              <div className="mockup-tool"><span>🎨</span><div>Figma</div></div>
-              <div className="mockup-tool"><span>⚛️</span><div>React</div></div>
-              <div className="mockup-tool"><span>📊</span><div>Analytics</div></div>
+              <div className="mockup-tool"><span className="mockup-tool-dot" /><div>Figma</div><div className="line short" /></div>
+              <div className="mockup-tool"><span className="mockup-tool-dot" /><div>Maze</div><div className="line short" /></div>
+              <div className="mockup-tool"><span className="mockup-tool-dot" /><div>Miro</div><div className="line short" /></div>
             </div>
           )}
           {type === 'issuesBreakdown' && (
@@ -626,22 +657,6 @@ const TemplatePreview = ({ type }) => {
               </div>
             </div>
           )}
-          {type === 'projectShowcase' && (
-            <div className="mockup-project-showcase">
-              <div className="mockup-ps-info">
-                <div className="mockup-ps-number">03</div>
-                <div className="mockup-ps-title">Project</div>
-                <div className="mockup-text-lines">
-                  <div className="line" /><div className="line short" />
-                </div>
-                <div className="mockup-ps-tags">UX • Design</div>
-                <div className="mockup-ps-logo" />
-              </div>
-              <div className="mockup-ps-visual">
-                <div className="mockup-image"><span className="mockup-img-icon large">🖼</span></div>
-              </div>
-            </div>
-          )}
           {type === 'imageMosaic' && (
             <div className="mockup-image-mosaic">
               <div className="mockup-mosaic-grid">
@@ -657,8 +672,23 @@ const TemplatePreview = ({ type }) => {
           {type === 'chapter' && (
             <div className="mockup-chapter">
               <div className="mockup-chapter-number">01</div>
+              <div className="mockup-chapter-rule" />
               <div className="mockup-chapter-title">Research</div>
               <div className="mockup-chapter-subtitle">Understanding the problem</div>
+            </div>
+          )}
+          {type === 'reflection' && (
+            <div className="mockup-reflection">
+              <div className="mockup-title-sm">What I'd do differently</div>
+              <div className="mockup-reflection-cols">
+                {[['worked', '✓'], ['failed', '✕'], ['next', '→']].map(([tone, icon]) => (
+                  <div key={tone} className="mockup-reflection-col">
+                    <span className={`mockup-reflection-icon ${tone}`}>{icon}</span>
+                    <div className="mockup-reflection-bullet"><span /><div className="line" /></div>
+                    <div className="mockup-reflection-bullet"><span /><div className="line short" /></div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -969,6 +999,54 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
     document.body.appendChild(inp); inp.click();
     setTimeout(() => { try { inp.remove(); } catch (_) {} }, 500);
   };
+
+  // ══ BEFORE / AFTER — static two-column layout (Figma 1126:3526) ══
+  // Title spans the top; Before + After render as two equal columns, each
+  // with a label, image, and description. No switcher/toggle — both visible.
+  if (slideMode === 'before-after') {
+    return (
+      <div className="slide slide-problem slide-comparison-unified slide-before-after mode-before-after" style={spacingStyle}>
+        {slideControls}
+        {titleSpacingControl}
+        <div className="slide-inner ba-inner">
+          <span className="slide-label">
+            <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
+          </span>
+          <h2 className="problem-title ba-title">
+            <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
+          </h2>
+          <DynamicContent slide={slide} slideIndex={index} field="description" className="comparison-description-wrapper" maxParagraphs={2} optional />
+          <div className="ba-columns">
+            <div className="ba-col ba-col-before">
+              <span className="ba-col-label">
+                <EditableField value={beforeLabel} onChange={(v) => updateSlide(index, { beforeLabel: v || undefined })} />
+              </span>
+              <DynamicImages slide={slide} slideIndex={index} field="beforeImage" className="ba-col-images" />
+              <OptionalField slide={slide} index={index} field="beforeDescription" label="Before Description" defaultValue="Describe the before state..." multiline>
+                <p className="ba-col-desc"><EditableField value={slide.beforeDescription} onChange={(v) => updateSlide(index, { beforeDescription: v })} multiline /></p>
+              </OptionalField>
+              <DynamicBullets slide={slide} slideIndex={index} field="beforeBullets" titleField="beforeBulletsTitle" className="comparison-side-bullets" label="Before Point" />
+            </div>
+            <div className="ba-col ba-col-after">
+              <span className="ba-col-label ba-after-label">
+                <EditableField value={afterLabel} onChange={(v) => updateSlide(index, { afterLabel: v || undefined })} />
+              </span>
+              <DynamicImages slide={slide} slideIndex={index} field="afterImage" className="ba-col-images" />
+              <OptionalField slide={slide} index={index} field="afterDescription" label="After Description" defaultValue="Describe the after state..." multiline>
+                <p className="ba-col-desc"><EditableField value={slide.afterDescription} onChange={(v) => updateSlide(index, { afterDescription: v })} multiline /></p>
+              </OptionalField>
+              <DynamicBullets slide={slide} slideIndex={index} field="afterBullets" titleField="afterBulletsTitle" className="comparison-side-bullets" label="After Point" />
+            </div>
+          </div>
+          <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+            <div className="problem-highlight">
+              <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+            </div>
+          </OptionalField>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`slide slide-problem slide-comparison-unified mode-${slideMode}`} style={spacingStyle}>
@@ -1391,7 +1469,20 @@ const CaseStudy = () => {
   const { editMode, setEditMode, setShowPanel, content, styles } = useEdit(); // Use global edit mode from context
   const [project, setProject] = useState(() => migrateCaseStudyImagePathsToWebp(getCaseStudyData(projectId)));
   const containerRef = useRef(null);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  /* Deep-link support: `?slide=N` (1-indexed) opens the deck on that slide.
+     Out-of-range values clamp to 0; missing/invalid params open on slide 0.
+     The URL is kept in sync as the user navigates (see effect below). */
+  const [currentSlide, setCurrentSlide] = useState(() => {
+    if (typeof window === 'undefined') return 0;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const fromUrl = parseInt(params.get('slide') || '', 10);
+      if (Number.isFinite(fromUrl) && fromUrl > 0) return fromUrl - 1;
+    } catch { /* ignore */ }
+    return 0;
+  });
+  const [pdfExporting, setPdfExporting] = useState(false);
+  const [pdfProgress, setPdfProgress] = useState(null);
   /* Bumped in `go()` when switching to a different project. Used as the
      .slides-track key so framer-motion treats the new project's first
      slide as a fresh mount — no x-tween from the old end position. */
@@ -1483,6 +1574,24 @@ const CaseStudy = () => {
       setCurrentSlide(totalSlides - 1);
     }
   }, [totalSlides, currentSlide]);
+
+  // Display mode is locked to 'slides' — the site/scroll-page option was removed.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isSiteMode = false;
+
+  /* Sync currentSlide → URL `?slide=N` so deep-links stay accurate as the
+     user navigates. 1-indexed in URL for human-friendly sharing; the
+     `slide` param is omitted on slide 0 (the default) to keep URLs clean.
+     `replace: true` avoids polluting browser history with every step. */
+  useEffect(() => {
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      if (currentSlide <= 0) params.delete('slide');
+      else params.set('slide', String(currentSlide + 1));
+      return params;
+    }, { replace: true });
+  }, [currentSlide, setSearchParams]);
+
   const [slideNavVisible, setSlideNavVisible] = useState(false);
   const slideNavHideTimeoutRef = useRef(null);
   const hideSlideNavRef = useRef(null);
@@ -1514,16 +1623,18 @@ const CaseStudy = () => {
     currentScaleRef.current = baseFitScaleRef.current || 1;
   }, [currentSlide]);
 
-  // ── View-mode slide-level fit-scaler ─────────────────────────────────────
-  // Unified replacement for the previous goals-only auto-shrink. In view
-  // mode only, measure the active slide's natural content height and, when
-  // it exceeds the available area, apply a transform: scale() to the entire
-  // .slide-inner via --fit-scale-slide. Falls back to the per-card pass
-  // (--fit-scale on .goals-cards-section / .kpis-section) only when the
-  // slide already fits at scale 1, so we never compound transforms.
-  useEffect(() => {
+  // ── Figma-canvas scaler (view mode only) ─────────────────────────────────
+  // Each .slide-inner is a fixed 1920×1080 artboard. Compute
+  // --slide-canvas-scale = min(slideWidth/1920, slideHeight/1080) so the
+  // artboard fits inside the visible row with letterboxing on non-16:9
+  // aspect ratios. The CSS at .case-study:not(.edit-mode) .slide-inner
+  // reads this var and applies transform: scale(var(--slide-canvas-scale)).
+  useLayoutEffect(() => {
     if (editMode) {
       // Strip any leftover view-mode transform state when entering edit mode.
+      document.querySelectorAll('.case-study .slide').forEach((el) => {
+        el.style.removeProperty('--slide-canvas-scale');
+      });
       document.querySelectorAll('.slide-inner[data-fit-active]').forEach((el) => {
         el.style.removeProperty('--fit-scale-slide');
         el.removeAttribute('data-fit-active');
@@ -1534,93 +1645,56 @@ const CaseStudy = () => {
       return;
     }
 
-    const runCardLevelFitPass = (slideEl) => {
-      const wrappers = slideEl.querySelectorAll('.goals-cards-section-wrapper, .kpis-section-wrapper');
-      wrappers.forEach((w) => {
-        const target = w.querySelector('.goals-cards-section, .kpis-section');
-        if (!target) return;
-        target.style.setProperty('--fit-scale', '1');
-      });
-      // Force one reflow, then re-measure.
-      void slideEl.offsetHeight;
-      wrappers.forEach((w) => {
-        const target = w.querySelector('.goals-cards-section, .kpis-section');
-        if (!target) return;
-        const avail = w.clientHeight;
-        const needed = target.scrollHeight;
-        if (needed <= avail + 1) return;
-        target.style.setProperty('--fit-scale', String(Math.max(0.55, (avail / needed) * 0.98)));
-      });
-    };
+    const SLIDE_W = 1920;
+    const SLIDE_H = 1080;
 
-    const fitSlide = (slideEl) => {
-      if (!slideEl) return;
-      const inner = slideEl.querySelector(':scope > .slide-inner');
-      if (!inner) return;
-      // Phase 1: lift the view-mode cap and reset the scale so we can read
-      // the natural (unconstrained) content height.
-      inner.style.setProperty('--fit-scale-slide', '1');
-      inner.setAttribute('data-fit-active', 'true');
-      // Phase 2: measure the available content area and the natural needed height.
-      const cs = getComputedStyle(slideEl);
-      const avail = slideEl.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
-      const needed = inner.scrollHeight;
-      // Phase 3: if it fits, restore the cap (so content distributes to fill
-      // the slide visually) and run the secondary card-level pass. If it
-      // doesn't, keep the cap lifted and apply a uniform scale-down.
-      if (needed <= avail + 1) {
-        inner.removeAttribute('data-fit-active');
-        runCardLevelFitPass(slideEl);
-        return;
-      }
-      const FLOOR = 0.7;
-      const scale = Math.max(FLOOR, (avail / needed) * 0.99);
-      inner.style.setProperty('--fit-scale-slide', String(scale));
-      // data-fit-active stays true: cap stays lifted so the layout box can
-      // be tall while transform shrinks it visually within the .slide.
-    };
-
-    let rafId = null;
-    const schedule = () => {
-      if (rafId) return;
-      rafId = requestAnimationFrame(() => {
-        // Double-rAF: one frame to settle CSS-driven layout (fonts, grids),
-        // a second to ensure scrollHeight reads are stable before we measure.
-        rafId = requestAnimationFrame(() => {
-          rafId = null;
-          const slides = document.querySelectorAll('.case-study-slides-wrapper .slide');
-          const active = slides[currentSlide] || document.querySelector('.slide.is-active');
-          fitSlide(active);
-        });
+    const scaleAll = () => {
+      const slides = document.querySelectorAll('.case-study-slides-wrapper .slide');
+      slides.forEach((slideEl) => {
+        // Read the safe-area insets (reserved for case-nav top + nav-pill
+        // bottom). Falls back to 0 if the CSS vars aren't set.
+        const cs = getComputedStyle(slideEl);
+        const safeTop = parseFloat(cs.getPropertyValue('--slide-safe-top')) || 0;
+        const safeBottom = parseFloat(cs.getPropertyValue('--slide-safe-bottom')) || 0;
+        const w = slideEl.clientWidth;
+        const h = slideEl.clientHeight - safeTop - safeBottom;
+        if (!w || !h) return;
+        const scale = Math.min(w / SLIDE_W, h / SLIDE_H);
+        slideEl.style.setProperty('--slide-canvas-scale', String(scale));
       });
     };
 
-    schedule();
+    // Initial pass + on next two frames so fonts/images can settle before
+    // dimensions stabilize. This effect is a useLayoutEffect, so this first
+    // pass sets --slide-canvas-scale BEFORE the browser paints — the artboard
+    // never paints at the default scale 1 (oversized) and so never visibly
+    // "snaps"/shrinks into place on entry.
+    scaleAll();
 
-    // Observe the slides wrapper for size changes (devtools docking, OS
-    // chrome show/hide, browser window resize). visualViewport.resize
-    // covers browser-zoom changes that don't fire window resize.
     const wrapper = document.querySelector('.case-study-slides-wrapper');
-    const ro = wrapper ? new ResizeObserver(schedule) : null;
+    // Arm the transform transition only AFTER the first scale is applied, so
+    // the initial scale set is instant (no animated shrink) while genuine
+    // viewport-resize re-scales still animate. classList (not state) avoids a
+    // React re-render. See the .case-study.canvas-ready rule in CaseStudy.css.
+    const caseStudyRoot = wrapper ? wrapper.closest('.case-study') : null;
+    let raf1 = requestAnimationFrame(() => {
+      scaleAll();
+      if (caseStudyRoot) caseStudyRoot.classList.add('canvas-ready');
+      raf1 = requestAnimationFrame(scaleAll);
+    });
+
+    const ro = wrapper ? new ResizeObserver(scaleAll) : null;
     if (ro && wrapper) ro.observe(wrapper);
 
-    window.addEventListener('resize', schedule);
+    window.addEventListener('resize', scaleAll);
     const vv = window.visualViewport;
-    if (vv) vv.addEventListener('resize', schedule);
-
-    // Late-loading images can change scrollHeight after the initial measure.
-    // The capture-phase load listener catches them everywhere in the slide.
-    const onImgLoad = (e) => {
-      if (e.target instanceof HTMLImageElement) schedule();
-    };
-    document.addEventListener('load', onImgLoad, true);
+    if (vv) vv.addEventListener('resize', scaleAll);
 
     return () => {
-      if (rafId) cancelAnimationFrame(rafId);
+      if (raf1) cancelAnimationFrame(raf1);
       if (ro) ro.disconnect();
-      window.removeEventListener('resize', schedule);
-      if (vv) vv.removeEventListener('resize', schedule);
-      document.removeEventListener('load', onImgLoad, true);
+      window.removeEventListener('resize', scaleAll);
+      if (vv) vv.removeEventListener('resize', scaleAll);
     };
   }, [currentSlide, project, editMode]);
 
@@ -1977,6 +2051,9 @@ const CaseStudy = () => {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+    // Site mode renders a vertical scrolling page — let the browser handle
+    // wheel/keyboard/touch natively. Skip attaching slide-deck handlers.
+    if (isSiteMode) return;
 
     // When exiting edit mode, blur any focused input so keyboard nav works immediately
     if (!editMode && document.activeElement && document.activeElement !== document.body) {
@@ -2110,7 +2187,7 @@ const CaseStudy = () => {
       // Reset scrolling lock so navigation isn't stuck after editMode toggle
       isScrollingRef.current = false;
     };
-  }, [totalSlides, editMode, isMobileSlide]);
+  }, [totalSlides, editMode, isMobileSlide, isSiteMode]);
 
   const goToSlide = useCallback((direction) => {
     if (isScrollingRef.current) return;
@@ -2301,6 +2378,32 @@ const CaseStudy = () => {
     });
     setCurrentSlide(index + 1);
   }, []);
+
+  const handleExportPdf = useCallback(async () => {
+    if (pdfExporting) return;
+    const originalIndex = currentSlide;
+    setPdfExporting(true);
+    setPdfProgress({ phase: 'starting', i: 0, total: totalSlides });
+    try {
+      await exportCaseStudyToPdf({
+        totalSlides,
+        setCurrentSlide,
+        getActiveSlideElement: (i) => {
+          const slides = document.querySelectorAll('.slides-track .slide');
+          return slides[i] || null;
+        },
+        projectTitle: project?.title || projectId || 'case-study',
+        onProgress: (p) => setPdfProgress(p),
+      });
+    } catch (err) {
+      console.error('PDF export failed:', err);
+      alert('PDF export failed: ' + (err?.message || err));
+    } finally {
+      setPdfExporting(false);
+      setPdfProgress(null);
+      setCurrentSlide(originalIndex);
+    }
+  }, [pdfExporting, currentSlide, totalSlides, project?.title, projectId]);
 
   // Dynamic slide block CRUD
   const addBlock = useCallback((slideIndex, blockType, afterBlockIndex) => {
@@ -3157,7 +3260,7 @@ My instructions: `;
       strategy: ['strategy', 'approach', 'redesign strategy', 'framework', 'methodology'],
       flow: ['flow 0', 'flow 1', 'flow 2', 'flow 3', 'flow 4', 'flow 5'],
       solution: ['solution', 'how we solved', 'resolution'],
-      outcomes: ['outcomes', 'results', 'impact', 'what improved', 'what changed', 'improvements'],
+      outcomes: ['outcomes', 'results', 'what improved', 'what changed', 'improvements'],
       learnings: ['learnings', 'takeaways', 'reinforced', 'reflection', 'lessons', 'what this project'],
       end: ['thank you', 'thanks', 'get in touch', 'work together'],
       testing: ['testing', 'validation', 'usability test', 'experiment'],
@@ -5346,9 +5449,44 @@ My instructions: `;
     if (!editMode) return null;
 
     const ratio = slide.splitRatio || 50;
+    const panelRef = useRef(null);
+    // null = use CSS default anchor; {left, top} = user-dragged position (px, relative to offsetParent)
+    const [pos, setPos] = useState(null);
 
     const handleRatioChange = (newRatio) => {
       updateSlide(slideIndex, { splitRatio: Math.max(20, Math.min(80, newRatio)) });
+    };
+
+    const startDrag = (e) => {
+      // Don't start a drag from the preset buttons themselves
+      if (e.target.closest('.ratio-preset')) return;
+      e.preventDefault();
+      const panel = panelRef.current;
+      if (!panel) return;
+      const parent = panel.offsetParent || panel.parentElement;
+      const parentRect = parent.getBoundingClientRect();
+      const rect = panel.getBoundingClientRect();
+      const grabX = e.clientX - rect.left;
+      const grabY = e.clientY - rect.top;
+
+      const onMove = (moveE) => {
+        let left = moveE.clientX - parentRect.left - grabX;
+        let top = moveE.clientY - parentRect.top - grabY;
+        // Keep the panel within the parent bounds
+        left = Math.max(0, Math.min(parentRect.width - rect.width, left));
+        top = Math.max(0, Math.min(parentRect.height - rect.height, top));
+        setPos({ left, top });
+      };
+      const onUp = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      };
+      document.body.style.cursor = 'grabbing';
+      document.body.style.userSelect = 'none';
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
     };
 
     const presets = [
@@ -5359,7 +5497,16 @@ My instructions: `;
     ];
 
     return (
-      <div className="split-ratio-control">
+      <div
+        ref={panelRef}
+        className={`split-ratio-control${pos ? ' is-dragged' : ''}`}
+        style={pos ? { left: pos.left, top: pos.top, right: 'auto' } : undefined}
+        onMouseDown={startDrag}
+        data-no-slide-advance="true"
+      >
+        <span className="ratio-drag-grip" title="Drag to move" aria-hidden="true">
+          <span /><span /><span />
+        </span>
         <span className="ratio-label">Layout:</span>
         <div className="ratio-presets">
           {presets.map(preset => (
@@ -5721,11 +5868,6 @@ My instructions: `;
           { label: slide.clientLabel || 'Client', value: slide.client || 'Client Name' },
           { label: slide.focusLabel || 'Focus',   value: slide.focus  || 'Project Focus' },
         ];
-        const introHeaderMode = slide.introHeaderMode || 'both'; // 'both' = title + logo at bottom, 'logo' = logo in title position only
-        const showTitle = introHeaderMode === 'both';
-        const showLogoInTitlePosition = introHeaderMode === 'logo';
-        const showLogoAtBottom = introHeaderMode === 'both';
-
         const introLogoBlock = (wrapperClass = '', imgClass = '') => (slide.logo || editMode) && (
           <div className={`intro-logo ${wrapperClass}`.trim()}>
             <div
@@ -5768,28 +5910,8 @@ My instructions: `;
               {/* ── Left: content ── */}
               <div className="intro-content">
 
-                {/* Header mode: Title + Logo (logo at bottom) | Logo only (logo in title position) */}
-                {editMode && (
-                  <div className="intro-header-mode-control">
-                    <span className="intro-header-mode-label">Header:</span>
-                    <button
-                      type="button"
-                      className={`intro-header-mode-btn ${introHeaderMode === 'both' ? 'active' : ''}`}
-                      onClick={() => updateSlide(index, { introHeaderMode: 'both' })}
-                      title="Show title with logo at bottom"
-                    >
-                      Title + Logo
-                    </button>
-                    <button
-                      type="button"
-                      className={`intro-header-mode-btn ${introHeaderMode === 'logo' ? 'active' : ''}`}
-                      onClick={() => updateSlide(index, { introHeaderMode: 'logo' })}
-                      title="Show only logo in title position"
-                    >
-                      Logo only
-                    </button>
-                  </div>
-                )}
+                {/* Logo chip at top */}
+                {introLogoBlock('intro-logo-chip', '')}
 
                 {/* Label */}
                 <OptionalField slide={slide} index={index} field="label" label="Label" defaultValue="Case study">
@@ -5798,22 +5920,18 @@ My instructions: `;
                   </span>
                 </OptionalField>
 
-                {/* Title (Title + Logo mode only) */}
-                {showTitle && (
-                  <h1 className="intro-title">
-                    <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
-                  </h1>
-                )}
+                {/* Title */}
+                <h1 className="intro-title">
+                  <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
+                </h1>
 
-                {/* Logo + Subtitle in one group */}
+                {/* Subtitle / tagline */}
                 <div className="intro-logo-subtitle-group">
-                  {showLogoInTitlePosition && introLogoBlock('intro-logo-in-title-position', 'intro-logo-img-title-size')}
                   <OptionalField slide={slide} index={index} field="subtitle" label="Subtitle / Tagline" defaultValue="A short tagline for this project">
                     <p className="intro-subtitle">
                       <EditableField value={slide.subtitle} onChange={(v) => updateSlide(index, { subtitle: v })} />
                     </p>
                   </OptionalField>
-                  {showLogoAtBottom && introLogoBlock('intro-logo-at-bottom', '')}
                 </div>
 
                 {/* Description — body paragraph */}
@@ -5822,6 +5940,56 @@ My instructions: `;
                     <EditableField value={slide.description} onChange={(v) => updateSlide(index, { description: v })} multiline />
                   </p>
                 </OptionalField>
+
+                {/* Headline metric — caught in first 6 seconds of scanning */}
+                {(slide.headlineMetric?.value || slide.headlineMetric?.label || editMode) && (
+                  <div className="intro-headline-metric">
+                    {editMode && !slide.headlineMetric && (
+                      <button
+                        type="button"
+                        className="intro-headline-metric-add"
+                        onClick={() => updateSlide(index, { headlineMetric: { value: '+47%', label: 'Task completion', context: '12K sessions, 4 weeks post-launch' } })}
+                      >
+                        + Add headline metric
+                      </button>
+                    )}
+                    {slide.headlineMetric && (
+                      <>
+                        <span className="intro-metric-value" style={{ '--color': project.color }}>
+                          <EditableField
+                            value={slide.headlineMetric.value || ''}
+                            onChange={(v) => updateSlide(index, { headlineMetric: { ...slide.headlineMetric, value: v } })}
+                          />
+                        </span>
+                        <span className="intro-metric-label">
+                          <EditableField
+                            value={slide.headlineMetric.label || ''}
+                            onChange={(v) => updateSlide(index, { headlineMetric: { ...slide.headlineMetric, label: v } })}
+                          />
+                        </span>
+                        {(slide.headlineMetric.context || editMode) && (
+                          <span className="intro-metric-context">
+                            <EditableField
+                              value={slide.headlineMetric.context || ''}
+                              placeholder="measured how, sample size, time frame"
+                              onChange={(v) => updateSlide(index, { headlineMetric: { ...slide.headlineMetric, context: v } })}
+                            />
+                          </span>
+                        )}
+                        {editMode && (
+                          <button
+                            type="button"
+                            className="intro-metric-remove"
+                            onClick={() => updateSlide(index, { headlineMetric: null })}
+                            title="Remove headline metric"
+                          >
+                            ×
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
 
                 {/* CTA Button — placed above meta row so it's out of the bottom nav hover zone */}
                 {slide.cta ? (
@@ -5911,8 +6079,14 @@ My instructions: `;
 
               <SplitDragHandle slide={slide} slideIndex={index} />
 
-              {/* ── Right: cover image ── */}
-              <DynamicImages slide={slide} slideIndex={index} field="image" className="intro-images-wrapper" />
+              {/* ── Right: cover image on a tinted panel (no device frame), plain in edit mode ── */}
+              {editMode ? (
+                <DynamicImages slide={slide} slideIndex={index} field="image" className="intro-images-wrapper" />
+              ) : (
+                <div className="intro-media-panel">
+                  <DynamicImages slide={slide} slideIndex={index} field="image" className="intro-images-wrapper" />
+                </div>
+              )}
 
             </div>
           </div>
@@ -5940,6 +6114,72 @@ My instructions: `;
                   allowLineBreaks
                 />
               </h2>
+
+              {/* Vivid hook sentence — establishes user pain & stakes before metadata */}
+              <OptionalField slide={slide} index={index} field="intro" label="Hook sentence" defaultValue="A single vivid sentence that establishes the user's pain and stakes.">
+                {slide.intro && (
+                  <p className="info-intro-hook">
+                    <EditableField
+                      value={slide.intro}
+                      onChange={(v) => updateSlide(index, { intro: v })}
+                      multiline
+                    />
+                  </p>
+                )}
+              </OptionalField>
+
+              {/* Headline impact metric — 6-second scan */}
+              {(slide.headlineMetric?.value || slide.headlineMetric?.label || editMode) && (
+                <div className="info-headline-metric">
+                  {editMode && !slide.headlineMetric && (
+                    <button
+                      type="button"
+                      className="info-headline-metric-add"
+                      onClick={() => updateSlide(index, { headlineMetric: { value: '+47%', label: 'Task completion', context: '12K sessions, 4 weeks post-launch' } })}
+                    >
+                      + Add headline metric
+                    </button>
+                  )}
+                  {slide.headlineMetric && (
+                    <>
+                      <div className="info-metric-numbers">
+                        <span className="info-metric-value" style={{ '--color': project.color }}>
+                          <EditableField
+                            value={slide.headlineMetric.value || ''}
+                            onChange={(v) => updateSlide(index, { headlineMetric: { ...slide.headlineMetric, value: v } })}
+                          />
+                        </span>
+                        <span className="info-metric-label">
+                          <EditableField
+                            value={slide.headlineMetric.label || ''}
+                            onChange={(v) => updateSlide(index, { headlineMetric: { ...slide.headlineMetric, label: v } })}
+                          />
+                        </span>
+                      </div>
+                      {(slide.headlineMetric.context || editMode) && (
+                        <span className="info-metric-context">
+                          <EditableField
+                            value={slide.headlineMetric.context || ''}
+                            placeholder="measured how, sample size, time frame"
+                            onChange={(v) => updateSlide(index, { headlineMetric: { ...slide.headlineMetric, context: v } })}
+                          />
+                        </span>
+                      )}
+                      {editMode && (
+                        <button
+                          type="button"
+                          className="info-metric-remove"
+                          onClick={() => updateSlide(index, { headlineMetric: null })}
+                          title="Remove headline metric"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+
               {slide.items?.length > 0 && (
               <div className="info-grid">
                 {slide.items.map((item, i) => (
@@ -6011,6 +6251,98 @@ My instructions: `;
                 </button>
               ) : null}
 
+              {/* Methodology — named upfront with phase breakdown that maps
+                  to case study sections so reviewers can follow the structure. */}
+              {(slide.methodology || editMode) && (
+                <div className="info-methodology">
+                  {editMode && !slide.methodology && (
+                    <button
+                      type="button"
+                      className="info-methodology-add"
+                      onClick={() => updateSlide(index, { methodology: {
+                        name: 'Double Diamond',
+                        phases: [
+                          { name: 'Discover', description: 'Stakeholder interviews + analytics audit' },
+                          { name: 'Define',   description: 'Reframed problem + success criteria' },
+                          { name: 'Develop',  description: 'Concept exploration + iteration' },
+                          { name: 'Deliver',  description: 'Hi-fi prototypes + dev handoff' },
+                        ],
+                      } })}
+                    >
+                      + Add methodology
+                    </button>
+                  )}
+                  {slide.methodology && (
+                    <>
+                      <div className="info-methodology-header">
+                        <span className="info-methodology-eyebrow">Methodology</span>
+                        <span className="info-methodology-name">
+                          <EditableField
+                            value={slide.methodology.name || ''}
+                            onChange={(v) => updateSlide(index, { methodology: { ...slide.methodology, name: v } })}
+                          />
+                        </span>
+                        {editMode && (
+                          <button
+                            type="button"
+                            className="info-methodology-remove"
+                            onClick={() => updateSlide(index, { methodology: null })}
+                            title="Remove methodology"
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
+                      <div className="info-methodology-phases">
+                        {(slide.methodology.phases || []).map((phase, i) => (
+                          <div key={i} className="info-phase">
+                            <span className="info-phase-num">{String(i + 1).padStart(2, '0')}</span>
+                            <div className="info-phase-body">
+                              <span className="info-phase-name">
+                                <EditableField
+                                  value={phase.name || ''}
+                                  onChange={(v) => {
+                                    const next = [...(slide.methodology.phases || [])]
+                                    next[i] = { ...next[i], name: v }
+                                    updateSlide(index, { methodology: { ...slide.methodology, phases: next } })
+                                  }}
+                                />
+                              </span>
+                              <span className="info-phase-desc">
+                                <EditableField
+                                  value={phase.description || ''}
+                                  onChange={(v) => {
+                                    const next = [...(slide.methodology.phases || [])]
+                                    next[i] = { ...next[i], description: v }
+                                    updateSlide(index, { methodology: { ...slide.methodology, phases: next } })
+                                  }}
+                                  multiline
+                                />
+                              </span>
+                            </div>
+                            {editMode && (
+                              <ArrayItemControls onRemove={() => {
+                                const next = (slide.methodology.phases || []).filter((_, j) => j !== i)
+                                updateSlide(index, { methodology: { ...slide.methodology, phases: next } })
+                              }} />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      {editMode && (
+                        <AddItemButton
+                          onClick={() => {
+                            const next = [...(slide.methodology.phases || []), { name: 'Phase', description: 'What happened in this phase' }]
+                            updateSlide(index, { methodology: { ...slide.methodology, phases: next } })
+                          }}
+                          label="Phase"
+                        />
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+
               <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="info-bullets" label="Bullet" />
               <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
                 <div className="info-highlight">
@@ -6040,226 +6372,6 @@ My instructions: `;
                   </h2>
                 </OptionalField>
                 <DynamicImages slide={slide} slideIndex={index} field="image" captionField="caption" className="image-gallery-wrapper" />
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'projectShowcase':
-        return (
-          <div className="slide slide-project-showcase" key={index} style={spacingStyle}>
-            {slideControls}
-            {titleSpacingControl}
-            <SplitRatioControl slide={slide} slideIndex={index} />
-            <div className="slide-inner">
-              <div className="project-showcase-layout" style={getSplitStyle(slide)}>
-                {/* Left Panel - Info (centered vertically when no number) */}
-                <div className={`project-showcase-info${!slide.slideNumber ? ' project-showcase-info--no-number' : ''}`}>
-                  {(slide.slideNumber || editMode) && (
-                    <div className="project-showcase-number-wrapper">
-                      {slide.slideNumber ? (
-                        <div className="project-showcase-number">
-                          <EditableField
-                            value={slide.slideNumber}
-                            onChange={(v) => updateSlide(index, { slideNumber: v })}
-                          />
-                        </div>
-                      ) : null}
-                      {editMode && (
-                        <button
-                          className="toggle-number-btn"
-                          onClick={() => updateSlide(index, { slideNumber: slide.slideNumber ? '' : '01' })}
-                        >
-                          {slide.slideNumber ? '× Remove' : '+ Add Number'}
-                        </button>
-                      )}
-                    </div>
-                  )}
-                  {/* Header mode: Title only | Logo only (logo in title position) | Title + Logo */}
-                  {editMode && (
-                    <div className="project-showcase-header-mode">
-                      <span className="project-showcase-header-mode-label">Header:</span>
-                      <div className="project-showcase-header-mode-btns">
-                        <button
-                          type="button"
-                          className={`header-mode-btn ${(slide.projectShowcaseHeader || 'both') === 'title' ? 'active' : ''}`}
-                          onClick={() => updateSlide(index, { projectShowcaseHeader: 'title' })}
-                          title="Show title only"
-                        >
-                          Title only
-                        </button>
-                        <button
-                          type="button"
-                          className={`header-mode-btn ${(slide.projectShowcaseHeader || 'both') === 'logo' ? 'active' : ''}`}
-                          onClick={() => updateSlide(index, { projectShowcaseHeader: 'logo' })}
-                          title="Show logo in title position (instead of title)"
-                        >
-                          Logo only
-                        </button>
-                        <button
-                          type="button"
-                          className={`header-mode-btn ${(slide.projectShowcaseHeader || 'both') === 'both' ? 'active' : ''}`}
-                          onClick={() => updateSlide(index, { projectShowcaseHeader: 'both' })}
-                          title="Show title and logo (title on top, logo below)"
-                        >
-                          Title + Logo
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                  {/* Logo in title position (when "Logo only" is selected) */}
-                  {(slide.projectShowcaseHeader || 'both') === 'logo' && (slide.logo || editMode) && (
-                    <div className="project-showcase-logo project-showcase-logo-in-title-position">
-                      <div
-                        className="project-logo-wrapper"
-                        onClick={() => editMode && handleImageUpload(index, 'logo')}
-                      >
-                        {slide.logo ? (
-                          <>
-                            <img src={slide.logo} alt="Logo" />
-                            {editMode && <div className="image-edit-overlay">Click to change</div>}
-                          </>
-                        ) : (
-                          <div className="image-placeholder">{editMode ? 'Click to add logo' : ''}</div>
-                        )}
-                      </div>
-                      {editMode && slide.logo && (
-                        <button
-                          type="button"
-                          className="remove-logo-btn project-showcase-remove-logo"
-                          onClick={(e) => { e.stopPropagation(); updateSlide(index, { logo: '' }); }}
-                        >
-                          × Remove logo
-                        </button>
-                      )}
-                    </div>
-                  )}
-                  {((slide.projectShowcaseHeader || 'both') === 'both' || (slide.projectShowcaseHeader || 'both') === 'title') && (slide.title || editMode) && (
-                    <h2 className="project-showcase-title">
-                      <EditableField
-                        value={slide.title}
-                        onChange={(v) => updateSlide(index, { title: v })}
-                        allowLineBreaks
-                      />
-                      {editMode && slide.title && (
-                        <button
-                          type="button"
-                          className="remove-title-btn project-showcase-remove-title"
-                          onClick={() => updateSlide(index, { title: '' })}
-                          title="Remove title"
-                        >
-                          × Remove title
-                        </button>
-                      )}
-                    </h2>
-                  )}
-                  {(slide.subtitle || editMode) && (
-                    <p className="project-showcase-subtitle">
-                      <EditableField
-                        value={slide.subtitle || ''}
-                        onChange={(v) => updateSlide(index, { subtitle: v })}
-                      />
-                      {editMode && (
-                        <button
-                          type="button"
-                          className="toggle-subtitle-btn"
-                          onClick={() => updateSlide(index, { subtitle: slide.subtitle ? '' : 'Add a subtitle' })}
-                        >
-                          {slide.subtitle ? '× Remove subtitle' : '+ Add subtitle'}
-                        </button>
-                      )}
-                    </p>
-                  )}
-                  <OptionalField slide={slide} index={index} field="description" label="Description" defaultValue="Brief description of the project." multiline>
-                    <p className="project-showcase-description">
-                      <EditableField
-                        value={slide.description}
-                        onChange={(v) => updateSlide(index, { description: v })}
-                        multiline
-                      />
-                    </p>
-                  </OptionalField>
-                  <DynamicBullets slide={slide} slideIndex={index} field="bullets" titleField="bulletsTitle" className="project-showcase-bullets" label="Bullet" />
-                  {(slide.tags?.length > 0 || editMode) && (
-                    <div className="project-showcase-tags">
-                      {(slide.tags || []).map((tag, i) => (
-                        <span key={i} className="project-showcase-tag">
-                          <EditableField
-                            value={tag}
-                            onChange={(v) => {
-                              const tags = [...(slide.tags || [])];
-                              tags[i] = v;
-                              updateSlide(index, { tags });
-                            }}
-                          />
-                          {editMode && slide.tags.length > 1 && (
-                            <button
-                              className="remove-tag-btn"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const tags = slide.tags.filter((_, idx) => idx !== i);
-                                updateSlide(index, { tags });
-                              }}
-                            >
-                              ×
-                            </button>
-                          )}
-                          {i < slide.tags.length - 1 && <span className="tag-separator"> • </span>}
-                        </span>
-                      ))}
-                      {editMode && (
-                        <button
-                          className="add-tag-btn"
-                          onClick={() => {
-                            const tags = [...(slide.tags || []), 'New Tag'];
-                            updateSlide(index, { tags });
-                          }}
-                        >
-                          + Add Tag
-                        </button>
-                      )}
-                    </div>
-                  )}
-                  {/* Logo at bottom (when "Title + Logo" is selected) */}
-                  {(slide.projectShowcaseHeader || 'both') === 'both' && (slide.logo || editMode) && (
-                    <div className="project-showcase-logo">
-                      <div
-                        className="project-logo-wrapper"
-                        onClick={() => editMode && handleImageUpload(index, 'logo')}
-                      >
-                        {slide.logo ? (
-                          <>
-                            <img src={slide.logo} alt="Logo" />
-                            {editMode && <div className="image-edit-overlay">Click to change</div>}
-                          </>
-                        ) : (
-                          <div className="image-placeholder">{editMode ? 'Click to add logo' : ''}</div>
-                        )}
-                      </div>
-                      {editMode && slide.logo && (
-                        <button
-                          type="button"
-                          className="remove-logo-btn project-showcase-remove-logo"
-                          onClick={(e) => { e.stopPropagation(); updateSlide(index, { logo: '' }); }}
-                        >
-                          × Remove logo
-                        </button>
-                      )}
-                    </div>
-                  )}
-                  <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-                    <div className="project-showcase-highlight">
-                      <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
-                    </div>
-                  </OptionalField>
-                </div>
-                <SplitDragHandle slide={slide} slideIndex={index} />
-                {/* Right Panel - Image with highlight-style wrapper */}
-                <div className="project-showcase-visual">
-                  <div className="project-showcase-image-highlight-wrapper">
-                    <DynamicImages slide={slide} slideIndex={index} field="image" className="project-showcase-dynamic" />
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -6415,23 +6527,43 @@ My instructions: `;
               )}
               {slide.quotes?.length > 0 && (
               <div className="quotes-grid" style={{ gridTemplateColumns: `repeat(${slide.gridColumns || 3}, 1fr)` }}>
-                {slide.quotes.map((quote, i) => (
+                {slide.quotes.map((quote, i) => {
+                  const initials = (quote.author || '')
+                    .trim().split(/\s+/).map((w) => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
+                  return (
                   <div key={i} className="quote-card">
+                      <span className="quote-mark" aria-hidden="true">&ldquo;</span>
                       <p className="quote-text">
                         "<EditableField
                           value={quote.text}
                           onChange={(v) => updateSlideItem(index, 'quotes', i, { ...quote, text: v })}
                         />"
                       </p>
-                      <span className="quote-author">
-                        <EditableField
-                          value={quote.author}
-                          onChange={(v) => updateSlideItem(index, 'quotes', i, { ...quote, author: v })}
-                        />
-                      </span>
+                      <div className="quote-divider" aria-hidden="true" />
+                      <div className="quote-attribution">
+                        <span className="quote-avatar" aria-hidden="true">{initials || '—'}</span>
+                        <div className="quote-author-col">
+                          <span className="quote-author-name">
+                            <EditableField
+                              value={quote.author}
+                              onChange={(v) => updateSlideItem(index, 'quotes', i, { ...quote, author: v })}
+                            />
+                          </span>
+                          {(editMode || quote.role) && (
+                          <span className="quote-author-role">
+                            <EditableField
+                              value={quote.role}
+                              onChange={(v) => updateSlideItem(index, 'quotes', i, { ...quote, role: v })}
+                              placeholder="Role / context"
+                            />
+                          </span>
+                          )}
+                        </div>
+                      </div>
                       <ArrayItemControls onRemove={() => removeArrayItem(index, 'quotes', i)} />
                   </div>
-                ))}
+                  );
+                })}
               </div>
               )}
               <AddItemButton 
@@ -6534,7 +6666,7 @@ My instructions: `;
                         >
                         {slide.goals.map((goal, i) => (
                           <div key={i} className="goal-item">
-                            {slide.showNumbers !== false && <span className="goal-number">{i + 1}</span>}
+                            {slide.showNumbers !== false && <span className="goal-number">{String(i + 1).padStart(2, '0')}</span>}
                             <div className="goal-content">
                               <span className="goal-title-text">
                                 <EditableField
@@ -6923,6 +7055,72 @@ My instructions: `;
           />
         );
 
+      // ══ IDEATION DIRECTIONS — before/after-style columns (up to 3), each
+      //    with an Accepted / Rejected status chip. Reuses the .slide-before-after
+      //    classes so the styling matches the Before/After slide exactly. ══
+      case 'directions': {
+        const dirCount = Math.min(3, Math.max(2, slide.directionCount || 3));
+        const dirs = [1, 2, 3].slice(0, dirCount);
+        const statusOf = (n) => slide[`dir${n}Status`] || (n === dirCount ? 'accepted' : 'rejected');
+        const cycleStatus = (n) => updateSlide(index, { [`dir${n}Status`]: statusOf(n) === 'accepted' ? 'rejected' : 'accepted' });
+        return (
+          <div className="slide slide-problem slide-comparison-unified slide-before-after slide-directions mode-before-after" key={index} style={spacingStyle}>
+            {slideControls}
+            {titleSpacingControl}
+            <div className="slide-inner ba-inner">
+              <span className="slide-label">
+                <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
+              </span>
+              <h2 className="problem-title ba-title">
+                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
+              </h2>
+              <DynamicContent slide={slide} slideIndex={index} field="description" className="comparison-description-wrapper" maxParagraphs={2} optional />
+              {editMode && (
+                <div className="dir-count-control">
+                  <span className="dir-count-label">Directions</span>
+                  {[2, 3].map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      className={`dir-count-btn ${dirCount === c ? 'active' : ''}`}
+                      onClick={() => updateSlide(index, { directionCount: c })}
+                    >{c}</button>
+                  ))}
+                </div>
+              )}
+              <div className="ba-columns dir-columns">
+                {dirs.map((n) => {
+                  const st = statusOf(n);
+                  return (
+                    <div key={n} className={`ba-col dir-col dir-col--${st}`}>
+                      {editMode ? (
+                        <button
+                          type="button"
+                          className="ba-col-label dir-chip"
+                          onClick={() => cycleStatus(n)}
+                          title="Toggle Accepted / Rejected"
+                        >{st === 'accepted' ? 'Accepted' : 'Rejected'}</button>
+                      ) : (
+                        <span className="ba-col-label dir-chip">{st === 'accepted' ? 'Accepted' : 'Rejected'}</span>
+                      )}
+                      <DynamicImages slide={slide} slideIndex={index} field={`dir${n}Image`} className="ba-col-images" />
+                      <OptionalField slide={slide} index={index} field={`dir${n}Desc`} label="Description" defaultValue="Describe this direction…" multiline>
+                        <p className="ba-col-desc"><EditableField value={slide[`dir${n}Desc`]} onChange={(v) => updateSlide(index, { [`dir${n}Desc`]: v })} multiline /></p>
+                      </OptionalField>
+                    </div>
+                  );
+                })}
+              </div>
+              <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
+                <div className="problem-highlight">
+                  <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
+                </div>
+              </OptionalField>
+            </div>
+          </div>
+        );
+      }
+
       case 'process':
         return (
           <div className="slide slide-process" key={index} style={spacingStyle} data-card-variant={slide.cardVariant || 'default'} data-card-height={slide.cardHeight || 'auto'}>
@@ -6936,6 +7134,11 @@ My instructions: `;
               <h2 className="process-title">
                 <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
               </h2>
+              <OptionalField slide={slide} index={index} field="subtitle" label="Subtitle" defaultValue="Add a short subtitle…" multiline>
+                <p className="process-subtitle">
+                  <EditableField value={slide.subtitle} onChange={(v) => updateSlide(index, { subtitle: v })} multiline />
+                </p>
+              </OptionalField>
               <div className="process-steps">
                 {slide.steps?.map((step, i) => (
                   <div key={i} className="process-step">
@@ -6976,6 +7179,11 @@ My instructions: `;
               <h2 className="timeline-title">
                 <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
               </h2>
+              <OptionalField slide={slide} index={index} field="subtitle" label="Subtitle" defaultValue="Add a short subtitle…" multiline>
+                <p className="timeline-subtitle">
+                  <EditableField value={slide.subtitle} onChange={(v) => updateSlide(index, { subtitle: v })} multiline />
+                </p>
+              </OptionalField>
               <div className="timeline-events">
                 {slide.events?.map((event, i) => (
                   <div key={i} className="timeline-event">
@@ -7495,10 +7703,10 @@ My instructions: `;
           <div className="slide slide-chapter" key={index} style={spacingStyle}>
             {slideControls}
             {titleSpacingControl}
-            {slide.number && (
-              <span className="chapter-bg-number" aria-hidden="true">{slide.number}</span>
-            )}
             <div className="slide-inner">
+              {slide.number && (
+                <span className="chapter-bg-number" aria-hidden="true">{slide.number}</span>
+              )}
               <OptionalField slide={slide} index={index} field="number" label="Number" defaultValue="01">
                 <div className="chapter-header">
                   <span className="chapter-number">
@@ -7514,6 +7722,73 @@ My instructions: `;
                   <EditableField value={slide.subtitle} onChange={(v) => updateSlide(index, { subtitle: v })} />
                 </p>
               </OptionalField>
+            </div>
+          </div>
+        );
+
+      // ─── Ideation ───────────────────────────────────────────────
+      // ─── Reflection ─────────────────────────────────────────────
+      case 'reflection':
+        return (
+          <div className="slide slide-reflection" key={index} style={spacingStyle}>
+            {slideControls}
+            {titleSpacingControl}
+            <div className="slide-inner">
+              <span className="slide-label">
+                <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
+              </span>
+              <h2 className="reflection-title">
+                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
+              </h2>
+              {/* Optional subtitle */}
+              {((slide.subtitle != null && slide.subtitle !== '') || editMode) && (
+                <div className="reflection-subtitle-wrapper">
+                  <p className="reflection-subtitle">
+                    <EditableField value={slide.subtitle || ''} onChange={(v) => updateSlide(index, { subtitle: v })} placeholder="Subtitle (optional)" allowLineBreaks />
+                  </p>
+                  {editMode && (slide.subtitle != null && slide.subtitle !== '') && (
+                    <button type="button" className="remove-field-btn issues-breakdown-remove" onClick={() => updateSlide(index, { subtitle: null })} title="Remove subtitle">× Remove subtitle</button>
+                  )}
+                </div>
+              )}
+              {editMode && (slide.subtitle == null || slide.subtitle === '') && (
+                <button className="add-field-btn" onClick={() => updateSlide(index, { subtitle: 'Subtitle' })}>+ Add subtitle</button>
+              )}
+              <div className="reflection-grid">
+                <div className="reflection-col reflection-col--worked">
+                  <h3>
+                    <EditableField value={slide.workedTitle ?? 'Key Learning'} onChange={(v) => updateSlide(index, { workedTitle: v })} />
+                  </h3>
+                  <OptionalField slide={slide} index={index} field="workedDesc" label="Description" defaultValue="Add a short description…" multiline>
+                    <p className="reflection-col-desc">
+                      <EditableField value={slide.workedDesc} onChange={(v) => updateSlide(index, { workedDesc: v })} multiline />
+                    </p>
+                  </OptionalField>
+                  <DynamicBullets slide={slide} slideIndex={index} field="whatWorked" className="reflection-bullets" label="Point" />
+                </div>
+                <div className="reflection-col reflection-col--failed">
+                  <h3>
+                    <EditableField value={slide.failedTitle ?? 'Main Challenge'} onChange={(v) => updateSlide(index, { failedTitle: v })} />
+                  </h3>
+                  <OptionalField slide={slide} index={index} field="failedDesc" label="Description" defaultValue="Add a short description…" multiline>
+                    <p className="reflection-col-desc">
+                      <EditableField value={slide.failedDesc} onChange={(v) => updateSlide(index, { failedDesc: v })} multiline />
+                    </p>
+                  </OptionalField>
+                  <DynamicBullets slide={slide} slideIndex={index} field="whatFailed" className="reflection-bullets" label="Point" />
+                </div>
+                <div className="reflection-col reflection-col--differently">
+                  <h3>
+                    <EditableField value={slide.differentlyTitle ?? 'What I Would Do Next'} onChange={(v) => updateSlide(index, { differentlyTitle: v })} />
+                  </h3>
+                  <OptionalField slide={slide} index={index} field="differentlyDesc" label="Description" defaultValue="Add a short description…" multiline>
+                    <p className="reflection-col-desc">
+                      <EditableField value={slide.differentlyDesc} onChange={(v) => updateSlide(index, { differentlyDesc: v })} multiline />
+                    </p>
+                  </OptionalField>
+                  <DynamicBullets slide={slide} slideIndex={index} field="whatYoudDoDifferently" className="reflection-bullets" label="Point" />
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -7535,6 +7810,7 @@ My instructions: `;
       className={`case-study ${editMode ? 'edit-mode' : ''}`}
       ref={containerRef}
       data-card-style={cardStyle !== 'outlined' ? cardStyle : undefined}
+      data-display-mode="slides"
     >
       {/* Per-breakpoint slide padding from the edit panel. Mobile-first
           min-width cascade; same selector specificity as CaseStudy.css
@@ -8145,7 +8421,25 @@ My instructions: `;
       )}
 
       <div className="case-nav">
-        <Link to="/" className="nav-back-btn" title="Back to home" aria-label="Back to home">
+        <Link
+          to="/"
+          className="nav-back-btn"
+          title="Back to home"
+          aria-label="Back to home"
+          onClick={(e) => {
+            /* Prefer browser back when there's prior history so the user
+               returns to the projects grid at the scroll position they
+               left from. Falls back to the `to="/"` href for direct
+               loads, right-click / middle-click / keyboard-open which
+               should keep standard link behavior. */
+            if (e.defaultPrevented) return;
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+            if (typeof window !== 'undefined' && window.history.length > 1) {
+              e.preventDefault();
+              navigate(-1);
+            }
+          }}
+        >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M11.25 4.5 6.75 9l4.5 4.5"/></svg>
         </Link>
         <div className="nav-label-left">
@@ -8162,6 +8456,32 @@ My instructions: `;
             )
           )}
         </div>
+        {editMode && (
+          <button
+            type="button"
+            className="nav-pdf-btn"
+            onClick={handleExportPdf}
+            disabled={pdfExporting || !totalSlides}
+            title="Export this case study as a PDF (one page per slide)"
+          >
+            {pdfExporting ? (
+              <>
+                <svg className="nav-pdf-spinner" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.5" strokeOpacity="0.25" />
+                  <path d="M12 7a5 5 0 0 1-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+                <span>{pdfProgress ? `${pdfProgress.phase} ${pdfProgress.i + 1}/${pdfProgress.total}` : 'preparing…'}</span>
+              </>
+            ) : (
+              <>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M7 1.5v7M4 5.5l3 3 3-3M2 11h10" />
+                </svg>
+                <span>PDF</span>
+              </>
+            )}
+          </button>
+        )}
         <div className="nav-progress">
           <span className="progress-current">{String(currentSlide + 1).padStart(2, '0')}</span>
           <div className="progress-bar">
@@ -8174,44 +8494,84 @@ My instructions: `;
         </div>
       </div>
 
+      {pdfExporting && (
+        <div className="pdf-export-overlay" role="status" aria-live="polite">
+          <div className="pdf-export-card">
+            <p className="pdf-export-title">Exporting PDF</p>
+            <p className="pdf-export-detail">
+              {pdfProgress
+                ? `${pdfProgress.phase} · slide ${Math.min(pdfProgress.i + 1, pdfProgress.total)} of ${pdfProgress.total}`
+                : 'preparing…'}
+            </p>
+            <div className="pdf-export-bar">
+              <div
+                className="pdf-export-bar-fill"
+                style={{
+                  width: pdfProgress
+                    ? `${((pdfProgress.i + (pdfProgress.phase === 'done' ? 1 : 0)) / pdfProgress.total) * 100}%`
+                    : '4%',
+                }}
+              />
+            </div>
+            <p className="pdf-export-hint">Stay on this tab — capturing each slide.</p>
+          </div>
+        </div>
+      )}
+
       <div
         className="case-study-slides-wrapper"
         onMouseEnter={showSlideNav}
         onMouseMove={handleSlideAreaMouseMove}
         onMouseLeave={hideSlideNavAfterDelay}
       >
-        <div className="slides-container" onClick={handleSlideAreaClick}>
-          <motion.div
-            /* Keyed on projectNonce (bumped in go() on project switch) so
-               the track remounts synchronously in the same React batch
-               as setProject/setCurrentSlide. initial={false} skips the
-               entrance tween; without it framer-motion would animate
-               from its default initial into the new animate target. */
-            key={projectNonce}
-            className={`slides-track${isMobileSlide ? ' slides-track--mobile-scaled' : ''}`}
-            initial={false}
-            animate={{ x: `-${currentSlide * 100}%` }}
-            transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-          >
+        {!isSiteMode && (
+          <div className="slides-container" onClick={handleSlideAreaClick}>
+            <motion.div
+              /* Keyed on projectNonce (bumped in go() on project switch) so
+                 the track remounts synchronously in the same React batch
+                 as setProject/setCurrentSlide. initial={false} skips the
+                 entrance tween; without it framer-motion would animate
+                 from its default initial into the new animate target. */
+              key={projectNonce}
+              className={`slides-track${isMobileSlide ? ' slides-track--mobile-scaled' : ''}`}
+              initial={false}
+              animate={{ x: `-${currentSlide * 100}%` }}
+              transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+            >
+              {project.slides.map((slide, index) => (
+                <SlideErrorBoundary key={`error-${index}`}>
+                  <SlideContainer
+                    isMobile={isMobileSlide}
+                    transformKey={`zoom-${index}-${currentSlide === index ? 'active' : 'idle'}`}
+                    onScaleChange={(scale, fitScale) => {
+                      if (index === currentSlide) {
+                        currentScaleRef.current = scale;
+                        baseFitScaleRef.current = fitScale;
+                      }
+                    }}
+                  >
+                    {renderSlide(slide, index)}
+                  </SlideContainer>
+                </SlideErrorBoundary>
+              ))}
+            </motion.div>
+          </div>
+        )}
+        {isSiteMode && (
+          <div className="case-study-site">
             {project.slides.map((slide, index) => (
-              <SlideErrorBoundary key={`error-${index}`}>
-                <SlideContainer
-                  isMobile={isMobileSlide}
-                  transformKey={`zoom-${index}-${currentSlide === index ? 'active' : 'idle'}`}
-                  onScaleChange={(scale, fitScale) => {
-                    if (index === currentSlide) {
-                      currentScaleRef.current = scale;
-                      baseFitScaleRef.current = fitScale;
-                    }
-                  }}
+              <SlideErrorBoundary key={`site-error-${index}`}>
+                <section
+                  className={`site-section site-section--${slide.type}`}
+                  data-slide-index={index}
                 >
                   {renderSlide(slide, index)}
-                </SlideContainer>
+                </section>
               </SlideErrorBoundary>
             ))}
-          </motion.div>
-        </div>
-        {isMobileSlide && showZoomHint && (
+          </div>
+        )}
+        {!isSiteMode && isMobileSlide && showZoomHint && (
           <div className="zoom-hint" role="status" aria-live="polite">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <circle cx="11" cy="11" r="7" />
@@ -8223,7 +8583,7 @@ My instructions: `;
           </div>
         )}
 
-        {!editMode && totalSlides > 1 && (
+        {!isSiteMode && !editMode && totalSlides > 1 && (
           <>
             <div
               className="slide-nav-hover-zone"
@@ -8263,6 +8623,17 @@ My instructions: `;
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M8 4L12 10L8 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
+            </button>
+            <span className="slide-nav-pill-divider" aria-hidden="true" />
+            <button
+              type="button"
+              className="slide-nav-pill-hint"
+              onClick={() => { setCurrentSlide(0); showSlideNav(); }}
+              aria-label="Restart (press R)"
+              title="Press R to restart from the first slide"
+            >
+              <kbd className="slide-nav-pill-kbd" aria-hidden="true">R</kbd>
+              <span className="slide-nav-pill-hint-text">Restart</span>
             </button>
             </div>
           </>

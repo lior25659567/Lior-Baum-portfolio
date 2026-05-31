@@ -236,7 +236,7 @@ const About = () => {
         about: content.about,
       }),
     });
-    const json = await res.json();
+    const json = await res.json().catch(() => ({ ok: false, error: `HTTP ${res.status} (no API on this host)` }));
     if (!json.ok) throw new Error(json.error || 'Save failed');
     return json;
   };

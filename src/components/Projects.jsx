@@ -1407,6 +1407,50 @@ const ProjectCard = ({ project, index, total, editMode, hideCardYear, onImageCha
                 />
               </span>
             </p>
+            <div className="project-content-labels project-content-labels--editing">
+              {(project.labels || []).map((label, i) => (
+                <span key={i} className="project-content-label project-content-label--editing">
+                  <input
+                    className="project-content-label-input"
+                    value={label}
+                    onChange={(e) => {
+                      const next = [...(project.labels || [])];
+                      next[i] = e.target.value;
+                      onUpdate(project.id, { labels: next });
+                    }}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                    placeholder="Label"
+                  />
+                  <button
+                    type="button"
+                    className="project-content-label-remove"
+                    aria-label="Remove label"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const next = (project.labels || []).filter((_, idx) => idx !== i);
+                      onUpdate(project.id, { labels: next });
+                    }}
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              {(project.labels || []).length < 3 && (
+                <button
+                  type="button"
+                  className="project-content-label-add"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const next = [...(project.labels || []), 'New label'];
+                    onUpdate(project.id, { labels: next });
+                  }}
+                >
+                  + Add label
+                </button>
+              )}
+            </div>
           </>
         ) : (
           <>
@@ -1415,6 +1459,13 @@ const ProjectCard = ({ project, index, total, editMode, hideCardYear, onImageCha
               <span className="project-content-category">{project.category}</span>
               <span className="project-content-year">{project.year}</span>
             </p>
+            {(project.labels || []).filter(Boolean).length > 0 && (
+              <div className="project-content-labels">
+                {(project.labels || []).filter(Boolean).slice(0, 3).map((label, i) => (
+                  <span key={i} className="project-content-label">{label}</span>
+                ))}
+              </div>
+            )}
           </>
         )}
       </div>

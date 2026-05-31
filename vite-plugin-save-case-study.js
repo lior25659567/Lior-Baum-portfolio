@@ -34,6 +34,17 @@ function contentLengthTooBig(req, max) {
   return Number.isFinite(len) && len > max;
 }
 
+// Apply CORS headers so the case-study-agent app on a different localhost port
+// (e.g. 5174) can call these endpoints. Permissive in dev only — this plugin
+// only runs under `vite` (dev mode), never in production builds.
+function applyCors(res, req) {
+  const origin = req?.headers?.origin || '*';
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Max-Age', '86400');
+}
+
 function sendJson(res, statusCode, body) {
   res.statusCode = statusCode;
   res.setHeader('Content-Type', 'application/json');
@@ -82,6 +93,12 @@ async function pathExists(p) {
 // to customize the response code.
 function wrap(name, handler) {
   return (req, res) => {
+    applyCors(res, req);
+    if (req.method === 'OPTIONS') {
+      res.statusCode = 204;
+      res.end();
+      return;
+    }
     const startedAt = Date.now();
     const size = Number(req.headers['content-length']) || 0;
     let statusCode = 200;
@@ -150,6 +167,75 @@ export function saveCaseStudyPlugin() {
           },
           node: process.version,
         };
+      }));
+
+      // List all case studies — returns id, title, slideCount per entry.
+      // Used by the case-study-agent app to populate its picker.
+      server.middlewares.use('/api/list-case-studies', wrap('/api/list-case-studies', async (req) => {
+        assertMethod(req, 'GET');
+        const dir = path.resolve('src/data/case-studies');
+        if (!(await pathExists(dir))) return { caseStudies: [] };
+        const files = (await fsp.readdir(dir)).filter((f) => f.endsWith('.json') && f !== '_index.json');
+        const caseStudies = []
+        for (const file of files) {
+          const id = file.replace(/\.json$/, '')
+          try {
+            const raw = await fsp.readFile(path.join(dir, file), 'utf-8')
+            const data = JSON.parse(raw)
+            caseStudies.push({
+              id,
+              title: data.title || id,
+              slideCount: Array.isArray(data.slides) ? data.slides.length : 0,
+              file,
+            })
+          } catch (err) {
+            caseStudies.push({ id, title: id, slideCount: 0, error: err.message })
+          }
+        }
+        caseStudies.sort((a, b) => a.title.localeCompare(b.title));
+        return { caseStudies };
+      }));
+
+      // Return the slide-template system: live slideTemplates merged with
+      // slideTemplateDocs. Uses Vite's SSR loader so import paths resolve
+      // exactly as the browser sees them.
+      server.middlewares.use('/api/slide-templates', wrap('/api/slide-templates', async (req) => {
+        assertMethod(req, 'GET');
+        try {
+          const csMod = await server.ssrLoadModule('/src/data/caseStudyData.js')
+          const docsMod = await server.ssrLoadModule('/src/data/slideTemplateDocs.js').catch(() => ({}))
+          return {
+            slideTemplates: csMod.slideTemplates || {},
+            templateCategories: csMod.templateCategories || {},
+            slideTemplateDocs: docsMod.slideTemplateDocs || {},
+            sharedComponentsDocs: docsMod.sharedComponentsDocs || [],
+          }
+        } catch (err) {
+          console.error('[slide-templates] ssr load failed:', err)
+          const e = new Error('Could not load slide templates: ' + err.message)
+          e.statusCode = 500
+          throw e
+        }
+      }));
+
+      // Get one case study by id.
+      server.middlewares.use('/api/case-study', wrap('/api/case-study', async (req) => {
+        assertMethod(req, 'GET');
+        const url = new URL(req.url, 'http://localhost');
+        const id = url.searchParams.get('id');
+        if (!id || !/^[a-zA-Z0-9_-]+$/.test(id)) {
+          const err = new Error('Missing or invalid id');
+          err.statusCode = 400;
+          throw err;
+        }
+        const filePath = path.resolve('src/data/case-studies', `${id}.json`);
+        if (!(await pathExists(filePath))) {
+          const err = new Error(`Case study not found: ${id}`);
+          err.statusCode = 404;
+          throw err;
+        }
+        const raw = await fsp.readFile(filePath, 'utf-8');
+        return { id, data: JSON.parse(raw) };
       }));
 
       // Save a case study JSON and regenerate the index.

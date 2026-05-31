@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap');
 
 @font-face {
   font-family: 'Mona Sans';
@@ -8,31 +9,109 @@
   font-display: swap;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   LAYER 1 — PRIMITIVES (raw values, theme-independent)
+   Never reference these directly in components; use semantic tokens.
+   ═══════════════════════════════════════════════════════════════════════ */
+:root {
+  /* Neutrals */
+  --primitive-white: #ffffff;
+  --primitive-gray-50: #f7f9f4;
+  --primitive-gray-100: #eef0eb;
+  --primitive-gray-200: #e0e0e0;
+  --primitive-gray-300: #a0a0a0;
+  --primitive-gray-400: #595959;
+  --primitive-gray-700: #2a2a2a;
+  --primitive-gray-800: #111111;
+  --primitive-gray-900: #0a0a0a;
+  --primitive-image-bg-light: #e8e8e8;
+  --primitive-image-bg-dark: #252525;
+
+  /* Brand accent (coral) — light tier passes AA 4.5:1 on gray-50 (4.83:1) */
+  --primitive-accent-600: #cc3520;
+  --primitive-accent-500: #ff584a;
+  --primitive-accent-400: #ff6a5d;
+
+  /* Status palette */
+  --primitive-green-600: #16a34a;
+  --primitive-green-400: #4ade80;
+  --primitive-red-600: #dc2626;
+  --primitive-red-400: #f87171;
+  --primitive-amber-600: #d97706;
+  --primitive-amber-400: #fbbf24;
+  --primitive-blue-600: #2563eb;
+  --primitive-blue-400: #60a5fa;
+
+  /* Named accent palette (project-card presets) */
+  --primitive-teal: #0097a7;
+  --primitive-teal-light: #26b6c7;
+  --primitive-violet: #6b5ce7;
+  --primitive-violet-light: #8879ff;
+  --primitive-graphite: #3b3b3b;
+  --primitive-graphite-light: #c9c9c9;
+
+  /* Showcase palette */
+  --primitive-lavender: #bfb0e8;
+  --primitive-pink: #f5c5d7;
+  --primitive-orange: #eb9760;
+  --primitive-lime: #c4df54;
+
+  /* Typography primitives */
+  --primitive-font-serif: 'Crimson Text', serif;
+  --primitive-font-sans: 'Mona Sans', sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LAYER 2 — SEMANTIC TOKENS (theme-aware, named by intent)
+   These flip on theme change. Components should consume these.
+   ═══════════════════════════════════════════════════════════════════════ */
 /* Light Mode (Default) */
 :root {
-  --color-bg: #f7f9f4;
-  --color-bg-secondary: #eef0eb;
-  --color-text: #0a0a0a;
-  --color-text-muted: #666666;
-  --color-accent: #ff584a;
-  --color-accent-contrast: #ffffff;
-  --color-border: #e0e0e0;
-  --color-image-contain-bg: #e8e8e8; /* Softer background for "fit" image gaps (light) */
+  /* Surfaces */
+  --color-bg: var(--primitive-gray-50);
+  --color-bg-secondary: var(--primitive-gray-100);
+  --color-image-contain-bg: var(--primitive-image-bg-light);
+
+  /* Text */
+  --color-text: var(--primitive-gray-900);
+  /* #595959 → 7.0:1 on gray-50 (clears AA + AAA). */
+  --color-text-muted: var(--primitive-gray-400);
+
+  /* Brand accent — light uses 600-tier for 4.83:1 link-grade contrast */
+  --color-accent: var(--primitive-accent-600);
+  --color-accent-strong: var(--primitive-accent-600);
+  --color-accent-vivid: var(--primitive-accent-500); /* full-saturation, use for fills/UI not text */
+  --color-accent-contrast: var(--primitive-white);
+  --color-accent-soft: rgba(204, 53, 32, 0.12);
+
+  --color-border: var(--primitive-gray-200);
+  --color-border-soft: var(--primitive-gray-100);
+
+  /* Status — single source of truth. Replaces scattered #22c55e, #4ade80,
+     #e53935 etc. that previously lived in component CSS. */
+  --color-success: var(--primitive-green-600);
+  --color-success-soft: rgba(22, 163, 74, 0.12);
+  --color-error: var(--primitive-red-600);
+  --color-error-soft: rgba(220, 38, 38, 0.12);
+  --color-warning: var(--primitive-amber-600);
+  --color-warning-soft: rgba(217, 119, 6, 0.12);
+  --color-info: var(--primitive-blue-600);
+  --color-info-soft: rgba(37, 99, 235, 0.12);
 
   /* Named accent palette (used by project-card template presets) */
-  --accent-warm: #ff584a;
-  --accent-cool: #0097a7;
-  --accent-violet: #6b5ce7;
-  --accent-graphite: #3b3b3b;
+  --accent-warm: var(--primitive-accent-500);
+  --accent-cool: var(--primitive-teal);
+  --accent-violet: var(--primitive-violet);
+  --accent-graphite: var(--primitive-graphite);
 
-  /* Showcase pastel palette (used by project-card showcase mode) */
-  --showcase-lavender: #bfb0e8;
-  --showcase-pink: #f5c5d7;
-  --showcase-orange: #eb9760;
-  --showcase-lime: #c4df54;
+  /* Showcase pastel palette */
+  --showcase-lavender: var(--primitive-lavender);
+  --showcase-pink: var(--primitive-pink);
+  --showcase-orange: var(--primitive-orange);
+  --showcase-lime: var(--primitive-lime);
   
-  --font-display: 'Crimson Text', serif;
-  --font-body: 'Mona Sans', sans-serif;
+  --font-display: var(--primitive-font-serif);
+  --font-body: var(--primitive-font-sans);
   
   /* Type scale */
   --text-display: clamp(3rem, 5vw + 1rem, 5.5rem);
@@ -93,21 +172,44 @@
   --transition-slow: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Dark Mode */
+/* Dark Mode — Layer 2 overrides */
 [data-theme="dark"] {
-  --color-bg: #0a0a0a;
-  --color-bg-secondary: #111111;
-  --color-image-contain-bg: #252525; /* Softer than black for "fit" image gaps (dark) */
-  --color-text: #ffffff;
-  --color-text-muted: #888888;
-  --color-accent: #ff584a;
-  --color-accent-contrast: #ffffff;
-  --color-border: #2a2a2a;
+  /* Surfaces */
+  --color-bg: var(--primitive-gray-900);
+  --color-bg-secondary: var(--primitive-gray-800);
+  --color-image-contain-bg: var(--primitive-image-bg-dark);
 
-  --accent-warm: #ff6a5d;
-  --accent-cool: #26b6c7;
-  --accent-violet: #8879ff;
-  --accent-graphite: #c9c9c9;
+  /* Text — #a0a0a0 on gray-900 = 7.1:1 (AAA). Previous #888888 was 4.58:1
+     (barely AA, fails AAA). */
+  --color-text: var(--primitive-white);
+  --color-text-muted: var(--primitive-gray-300);
+
+  /* Brand accent — dark uses 500-tier (#ff584a on gray-900 = 6.4:1 AA✓) */
+  --color-accent: var(--primitive-accent-500);
+  --color-accent-strong: var(--primitive-accent-500);
+  --color-accent-vivid: var(--primitive-accent-500);
+  --color-accent-contrast: var(--primitive-white);
+  --color-accent-soft: rgba(255, 88, 74, 0.18);
+
+  --color-border: var(--primitive-gray-700);
+  --color-border-soft: var(--primitive-gray-800);
+
+  /* Status — retoned (lighter variants per Material/HIG dark-mode guidance:
+     don't invert, retone). */
+  --color-success: var(--primitive-green-400);
+  --color-success-soft: rgba(74, 222, 128, 0.18);
+  --color-error: var(--primitive-red-400);
+  --color-error-soft: rgba(248, 113, 113, 0.18);
+  --color-warning: var(--primitive-amber-400);
+  --color-warning-soft: rgba(251, 191, 36, 0.18);
+  --color-info: var(--primitive-blue-400);
+  --color-info-soft: rgba(96, 165, 250, 0.18);
+
+  /* Named accent palette */
+  --accent-warm: var(--primitive-accent-400);
+  --accent-cool: var(--primitive-teal-light);
+  --accent-violet: var(--primitive-violet-light);
+  --accent-graphite: var(--primitive-graphite-light);
 }
 
 /* 1920px+ — Large Desktop ultrawide bump. Wider containers so content

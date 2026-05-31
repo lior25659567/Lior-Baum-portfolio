@@ -52,6 +52,7 @@ const Hero = () => {
   const nameRef   = useRef(null);
   const roleRef   = useRef(null);
   const descRef   = useRef(null);
+  const ctaRef    = useRef(null);
   const scrollRef = useRef(null);
   const chipRefs  = useRef([]);
   const roleLineRef = useRef(null);
@@ -110,6 +111,15 @@ const Hero = () => {
         '-=0.35'
       );
 
+      // CTA — fade up
+      if (ctaRef.current) {
+        tl.fromTo(ctaRef.current,
+          { y: 16, opacity: 0, filter: 'blur(2px)' },
+          { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.55, ease: 'power2.out' },
+          '-=0.35'
+        );
+      }
+
       // Chips — stagger pop in
       const chips = chipRefs.current.filter(Boolean);
       if (chips.length) {
@@ -128,7 +138,7 @@ const Hero = () => {
       );
 
       // Scroll-away
-      const elements = [metaRef, nameRef, roleRef, descRef]
+      const elements = [metaRef, nameRef, roleRef, descRef, ctaRef]
         .map(r => r.current).filter(Boolean);
 
       ScrollTrigger.create({
@@ -270,7 +280,16 @@ const Hero = () => {
 
           <p className="hero-desc" ref={descRef}>{descText}</p>
 
-          {/* CTA buttons and stats hidden for now */}
+          <div className="hero-cta" ref={ctaRef}>
+            <AnimatedButton
+              href={`mailto:${content.about.email}`}
+              variant="primary"
+              icon="→"
+              className="hero-cta-btn"
+            >
+              Get in touch
+            </AnimatedButton>
+          </div>
         </div>
 
         {/* ── RIGHT: 3D scene ── */}

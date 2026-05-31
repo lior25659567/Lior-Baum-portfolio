@@ -87,6 +87,9 @@ const DEFAULT_CV = {
     { institution: 'Shenkar College of Engineering, Design and Art', degree: 'BA in Visual Communication', period: 'Graduated: 2025', details: '' },
     { institution: 'Ort Shapira High School', degree: 'Advertising and Communication', period: '2014 – 2017', details: '' },
   ],
+  service: [
+    { place: '', period: '', description: '' },
+  ],
   skillCategories: [
     { name: 'Tools', skills: 'Figma, After Effects, Illustrator, Photoshop, Webflow, Vibe Coding\u2122, HTML/CSS', display: 'badges' },
     { name: 'Skills', skills: 'UX Strategy & Design Thinking, Product Discovery & User Research, Wireframing & Prototyping, Interaction Design & Microinteractions, UI Systems & Component Libraries, Site Building in Webflow & Cursor', display: 'list' },
@@ -102,6 +105,7 @@ const DEFAULT_CV = {
   showSummary: true,
   showExperience: true,
   showEducation: true,
+  showService: true,
   showSkills: true,
   showProjects: false,
   showCertifications: false,
@@ -147,6 +151,14 @@ const CV_JSON_SCHEMA_REFERENCE = `{
     }
   ],
 
+  "service": [
+    {
+      "place": "IDF — Unit Name",
+      "period": "2017 – 2020",
+      "description": "Role, responsibilities, achievements"
+    }
+  ],
+
   "skillCategories": [
     {
       "name": "Tools",
@@ -189,6 +201,7 @@ const CV_JSON_SCHEMA_REFERENCE = `{
   "showSummary": true,
   "showExperience": true,
   "showEducation": true,
+  "showService": true,
   "showSkills": true,
   "showProjects": false,
   "showCertifications": false,
@@ -203,10 +216,10 @@ const CV_JSON_SCHEMA_REFERENCE = `{
 const buildAiPrompt = (cv) => `You are helping me edit my CV. I will paste a JSON object that represents my CV. Return a SINGLE valid JSON object in the same shape — nothing else, no prose, no markdown fences — so I can paste it directly back into the editor.
 
 RULES
-- Keep the top-level keys the same: fullName, title, email, phone, location, portfolio, linkedin, summary, experience, education, skillCategories, projects, certifications, languages, awards, volunteer, fontSize, contentWidth, showSummary, showExperience, showEducation, showSkills, showProjects, showCertifications, showLanguages, showAwards, showVolunteer.
+- Keep the top-level keys the same: fullName, title, email, phone, location, portfolio, linkedin, summary, experience, education, service, skillCategories, projects, certifications, languages, awards, volunteer, fontSize, contentWidth, showSummary, showExperience, showEducation, showService, showSkills, showProjects, showCertifications, showLanguages, showAwards, showVolunteer.
 - Any field you don't change: leave exactly as-is.
 - Only include fields you want to change (the editor merges your output into the current state), OR return the whole object with edits applied. Both are fine. Never invent new top-level keys.
-- Arrays (experience, education, skillCategories, projects, certifications, languages, awards): include the FULL array if you touch it — missing entries will be treated as "keep unchanged" only if you omit the whole key.
+- Arrays (experience, education, service, skillCategories, projects, certifications, languages, awards): include the FULL array if you touch it — missing entries will be treated as "keep unchanged" only if you omit the whole key.
 - experience[].bullets is an array of strings. Prefer quantified, outcome-oriented bullets. Start with a strong verb (Led, Shipped, Reduced, Built, Launched). Include a metric whenever possible.
 - skillCategories[].display is "badges" (comma-separated chips) or "list" (bulleted list).
 - Dates: "Mon YYYY – Mon YYYY" or "Mon YYYY – Present" (en-dash).
@@ -229,6 +242,9 @@ SCHEMA REFERENCE
   "education": [
     { "institution": "University", "degree": "BA in Design", "period": "2019 – 2023", "details": "Honours, relevant coursework" }
   ],
+  "service": [
+    { "place": "IDF — Unit Name", "period": "2017 – 2020", "description": "Role, responsibilities, achievements" }
+  ],
   "skillCategories": [
     { "name": "Tools", "skills": "Figma, Sketch, Photoshop", "display": "badges" }
   ],
@@ -239,7 +255,7 @@ SCHEMA REFERENCE
   "volunteer": "",
   "fontSize": 11,
   "contentWidth": 180,
-  "showSummary": true, "showExperience": true, "showEducation": true,
+  "showSummary": true, "showExperience": true, "showEducation": true, "showService": true,
   "showSkills": true, "showProjects": false, "showCertifications": false,
   "showLanguages": false, "showAwards": false, "showVolunteer": false
 }
@@ -395,6 +411,7 @@ const CONTENT_SECTIONS = [
   { id: 'summary',        label: 'Summary' },
   { id: 'experience',     label: 'Experience' },
   { id: 'education',      label: 'Education' },
+  { id: 'service',        label: 'Service' },
   { id: 'skills',         label: 'Skills' },
   { id: 'projects',       label: 'Projects' },
   { id: 'certifications', label: 'Certifications' },
@@ -442,18 +459,18 @@ const CVBuilder = () => {
 
   const updateArrayItem = useCallback((key, index, field, value) => {
     setCv(prev => {
-      const arr = [...prev[key]];
+      const arr = [...(prev[key] || [])];
       arr[index] = { ...arr[index], [field]: value };
       return { ...prev, [key]: arr };
     });
   }, []);
 
   const addArrayItem = useCallback((key, template) => {
-    setCv(prev => ({ ...prev, [key]: [...prev[key], { ...template }] }));
+    setCv(prev => ({ ...prev, [key]: [...(prev[key] || []), { ...template }] }));
   }, []);
 
   const removeArrayItem = useCallback((key, index) => {
-    setCv(prev => ({ ...prev, [key]: prev[key].filter((_, i) => i !== index) }));
+    setCv(prev => ({ ...prev, [key]: (prev[key] || []).filter((_, i) => i !== index) }));
   }, []);
 
   const updateBullet = useCallback((expIndex, bulletIndex, value) => {
@@ -741,6 +758,28 @@ const CVBuilder = () => {
             </div>
           )}
 
+          {/* Service */}
+          {activeSection === 'service' && (
+            <div className="cv-form-section">
+              <h3>Service</h3>
+              <SectionToggle label="Show in CV" field="showService" />
+              {(cv.service || []).map((srv, i) => (
+                <div key={i} className="cv-card">
+                  <div className="cv-card-header">
+                    <span className="cv-card-num">{String(i + 1).padStart(2, '0')}</span>
+                    <button className="cv-remove" onClick={() => removeArrayItem('service', i)} disabled={(cv.service || []).length <= 1}>×</button>
+                  </div>
+                  <div className="cv-field-row">
+                    <div className="cv-field"><label>Place</label><input value={srv.place || ''} onChange={e => updateArrayItem('service', i, 'place', e.target.value)} placeholder="IDF — Unit Name" /></div>
+                    <div className="cv-field"><label>Years</label><input value={srv.period || ''} onChange={e => updateArrayItem('service', i, 'period', e.target.value)} placeholder="2017 – 2020" /></div>
+                  </div>
+                  <div className="cv-field"><label>Description</label><input value={srv.description || ''} onChange={e => updateArrayItem('service', i, 'description', e.target.value)} placeholder="Role, responsibilities, achievements" /></div>
+                </div>
+              ))}
+              <button className="cv-add-btn" onClick={() => addArrayItem('service', { place: '', period: '', description: '' })}>+ Add Service</button>
+            </div>
+          )}
+
           {/* Skills */}
           {activeSection === 'skills' && (
             <div className="cv-form-section">
@@ -901,6 +940,7 @@ const CVBuilder = () => {
                 <SectionToggle label="Professional Summary" field="showSummary" />
                 <SectionToggle label="Work Experience" field="showExperience" />
                 <SectionToggle label="Education" field="showEducation" />
+                <SectionToggle label="Service" field="showService" />
                 <SectionToggle label="Skills" field="showSkills" />
                 <SectionToggle label="Key Projects" field="showProjects" />
                 <SectionToggle label="Certifications" field="showCertifications" />
@@ -1123,6 +1163,19 @@ const CVBuilder = () => {
                 </section>
               )}
 
+              {cv.showService !== false && (cv.service || []).some(s => s.place || s.description) && (
+                <section className="cv-doc-section">
+                  <h2>Service</h2>
+                  {(cv.service || []).filter(s => s.place || s.description).map((srv, i) => (
+                    <div key={i} className="cv-doc-srv-item">
+                      {srv.place && <strong>{srv.place}</strong>}
+                      {srv.period && <span className="cv-doc-edu-period">{srv.period}</span>}
+                      {srv.description && <p className="cv-doc-edu-details">{srv.description}</p>}
+                    </div>
+                  ))}
+                </section>
+              )}
+
               {cv.showSkills !== false && cv.skillCategories.some(c => c.name && c.skills) && (
                 <>
                   {cv.skillCategories.filter(c => c.name && c.skills).map((cat, i) => (
@@ -1221,6 +1274,7 @@ const EditorialCV = ({ cv, theme, innerRef, overflowing }) => {
   const awards = (cv.awards || []).filter(a => a.title);
   const hasExperience = cv.showExperience !== false && (cv.experience || []).some(e => e.company || e.role || bullets(e).length);
   const hasEducation = cv.showEducation !== false && (cv.education || []).some(e => e.institution || e.degree);
+  const hasService = cv.showService !== false && (cv.service || []).some(s => s.place || s.description);
   const hasSkills = cv.showSkills !== false && skills.length > 0;
   const hasProjects = cv.showProjects && projects.length > 0;
   const hasCerts = cv.showCertifications && certs.length > 0;
@@ -1257,7 +1311,7 @@ const EditorialCV = ({ cv, theme, innerRef, overflowing }) => {
         <section className="ed-section">
           <h2 className="ed-section-title">Experience</h2>
           {cv.experience.filter(e => e.company || e.role || bullets(e).length).map((exp, i) => (
-            <div key={i} className="ed-entry">
+            <div key={i} className="ed-entry ed-entry--flat">
               <div className="ed-entry-head">
                 <h3 className="ed-entry-title">{exp.role || exp.company}</h3>
                 {exp.period && <span className="ed-entry-dates">{exp.period}</span>}
@@ -1283,7 +1337,7 @@ const EditorialCV = ({ cv, theme, innerRef, overflowing }) => {
         <section className="ed-section">
           <h2 className="ed-section-title">Education</h2>
           {cv.education.filter(e => e.institution || e.degree).map((edu, i) => (
-            <div key={i} className="ed-entry">
+            <div key={i} className="ed-entry ed-entry--flat">
               <div className="ed-entry-head">
                 <h3 className="ed-entry-title">{edu.degree || edu.institution}</h3>
                 {edu.period && <span className="ed-entry-dates">{edu.period}</span>}
@@ -1293,6 +1347,23 @@ const EditorialCV = ({ cv, theme, innerRef, overflowing }) => {
               )}
               {edu.details && (
                 <ul className="ed-bullets"><li>{edu.details}</li></ul>
+              )}
+            </div>
+          ))}
+        </section>
+      )}
+
+      {hasService && (
+        <section className="ed-section">
+          <h2 className="ed-section-title">Service</h2>
+          {(cv.service || []).filter(s => s.place || s.description).map((srv, i) => (
+            <div key={i} className="ed-entry ed-entry--flat">
+              <div className="ed-entry-head">
+                <h3 className="ed-entry-title">{srv.place}</h3>
+                {srv.period && <span className="ed-entry-dates">{srv.period}</span>}
+              </div>
+              {srv.description && (
+                <ul className="ed-bullets"><li>{srv.description}</li></ul>
               )}
             </div>
           ))}
@@ -1399,6 +1470,7 @@ const SidebarCV = ({ cv, theme, innerRef, overflowing }) => {
   const awards = (cv.awards || []).filter(a => a.title);
   const hasExperience = cv.showExperience !== false && (cv.experience || []).some(e => e.company || e.role || bullets(e).length);
   const hasEducation = cv.showEducation !== false && (cv.education || []).some(e => e.institution || e.degree);
+  const hasService = cv.showService !== false && (cv.service || []).some(s => s.place || s.description);
   const hasSkills = cv.showSkills !== false && skills.length > 0;
   const hasProjects = cv.showProjects && projects.length > 0;
   const hasCerts = cv.showCertifications && certs.length > 0;
@@ -1503,7 +1575,7 @@ const SidebarCV = ({ cv, theme, innerRef, overflowing }) => {
             <section className="ed-section">
               <h2 className="ed-section-title">Experience</h2>
               {cv.experience.filter(e => e.company || e.role || bullets(e).length).map((exp, i) => (
-                <div key={i} className="ed-entry">
+                <div key={i} className="ed-entry ed-entry--flat">
                   <div className="ed-entry-head">
                     <h3 className="ed-entry-title">{exp.role || exp.company}</h3>
                     {exp.period && <span className="ed-entry-dates">{exp.period}</span>}
@@ -1539,6 +1611,23 @@ const SidebarCV = ({ cv, theme, innerRef, overflowing }) => {
                   )}
                   {edu.details && (
                     <ul className="ed-bullets"><li>{edu.details}</li></ul>
+                  )}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {hasService && (
+            <section className="ed-section">
+              <h2 className="ed-section-title">Service</h2>
+              {(cv.service || []).filter(s => s.place || s.description).map((srv, i) => (
+                <div key={i} className="ed-entry ed-entry--flat">
+                  <div className="ed-entry-head">
+                    <h3 className="ed-entry-title">{srv.place}</h3>
+                    {srv.period && <span className="ed-entry-dates">{srv.period}</span>}
+                  </div>
+                  {srv.description && (
+                    <ul className="ed-bullets"><li>{srv.description}</li></ul>
                   )}
                 </div>
               ))}

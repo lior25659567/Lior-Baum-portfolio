@@ -13,6 +13,7 @@ import './App.css';
 const CaseStudy = lazy(() => import('./pages/CaseStudy'));
 const SlideDocumentation = lazy(() => import('./pages/SlideDocumentation'));
 const CVBuilder = lazy(() => import('./pages/CVBuilder'));
+const DesignSystem = lazy(() => import('./pages/DesignSystem'));
 
 function AppLayout() {
   const location = useLocation();
@@ -23,13 +24,14 @@ function AppLayout() {
       <Navigation />
       <main>
         <RouteErrorBoundary>
-          <Suspense fallback={null}>
+          <Suspense fallback={<div style={{minHeight:'100vh',background:'var(--color-bg,#fff)'}} />}>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/project/:projectId" element={<CaseStudy />} />
               <Route path="/docs/slides" element={<SlideDocumentation />} />
               <Route path="/cv" element={<CVBuilder />} />
+              <Route path="/design-system" element={<DesignSystem />} />
             </Routes>
           </Suspense>
         </RouteErrorBoundary>

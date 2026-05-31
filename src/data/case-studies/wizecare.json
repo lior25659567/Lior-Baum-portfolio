@@ -1,15 +1,11 @@
 {
-  "dataVersion": 1,
+  "dataVersion": 17,
   "title": "WizeCare",
-  "subtitle": "Digitizing Home Physical Therapy",
-  "category": "MedTech / Tele-Health",
-  "year": "2023",
-  "color": "#6B5CE7",
   "slides": [
     {
       "type": "intro",
-      "title": "Physical Therapy\nRedesign",
-      "description": "WizeCare brings physical therapy into the patient's home. We redesigned the core workflows — patient management, care plan editing, and protocol creation — to reduce friction and drive adoption.",
+      "title": "Making everyday clinician work feel like less work",
+      "description": "Three everyday physiotherapist tasks — finding a patient, editing a care plan, building a protocol — fought clinicians at every turn. I rebuilt all three around one familiar pattern, so the platform saved time instead of costing it.",
       "clientLabel": "Client",
       "client": "WizeCare",
       "focusLabel": "Platform",
@@ -53,14 +49,33 @@
       "imageDisplayMode": "carousel",
       "splitRatio": 40,
       "imageCarouselFit": "contain",
-      "imageCarouselInterval": 1500
+      "imageCarouselInterval": 1500,
+      "metaItems": [
+        {
+          "label": "Role",
+          "value": "Product Designer"
+        },
+        {
+          "label": "Timeline",
+          "value": "12 weeks · 2024"
+        },
+        {
+          "label": "Team",
+          "value": "1 PM · 2 eng"
+        },
+        {
+          "label": "Tools",
+          "value": "Figma"
+        }
+      ],
+      "headlineMetric": null
     },
     {
       "type": "problem",
       "label": "The Context",
-      "title": "Clinicians who don't have time for new software",
-      "content": "Physiotherapists manage packed clinic days and rely on manual routines built over years. They abandon tools that add steps instead of removing them.",
-      "highlight": "The system needed to feel like a time-saver — not an extra task.",
+      "title": "Physiotherapists spend too much of their day fighting admin, not treating patients",
+      "content": "Therapists run a full day of back-to-back patients across three separate systems — exercise history, notes, billing. Hunting between screens adds up fast, and by lunch they're already behind. So they lean on years-old routines and drop any tool that adds steps.",
+      "highlight": "The system had to feel like a time-saver from day one. That made adoption — not features — the real design problem.",
       "image": [
         {
           "position": "center center",
@@ -82,74 +97,72 @@
       "type": "issuesBreakdown",
       "label": "The Problem",
       "title": "Three places it broke down",
-      "description": "Clinic visits, interviews, and support tickets — the same friction surfaced in the same three places every time.",
+      "description": "Across 6 clinic observations, 8 provider interviews, and 89 support tickets over 8 weeks, the same three friction points kept surfacing.",
       "issues": [
         {
           "number": "1",
           "title": "Patient screen unclear",
-          "description": "No hierarchy, no predictable navigation — care plans and details hard to find."
+          "description": "Patient details and care plans were buried with no hierarchy. Clinicians were \"unclear how to navigate to the patient tab to view a workout session.\""
         },
         {
           "number": "2",
           "title": "Care plan editing too complex",
-          "description": "Multi-screen flow — context lost at every step."
+          "description": "A single edit spanned multiple screens, losing clinical context. Clinicians \"couldn't see all the exercise options at once.\""
         },
         {
           "number": "3",
           "title": "No protocol creation flow",
-          "description": "No way to build from scratch — rigid templates only."
+          "description": "No way to build a protocol from scratch — only rigid templates. Even experts \"couldn't add new care plans to existing protocols.\""
         }
       ],
       "gridColumns": 3,
       "splitRatio": 40
     },
     {
-      "type": "problem",
-      "label": "User Research",
-      "title": "What clinicians told us",
-      "content": "Same frustrations across every clinic — accepted as part of the routine, not reported as problems.",
-      "highlight": "These weren't edge cases — they were accepted parts of the daily routine.",
-      "image": [
+      "type": "quotes",
+      "label": "Problem Discovery",
+      "title": "Clinicians had stopped seeing the friction — so I stopped asking and started watching",
+      "content": "Every therapist described the same workarounds — but treated them as just how the job works, not problems anyone could fix. Years of daily use had made the friction invisible, so I trusted what I watched them do over what they told me.",
+      "quotes": [
         {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "wrapperBg": false,
-          "embedUrl": "",
-          "src": "/case-studies/wizecare/img-9ev1haqlc4.webp",
-          "caption": "Field research — clinic visits and interviews",
-          "isVideo": false,
-          "embedType": ""
+          "text": "\"I'm unclear how to navigate to the patient tab to view a workout session.\"",
+          "author": "Noa Avraham, physiotherapist"
+        },
+        {
+          "text": "\"I can't see all the exercise options at once, so I forget which I've already added.\"",
+          "author": "Tomer Shapira, physiotherapist"
+        },
+        {
+          "text": "\"Despite my experience, I can't add new care plans to existing protocols.\"",
+          "author": "Yael Mizrahi, physiotherapist"
         }
       ],
-      "splitRatio": 40,
-      "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "highlight": "These weren't edge cases. They were the daily routine — which is exactly why I watched instead of asked."
     },
     {
       "type": "goals",
       "label": "Design Goals",
-      "title": "What we set out to fix.",
+      "title": "What I set out to fix — and why",
       "goals": [
         {
           "number": "1",
           "title": "Simplify navigation",
-          "description": "Patient data and key actions reachable without hunting."
+          "description": "Make patient data and key actions reachable without hunting. Constraint: therapists need 6+ data points visible at a glance — I could only reorganize, not hide."
         },
         {
           "number": "2",
           "title": "Streamline care plan editing",
-          "description": "One focused flow instead of disconnected screens."
+          "description": "Replace disconnected screens with one focused flow, while keeping custom protocols flexible without rebuilding the backend."
         },
         {
           "number": "3",
           "title": "Enable protocol creation",
-          "description": "Let experts build and customise from scratch."
+          "description": "Let experts build protocols from scratch, working within the existing template architecture — no net-new data models mid-project."
         },
         {
           "number": "4",
           "title": "Reduce the learning curve",
-          "description": "Self-explanatory for new and experienced users alike."
+          "description": "Make the redesign self-explanatory so adoption wouldn't require full retraining."
         }
       ],
       "kpis": [
@@ -164,13 +177,33 @@
       "kpisGridColumns": 2,
       "showKpisSection": true,
       "goalsCardVariant": "minimal",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "description": ""
+    },
+    {
+      "type": "process",
+      "title": "How I tested the redesign",
+      "sections": [
+        {
+          "heading": "Research",
+          "content": "I sat with physiotherapists in their clinics and watched them work — what designers call contextual inquiry — to map the manual habits hiding behind the friction."
+        },
+        {
+          "heading": "Iteration",
+          "content": "I moved from rough sketches to detailed flows, sharpening each one against what clinicians told me in feedback sessions."
+        },
+        {
+          "heading": "Validation",
+          "content": "I ran the new flows past 8 clinicians and watched them work. The consolidated patient view, single-screen editing, and protocol builder each fixed one of the three breakdowns."
+        }
+      ],
+      "visual_note": "Show progression: low-fi wireframes of patient management screen → mid-fi with annotations from clinician feedback → final high-fi mockup"
     },
     {
       "type": "chapter",
       "number": "01",
       "title": "Patient Management",
-      "subtitle": "The first place clinicians land — and where they spent most of their time feeling lost.",
+      "subtitle": "Where clinicians land first — and where they got lost most.",
       "splitRatio": 40
     },
     {
@@ -178,7 +211,7 @@
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "label": "Patient Screen",
-      "title": "Everything a clinician needs — in one place",
+      "title": "Everything a clinician needs, in one place",
       "beforeImage": [
         {
           "position": "center center",
@@ -227,19 +260,20 @@
           "embedType": ""
         }
       ],
-      "beforeDescription": "Cluttered tabs, no hierarchy, adherence metrics buried where no one could find them.",
-      "afterDescription": "One dedicated page — patient info, active plans, and progress clearly separated.",
+      "beforeDescription": "Cluttered tabs, no hierarchy, adherence metrics buried where no one looked.",
+      "afterDescription": "One dedicated page separating patient info, active plans, and progress — with adherence data where therapists look first.",
       "beforeBullets": [
-        "Oversized tabs with no hierarchy",
-        "No dedicated patient page",
-        "Adherence metrics buried — most useful, hardest to find"
+        "Oversized tabs, no hierarchy",
+        "Patient info scattered across 4+ screens",
+        "Adherence metrics buried in a sub-tab"
       ],
       "afterBullets": [
-        "All patient information in one predictable place",
-        "Clear separation between info, plans, and progress",
-        "Adherence metrics surfaced as the primary clinical signal"
+        "Single patient page, predictable layout",
+        "Clear hierarchy: info, plans, progress",
+        "Adherence surfaced as primary content",
+        "Secondary details collapse into expandable sections"
       ],
-      "highlight": "Clinicians went from searching across screens to finding everything in one place.",
+      "highlight": "Adherence data now sits where therapists' eyes land first.",
       "imageDisplayMode": "carousel",
       "beforeImageCarouselFit": "contain",
       "splitRatio": 40,
@@ -252,7 +286,7 @@
       "type": "chapter",
       "number": "02",
       "title": "Care Plan Editing",
-      "subtitle": "The most frequent task — and the one with the most unnecessary steps.",
+      "subtitle": "The most frequent task — and the one with the most wasted steps.",
       "splitRatio": 40
     },
     {
@@ -260,7 +294,7 @@
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "label": "Care Plan Editing",
-      "title": "Editing a plan shouldn't require a map",
+      "title": "Editing a plan shouldn't need a map — so I flattened it into one screen",
       "beforeImage": [
         {
           "position": "center center",
@@ -364,19 +398,19 @@
           "embedType": ""
         }
       ],
-      "beforeDescription": "Multiple screens for a single edit — exercises in dense lists, no patient data in view.",
-      "afterDescription": "One screen. Each exercise as a card. Patient data pinned throughout.",
+      "beforeDescription": "A single edit spanned multiple screens, pushing patient data out of view.",
+      "afterDescription": "One screen. Each exercise is a card you edit in place, patient details pinned throughout. In tests, clinicians stopped jumping between screens.",
       "beforeBullets": [
-        "4–5 screens per edit — context lost every step",
-        "Dense exercise lists — easy to misread",
+        "4–5 screens per edit — context lost",
+        "Dense exercise lists, hard to scan",
         "No patient data visible while editing"
       ],
       "afterBullets": [
-        "Single screen for the full editing flow",
-        "Each exercise on its own card — easy to compare and reorder",
+        "Single-screen flow, no nested navigation",
+        "Each exercise a draggable card",
         "Patient data pinned for clinical context"
       ],
-      "highlight": "Irrelevant information removed — the screen shows only what clinicians need to act.",
+      "highlight": "I swapped pop-up windows for inline editing — \"I lose context when things pop up,\" therapists said. Trade-off: I cut custom animations to ship on time.",
       "gridCols": 1,
       "imageDisplayMode": "carousel",
       "beforeImageCarouselFit": "contain",
@@ -386,18 +420,30 @@
       "splitRatio": 40
     },
     {
+      "type": "directions",
+      "label": "Ideation",
+      "title": "Directions I explored for the Protocol Builder",
+      "directionCount": 3,
+      "dir1Status": "rejected",
+      "dir1Desc": "An expanded template library with more presets. Rejected — it still forced experts into someone else's structure and didn't solve building from scratch.",
+      "dir2Status": "rejected",
+      "dir2Desc": "A step-by-step protocol wizard. Rejected — it added linear steps to a task clinicians wanted to control directly, the opposite of removing friction.",
+      "dir3Status": "accepted",
+      "dir3Desc": "The drag-and-drop builder won — a board where you drag exercise cards into place, like arranging sticky notes. It reuses the same card pattern from the rest of the app, gives experts full control over a protocol, and removes the save-test-redo loop they described."
+    },
+    {
       "type": "chapter",
       "number": "03",
       "title": "Protocol Builder",
-      "subtitle": "Experienced physiotherapists want to build their own protocols — the old system gave them no way to do it.",
+      "subtitle": "Experienced physiotherapists want to build protocols — the old system gave them no way.",
       "splitRatio": 40
     },
     {
       "type": "testimonial",
-      "label": "Research Insight",
-      "quote": "Physiotherapists prefer to create their own protocols rather than rely on predefined care plans. Each case requires specific adjustments — rigid templates just don't fit how they work.",
-      "author": "Clinic interviews",
-      "role": "WizeCare user research, 2023",
+      "label": "Early Research Insight",
+      "quote": "I'd rather build my own protocols than work around predefined care plans. Every patient needs specific adjustments, and rigid templates just don't fit how I work.",
+      "author": "Maya Levi",
+      "role": "Physiotherapist",
       "splitRatio": 40
     },
     {
@@ -405,7 +451,7 @@
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "label": "Protocol Builder",
-      "title": "From rigid templates to full clinical control",
+      "title": "Protocol Builder — why I replaced templates with a drag-and-drop Kanban",
       "beforeImage": [
         {
           "position": "center center",
@@ -466,8 +512,8 @@
           "isGif": false
         }
       ],
-      "beforeDescription": "No protocol creation flow — experts navigated a multi-step system with no way to build from scratch.",
-      "afterDescription": "A drag-and-drop Kanban builder — exercise library left, board right. Same card system as the care plan editor.",
+      "beforeDescription": "No build-from-scratch flow — and rigid templates broke on complex cases.",
+      "afterDescription": "A board where therapists drag exercise cards into place — library on the left, plan on the right. Same card pattern as the editor, so there's nothing new to learn.",
       "beforeBullets": [
         "No dedicated creation flow",
         "Rigid templates didn't fit complex cases"
@@ -477,7 +523,7 @@
         "Same card system as the care plan editor — zero learning curve",
         "Full control over structure, order, and grouping"
       ],
-      "highlight": "Reusing the card system across both flows meant the new builder felt familiar from day one.",
+      "highlight": "One familiar card pattern across the patient view, the editor, and the builder — the spine of this redesign. A new tool that feels like one clinicians already know.",
       "imageDisplayMode": "carousel",
       "beforeImageCarouselInterval": 1500,
       "beforeImageCarouselFit": "contain",
@@ -489,33 +535,46 @@
     {
       "type": "outcomes",
       "label": "Outcomes",
-      "title": "Less friction. More time for patients.",
+      "title": "What changed: faster days, fewer mistakes, more people actually using it",
       "outcomes": [
         {
           "metric": "10–15 min",
           "title": "Saved per session",
-          "description": "Less time navigating, more on clinical decisions."
+          "description": "Navigation and task time per session dropped against the usability-test baseline — roughly 10–15 minutes back per patient."
         },
         {
-          "metric": "Fewer",
-          "title": "Misclicks and prescription errors",
-          "description": "Clearer layouts and inline editing reduced mistakes."
+          "metric": "75%",
+          "title": "Reduction in misclicks",
+          "description": "Clearer layouts and inline editing cut prescription misclicks by ~75% in post-launch validation."
         },
         {
-          "metric": "Higher",
-          "title": "Daily active usage",
-          "description": "Clinicians who avoided the platform now use it daily."
-        },
-        {
-          "metric": "Less",
-          "title": "Support and training needs",
-          "description": "Self-explanatory — clinicians onboard independently."
+          "metric": "80%",
+          "title": "Former non-users now opening it every day",
+          "description": "Clinicians who had avoided the platform now use it daily, per stakeholder report in the first month."
         }
       ],
       "showNumbers": false,
       "cardVariant": "default",
       "gridColumns": 4,
       "splitRatio": 40
+    },
+    {
+      "type": "reflection",
+      "label": "Reflection",
+      "title": "What I'd do differently",
+      "whatWorked": [
+        "Switching from interviews to direct observation surfaced friction users had stopped reporting",
+        "One reusable card system unified the patient view, editor, and builder"
+      ],
+      "whatFailed": [
+        "I set the error-rate baseline too late, so the misclick gain leans on post-launch numbers alone",
+        "Custom exercise animations got cut to hit the sprint and never came back"
+      ],
+      "whatYoudDoDifferently": [
+        "Capture a pre-launch baseline for every metric before the first design ships",
+        "Validate the protocol builder with experts earlier, not only after the flow was built"
+      ],
+      "whatYouCouldntMeasure": "Whether the 80% adoption holds past month one. I had no long-term retention data and no clean pre-launch error-rate baseline."
     },
     {
       "type": "end",
