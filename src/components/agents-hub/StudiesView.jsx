@@ -30,6 +30,7 @@ const StudiesView = ({ studies, onRefresh, onView, onVerify }) => {
             <span className="hub-badge">{s.slug}</span>
             <span className="hub-badge">{s.slideCount} slides</span>
             {s.artifacts.length > 0 && <span className="hub-badge">{s.artifacts.length} artifacts</span>}
+            {s.hasContext && <span className="hub-badge">context ✓</span>}
             {budgets[s.slug] && <span className="hub-pill">{budgets[s.slug]}</span>}
           </div>
           <div className="hub-actions">
