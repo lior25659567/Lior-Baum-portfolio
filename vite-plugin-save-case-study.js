@@ -13,7 +13,7 @@
 import fs from 'fs';
 import fsp from 'fs/promises';
 import path from 'path';
-import { exec } from 'child_process';
+import { exec, execFile } from 'child_process';
 import https from 'https';
 import { enqueueJob, listJobs } from './scripts/hub-jobs.mjs';
 
@@ -210,16 +210,18 @@ export function saveCaseStudyPlugin() {
         const { cmd, slug = '', title = '' } = await readJson(req);
         const WHITELIST = new Set(['new', 'budget', 'extract', 'templates']);
         if (!WHITELIST.has(cmd)) { const e = new Error(`cmd "${cmd}" not allowed`); e.statusCode = 400; throw e; }
-        let argline = '';
+        // Build an argv array and run via execFile (NO shell) so a title/slug
+        // can never inject shell metacharacters ($(...), backticks, ;, etc.).
+        const args = ['scripts/case-study-text.mjs', cmd];
         if (cmd === 'new') {
           if (!title) { const e = new Error('new requires title'); e.statusCode = 400; throw e; }
-          argline = JSON.stringify(title);
+          args.push(title);
         } else if (cmd === 'budget' || cmd === 'extract') {
           if (!/^[a-z0-9._-]+$/i.test(slug)) { const e = new Error('bad slug'); e.statusCode = 400; throw e; }
-          argline = JSON.stringify(slug);
+          args.push(slug);
         }
         const result = await new Promise((resolve) => {
-          exec(`node scripts/case-study-text.mjs ${cmd} ${argline}`.trim(), {
+          execFile('node', args, {
             cwd: path.resolve('.'), timeout: 120_000, maxBuffer: 10 * 1024 * 1024, env: { ...process.env },
           }, (err, stdout, stderr) => resolve({ stdout: (stdout || '').trim(), stderr: (stderr || '').trim(), code: err ? (err.code ?? 1) : 0 }));
         });

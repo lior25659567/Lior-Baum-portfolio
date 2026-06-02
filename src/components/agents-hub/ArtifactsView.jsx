@@ -11,7 +11,9 @@ const ArtifactsView = ({ studies, selectedSlug, setSelectedSlug }) => {
   const [md, setMd] = useState('');
   const [budget, setBudget] = useState('');
 
-  useEffect(() => { setActive(available[0] || ''); setBudget(''); }, [selectedSlug]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Reset the active artifact when the study changes OR when its artifact list
+  // grows (e.g. a review/fix job just finished and overview refreshed).
+  useEffect(() => { setActive(available[0] || ''); setBudget(''); }, [selectedSlug, available.join(',')]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!selectedSlug || !active) { setMd(''); return; }

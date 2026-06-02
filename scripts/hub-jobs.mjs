@@ -27,7 +27,9 @@ export function enqueueJob({ action, slug = '', briefName = '', answers = null }
   ensureDir();
   const base = (slug || briefName || 'job').replace(/[^a-z0-9-]/gi, '').slice(0, 40) || 'job';
   const count = fs.readdirSync(JOBS_DIR).filter((f) => f.endsWith('.json')).length;
-  const id = `${action}-${base}-${count + 1}`;
+  // count keeps IDs readable/ordered; the time suffix makes them collision-proof
+  // even if two enqueues race (e.g. a UI double-click).
+  const id = `${action}-${base}-${count + 1}-${Date.now().toString(36).slice(-4)}`;
   const job = { id, action, slug, briefName, answers, status: 'queued', createdAt: new Date().toISOString(), note: '' };
   fs.writeFileSync(jobPath(id), JSON.stringify(job, null, 2) + '\n');
   return job;

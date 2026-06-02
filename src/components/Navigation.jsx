@@ -32,7 +32,10 @@ const Navigation = () => {
   const navItems = [
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
-    ...(editMode ? [{ label: 'Agents Hub', href: '/agents-hub' }, { label: 'Docs', href: '/docs/slides' }, { label: 'CV Builder', href: '/cv' }, { label: 'Design System', href: '/design-system' }] : []),
+    ...(editMode ? [
+      ...(import.meta.env.DEV ? [{ label: 'Agents Hub', href: '/agents-hub' }] : []), // dev-only page
+      { label: 'Docs', href: '/docs/slides' }, { label: 'CV Builder', href: '/cv' }, { label: 'Design System', href: '/design-system' },
+    ] : []),
   ];
 
   const handleNavClick = (href) => {
