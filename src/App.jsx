@@ -14,6 +14,7 @@ const CaseStudy = lazy(() => import('./pages/CaseStudy'));
 const SlideDocumentation = lazy(() => import('./pages/SlideDocumentation'));
 const CVBuilder = lazy(() => import('./pages/CVBuilder'));
 const DesignSystem = lazy(() => import('./pages/DesignSystem'));
+const AgentsHub = lazy(() => import('./pages/AgentsHub'));
 
 function AppLayout() {
   const location = useLocation();
@@ -32,6 +33,7 @@ function AppLayout() {
               <Route path="/docs/slides" element={<SlideDocumentation />} />
               <Route path="/cv" element={<CVBuilder />} />
               <Route path="/design-system" element={<DesignSystem />} />
+              <Route path="/agents-hub" element={<AgentsHub />} />
             </Routes>
           </Suspense>
         </RouteErrorBoundary>

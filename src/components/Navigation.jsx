@@ -32,7 +32,7 @@ const Navigation = () => {
   const navItems = [
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
-    ...(editMode ? [{ label: 'Docs', href: '/docs/slides' }, { label: 'CV Builder', href: '/cv' }, { label: 'Design System', href: '/design-system' }] : []),
+    ...(editMode ? [{ label: 'Agents Hub', href: '/agents-hub' }, { label: 'Docs', href: '/docs/slides' }, { label: 'CV Builder', href: '/cv' }, { label: 'Design System', href: '/design-system' }] : []),
   ];
 
   const handleNavClick = (href) => {
