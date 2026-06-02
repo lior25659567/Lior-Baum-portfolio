@@ -194,7 +194,8 @@ export function saveCaseStudyPlugin() {
           if (await pathExists(adir)) {
             for (const a of HUB_ARTIFACTS) if (await pathExists(path.join(adir, `${a}.md`))) artifacts.push(a);
           }
-          studies.push({ slug, title, slideCount, artifacts });
+          const hasContext = await pathExists(path.join(adir, 'context.md'));
+          studies.push({ slug, title, slideCount, artifacts, hasContext });
         }
         studies.sort((a, b) => a.title.localeCompare(b.title));
         const briefs = (await pathExists(briefsDir))
@@ -256,6 +257,19 @@ export function saveCaseStudyPlugin() {
         await fsp.mkdir(dir, { recursive: true });
         await fsp.writeFile(path.join(dir, `${clean}.md`), String(content ?? ''), 'utf-8');
         return { path: `cases/briefs/${clean}.md`, name: clean };
+      }));
+
+      // Write a per-study context file (optional facts + open questions the
+      // pipeline agents read). Whitelisted to cases/reviews/<slug>/context.md.
+      server.middlewares.use('/api/hub/context', wrap('/api/hub/context', async (req) => {
+        assertMethod(req, 'POST');
+        const { slug = '', facts = '', wondering = '' } = await readJson(req);
+        if (!/^[a-z0-9._-]+$/i.test(slug) || slug.includes('..')) { const e = new Error('bad slug'); e.statusCode = 400; throw e; }
+        const dir = path.resolve('cases/reviews', slug);
+        await fsp.mkdir(dir, { recursive: true });
+        const body = `## Facts to use\n\n${String(facts).trim()}\n\n## Wondering whether to add\n\n${String(wondering).trim()}\n`;
+        await fsp.writeFile(path.join(dir, 'context.md'), body, 'utf-8');
+        return { path: `cases/reviews/${slug}/context.md` };
       }));
 
       // List jobs (polling).
