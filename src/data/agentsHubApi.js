@@ -15,3 +15,4 @@ export const runScript = (cmd, params = {}) => jsonPost('/api/hub/run', { cmd, .
 export const readFile = (p) => call(`/api/hub/file?path=${encodeURIComponent(p)}`);
 export const writeBrief = (name, content) => jsonPost('/api/hub/brief', { name, content });
 export const enqueueJob = (payload) => jsonPost('/api/hub/enqueue', payload);
+export const writeContext = (slug, facts, wondering) => jsonPost('/api/hub/context', { slug, facts, wondering });
