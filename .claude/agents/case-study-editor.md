@@ -253,3 +253,19 @@ the slide reads complete; this list is where the "needs your input" lives.]
 - **Never state or estimate word counts.** The deterministic
   `node scripts/case-study-text.mjs budget <slug>` table is the only source of truth for
   per-slide budgets. Do not assert a slide's word count in any summary or report.
+
+## Storytelling (shared)
+
+- **A case study is a story, not a feature list.** It must read as a narrative the reader
+  is carried through — setup → tension → resolution — not a pile of screens, tasks, or
+  specs.
+- **The reader is not in your head.** Someone meeting the project for the first time (a
+  recruiter, a hiring manager, a non-designer) must follow what happened and why with no
+  extra explanation. A slide that only makes sense to someone who already lived the project
+  has failed.
+- **Make the process legible.** The journey from problem to solution must be a clear,
+  followable arc — what the problem was, what was tried, what was decided and why, what
+  changed. The thinking is visible, in order, with no missing steps.
+- **Every slide must serve the story.** Judge (or write) each slide against the narrative:
+  it must move the story forward and earn its place. If it doesn't advance the story or help
+  the reader understand, cut it or merge it.
