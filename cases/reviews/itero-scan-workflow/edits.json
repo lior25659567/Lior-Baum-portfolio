@@ -1,0 +1,61 @@
+{
+  "edits": {
+    "slides.4.label": "User Flow Mapping",
+    "slides.4.title": "Mapping the flow before touching the design",
+    "slides.4.content": "Before sketching anything, I mapped the full RX→Scan→View sequence as users actually experienced it. That map made the friction clusters impossible to ignore.",
+    "slides.4.issuesTitle": "What the flow revealed",
+    "slides.4.issues.0": "RX setup interrupted the clinician before a single scan could begin",
+    "slides.4.issues.1": "Tool access forced a physical break at the peak of scan rhythm",
+    "slides.4.issues.2": "No completion signal — View felt like a question, not an answer",
+    "slides.4.highlight": "The friction wasn't random. It lived at every handoff between phases."
+  },
+  "setFields": {},
+  "ops": [
+    {
+      "op": "insert",
+      "after": 9,
+      "reason": "Context directive: show the three RX Info Page design iterations explored before the final direction was chosen — distinct from slide 11 which covers toolbar position in Scan & View.",
+      "slide": {
+        "type": "directions",
+        "label": "RX Iterations",
+        "title": "Three directions for the Info Page",
+        "directionCount": 3,
+        "dir1Status": "rejected",
+        "dir1Desc": "[ADD: describe first RX Info Page iteration — what layout or approach was explored and why it was set aside]",
+        "dir1Image": "",
+        "dir2Status": "rejected",
+        "dir2Desc": "[ADD: describe second RX Info Page iteration — what was different, what problem it tried to solve, why it didn't make the cut]",
+        "dir2Image": "",
+        "dir3Status": "accepted",
+        "dir3Desc": "[ADD: describe the chosen RX Info Page direction — what made it the right answer and what the deciding factor was in testing or review]",
+        "dir3Image": ""
+      }
+    },
+    {
+      "op": "insert",
+      "after": 9,
+      "reason": "Context directive: show the icon redesign work — toolbar icons AND RX Info Page procedure icons — as visual design evidence. Placed in the RX chapter alongside the other RX work.",
+      "slide": {
+        "type": "comparison",
+        "label": "Icon Redesign",
+        "title": "Redesigning the icons — toolbar and procedure",
+        "beforeImage": "",
+        "afterImage": "",
+        "beforeLabel": "Before",
+        "afterLabel": "After",
+        "beforeDescription": "[ADD: describe the original icon set — what made them hard to read, inconsistent, or clinic-unfriendly]",
+        "afterDescription": "[ADD: describe the redesigned icon set — the design principles applied and how they serve the clinical context]",
+        "beforeBullets": [
+          "[ADD: specific problem with old toolbar icons]",
+          "[ADD: specific problem with old procedure icons on the Info Page]",
+          "[ADD: third issue — e.g. no shared visual language between icon families]"
+        ],
+        "afterBullets": [
+          "[ADD: what changed in the toolbar icon design]",
+          "[ADD: what changed in the procedure icon design]",
+          "[ADD: the unifying rule or system applied across both families]"
+        ]
+      }
+    }
+  ]
+}

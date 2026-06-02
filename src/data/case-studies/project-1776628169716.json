@@ -1,5 +1,5 @@
 {
-  "dataVersion": 4,
+  "dataVersion": 5,
   "title": "Design System\nin Claude Code",
   "subtitle": "An AI-first design system — shared by designers, developers, and AI.",
   "category": "Design Systems / AI Tooling",
@@ -59,7 +59,25 @@
       "imageDisplayMode": "carousel",
       "splitRatio": 40,
       "imageCarouselFit": "contain",
-      "imageCarouselInterval": 2000
+      "imageCarouselInterval": 2000,
+      "metaItems": [
+        {
+          "label": "Role",
+          "value": "[ADD: your role — e.g. Lead Product Designer]"
+        },
+        {
+          "label": "Timeline",
+          "value": "[ADD: project timeline — e.g. 12 weeks · Q3 2024]"
+        },
+        {
+          "label": "Team",
+          "value": "[ADD: team — e.g. 1 PM · 2 engineers · 1 tech lead]"
+        },
+        {
+          "label": "Tools",
+          "value": "[ADD: tools — e.g. Figma, Storybook, Claude Code]"
+        }
+      ]
     },
     {
       "type": "problem",
@@ -188,7 +206,7 @@
     },
     {
       "type": "problem",
-      "label": "06 · AI as a Collaborator · Ways of Working",
+      "label": "05 · AI as a Collaborator · Ways of Working",
       "title": "AI didn't replace the work. It amplified it.",
       "content": "Claude Code as a structured collaborator — explicit rules, prompts, methodologies. Designers owned intent. AI accelerated execution.",
       "highlight": "AI did not replace human work. It amplified capabilities and reduced friction.",
@@ -212,7 +230,7 @@
     },
     {
       "type": "outcomes",
-      "label": "07 · Outcomes · What Changed",
+      "label": "06 · Outcomes · What Changed",
       "title": "What this project reflects about design today.",
       "outcomes": [
         {
@@ -240,6 +258,21 @@
       "cardVariant": "default",
       "gridColumns": 4,
       "splitRatio": 40
+    },
+    {
+      "type": "reflection",
+      "label": "Reflection",
+      "title": "How my role as a designer has changed",
+      "whatWorked": [
+        "[ADD: one specific thing that worked well — e.g. 'Governing tokens in code meant drift caught itself before it shipped']"
+      ],
+      "whatFailed": [
+        "[ADD: one specific thing that didn't work — e.g. 'Scoped AI rules too late; first sprint had inconsistencies the governance layer would have caught']"
+      ],
+      "whatYoudDoDifferently": [
+        "[ADD: one concrete change — e.g. 'Define the token contract with engineering before component work begins, not alongside it']"
+      ],
+      "whatYouCouldntMeasure": "[ADD: what you couldn't measure — e.g. 'Long-term adoption across rotating engineers — would need 6+ months post-launch data']"
     },
     {
       "type": "end",

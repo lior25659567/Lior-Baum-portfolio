@@ -1,0 +1,36 @@
+{
+  "edits": {
+    "slides.5.label": "05 · AI as a Collaborator · Ways of Working",
+    "slides.6.label": "06 · Outcomes · What Changed"
+  },
+  "setFields": {
+    "slides.0.metaItems": [
+      { "label": "Role",     "value": "[ADD: your role — e.g. Lead Product Designer]" },
+      { "label": "Timeline", "value": "[ADD: project timeline — e.g. 12 weeks · Q3 2024]" },
+      { "label": "Team",     "value": "[ADD: team — e.g. 1 PM · 2 engineers · 1 tech lead]" },
+      { "label": "Tools",    "value": "[ADD: tools — e.g. Figma, Storybook, Claude Code]" }
+    ]
+  },
+  "ops": [
+    {
+      "op": "insert",
+      "after": 6,
+      "reason": "reflection slide is required above mid-level; end-slide subtitle is reflection content stranded on the wrong slide — seed the title from it",
+      "slide": {
+        "type": "reflection",
+        "label": "Reflection",
+        "title": "How my role as a designer has changed",
+        "whatWorked": [
+          "[ADD: one specific thing that worked well — e.g. 'Governing tokens in code meant drift caught itself before it shipped']"
+        ],
+        "whatFailed": [
+          "[ADD: one specific thing that didn't work — e.g. 'Scoped AI rules too late; first sprint had inconsistencies the governance layer would have caught']"
+        ],
+        "whatYoudDoDifferently": [
+          "[ADD: one concrete change — e.g. 'Define the token contract with engineering before component work begins, not alongside it']"
+        ],
+        "whatYouCouldntMeasure": "[ADD: what you couldn't measure — e.g. 'Long-term adoption across rotating engineers — would need 6+ months post-launch data']"
+      }
+    }
+  ]
+}

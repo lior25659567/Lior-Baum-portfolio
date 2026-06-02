@@ -102,7 +102,7 @@ _Available unused fields (`textAndImage` template): bullets2, bullets2Title, con
 
 ---
 ## Slide 2 — type: quotes
-_Words on screen: **110** · budget ~110_
+_Words on screen: **93** · budget ~110_
 
 - **label**  `[slides.2.label]`
   User Research
@@ -111,7 +111,7 @@ _Words on screen: **110** · budget ~110_
   What doctors told me
 
 - **content**  `[slides.2.content]`
-  I interviewed doctors across four specialties. The same problems came up every time — and none had ever been reported, because everyone assumed it was just how the tool worked.
+  I interviewed doctors across four specialties. The same problems came up every time.
 
 - **text**  `[slides.2.quotes.0.text]`
   I just skip the report most of the time. It takes too long.
@@ -237,7 +237,7 @@ _Available unused fields (`directions` template): dir1Image, dir2Image, dir3Imag
 
 ---
 ## Slide 5 — type: comparison
-_Words on screen: **112** · budget ~110_
+_Words on screen: **110** · budget ~110_
 
 - **label**  `[slides.5.label]`
   UI Layout
@@ -270,13 +270,13 @@ _Words on screen: **112** · budget ~110_
   Doctor, clinic, and patient editable from the header
 
 - **afterBullets**  `[slides.5.afterBullets.1]`
-  Share and Export PDF always one click away
+  Share and Export PDF always within reach
 
 - **afterBullets**  `[slides.5.afterBullets.2]`
   Full screen for report content
 
 - **highlight**  `[slides.5.highlight]`
-  I moved everything into one header line — and made every action one click away.
+  I moved everything into one header line — every action now one click away.
 
 - **beforeLabel**  `[slides.5.beforeLabel]`
   Before
@@ -360,7 +360,7 @@ _Available unused fields (`textAndImage` template): bullets2, bullets2Title, con
 
 ---
 ## Slide 8 — type: comparison
-_Words on screen: **112** · budget ~110_
+_Words on screen: **109** · budget ~110_
 
 - **label**  `[slides.8.label]`
   Share & Export
@@ -372,7 +372,7 @@ _Words on screen: **112** · budget ~110_
   Old — Preview, Download PDF, Share via QR
 
 - **beforeDescription**  `[slides.8.beforeDescription]`
-  Three sidebar buttons — Preview, Download PDF, Share via QR. No access control.
+  Three sidebar buttons — Preview, Download PDF, Share via QR.
 
 - **afterDescription**  `[slides.8.afterDescription]`
   I replaced them with a full sharing modal — email invites, access permissions, PIN protection, multi-channel delivery.

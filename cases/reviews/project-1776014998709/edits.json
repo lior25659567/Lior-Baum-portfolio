@@ -1,0 +1,1 @@
+{ "ops": [ { "op": "move", "index": 12, "after": 10, "reason": "Reflection was after the end card; move it before the end (Outcomes → Reflection → end) so the deck's strongest seniority signal isn't unreachable. All 3 reviewers agree." } ] }

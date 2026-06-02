@@ -6314,9 +6314,15 @@ button.dir-chip:hover {
   grid-template-columns: none;
   gap: 0;
   row-gap: 0;
-  margin-top: 48px;
+  margin-top: 0;
   padding-top: 0;
   border-top: none;
+}
+
+/* Remove the top gap above the intro description (requested) */
+.case-study:not(.edit-mode) .slide-intro .optional-field-wrapper:has(> .intro-description),
+.case-study:not(.edit-mode) .slide-intro .optional-field-wrapper > .intro-description {
+  margin-top: 0;
 }
 /* Figma: 220px label column, value fills the rest, rows vertically
    centered with 24px vertical padding and a 1px divider under every row. */
@@ -6370,9 +6376,9 @@ button.dir-chip:hover {
   justify-content: center;
   padding: 120px 64px;
   box-sizing: border-box;
-  /* Figma right panel = warm accent tint (#fff5f4). color-mix keeps it
-     theme-safe (light: soft pink wash; dark: subtle warm panel). */
-  background: color-mix(in srgb, var(--color-accent) 6%, var(--color-bg));
+  /* Use the same neutral background images fill against (the .dynamic-image-wrapper
+     fill color) instead of the warm accent tint, so the panel matches the image. */
+  background: var(--color-bg-secondary);
   border-radius: 0;
   overflow: visible;
 }
@@ -6388,7 +6394,7 @@ button.dir-chip:hover {
   bottom: 0;
   left: 100%;
   width: 100vw;
-  background: color-mix(in srgb, var(--color-accent) 6%, var(--color-bg));
+  background: var(--color-bg-secondary);
   pointer-events: none;
 }
 

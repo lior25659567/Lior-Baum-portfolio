@@ -1,5 +1,5 @@
 {
-  "dataVersion": 10,
+  "dataVersion": 11,
   "title": "Patient Report\nRedesign",
   "subtitle": "From a blank page into a structured, shareable communication tool.",
   "category": "Clinical UX",
@@ -393,13 +393,6 @@
       "splitRatio": 40
     },
     {
-      "type": "end",
-      "title": "Thank You",
-      "subtitle": "I make complex workflows feel obvious — a skill for any high-pressure product.",
-      "cta": "Get in touch",
-      "splitRatio": 40
-    },
-    {
       "type": "reflection",
       "label": "Reflection",
       "title": "What I'd do differently",
@@ -416,6 +409,13 @@
       ],
       "whatYouLearned": "Friction isn't bad UI — it's software that makes professionals manage it. Fix the default.",
       "whatYouCouldntMeasure": "Long-term adoption and whether templates reduced variability — needs 6+ months of data."
+    },
+    {
+      "type": "end",
+      "title": "Thank You",
+      "subtitle": "I make complex workflows feel obvious — a skill for any high-pressure product.",
+      "cta": "Get in touch",
+      "splitRatio": 40
     }
   ]
 }
