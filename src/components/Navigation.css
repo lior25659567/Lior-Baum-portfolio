@@ -70,7 +70,7 @@
 .nav-link {
   font-size: var(--text-body-sm);
   font-weight: var(--fw-medium);
-  letter-spacing: 0.02em;
+  letter-spacing: var(--ls-meta);
   color: var(--color-text);
   position: relative;
   padding: 0.35rem 0;
@@ -213,7 +213,7 @@
 
 .mobile-link-text {
   font-family: var(--font-body);
-  font-size: clamp(2rem, 8vw, 3.5rem);
+  font-size: var(--text-nav-menu);
   font-weight: var(--fw-heading);
   transition: color var(--transition-fast);
 }

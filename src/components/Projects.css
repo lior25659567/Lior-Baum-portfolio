@@ -5,7 +5,7 @@
 }
 
 .projects-container {
-  max-width: var(--container-xl);
+  max-width: var(--w-content);
   margin: 0 auto;
   padding: 0 var(--spacing-lg);
   width: 100%;
@@ -18,7 +18,7 @@
 }
 
 .section-title {
-  font-size: clamp(1.9rem, 4.5vw, 3.25rem);
+  font-size: var(--text-section-title);
   font-weight: var(--fw-heading);
   line-height: var(--lh-heading);
   letter-spacing: var(--ls-heading);
@@ -122,7 +122,7 @@
   font-family: var(--font-body);
   font-size: var(--text-caption);
   font-weight: var(--fw-body);
-  letter-spacing: 0.02em;
+  letter-spacing: var(--ls-meta);
   cursor: pointer;
   transition: all var(--transition-fast);
   white-space: nowrap;
@@ -146,26 +146,48 @@
   gap: var(--spacing-md);
 }
 
+/* Each card sits in a motion wrapper; make it a flex column so the card
+   stretches to the (equalised) grid-row height instead of its own content. */
+.projects-grid-cell {
+  display: flex;
+  flex-direction: column;
+}
+
 /* Card */
 .project-card.work-grid-project {
   position: relative;
+  height: 100%; /* fill the stretched grid cell so cards in a row are equal height */
   border-radius: var(--radius-lg);
   overflow: hidden;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-soft);
   background: var(--color-bg);
   display: flex;
   flex-direction: column;
-  transition: transform var(--transition-medium), border-color var(--transition-medium), box-shadow var(--transition-medium);
+  /* Soft, accent-tinted resting elevation (translated from the reference card). */
+  box-shadow:
+    0 10px 28px color-mix(in srgb, var(--color-accent) 5%, transparent),
+    0 1px 2px rgba(0, 0, 0, 0.07);
+  transition: transform 0.2s ease-out, border-color 0.2s ease-out, box-shadow 0.2s ease-out;
 }
 
 .project-card.work-grid-project:hover {
-  transform: translateY(-6px);
-  border-color: var(--color-accent);
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--color-accent) 30%, var(--color-border));
+  box-shadow:
+    0 20px 48px color-mix(in srgb, var(--color-accent) 13%, transparent),
+    0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .project-card.work-grid-project {
+  box-shadow:
+    0 10px 28px color-mix(in srgb, var(--color-accent) 8%, transparent),
+    0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 [data-theme="dark"] .project-card.work-grid-project:hover {
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 20px 48px color-mix(in srgb, var(--color-accent) 18%, transparent),
+    0 6px 16px rgba(0, 0, 0, 0.35);
 }
 
 /* Full-card link */
@@ -188,6 +210,7 @@
   aspect-ratio: 4/3;
   overflow: hidden;
   flex-shrink: 0;
+  border-bottom: 1px solid var(--color-border-soft);
 }
 
 .project-image-wrapper.media-wrapper {
@@ -200,14 +223,14 @@
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: center;
+  background-position: center bottom;
   background-repeat: no-repeat;
-  transition: transform var(--transition-slow), filter var(--transition-medium);
+  transform-origin: bottom;
+  transition: transform 0.3s ease-out;
 }
 
 .project-card.work-grid-project:hover .project-image.media-inner {
-  transform: scale(1.04);
-  filter: brightness(0.88);
+  transform: scale(1.025);
 }
 
 .project-image-placeholder {
@@ -4671,34 +4694,35 @@
 
 /* Content: always visible below the image */
 .project-content {
-  padding: 1rem 1.25rem 1.25rem;
+  padding: 1.5rem 1.5rem 1.75rem;
+  min-height: 9rem;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  border-top: 1px solid var(--color-border);
+  flex: 1;
   background: var(--color-bg);
-  transition: border-color var(--transition-medium), background var(--transition-medium);
-}
-
-.project-card.work-grid-project:hover .project-content {
-  border-color: var(--color-accent);
 }
 
 .project-content-title {
   font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: var(--fw-heading);
-  line-height: 1.3;
-  letter-spacing: -0.01em;
+  font-size: clamp(1.05rem, 0.95rem + 0.3vw, 1.2rem); /* ~17–19px, tuned for the narrower cards */
+  font-weight: var(--fw-heading); /* matches the .section-title weight (lighter) */
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-tight);
   color: var(--color-text);
+  margin: 0 0 0.6rem;
+}
+
+/* Description — one-sentence summary (falls back to category) */
+.project-content-desc {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: var(--fw-medium);
+  line-height: 1.5;
+  color: var(--color-text-muted);
   margin: 0;
-  transition: color var(--transition-fast);
 }
 
-.project-card.work-grid-project:hover .project-content-title {
-  color: var(--color-accent);
-}
-
+/* Meta — edit mode only now (category + year inputs; not shown on the card face) */
 .project-content-meta {
   display: flex;
   justify-content: space-between;
@@ -4708,7 +4732,11 @@
   font-family: var(--font-body);
   font-size: var(--text-caption);
   color: var(--color-text-muted);
-  letter-spacing: 0.02em;
+  letter-spacing: var(--ls-meta);
+}
+
+.project-content-meta--editing {
+  margin-top: 0.5rem;
 }
 
 .project-content-category {
@@ -4719,34 +4747,25 @@
   opacity: 0.8;
 }
 
-/* Category labels — small chips below the meta line */
+/* Tags — filled accent-soft pills at the top of the content (reference style) */
 .project-content-labels {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin-top: 0.15rem;
+  margin: 0 0 0.875rem;
 }
 
 .project-content-label {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.6rem;
+  padding: 0.25rem 0.625rem;
   font-family: var(--font-body);
-  font-size: 0.7rem;
+  font-size: var(--text-body-sm);
   font-weight: var(--fw-medium);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
   line-height: 1.2;
-  transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
-}
-
-.project-card.work-grid-project:hover .project-content-label {
-  border-color: var(--color-accent);
-  color: var(--color-text);
+  color: var(--color-text-muted);
+  background: var(--color-accent-soft);
+  border-radius: 999px;
 }
 
 .project-content-labels--editing {
@@ -4832,6 +4851,18 @@
 
 .project-inline-edit--small {
   font-size: inherit;
+}
+
+/* Description textarea (edit mode) */
+.project-content-desc-input {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  resize: vertical;
+  min-height: 2.6rem;
+  margin: 0.4rem 0 0;
+  display: block;
 }
 
 /* Image change overlay (edit mode) */
@@ -5227,16 +5258,12 @@
    so content fills the screen instead of floating in empty gutters. */
 @media (min-width: 1921px) {
   .projects-container {
-    max-width: var(--container-2xl);
+    max-width: var(--w-content);
     padding: 0 var(--spacing-lg);
   }
 
   .projects-grid {
     gap: var(--spacing-lg);
-  }
-
-  .project-content-title {
-    font-size: 1.1rem;
   }
 }
 
@@ -5259,10 +5286,6 @@
 
   .projects-grid {
     gap: var(--spacing-md);
-  }
-
-  .project-content-title {
-    font-size: 1.1rem;
   }
 }
 
@@ -5333,10 +5356,6 @@
   .project-media-prism-num-value {
     font-size: 1.5rem;
   }
-
-  .project-content-title {
-    font-size: 1.05rem;
-  }
 }
 
 /* ===== Mobile responsiveness overrides (≤767px only) =====
@@ -5361,19 +5380,13 @@
   }
 
   .projects-filter-chip {
-    font-size: var(--text-caption);
+    /* font-size omitted — --text-caption already re-clamps to a 13px floor on mobile */
     padding: 0.5rem 0.875rem;
     min-height: 36px;
   }
 
-  .project-content-title {
-    font-size: 1.0625rem;
-    line-height: 1.3;
-  }
-
-  .project-content-meta {
-    font-size: var(--text-caption);
-  }
+  /* (.project-content-title + meta font-size overrides removed — the title is now
+     a responsive clamp and the meta is edit-mode only) */
 
   /* Edit-only chrome — raise to ≥13px to satisfy the 12px minimum with margin */
   .project-url-input,

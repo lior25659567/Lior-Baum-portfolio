@@ -1,4 +1,5 @@
 import { useEffect, useRef, useLayoutEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -10,6 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Footer = () => {
   const { content, editMode } = useEdit();
+  const location = useLocation();
   const currentYear = new Date().getFullYear();
   const footerRef = useRef(null);
   const ctaRef = useRef(null);
@@ -21,6 +23,16 @@ const Footer = () => {
   useLayoutEffect(() => {
     ScrollTrigger.refresh();
   }, []);
+
+  // The footer stays mounted across client-side route changes, so its
+  // ScrollTrigger start/end positions are computed for whatever page first
+  // loaded. On a shorter page (e.g. /playground) those stale positions sit
+  // below the reachable scroll range, so the CTA reveal never fires and the
+  // footer reads as blank. Recompute on every route change.
+  useEffect(() => {
+    const t = setTimeout(() => ScrollTrigger.refresh(), 150);
+    return () => clearTimeout(t);
+  }, [location.pathname]);
 
   useEffect(() => {
     const lines = [line1Ref.current, line2Ref.current, line3Ref.current, line4Ref.current];

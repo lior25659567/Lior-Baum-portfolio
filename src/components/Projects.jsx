@@ -48,6 +48,15 @@ const PROJECT_TAGS = [
 // Default projects - used as fallback
 const defaultProjects = [
   {
+    id: 'project-1780418394707',
+    title: 'ResponsiveView Extension',
+    category: 'Developer Tools · Education',
+    image: '',
+    year: '2026',
+    tag: 'work',
+    mediaMode: 'template',
+  },
+  {
     id: 'align-technology',
     title: 'iTero Toolbar',
     category: 'UI Unification & Efficiency',
@@ -1383,40 +1392,10 @@ const ProjectCard = ({ project, index, total, editMode, hideCardYear, onImageCha
         )}
       </div>
 
-      {/* Title always visible below the image */}
+      {/* Content below the image — tags → title → description → CTA */}
       <div className="project-content">
         {editMode ? (
           <>
-            <h3 className="project-content-title">
-              <input
-                className="project-inline-edit"
-                value={project.title || ''}
-                onChange={(e) => onUpdate(project.id, { title: e.target.value })}
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                placeholder="Project Title"
-              />
-            </h3>
-            <p className="project-content-meta">
-              <span className="project-content-category">
-                <input
-                  className="project-inline-edit project-inline-edit--small"
-                  value={project.category || ''}
-                  onChange={(e) => onUpdate(project.id, { category: e.target.value })}
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                  placeholder="Category"
-                />
-              </span>
-              <span className="project-content-year">
-                <input
-                  className="project-inline-edit project-inline-edit--small"
-                  value={project.year || ''}
-                  onChange={(e) => onUpdate(project.id, { year: e.target.value })}
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                  placeholder="Year"
-                  style={{ textAlign: 'right', width: '4rem' }}
-                />
-              </span>
-            </p>
             <div className="project-content-labels project-content-labels--editing">
               {(project.labels || []).map((label, i) => (
                 <span key={i} className="project-content-label project-content-label--editing">
@@ -1429,12 +1408,12 @@ const ProjectCard = ({ project, index, total, editMode, hideCardYear, onImageCha
                       onUpdate(project.id, { labels: next });
                     }}
                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                    placeholder="Label"
+                    placeholder="Tag"
                   />
                   <button
                     type="button"
                     className="project-content-label-remove"
-                    aria-label="Remove label"
+                    aria-label="Remove tag"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -1453,28 +1432,65 @@ const ProjectCard = ({ project, index, total, editMode, hideCardYear, onImageCha
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    const next = [...(project.labels || []), 'New label'];
+                    const next = [...(project.labels || []), 'New tag'];
                     onUpdate(project.id, { labels: next });
                   }}
                 >
-                  + Add label
+                  + Add tag
                 </button>
               )}
             </div>
+            <h3 className="project-content-title">
+              <input
+                className="project-inline-edit"
+                value={project.title || ''}
+                onChange={(e) => onUpdate(project.id, { title: e.target.value })}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                placeholder="Project Title"
+              />
+            </h3>
+            <textarea
+              className="project-inline-edit project-content-desc-input"
+              value={project.description || ''}
+              onChange={(e) => onUpdate(project.id, { description: e.target.value })}
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+              placeholder="One-sentence description"
+              rows={2}
+            />
+            <p className="project-content-meta project-content-meta--editing">
+              <span className="project-content-category">
+                <input
+                  className="project-inline-edit project-inline-edit--small"
+                  value={project.category || ''}
+                  onChange={(e) => onUpdate(project.id, { category: e.target.value })}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  placeholder="Category (fallback if no description)"
+                />
+              </span>
+              <span className="project-content-year">
+                <input
+                  className="project-inline-edit project-inline-edit--small"
+                  value={project.year || ''}
+                  onChange={(e) => onUpdate(project.id, { year: e.target.value })}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  placeholder="Year"
+                  style={{ textAlign: 'right', width: '4rem' }}
+                />
+              </span>
+            </p>
           </>
         ) : (
           <>
-            <h3 className="project-content-title">{project.title}</h3>
-            <p className="project-content-meta">
-              <span className="project-content-category">{project.category}</span>
-              <span className="project-content-year">{project.year}</span>
-            </p>
             {(project.labels || []).filter(Boolean).length > 0 && (
               <div className="project-content-labels">
                 {(project.labels || []).filter(Boolean).slice(0, 3).map((label, i) => (
                   <span key={i} className="project-content-label">{label}</span>
                 ))}
               </div>
+            )}
+            <h3 className="project-content-title">{project.title}</h3>
+            {(project.description || project.category) && (
+              <p className="project-content-desc">{project.description || project.category}</p>
             )}
           </>
         )}
@@ -1867,6 +1883,7 @@ const Projects = () => {
             {filteredProjects.map((project, index) => (
               <motion.div
                 key={project.id}
+                className="projects-grid-cell"
                 layout
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}

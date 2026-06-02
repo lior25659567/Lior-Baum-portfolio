@@ -78,6 +78,22 @@ const defaultContent = {
       { id: 'wizecare', title: 'WizeCare', category: 'B2B Complex System', year: '2023', image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop', tag: 'work' },
     ],
   },
+  // The Playground page — smaller experiments and side bets that don't warrant a
+  // full case study. Curated, not a dump: every item answers "what did this prove?".
+  // Items are placeholders to be replaced in edit mode (Cmd+E → /playground).
+  playground: {
+    sectionLabel: 'Playground',
+    sectionTitle: 'Experiments & side bets',
+    intro: "Between client work, I run small experiments — the bets I make when nobody hands me a brief. Some shipped, some didn't. Every one taught me something.",
+    items: [
+      { id: 'pg-1', title: 'A title that names the outcome', context: 'One line on the situation: what I noticed, wanted to test, or was curious about.', learned: 'What it proved — the one thing this experiment taught me.', role: 'Solo', year: '2025', labels: ['Tool', 'Figma'], image: '', url: '', linkLabel: '' },
+      { id: 'pg-2', title: 'Another small bet', context: 'The constraint I set for myself and why it was interesting.', learned: 'The insight I walked away with.', role: 'Solo', year: '2025', labels: ['Visual'], image: '', url: '', linkLabel: '' },
+      { id: 'pg-3', title: 'A weekend build', context: 'A thing I wanted to exist, so I made it.', learned: 'What building it taught me about the problem.', role: 'Solo', year: '2024', labels: ['Concept', 'Code'], image: '', url: '', linkLabel: '' },
+      { id: 'pg-4', title: 'A quick redesign exercise', context: 'Something felt broken, so I had an opinion and acted on it.', learned: 'The principle it confirmed for me.', role: 'Solo', year: '2024', labels: ['System'], image: '', url: '', linkLabel: '' },
+      { id: 'pg-5', title: 'A motion / craft experiment', context: 'I wanted to push a detail further than a brief would allow.', learned: 'What it sharpened in my craft.', role: 'Solo', year: '2024', labels: ['Motion'], image: '', url: '', linkLabel: '' },
+      { id: 'pg-6', title: 'An exploration that hit a dead end', context: 'It didn’t go anywhere — but the reason it failed was the point.', learned: 'The useful insight the dead end produced.', role: 'Solo', year: '2023', labels: ['Concept'], image: '', url: '', linkLabel: '' },
+    ],
+  },
   footer: {
     line1: 'How about',
     line2_1: 'we do a ',
@@ -143,6 +159,17 @@ const isPlaceholderSkills = (skills) =>
     (!g?.items?.length || g.items.every(i => PLACEHOLDER_ITEMS.has(i || '')))
   );
 
+// One-shot upgrade for the About skills heading. Cached siteContent overrides
+// the JSON default, so renaming the heading in the data file alone won't show
+// for users who already have a saved copy. Any title still equal to a prior
+// default is migrated to the current one.
+const SKILLS_TITLE = 'What Matters to Me as a Designer';
+const STALE_SKILLS_TITLES = new Set([
+  'Skills & Expertise',
+  'What I Value at Work',
+  'How I Show Up at Work',
+]);
+
 // Override defaults with saved home-content.json if present
 const effectiveDefaultContent = (() => {
   if (!savedHomeData?.content) return defaultContent;
@@ -156,6 +183,7 @@ const effectiveDefaultContent = (() => {
     footer: { ...defaultContent.footer, ...savedHomeData.content.footer },
     about: mergedAbout,
     projects: { ...defaultContent.projects, ...savedHomeData.content.projects },
+    playground: { ...defaultContent.playground, ...savedHomeData.content.playground },
   };
 })();
 
@@ -176,6 +204,7 @@ function mergeContent(saved) {
     footer: { ...effectiveDefaultContent.footer, ...saved.footer },
     about: mergedAbout,
     projects: { ...effectiveDefaultContent.projects, ...saved.projects },
+    playground: { ...effectiveDefaultContent.playground, ...saved.playground },
   };
 }
 
@@ -227,6 +256,16 @@ export const EditProvider = ({ children }) => {
       setContent(prev => ({
         ...prev,
         about: { ...prev.about, skills: effectiveDefaultContent.about.skills },
+      }));
+    }
+  }, [content]);
+
+  // One-shot: upgrade a stale About skills heading from a cached copy.
+  useEffect(() => {
+    if (STALE_SKILLS_TITLES.has(content?.about?.skillsTitle)) {
+      setContent(prev => ({
+        ...prev,
+        about: { ...prev.about, skillsTitle: SKILLS_TITLE },
       }));
     }
   }, [content]);

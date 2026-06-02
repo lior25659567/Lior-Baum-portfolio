@@ -6,7 +6,7 @@
 }
 
 .footer-container {
-  max-width: var(--container-xl);
+  max-width: var(--w-content);
   margin: 0 auto;
   width: 100%;
   position: relative;
@@ -51,8 +51,8 @@
 }
 
 .cta-text {
-  font-size: clamp(2.25rem, 5.5vw, 4rem);
-  font-weight: var(--fw-body);
+  font-size: var(--text-footer-cta);
+  font-weight: var(--fw-body); /* editorial weight — intentionally lighter than other titles */
   line-height: 1.15;
   color: var(--color-text);
   letter-spacing: var(--ls-heading);
@@ -163,7 +163,7 @@
   }
 
   .footer-container {
-    max-width: var(--container-2xl);
+    max-width: var(--w-content);
   }
 
   .footer-cta-wrapper {
@@ -274,10 +274,6 @@
     padding-top: 2rem;
     border-top: 1px solid var(--color-border);
   }
-
-  .footer-copyright {
-    font-size: 0.85rem;
-  }
 }
 
 /* ===== Mobile responsiveness overrides (≤767px only) ===== */
@@ -286,9 +282,8 @@
     padding: 3.5rem var(--spacing-md) 2rem;
   }
 
-  .footer-copyright {
-    font-size: 0.875rem; /* 14px floor */
-  }
+  /* (footer-copyright font-size overrides removed — --text-body-sm re-clamps to a
+     14px floor on mobile via index.css, reproducing the same size) */
 
   /* Ensure footer CTA button (AnimatedButton) meets 44px tap target */
   .footer .animated-btn,

@@ -49,7 +49,7 @@
       "gridCols": 1,
       "imageDisplayMode": "carousel",
       "splitRatio": 40,
-      "imageCarouselBg": true,
+      "imageCarouselBg": false,
       "imageCarouselFit": "contain",
       "imageCarouselInterval": 1500,
       "metaItems": [
@@ -194,7 +194,7 @@
           "wrapperBg": false,
           "embedUrl": "",
           "src": "/case-studies/project-1776014998709/img-ih6r6wqz8g.webp",
-          "caption": "Old — static three-panel split",
+          "caption": "",
           "isVideo": false,
           "embedType": ""
         }
@@ -207,7 +207,7 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/project-1776014998709/img-1kpvq4sizhc.png",
-          "caption": "New — compact header, full canvas for editing",
+          "caption": "",
           "isVideo": false,
           "embedType": ""
         }
@@ -224,7 +224,7 @@
         "Share and Export PDF always within reach",
         "Full screen for report content"
       ],
-      "highlight": "I moved everything into one header line — every action now one click away.",
+      "highlight": null,
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "splitRatio": 40,
@@ -309,7 +309,7 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/project-1776014998709/img-mpp2k7l6t4.webp",
-          "caption": "Old — Preview, Download PDF, Share via QR",
+          "caption": "",
           "isVideo": false,
           "embedType": ""
         }
@@ -341,7 +341,7 @@
         "Multi-channel delivery — WhatsApp, WeChat, QR, copy link",
         "Privacy warning built in"
       ],
-      "highlight": "Sharing stopped being an afterthought. It became a controlled, deliberate handoff.",
+      "highlight": null,
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "splitRatio": 40,

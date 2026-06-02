@@ -13,7 +13,7 @@ data into prose.
 
 ---
 ## Slide 0 — type: intro
-_Words on screen: **97** · budget ~75 · ⚠ OVER — trim to fit the canvas_
+_Words on screen: **76** · budget ~75_
 
 - **title**  `[slides.0.title]`
   Clinical Scanning
@@ -21,7 +21,6 @@ _Words on screen: **97** · budget ~75 · ⚠ OVER — trim to fit the canvas_
 
 - **description**  `[slides.0.description]`
   The patient is in the chair. The scanner is ready. The system isn't.
-  
   I redesigned Align Technology's RX, Scan, and View workflow into one continuous system.
 
 - **clientLabel**  `[slides.0.clientLabel]`
@@ -59,15 +58,6 @@ _Words on screen: **97** · budget ~75 · ⚠ OVER — trim to fit the canvas_
 
 - **value**  `[slides.0.metaItems.3.value]`
   Figma · Coded prototype · Claude Code
-
-- **value**  `[slides.0.headlineMetric.value]`
-  [ADD]
-
-- **label**  `[slides.0.headlineMetric.label]`
-  [ADD: the strongest measurable outcome — e.g. setup time, rescan rate]
-
-- **context**  `[slides.0.headlineMetric.context]`
-  [ADD: source + timeframe once a real number exists]
 
 _Images (READ these — content may live here):_ `public/case-studies/itero-scan-workflow/img-6s57kfmq7o.png`, `public/case-studies/itero-scan-workflow/img-morqwmjyo.png`, `public/case-studies/itero-scan-workflow/img-4gnykp544g.png`
 
@@ -193,7 +183,7 @@ _Available unused fields (`quotes` template): gridColumns, bulletsTitle, highlig
 
 ---
 ## Slide 4 — type: problem
-_Words on screen: **82** · budget ~75_
+_Words on screen: **69** · budget ~75_
 
 - **label**  `[slides.4.label]`
   User Flow Mapping
@@ -220,7 +210,10 @@ _Words on screen: **82** · budget ~75_
   The friction wasn't random — it lived at every phase handoff.
 
 - **image**  `[slides.4.image]`
-  [ADD: user flow / journey map image showing the RX→Scan→View sequence with friction points annotated]
+  /case-studies/itero-scan-workflow/img-t2to0gdcf0.png
+
+- **imageFit**  `[slides.4.imageFit]`
+  contain
 
 _Available unused fields (`textAndImage` template): bullets2, bullets2Title, conclusion_
 
@@ -334,40 +327,70 @@ _Words on screen: **13** · budget ~18_
   The prescription step — defining patient, procedure, and case details before scanning.
 
 ---
-## Slide 8 — type: comparison
-_Words on screen: **78** · budget ~110_
+## Slide 8 — type: directions
+_Words on screen: **72** · budget ~90_
 
 - **label**  `[slides.8.label]`
-  RX Setup
+  RX Iterations
 
 - **title**  `[slides.8.title]`
+  Three directions for the Info Page
+
+- **dir1Status**  `[slides.8.dir1Status]`
+  rejected
+
+- **dir1Desc**  `[slides.8.dir1Desc]`
+  A collapse/expand layout — tap to open, read, close, repeat. In practice it meant constantly reopening the same section. That friction alone killed it.
+
+- **dir2Status**  `[slides.8.dir2Status]`
+  rejected
+
+- **dir2Desc**  `[slides.8.dir2Desc]`
+  Broke setup into steps. Looked organised, felt like a form — more clicks, slower start.
+
+- **dir3Status**  `[slides.8.dir3Status]`
+  accepted
+
+- **dir3Desc**  `[slides.8.dir3Desc]`
+  Everything visible at once. No expanding, no steps — the full setup in a single view. This became the RX Setup redesign.
+
+_Images (READ these — content may live here):_ `public/case-studies/itero-scan-workflow/img-9399qcjdwc.png`, `public/case-studies/itero-scan-workflow/img-6v6qayitu4.png`, `public/case-studies/itero-scan-workflow/img-e382hxcguo.png`
+
+---
+## Slide 9 — type: comparison
+_Words on screen: **78** · budget ~110_
+
+- **label**  `[slides.9.label]`
+  RX Setup
+
+- **title**  `[slides.9.title]`
   Getting started shouldn't feel like a form
 
-- **caption**  `[slides.8.beforeImage.0.caption]`
+- **caption**  `[slides.9.beforeImage.0.caption]`
   Old — rigid multi-step setup sequence
 
-- **beforeDescription**  `[slides.8.beforeDescription]`
+- **beforeDescription**  `[slides.9.beforeDescription]`
   A rigid multi-step setup blocked every clinician before scanning could even begin.
 
-- **afterDescription**  `[slides.8.afterDescription]`
+- **afterDescription**  `[slides.9.afterDescription]`
   Users start right away — patient context fills in as they go, not as a prerequisite.
 
-- **beforeBullets**  `[slides.8.beforeBullets.0]`
+- **beforeBullets**  `[slides.9.beforeBullets.0]`
   Patient selection required a multi-step modal
 
-- **beforeBullets**  `[slides.8.beforeBullets.1]`
+- **beforeBullets**  `[slides.9.beforeBullets.1]`
   Procedure had to be defined upfront
 
-- **beforeBullets**  `[slides.8.beforeBullets.2]`
+- **beforeBullets**  `[slides.9.beforeBullets.2]`
   Dropdown disconnected from the dental chart
 
-- **afterBullets**  `[slides.8.afterBullets.0]`
+- **afterBullets**  `[slides.9.afterBullets.0]`
   Inline patient selection — no modal
 
-- **afterBullets**  `[slides.8.afterBullets.1]`
+- **afterBullets**  `[slides.9.afterBullets.1]`
   Patient context stays visible throughout
 
-- **afterBullets**  `[slides.8.afterBullets.2]`
+- **afterBullets**  `[slides.9.afterBullets.2]`
   Procedure selection tied to teeth structure
 
 _Images (READ these — content may live here):_ `public/case-studies/itero-scan-workflow/img-uykask3eo.webp`, `public/case-studies/itero-scan-workflow/vid-aouv40ns6o0.mp4`
@@ -375,73 +398,45 @@ _Images (READ these — content may live here):_ `public/case-studies/itero-scan
 _Available unused fields (`comparison` template): description, beforeLabel, afterLabel, beforeBulletsTitle, afterBulletsTitle, bullets, bulletsTitle, highlight_
 
 ---
-## Slide 9 — type: comparison
+## Slide 10 — type: comparison
 _Words on screen: **97** · budget ~110_
 
-- **label**  `[slides.9.label]`
+- **label**  `[slides.10.label]`
   RX Tooth Selection
 
-- **title**  `[slides.9.title]`
+- **title**  `[slides.10.title]`
   Selecting teeth should be as fast as pointing at them
 
-- **caption**  `[slides.9.beforeImage.0.caption]`
+- **caption**  `[slides.10.beforeImage.0.caption]`
   Old — one modal per tooth, no overview
 
-- **beforeDescription**  `[slides.9.beforeDescription]`
+- **beforeDescription**  `[slides.10.beforeDescription]`
   Every tooth needed its own modal — click, confirm, close, repeat. No overview of what you'd already done.
 
-- **afterDescription**  `[slides.9.afterDescription]`
+- **afterDescription**  `[slides.10.afterDescription]`
   Teeth selected directly on the chart — one or many at once — with procedures assigned inline.
 
-- **beforeBullets**  `[slides.9.beforeBullets.0]`
+- **beforeBullets**  `[slides.10.beforeBullets.0]`
   One blocking modal per tooth — no multi-select
 
-- **beforeBullets**  `[slides.9.beforeBullets.1]`
+- **beforeBullets**  `[slides.10.beforeBullets.1]`
   No color coding — no clinical overview
 
-- **beforeBullets**  `[slides.9.beforeBullets.2]`
+- **beforeBullets**  `[slides.10.beforeBullets.2]`
   Complex cases required repetitive steps
 
-- **afterBullets**  `[slides.9.afterBullets.0]`
+- **afterBullets**  `[slides.10.afterBullets.0]`
   Select one or many teeth in one interaction
 
-- **afterBullets**  `[slides.9.afterBullets.1]`
+- **afterBullets**  `[slides.10.afterBullets.1]`
   Color-coded procedures visible on the chart
 
-- **afterBullets**  `[slides.9.afterBullets.2]`
+- **afterBullets**  `[slides.10.afterBullets.2]`
   Full treatment plan visible without opening anything
 
 _Images (READ these — content may live here):_ `public/case-studies/itero-scan-workflow/img-cy7ucjs8u0.png`, `public/case-studies/itero-scan-workflow/vid-581c99ziag0.mp4`
 
 _Available unused fields (`comparison` template): description, beforeLabel, afterLabel, beforeBulletsTitle, afterBulletsTitle, bullets, bulletsTitle, highlight_
-
----
-## Slide 10 — type: directions
-_Words on screen: **79** · budget ~90_
-
-- **label**  `[slides.10.label]`
-  RX Iterations
-
-- **title**  `[slides.10.title]`
-  Three directions for the Info Page
-
-- **dir1Status**  `[slides.10.dir1Status]`
-  rejected
-
-- **dir1Desc**  `[slides.10.dir1Desc]`
-  [ADD: describe first RX Info Page iteration — what layout or approach was explored and why it was set aside]
-
-- **dir2Status**  `[slides.10.dir2Status]`
-  rejected
-
-- **dir2Desc**  `[slides.10.dir2Desc]`
-  [ADD: describe second RX Info Page iteration — what was different, what problem it tried to solve, why it didn't make the cut]
-
-- **dir3Status**  `[slides.10.dir3Status]`
-  accepted
-
-- **dir3Desc**  `[slides.10.dir3Desc]`
-  [ADD: describe the chosen RX Info Page direction — what made it the right answer and what the deciding factor was in testing or review]
 
 ---
 ## Slide 11 — type: comparison
@@ -530,7 +525,7 @@ _Available unused fields (`directions` template): dir1Image, dir2Image, dir3Imag
 
 ---
 ## Slide 14 — type: comparison
-_Words on screen: **117** · budget ~110_
+_Words on screen: **133** · budget ~110_
 
 - **label**  `[slides.14.label]`
   Scan Toolbar
@@ -568,9 +563,12 @@ _Words on screen: **117** · budget ~110_
 - **afterBullets**  `[slides.14.afterBullets.2]`
   Scalable — new tools slot in without disruption
 
+- **highlight**  `[slides.14.highlight]`
+  Tools were now one tap away — comparing more than one scan was the next problem.
+
 _Images (READ these — content may live here):_ `public/case-studies/itero-scan-workflow/img-c1djiu0kh0.webp`, `public/case-studies/itero-scan-workflow/vid-g2r58c0dp9s.mp4`
 
-_Available unused fields (`comparison` template): description, beforeLabel, afterLabel, beforeBulletsTitle, afterBulletsTitle, bullets, bulletsTitle, highlight_
+_Available unused fields (`comparison` template): description, beforeLabel, afterLabel, beforeBulletsTitle, afterBulletsTitle, bullets, bulletsTitle_
 
 ---
 ## Slide 15 — type: problem

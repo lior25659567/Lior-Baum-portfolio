@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import Hero from '../components/Hero';
-import ServicesSection from '../components/ServicesSection';
 import Projects from '../components/Projects';
 import { useEdit } from '../context/EditContext';
 import './HomePublishBar.css';
@@ -39,7 +38,6 @@ const Home = () => {
   return (
     <>
       <Hero />
-      <ServicesSection />
       <Projects />
       {editMode && (
         <div className="home-publish-bar">

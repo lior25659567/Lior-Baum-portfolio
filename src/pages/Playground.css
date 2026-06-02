@@ -1,0 +1,501 @@
+/* ═══════════════════════════════════════════════════════════
+   Playground — experiments & side bets
+   Cards mirror the home project-grid chrome (border, hover lift,
+   image zoom, accent title), with experiment-specific content.
+   Editable in edit mode.
+   ═══════════════════════════════════════════════════════════ */
+
+.playground-page {
+  padding-top: calc(var(--nav-height) + var(--spacing-lg));
+  padding-bottom: var(--spacing-2xl);
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+.playground-container {
+  max-width: var(--w-content);
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.playground-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.playground-label {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: var(--text-caption); /* matches the About page eyebrow (.section-label) */
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-caps);
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: var(--spacing-sm);
+}
+
+.playground-title {
+  font-family: var(--font-display);
+  font-size: var(--text-playground-title);
+  font-weight: var(--fw-heading);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-heading);
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-md);
+}
+
+.playground-intro {
+  font-family: var(--font-body);
+  font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.25rem);
+  line-height: var(--lh-body);
+  color: var(--color-text-muted);
+  margin: 0;
+  max-width: 56ch;
+}
+
+/* ── Grid ───────────────────────────────────────────────── */
+.playground-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.playground-empty {
+  font-family: var(--font-body);
+  color: var(--color-text-muted);
+  font-size: var(--text-body);
+}
+
+/* ── Card (matches .project-card.work-grid-project) ─────── */
+.pg-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border-soft);
+  background: var(--color-bg);
+  box-shadow:
+    0 10px 28px color-mix(in srgb, var(--color-accent) 5%, transparent),
+    0 1px 2px rgba(0, 0, 0, 0.07);
+  transition: transform 0.2s ease-out, border-color 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.pg-card:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--color-accent) 30%, var(--color-border));
+  box-shadow:
+    0 20px 48px color-mix(in srgb, var(--color-accent) 13%, transparent),
+    0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .pg-card {
+  box-shadow:
+    0 10px 28px color-mix(in srgb, var(--color-accent) 8%, transparent),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .pg-card:hover {
+  box-shadow:
+    0 20px 48px color-mix(in srgb, var(--color-accent) 18%, transparent),
+    0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.pg-card-link {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  text-decoration: none;
+}
+
+/* Media */
+.pg-card-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border-soft);
+}
+
+.pg-card-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  transform-origin: bottom;
+  transition: transform 0.3s ease-out;
+}
+
+.pg-card:hover .pg-card-image {
+  transform: scale(1.025);
+}
+
+.pg-card-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--color-bg-secondary);
+}
+
+.pg-card-placeholder-mark {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: var(--fw-heading);
+  color: var(--color-text-muted);
+  opacity: 0.3;
+}
+
+/* Content */
+.pg-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.5rem 1.5rem 1.75rem;
+  min-height: 9rem;
+  background: var(--color-bg);
+  flex: 1;
+}
+
+.pg-card-title {
+  font-family: var(--font-body);
+  font-size: clamp(1.05rem, 0.95rem + 0.3vw, 1.2rem); /* matches .project-content-title */
+  font-weight: var(--fw-heading);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-tight);
+  color: var(--color-text);
+  margin: 0;
+  transition: color var(--transition-fast);
+}
+
+.pg-card:hover .pg-card-title {
+  color: var(--color-accent);
+}
+
+.pg-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+  letter-spacing: var(--ls-meta);
+}
+
+.pg-card-role {
+  font-weight: var(--fw-medium);
+}
+
+.pg-card-year {
+  opacity: 0.8;
+}
+
+/* Labels — same chips as the home project cards */
+.pg-card-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.15rem;
+}
+
+.pg-card-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm); /* filled accent pills, matches .project-content-label */
+  font-weight: var(--fw-medium);
+  color: var(--color-text-muted);
+  background: var(--color-accent-soft);
+  border-radius: 999px;
+  line-height: 1.2;
+}
+
+.pg-card-labels--editing {
+  gap: 0.35rem;
+}
+
+.pg-card-label--editing {
+  padding: 0.15rem 0.35rem 0.15rem 0.55rem;
+  gap: 0.25rem;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.72rem;
+}
+
+.pg-card-label-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  font: inherit;
+  color: inherit;
+  width: 7rem;
+  padding: 0;
+}
+
+.pg-card-label-remove {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0 0.2rem;
+  border-radius: 999px;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.pg-card-label-remove:hover {
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+.pg-card-label-add {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.65rem;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: 1px dashed var(--color-border);
+  border-radius: 999px;
+  cursor: pointer;
+  line-height: 1.2;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.pg-card-label-add:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.pg-card-context {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+  margin: 0.25rem 0 0;
+}
+
+/* "Proved" — the senior-signal line, quietly set apart */
+.pg-card-learned {
+  display: block;
+  margin: 0.4rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+.pg-card-learned-label {
+  display: inline-block;
+  font-size: var(--text-label);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-caps);
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-right: 0.5rem;
+  vertical-align: 1px;
+}
+
+.pg-card-learned-text {
+  color: var(--color-text);
+}
+
+.pg-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.6rem;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: var(--fw-medium);
+  color: var(--color-text);
+}
+
+.pg-card-cta-arrow {
+  transition: transform var(--transition-fast);
+}
+
+.pg-card:hover .pg-card-cta-arrow {
+  transform: translate(2px, -2px);
+}
+
+/* ── Add-card tile ──────────────────────────────────────── */
+.playground-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 240px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: var(--fw-medium);
+  color: var(--color-text-muted);
+  background: transparent;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.playground-add:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.playground-add-plus {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Edit mode
+   ═══════════════════════════════════════════════════════════ */
+.pg-editable {
+  outline: none;
+  border-radius: var(--radius-sm);
+  transition: box-shadow var(--transition-fast), background var(--transition-fast);
+  cursor: text;
+}
+
+.pg-editable:hover {
+  box-shadow: 0 0 0 1px var(--color-border);
+}
+
+.pg-editable:focus {
+  box-shadow: 0 0 0 2px var(--color-accent);
+  background: var(--color-bg);
+}
+
+.pg-editable:empty::before {
+  content: attr(data-placeholder);
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+/* Image overlay */
+.pg-image-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.pg-card-media:hover .pg-image-overlay {
+  opacity: 1;
+}
+
+.pg-image-btn {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: var(--fw-medium);
+  color: #fff;
+  background: var(--color-accent-vivid);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.85rem;
+  cursor: pointer;
+}
+
+.pg-image-btn--ghost {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* Link editor */
+.pg-link-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.6rem;
+}
+
+.pg-link-input {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--color-text);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.6rem;
+  width: 100%;
+}
+
+.pg-link-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+/* Card controls */
+.pg-card-controls {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  z-index: 5;
+  display: flex;
+  gap: 0.3rem;
+}
+
+.pg-ctrl {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.pg-ctrl:hover:not(:disabled) {
+  background: var(--color-bg-secondary);
+}
+
+.pg-ctrl:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.pg-ctrl--danger:hover:not(:disabled) {
+  background: var(--color-accent-vivid);
+  color: #fff;
+  border-color: var(--color-accent-vivid);
+}
+
+/* ── Responsive (mirrors the home projects-container) ───── */
+@media (min-width: 1921px) {
+  .playground-container {
+    max-width: var(--w-content);
+  }
+}
+
+@media (max-width: 1024px) {
+  .playground-container {
+    padding: 0 var(--spacing-md);
+  }
+}
+
+@media (max-width: 600px) {
+  .playground-grid {
+    grid-template-columns: 1fr;
+  }
+}

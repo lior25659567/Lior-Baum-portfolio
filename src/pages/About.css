@@ -5,7 +5,7 @@
 }
 
 .about-container {
-  max-width: var(--container-xl);
+  max-width: var(--w-content);
   margin: 0 auto;
   padding: 0 var(--spacing-lg);
   width: 100%;
@@ -42,9 +42,9 @@
 
 /* Match Hero headline typography: size scale, weight, line-height, letter-spacing */
 .about-title {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-size: var(--text-page-title);
   font-weight: var(--fw-body);
-  line-height: 1.05;
+  line-height: 1.05; /* signature title leading — intentional */
   letter-spacing: var(--ls-heading);
   overflow: visible !important;
   padding-bottom: 0.4em;
@@ -219,9 +219,10 @@
   font-size: var(--text-body-sm);
   font-weight: var(--fw-body);
   line-height: var(--lh-body);
-  letter-spacing: 0.01em;
+  letter-spacing: normal;
   color: var(--color-text-muted);
   margin-bottom: var(--spacing-sm);
+  max-width: var(--measure); /* keep reading lines comfortable on wide screens */
 }
 
 .bio-cta {
@@ -282,7 +283,7 @@
 
 /* Skills Section */
 .skills-section {
-  padding: var(--spacing-md) 0;
+  padding: var(--spacing-xl) 0 var(--spacing-md);
 }
 
 /* Rotator stage — holds the circular skills display in view mode.
@@ -394,9 +395,9 @@
 
 .experience-role {
   font-family: var(--font-body);
-  font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+  font-size: clamp(1.1rem, 1.8vw, 1.35rem); /* one-off role size — no matching tier, kept fluid */
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--fw-body);
   letter-spacing: normal;
   color: var(--color-text);
   margin-bottom: var(--spacing-xs);
@@ -422,7 +423,7 @@
    doesn't float in an empty gutter on ultrawide screens. */
 @media (min-width: 1921px) {
   .about-container {
-    max-width: var(--container-2xl);
+    max-width: var(--w-content);
     padding: 0 var(--spacing-lg);
   }
 
@@ -840,18 +841,18 @@
   }
 
   .experience-year {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-size: var(--text-label);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--ls-caps);
     text-transform: uppercase;
     color: var(--color-accent);
     margin-bottom: 0.25rem;
   }
 
   .experience-role {
-    font-size: 1rem;
-    font-weight: 500;
-    line-height: 1.3;
+    font-size: var(--text-body);
+    font-weight: var(--fw-heading);
+    line-height: var(--lh-snug);
   }
 
   .experience-company {

@@ -31,6 +31,7 @@ const Navigation = () => {
 
   const navItems = [
     { label: 'Home', href: '/' },
+    { label: 'Playground', href: '/playground' },
     { label: 'About', href: '/about' },
     ...(editMode ? [
       ...(import.meta.env.DEV ? [{ label: 'Agents Hub', href: '/agents-hub' }] : []), // dev-only page

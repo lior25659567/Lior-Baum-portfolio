@@ -1,0 +1,176 @@
+{
+  "dataVersion": 7,
+  "title": "ResponsiveView\nExtension",
+  "subtitle": "A VS Code extension that makes responsive testing part of every build — not an afterthought.",
+  "category": "Developer Tools · Education",
+  "year": "2026",
+  "color": "#4A90E2",
+  "slides": [
+    {
+      "type": "intro",
+      "title": "ResponsiveView\nExtension",
+      "description": "In my vibe coding course, students shipped apps that broke on every device but their own. I designed and built a VS Code extension using Claude Code to fix that — zero context-switch, real device frames, right inside the editor.",
+      "metaItems": [
+        {
+          "label": "Role",
+          "value": "Designer & Builder"
+        },
+        {
+          "label": "Context",
+          "value": "Personal project · Vibe coding course"
+        },
+        {
+          "label": "Platform",
+          "value": "VS Code · Cursor"
+        },
+        {
+          "label": "Tools",
+          "value": "TypeScript · CSS · VS Code API · Claude Code"
+        }
+      ],
+      "image": [
+        {
+          "src": "",
+          "caption": "[ADD: hero screenshot — the extension panel open in VS Code with a device frame visible]",
+          "position": "center center",
+          "size": "large",
+          "fit": "cover"
+        }
+      ],
+      "introHeaderMode": "both",
+      "splitRatio": 50
+    },
+    {
+      "type": "problem",
+      "label": "Built With AI",
+      "title": "Designed and built with Claude Code",
+      "content": "Not just designing a tool — shipping one. I built the whole extension with Claude Code: TypeScript, the VS Code API, the UI. Idea to working extension, no engineering handoff.",
+      "issues": [
+        "I wrote the prompts, reviewed the output, owned every design decision",
+        "Claude Code handled implementation; I handled judgment",
+        "[ADD: a Claude Code session or the extension running]"
+      ],
+      "issuesTitle": "How the build worked",
+      "conclusion": "I teach building with AI — and built this with it."
+    },
+    {
+      "type": "issuesBreakdown",
+      "label": "The Problem",
+      "title": "Why students skipped responsive testing",
+      "description": "Apps shipped fine on the student's screen — broken everywhere else. Four friction points, one root cause.",
+      "issues": [
+        {
+          "number": "1",
+          "title": "One-screen tunnel vision",
+          "description": "Built and tested on their own monitor — never checked other viewports until something broke."
+        },
+        {
+          "number": "2",
+          "title": "DevTools felt technical",
+          "description": "DevTools device mode is powerful but intimidating — the mental overhead made students avoid it."
+        },
+        {
+          "number": "3",
+          "title": "Window-switching broke focus",
+          "description": "Switching between editor and browser broke the coding flow. Most students just skipped the check."
+        },
+        {
+          "number": "4",
+          "title": "No real device frame",
+          "description": "A pixel-width number doesn't feel like a phone. Without a real frame, the size didn't stick."
+        }
+      ],
+      "gridColumns": 2,
+      "highlight": "Remove the switching cost and you remove the adoption problem. The barrier wasn't knowledge — it was friction."
+    },
+    {
+      "type": "comparison",
+      "label": "Before & After",
+      "title": "From tab-switching to one panel",
+      "description": "Old workflow: five steps to a number. New: one click to a frame.",
+      "beforeImage": "",
+      "afterImage": "",
+      "beforeLabel": "Before",
+      "afterLabel": "After",
+      "beforeDescription": "Left the editor, opened DevTools, typed a viewport width, guessed at a device — then switched back to code.",
+      "afterDescription": "One click to the panel, pick a device, see a real frame — still inside the editor.",
+      "beforeBullets": [
+        "3–5 steps to reach a responsive preview",
+        "No visual device context — just numbers",
+        "Coding flow broken every time"
+      ],
+      "beforeBulletsTitle": "Old workflow",
+      "afterBullets": [
+        "One-click access to any device size",
+        "CSS device frames with notches and stands",
+        "Preview stays open while code is edited"
+      ],
+      "afterBulletsTitle": "New workflow",
+      "highlight": "[ADD: any measured improvement — e.g. adoption rate, student feedback, time-to-test reduction]"
+    },
+    {
+      "type": "problem",
+      "label": "The Solution",
+      "title": "A preview panel that lives inside the editor",
+      "content": "ResponsiveView opens as a VS Code panel. Enter a localhost URL, pick a device, and instantly see the app inside a realistic frame. I kept the surface minimal: device selection, orientation, theme, and refresh — nothing to learn.",
+      "issues": [
+        "URL input remembers the last address between sessions",
+        "Device picker grouped by category: phones, tablets, laptops, desktops, ultrawide",
+        "Portrait/landscape toggle with one click",
+        "Auto-scaling preview fits any panel size without scrolling"
+      ],
+      "issuesTitle": "Core interface decisions",
+      "image": "",
+      "splitRatio": 50,
+      "highlight": "52 devices. Real frames. One panel."
+    },
+    {
+      "type": "outcomes",
+      "label": "Outcomes",
+      "title": "What changed for students",
+      "outcomes": [
+        {
+          "title": "Testing became habitual",
+          "description": "Students started checking layouts mid-build.",
+          "metric": "[ADD]"
+        },
+        {
+          "title": "Cleaner project demos",
+          "description": "Presentations showed fewer broken layouts.",
+          "metric": "[ADD]"
+        },
+        {
+          "title": "[ADD: a real observed outcome — e.g. behavior you noticed change, student confidence at demos, or a signal from course feedback]",
+          "description": "[ADD: describe the outcome in behavioral terms — what changed about how students worked or how they presented. Do not use the accessibility feature description here — that belongs on the solution slide, not the outcomes slide]",
+          "metric": null
+        }
+      ],
+      "highlight": "[ADD: any adoption number, student feedback quote, or download count from the VS Code marketplace]"
+    },
+    {
+      "type": "reflection",
+      "label": "Reflection",
+      "title": "What building this taught me",
+      "whatWorked": [
+        "Placement was the strategy — it was already in the editor.",
+        "CSS frames made the size feel real. Students took checks more seriously."
+      ],
+      "whatFailed": [
+        "[ADD: anything that didn't go as planned — e.g. an early UI approach that confused students, a technical constraint that forced a design compromise, features that were cut]"
+      ],
+      "whatYoudDoDifferently": [
+        "I'd have built side-by-side from day one. Students kept asking for both views.",
+        "[ADD: any other decision you'd revisit]"
+      ],
+      "whatYouLearned": "The goal wasn't completeness — it was changing a habit. Friction is a design decision.",
+      "whatYouCouldntMeasure": "Cleaner demos were visible. Long-term habit change is harder to trace."
+    },
+    {
+      "type": "end",
+      "title": "Let's Talk",
+      "subtitle": "Want to see it in action or work on something together?",
+      "email": "lior2565967@gmail.com",
+      "linkedinUrl": "https://linkedin.com/in/liorbaum"
+    }
+  ]
+}

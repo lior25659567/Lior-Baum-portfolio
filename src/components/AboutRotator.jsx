@@ -1,36 +1,37 @@
 import { useEffect, useMemo, useRef } from 'react';
 import './AboutRotator.css';
 
-// Default 20 skills (13–18 chars each) for a 2026 product/UX designer.
-// Keep length consistent so the rotator stays visually balanced.
+// Curated 20 — the personal, human things Lior values at work: the kind of
+// environment, team and energy he wants to be part of (not a hard-skills list).
+// Kept to moderate lengths so the radial wheel stays visually balanced.
 const DEFAULT_SKILLS = [
-  'AI-Native Design',
-  'Generative UX',
-  'Agent-Based UX',
-  'Prompt Engineering',
-  'Product Strategy',
-  'Product Thinking',
-  'Design Leadership',
-  'Systems Thinking',
-  'Interaction Design',
-  'Visual Design',
-  'Motion Design',
-  'Microinteractions',
-  'Design Systems',
-  'Design Critique',
-  'Rapid Prototyping',
-  'Information Design',
-  'User Research',
-  'Usability Testing',
-  'Accessibility',
-  'Spatial Design',
+  'Good Energy',
+  'Kindness',
+  'Humor',
+  'Teamwork',
+  'Curiosity',
+  'Trust',
+  'Honesty',
+  'Empathy',
+  'Active Listening',
+  'Playfulness',
+  'Open Feedback',
+  'Psychological Safety',
+  'Growth Mindset',
+  'Generosity',
+  'Patience',
+  'Optimism',
+  'Shared Wins',
+  'Mentorship',
+  'Calm Under Pressure',
+  'Good Coffee',
 ];
 
 // ── Animation tuning ────────────────────────────────────────────────────
 const MIN_OPACITY = 0.16;          // faded labels (most of the wheel)
 const MAX_OPACITY = 0.92;          // labels crossing a readable axis read dark
-const CARDINAL_RANGE = 32;         // deg — cone around each 90° axis that lights up
-const LIT_THRESHOLD = 0.4;         // above this strength → accent color
+const CARDINAL_RANGE = 20;         // deg — cone around each 90° axis that lights up
+const LIT_THRESHOLD = 0.6;         // above this strength → accent color (fewer lit at once)
 // Velocity model so the wheel is ALWAYS moving:
 //   • drift — constant slow idle rotation; speeds up while the cursor is over
 //     the wheel (DRIFT → DRIFT_HOVER, eased).
@@ -41,11 +42,11 @@ const DRIFT = 5;                   // deg/sec — idle speed
 const DRIFT_HOVER = 13;            // deg/sec — idle speed while hovering the wheel
 const DRIFT_EASE = 0.1;            // how fast drift eases toward its target
 const SCROLL_ACTIVE_MS = 160;      // within this of a scroll event = "actively scrolling"
-const SCROLL_IMPULSE = 0.2;        // deg/sec added per px of scroll delta
+const SCROLL_IMPULSE = 0.08;       // deg/sec added per px of scroll delta (calmer — was 0.2)
 const MOUSE_IMPULSE = 0.16;        // deg/sec added per px of cursor movement
 const MOUSE_HOVER_MULT = 1.3;      // extra mouse gain while hovering the wheel
-const FRICTION = 0.9;              // per-frame velocity decay (lower = stops sooner)
-const MAX_VEL = 190;               // deg/sec clamp so it never runs away
+const FRICTION = 0.88;             // per-frame velocity decay (lower = stops sooner)
+const MAX_VEL = 110;               // deg/sec clamp so a fast scroll never whips the wheel
 
 // Smoothstep — eases the emphasis falloff so labels brighten/dim with a soft
 // curve instead of a hard linear ramp (animation-principles: ease, don't jerk).
@@ -178,10 +179,15 @@ const AboutRotator = ({ items }) => {
       onMouseEnter={() => { hoverRef.current = true; }}
       onMouseLeave={() => { hoverRef.current = false; }}
     >
-      {/* Static two-line center caption */}
+      {/* Center mark — a single cross at the heart of the wheel */}
       <div className="abt-anim-info">
-        <span className="abt-anim-info-title">Method + Tools</span>
-        <span className="abt-anim-info-sub">From know-how</span>
+        <svg className="abt-anim-info-mark" viewBox="0 0 162 162" fill="currentColor" aria-hidden="true">
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M108 88.7c-10.8 0-19.7 8.8-19.7 19.7v47.4c0 1.9-1.5 3.4-3.4 3.4h-8.6c-1.9 0-3.4-1.5-3.4-3.4v-47.4c0-10.8-8.8-19.7-19.7-19.7H6.4c-1.9 0-3.4-1.5-3.4-3.4v-8c0-1.9 1.5-3.4 3.4-3.4h46.9c10.8 0 19.7-8.8 19.6-19.7V6.4c0-1.9 1.5-3.4 3.4-3.4H85c1.9 0 3.4 1.5 3.4 3.4v47.8c0 10.8 8.8 19.7 19.7 19.7h46.6c1.9 0 3.4 1.5 3.4 3.4v8c0 1.9-1.5 3.4-3.4 3.4H108z"
+          />
+        </svg>
       </div>
 
       {/* The rotating ring — JS sets its transform every frame */}
@@ -198,7 +204,7 @@ const AboutRotator = ({ items }) => {
               >
                 <div
                   ref={(el) => { textRefs.current[i] = el; }}
-                  className="text-small caps is-abt"
+                  className="text-small is-abt"
                 >
                   {label}
                 </div>

@@ -11,6 +11,7 @@ import './App.css';
 
 // Heavy routes — lazy-loaded so the home page doesn't wait on them
 const CaseStudy = lazy(() => import('./pages/CaseStudy'));
+const Playground = lazy(() => import('./pages/Playground'));
 const SlideDocumentation = lazy(() => import('./pages/SlideDocumentation'));
 const CVBuilder = lazy(() => import('./pages/CVBuilder'));
 const DesignSystem = lazy(() => import('./pages/DesignSystem'));
@@ -29,6 +30,7 @@ function AppLayout() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
+              <Route path="/playground" element={<Playground />} />
               <Route path="/project/:projectId" element={<CaseStudy />} />
               <Route path="/docs/slides" element={<SlideDocumentation />} />
               <Route path="/cv" element={<CVBuilder />} />

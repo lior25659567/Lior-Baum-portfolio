@@ -10,8 +10,15 @@
    every viewport. */
 
 .abt-anim-text-rotator-wrap {
-  --rotator-size: min(760px, 90vw);
-  --rotator-inner-radius: calc(var(--rotator-size) * 145 / 720);
+  /* Square wrap → the label ring is short, so an oversized wrap leaves a tall
+     empty band top/bottom. Sized to hug the actual labels. */
+  /* Wheel size. ≤1440 it stays 720px (the canonical spec — looks balanced at
+     ~50% width); above ~1500px the 48vw term lifts it so it doesn't read small
+     on 1920+ screens, capped at 880px. 90vw guards small screens. Everything
+     else (inner radius, label + accent text, center mark) is derived from this,
+     so the whole wheel scales as one. */
+  --rotator-size: min(90vw, clamp(720px, 48vw, 880px));
+  --rotator-inner-radius: calc(var(--rotator-size) * 110 / 720);
 
   position: relative;
   width: var(--rotator-size);
@@ -33,7 +40,7 @@
   will-change: transform;
 }
 
-/* ── Center caption — two static lines in the empty middle of the wheel.
+/* ── Center mark — a single gray cross in the empty middle of the wheel.
    Sits in the (non-rotating) wrap so it stays put while the ring turns. */
 .abt-anim-info {
   position: absolute;
@@ -43,26 +50,26 @@
   z-index: 2;
   pointer-events: none;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.2em;
-  text-align: center;
+  justify-content: center;
 }
 
-.abt-anim-info-title {
-  font-family: var(--font-body);
-  font-size: var(--text-h4);
-  font-weight: var(--fw-medium);
-  color: var(--color-text);
-  line-height: 1.05;
+/* Center cross mark — gray, gently rotating on its own. */
+.abt-anim-info-mark {
+  /* Scales with the wheel (36px at the 720px spec, ~44px on big screens). */
+  width: clamp(18px, calc(var(--rotator-size) * 0.05), 46px);
+  height: clamp(18px, calc(var(--rotator-size) * 0.05), 46px);
+  color: var(--color-text-muted); /* gray — quieter than the lit labels */
+  animation: abt-mark-spin 16s linear infinite;
 }
 
-.abt-anim-info-sub {
-  font-family: var(--font-body);
-  font-size: var(--text-body);
-  font-weight: var(--fw-body);
-  color: var(--color-text-muted);
-  line-height: 1.1;
+@keyframes abt-mark-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .abt-anim-info-mark { animation: none; }
 }
 
 /* ── Label wrapper — holds the 20 spokes ─────────────────────────── */
@@ -100,11 +107,13 @@
    in place. */
 .abt-anim-label .text-small {
   font-family: var(--font-body);
-  /* Design-system body step, a clear bump up from the old ~15px clamp.
-     Slightly tighter tracking than --ls-label so long labels don't clip. */
-  font-size: var(--text-body);
+  /* Sized proportionally to the wheel so the labels scale as one with it:
+     ~23px at the 720px spec (≤1440), larger on 1920+ where the wheel grows,
+     and smaller on phones where it shrinks (long words keep fitting the rim).
+     Clamp floor keeps it readable on the smallest screens. */
+  font-size: clamp(0.8rem, calc(var(--rotator-size) * 0.032), 1.9rem);
   font-weight: var(--fw-medium);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-tight);
   white-space: nowrap;
   color: var(--color-text-muted);
   /* Initial opacity — the rAF loop in JS overrides this every frame */
@@ -112,17 +121,23 @@
   transform-origin: center;
   transition: color var(--transition-fast);
   will-change: opacity, transform;
-  line-height: 1;
+  line-height: var(--lh-tight);
 }
 
-/* Highlighted labels (near a cardinal axis) — brand accent (primary orange).
+/* Highlighted labels (near a cardinal axis) — brand accent + the serif display
+   face in italic, echoing the hero marquee's accent words. The dim labels stay
+   in the uppercase sans; the lit ones bloom into editorial serif.
    !important so a stale inline color from a previous hot-reload can't win. */
 .abt-anim-label .text-small.is-lit {
   color: var(--color-accent) !important;
-}
-
-.abt-anim-label .caps {
-  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: var(--fw-body);
+  text-transform: none;
+  letter-spacing: var(--ls-tight);
+  /* Decorative serif accent — same wheel-proportional rule as the dim labels
+     (~33px at the 720px spec, larger on big screens, smaller on phones). */
+  font-size: clamp(1rem, calc(var(--rotator-size) * 0.0456), 2.7rem);
 }
 
 /* ── Reduced motion: pin everything visible at full opacity, no spin. */

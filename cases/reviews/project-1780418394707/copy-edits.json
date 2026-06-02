@@ -1,0 +1,44 @@
+{
+  "edits": {
+    "slides.0.description": "In my vibe coding course, students shipped apps that broke on every device but their own. I built a tool to fix that. Lesson: remove the switching cost and people use it.",
+
+    "slides.1.description": "Apps shipped fine on the student's screen — broken everywhere else. Four reasons.",
+    "slides.1.issues.0.description": "Built and tested on their own monitor — never checked other viewports until something broke.",
+    "slides.1.issues.1.description": "DevTools device mode is powerful but intimidating — the mental overhead made students avoid it.",
+    "slides.1.issues.2.description": "Switching between editor and browser broke the coding flow. Most students just skipped the check.",
+    "slides.1.issues.3.title": "No real device frame",
+    "slides.1.issues.3.description": "A pixel-width number doesn't feel like a phone. Without a real frame, the size didn't stick.",
+
+    "slides.2.content": "I observed it — consistent enough to act on.",
+    "slides.2.issuesTitle": "What I saw",
+    "slides.2.issues.0": "Projects shipped with broken mobile layouts",
+    "slides.2.issues.1": "DevTools usage stayed low — even among students who knew it",
+    "slides.2.issues.2": "Most testing happened last-minute",
+
+    "slides.3.content": "The barrier wasn't knowledge — it was friction. Every responsive check meant leaving the editor, opening a browser, navigating DevTools. That cost was enough to skip it. Friction problems in SaaS look exactly the same.",
+    "slides.3.issues.0": "Stay inside the editor — no switching tabs",
+    "slides.3.issues.1": "Visual frames, not viewport numbers",
+    "slides.3.issues.2": "One click to any device, no setup",
+
+    "slides.7.description": "Old workflow: five steps to a number. New: one click to a frame.",
+    "slides.7.beforeDescription": "Left the editor, opened DevTools, typed a viewport width, guessed at a device size — then switched back to code.",
+    "slides.7.afterDescription": "One click to the panel, pick a device, see a real frame — still inside the editor.",
+
+    "slides.9.description": "",
+    "slides.9.bullets.0": "CSS frames",
+    "slides.9.bullets.1": "Breakpoint presets",
+    "slides.9.bullets.2": "Custom sizes",
+    "slides.9.bullets.3": "Dark/light theme",
+    "slides.9.bulletsTitle": "Features",
+
+    "slides.10.outcomes.0.title": "Testing became habitual",
+    "slides.10.outcomes.0.description": "Students started checking layouts mid-build.",
+    "slides.10.outcomes.1.description": "Presentations showed fewer broken layouts.",
+
+    "slides.12.whatWorked.0": "Placement was the strategy — it was already in the editor.",
+    "slides.12.whatWorked.1": "CSS frames made the size feel real. Students took the checks more seriously.",
+    "slides.12.whatYoudDoDifferently.0": "I'd have built side-by-side from day one. Students kept asking for both views.",
+    "slides.12.whatYouLearned": "The goal wasn't completeness — it was changing a habit. Friction is a design decision.",
+    "slides.12.whatYouCouldntMeasure": "Cleaner demos were visible. Long-term habit change is harder to trace."
+  }
+}

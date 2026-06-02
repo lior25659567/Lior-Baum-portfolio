@@ -1,5 +1,5 @@
 {
-  "dataVersion": 12,
+  "dataVersion": 16,
   "title": "Clinical Scanning\nWorkflow",
   "subtitle": "Redesigning the clinical scanning workflow for speed, clarity, and decision-making in real treatment conditions.",
   "category": "Clinical Workflow Redesign",
@@ -9,7 +9,7 @@
     {
       "type": "intro",
       "title": "Clinical Scanning\nWorkflow",
-      "description": "The patient is in the chair. The scanner is ready. The system isn't.\n\nI redesigned Align Technology's RX, Scan, and View workflow into one continuous system.",
+      "description": "The patient is in the chair. The scanner is ready. The system isn't.\nI redesigned Align Technology's RX, Scan, and View workflow into one continuous system.",
       "clientLabel": "Client",
       "client": "Align Technology",
       "focusLabel": "Focus",
@@ -75,11 +75,7 @@
           "value": "Figma · Coded prototype · Claude Code"
         }
       ],
-      "headlineMetric": {
-        "value": "[ADD]",
-        "label": "[ADD: the strongest measurable outcome — e.g. setup time, rescan rate]",
-        "context": "[ADD: source + timeframe once a real number exists]"
-      }
+      "headlineMetric": null
     },
     {
       "type": "problem",
@@ -98,7 +94,7 @@
           "position": "center center",
           "size": "large",
           "fit": "contain",
-          "wrapperBg": true,
+          "wrapperBg": false,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-wvhziz51co.webp",
           "caption": "",
@@ -127,7 +123,7 @@
           "position": "center center",
           "size": "large",
           "fit": "contain",
-          "wrapperBg": true,
+          "wrapperBg": false,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-ojnudsaui8.webp",
           "caption": "",
@@ -189,8 +185,12 @@
       ],
       "issuesTitle": "What the flow revealed",
       "highlight": "The friction wasn't random — it lived at every phase handoff.",
-      "image": "[ADD: user flow / journey map image showing the RX→Scan→View sequence with friction points annotated]",
-      "splitRatio": 55
+      "image": "/case-studies/itero-scan-workflow/img-t2to0gdcf0.png",
+      "splitRatio": 40,
+      "imageIsVideo": false,
+      "imageEmbedUrl": "",
+      "imageWrapperBg": false,
+      "imageFit": "contain"
     },
     {
       "type": "goals",
@@ -272,9 +272,55 @@
       "splitRatio": 40
     },
     {
+      "type": "directions",
+      "label": "RX Setup — Exploration",
+      "title": "Three approaches to RX setup",
+      "directionCount": 3,
+      "dir1Status": "rejected",
+      "dir1Desc": "A collapse/expand layout — tap to open, read, close, repeat. In practice it meant constantly reopening the same section. That friction alone killed it.",
+      "dir1Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-9399qcjdwc.png",
+          "isVideo": false
+        }
+      ],
+      "dir2Status": "rejected",
+      "dir2Desc": "Broke setup into a step-by-step wizard — organised, but more clicks and a slower start.",
+      "dir2Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-6v6qayitu4.png",
+          "isVideo": false
+        }
+      ],
+      "dir3Status": "accepted",
+      "dir3Desc": "Everything visible at once — no expanding, no steps. The full setup readable in a single view.",
+      "dir3Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-e382hxcguo.png",
+          "isVideo": false
+        }
+      ],
+      "highlight": null
+    },
+    {
       "type": "comparison",
-      "label": "RX Setup",
-      "title": "Getting started shouldn't feel like a form",
+      "label": "RX Setup — Before & After",
+      "title": "From a blocking form to a single view",
       "beforeImage": [
         {
           "position": "center center",
@@ -317,7 +363,7 @@
           "embedType": ""
         }
       ],
-      "beforeDescription": "A rigid multi-step setup blocked every clinician before scanning could even begin.",
+      "beforeDescription": "The old product was a dense, multi-step form — patient and procedure gated behind a blocking modal before scanning could begin.",
       "afterDescription": "Users start right away — patient context fills in as they go, not as a prerequisite.",
       "beforeBullets": [
         "Patient selection required a multi-step modal",
@@ -391,59 +437,11 @@
       "beforeImageCarouselFit": "contain"
     },
     {
-      "type": "directions",
-      "label": "RX Iterations",
-      "title": "Three directions for the Info Page",
-      "directionCount": 3,
-      "dir1Status": "rejected",
-      "dir1Desc": "[ADD: describe first RX Info Page iteration — what layout or approach was explored and why it was set aside]",
-      "dir1Image": "",
-      "dir2Status": "rejected",
-      "dir2Desc": "[ADD: describe second RX Info Page iteration — what was different, what problem it tried to solve, why it didn't make the cut]",
-      "dir2Image": "",
-      "dir3Status": "accepted",
-      "dir3Desc": "[ADD: describe the chosen RX Info Page direction — what made it the right answer and what the deciding factor was in testing or review]",
-      "dir3Image": ""
-    },
-    {
-      "type": "comparison",
-      "label": "Icon Redesign",
-      "title": "Redesigning the icons — toolbar and procedure",
-      "beforeImage": "",
-      "afterImage": "",
-      "beforeLabel": "Before",
-      "afterLabel": "After",
-      "beforeDescription": "[ADD: describe the original icon set — what made them hard to read, inconsistent, or clinic-unfriendly]",
-      "afterDescription": "[ADD: describe the redesigned icon set — the design principles applied and how they serve the clinical context]",
-      "beforeBullets": [
-        "[ADD: specific problem with old toolbar icons]",
-        "[ADD: specific problem with old procedure icons on the Info Page]",
-        "[ADD: third issue — e.g. no shared visual language between icon families]"
-      ],
-      "afterBullets": [
-        "[ADD: what changed in the toolbar icon design]",
-        "[ADD: what changed in the procedure icon design]",
-        "[ADD: the unifying rule or system applied across both families]"
-      ]
-    },
-    {
       "type": "chapter",
       "number": "02",
       "title": "Scan & View",
       "subtitle": "Capturing and validating a 3D model — before anything reaches the lab. The toolbar decision started here.",
       "splitRatio": 40
-    },
-    {
-      "type": "directions",
-      "label": "Ideation",
-      "title": "Where should the toolbar live?",
-      "directionCount": 3,
-      "dir1Status": "rejected",
-      "dir1Desc": "Top-mounted toolbar — familiar, but arm motion during scanning pulled focus away from the 3D view. Eye-to-screen distance became a problem under clinical conditions.",
-      "dir2Status": "rejected",
-      "dir2Desc": "Floating contextual palette — appeared near the active tool, cut travel distance. Failed in testing: no fixed location meant clinicians lost it the moment scan rhythm picked up.",
-      "dir3Status": "accepted",
-      "dir3Desc": "[ADD: which position won — e.g. side-panel / left-mounted / collapsible side rail — and why: what the test found with N clinicians that made this position win]"
     },
     {
       "type": "comparison",
@@ -494,7 +492,8 @@
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "afterImageCarouselInterval": 2500,
-      "afterImageCarouselFit": "contain"
+      "afterImageCarouselFit": "contain",
+      "highlight": "Tools were now one tap away — comparing more than one scan was the next problem."
     },
     {
       "type": "problem",

@@ -464,7 +464,7 @@ const About = () => {
         {/* Skills Section — rotator in view mode, editable grid in edit mode.
             The section heading lives above the rotator in both modes. */}
         <div className="skills-section">
-          <Editable tag="h2" className="section-heading" value={about.skillsTitle || 'Skills & Expertise'} onChange={(v) => updateAbout('skillsTitle', v)} />
+          <Editable tag="h2" className="section-heading" value={about.skillsTitle || 'What Matters to Me as a Designer'} onChange={(v) => updateAbout('skillsTitle', v)} />
           {editMode ? (
             <>
               <div className="skills-grid" ref={skillsRef}>

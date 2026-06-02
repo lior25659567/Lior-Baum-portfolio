@@ -1,0 +1,87 @@
+{
+  "edits": {
+    "slides.0.description": "In my vibe coding course, students shipped apps that broke on every device but their own. I designed and built a VS Code extension using Claude Code to fix that — zero context-switch, real device frames, right inside the editor.",
+
+    "slides.1.description": "Apps shipped fine on the student's screen — broken everywhere else. Four friction points, one root cause.",
+
+    "slides.7.description": "Old workflow: five steps to a number. New: one click to a frame.",
+    "slides.7.beforeDescription": "Left the editor, opened DevTools, typed a viewport width, guessed at a device — then switched back to code.",
+    "slides.7.afterDescription": "One click to the panel, pick a device, see a real frame — still inside the editor.",
+    "slides.7.beforeBullets.2": "Coding flow broken every time",
+    "slides.7.afterBullets.1": "CSS device frames with notches and stands",
+
+    "slides.8.content": "ResponsiveView opens as a VS Code panel. Enter a localhost URL, pick a device, and instantly see the app inside a realistic frame. I kept the surface minimal: device selection, orientation, theme, and refresh — nothing to learn.",
+
+    "slides.12.whatWorked.1": "CSS frames made the size feel real. Students took checks more seriously.",
+    "slides.12.whatYouCouldntMeasure": "Cleaner demos were visible. Long-term habit change is harder to trace."
+  },
+
+  "setFields": {
+    "slides.0.metaItems": [
+      { "label": "Role", "value": "Designer & Builder" },
+      { "label": "Context", "value": "Personal project · Vibe coding course" },
+      { "label": "Platform", "value": "VS Code · Cursor" },
+      { "label": "Tools", "value": "TypeScript · CSS · VS Code API · Claude Code" }
+    ],
+
+    "slides.1.highlight": "Remove the switching cost and you remove the adoption problem. The barrier wasn't knowledge — it was friction.",
+
+    "slides.8.highlight": "52 devices. Real frames. One panel."
+  },
+
+  "ops": [
+    {
+      "op": "insert",
+      "after": 0,
+      "reason": "Claude Code build skill must be a visible, discrete beat — not buried in the intro metaItems.",
+      "slide": {
+        "type": "problem",
+        "label": "Built With AI",
+        "title": "Designed and built with Claude Code",
+        "content": "This isn't just a case study about designing a tool — it's about shipping one. I used Claude Code to design and build the entire extension: architecture, TypeScript, VS Code API integration, and the UI layer. Idea to working extension, no separate engineering handoff.",
+        "issues": [
+          "I wrote the prompts, reviewed the output, and owned every design decision",
+          "Claude Code handled implementation; I handled judgment",
+          "[ADD: screenshot of a Claude Code session or the extension running — shows the build, not just the output]"
+        ],
+        "issuesTitle": "How the build worked",
+        "conclusion": "Teaching others to build with AI while building with AI myself — that's the whole point of the course."
+      }
+    },
+    {
+      "op": "remove",
+      "index": 2,
+      "reason": "Slide 2 (What I Observed) repeats observations already covered by the issuesBreakdown (slide 1). Its only unique value was a concrete student example that is an [ADD] placeholder — nothing to carry over."
+    },
+    {
+      "op": "remove",
+      "index": 3,
+      "reason": "Key Insight content is preserved as a highlight on the issuesBreakdown slide via setFields. No standalone slide needed."
+    },
+    {
+      "op": "remove",
+      "index": 4,
+      "reason": "Goals slide cut per context.md directive — too heavy for a condensed, lighter piece."
+    },
+    {
+      "op": "remove",
+      "index": 5,
+      "reason": "Chapter divider cut — unnecessary section break for an 8-slide deck."
+    },
+    {
+      "op": "remove",
+      "index": 6,
+      "reason": "Directions/Ideation slide cut per context.md directive. The key decision (VS Code panel over DevTools guide and browser extension) is summarised in the comparison before/after slide."
+    },
+    {
+      "op": "remove",
+      "index": 9,
+      "reason": "Media slide (Final Design) is entirely [ADD] placeholders. Punchy title '52 devices. Real frames. One panel.' is carried as a highlight on the solution slide via setFields."
+    },
+    {
+      "op": "remove",
+      "index": 11,
+      "reason": "Timeline cut per context.md directive — too heavy for a lighter piece. All five dates are [ADD] placeholders with no real content."
+    }
+  ]
+}
