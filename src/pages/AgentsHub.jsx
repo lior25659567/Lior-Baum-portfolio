@@ -7,11 +7,13 @@ import StudiesView from '../components/agents-hub/StudiesView';
 import CreateView from '../components/agents-hub/CreateView';
 import ArtifactsView from '../components/agents-hub/ArtifactsView';
 import VerifyView from '../components/agents-hub/VerifyView';
+import ContextView from '../components/agents-hub/ContextView';
 import './AgentsHub.css';
 
 const TABS = [
   { key: 'studies', label: 'Studies' },
   { key: 'create', label: 'Create' },
+  { key: 'context', label: 'Context' },
   { key: 'artifacts', label: 'Artifacts' },
   { key: 'verify', label: 'Verify / Resolve' },
 ];
@@ -59,6 +61,7 @@ const AgentsHub = () => {
       <div className="hub-panel">
         {tab === 'studies' && <StudiesView studies={overview.studies} onRefresh={refresh} onView={openArtifacts} onVerify={openVerify} />}
         {tab === 'create' && <CreateView briefs={overview.briefs} onRefresh={refresh} />}
+        {tab === 'context' && <ContextView studies={overview.studies} selectedSlug={selectedSlug} setSelectedSlug={setSelectedSlug} onRefresh={refresh} />}
         {tab === 'artifacts' && <ArtifactsView studies={overview.studies} selectedSlug={selectedSlug} setSelectedSlug={setSelectedSlug} />}
         {tab === 'verify' && <VerifyView studies={overview.studies} selectedSlug={selectedSlug} setSelectedSlug={setSelectedSlug} onRefresh={refresh} />}
       </div>
