@@ -89,6 +89,7 @@ const ProjectCard = ({ project, index, total, editMode, hideCardYear, onImageCha
   const [iframeDraft, setIframeDraft] = useState(null); // null = closed, string = open with this value
 
   const imageFit = project.imageFit === 'contain' ? 'contain' : 'cover';
+  const cardBg = project.cardBg === 'gradient' ? 'gradient' : 'plain';
   const iframeSrc = (project.iframeSrc || '').trim();
 
   const applyIframe = (raw) => {
@@ -831,6 +832,7 @@ const ProjectCard = ({ project, index, total, editMode, hideCardYear, onImageCha
         data-media-mode={mediaMode}
         data-has-iframe={iframeSrc ? 'true' : undefined}
         data-fill-media={(iframeSrc || project.image) ? 'true' : undefined}
+        data-card-bg={cardBg === 'gradient' ? 'gradient' : undefined}
       >
         {mediaMode === 'animated' && (
           <div className="project-media-fx" aria-hidden="true">
@@ -1352,6 +1354,14 @@ const ProjectCard = ({ project, index, total, editMode, hideCardYear, onImageCha
                         title={imageFit === 'contain' ? 'Switch to fill (cover)' : 'Switch to fit (contain)'}
                       >
                         {imageFit === 'contain' ? '◱ Fit' : '▣ Fill'}
+                      </button>
+                      <button
+                        type="button"
+                        className="project-overlay-btn"
+                        onClick={() => onUpdate(project.id, { cardBg: cardBg === 'gradient' ? 'plain' : 'gradient', imageFit: cardBg === 'gradient' ? imageFit : 'contain' })}
+                        title={cardBg === 'gradient' ? 'Switch to plain background' : 'Switch to gradient background (image centered)'}
+                      >
+                        {cardBg === 'gradient' ? '▦ Plain bg' : '◈ Gradient bg'}
                       </button>
                       <button type="button" className="project-overlay-btn" onClick={() => setIframeDraft('')}>
                         ⧉ Embed iframe

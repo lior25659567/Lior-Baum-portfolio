@@ -498,7 +498,8 @@ const About = () => {
           )}
         </div>
 
-        {/* Experience Section — timeline in both view and edit modes */}
+        {/* Experience Section — hidden on the public page; still visible/editable in edit mode */}
+        {editMode && (
         <div className="experience-section">
           <Editable tag="h2" className="section-heading" value={about.experienceTitle || 'Experience'} onChange={(v) => updateAbout('experienceTitle', v)} />
           <div className="experience-timeline" ref={experienceRef}>
@@ -520,6 +521,7 @@ const About = () => {
             <button className="about-add-btn" onClick={addExperience}>+ Add Experience</button>
           )}
         </div>
+        )}
 
       </div>
 

@@ -1,5 +1,5 @@
 {
-  "dataVersion": 4,
+  "dataVersion": 8,
   "title": "The Techno Chronicles",
   "subtitle": "A scroll-telling experience documenting the history of techno.",
   "category": "Interactive Web / Creative Coding",
@@ -9,7 +9,7 @@
     {
       "type": "intro",
       "title": "The Techno Chronicles",
-      "description": "A scroll-telling experience built from Wikipedia entries — breaking the generic layout to capture the raw energy of techno.",
+      "description": "No brief, no client, no user research — so I gave myself one constraint: make Wikipedia's techno content feel like the music sounds. Built solo in Figma and Webflow.",
       "clientLabel": "Type",
       "client": "Personal project",
       "focusLabel": "Focus",
@@ -80,13 +80,36 @@
         "url": "https://technoh.webflow.io/"
       },
       "imageCarouselInterval": 1500,
-      "imageCarouselFit": "contain"
+      "imageCarouselFit": "contain",
+      "metaItems": [
+        {
+          "label": "Role",
+          "value": "Solo Designer + Developer"
+        },
+        {
+          "label": "Timeline",
+          "value": "4 weeks · Personal project"
+        },
+        {
+          "label": "Context",
+          "value": "Self-initiated"
+        },
+        {
+          "label": "Tools",
+          "value": "Figma + Webflow"
+        }
+      ],
+      "headlineMetric": {
+        "value": "Shipped",
+        "label": "Live on Webflow",
+        "context": "Self-initiated · Solo designer + developer · Figma + Webflow"
+      }
     },
     {
       "type": "problem",
-      "label": "The Premise",
-      "title": "Built to feel, not just inform",
-      "content": "Connected Wikipedia entries reimagined through scroll-telling — hierarchy, rhythm, and focus replacing the generic layout.",
+      "label": "The Brief",
+      "title": "Wikipedia's layout didn't fit the story",
+      "content": "Wikipedia covers the history. None of it feels like the music. My rule: same source, make it feel like what it describes.",
       "highlight": "Not a redesign of Wikipedia — a reimagining of how its content could feel.",
       "image": [
         {
@@ -103,82 +126,29 @@
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "issues": [
+        "Dense text walls, no visual hierarchy — information, not experience",
+        "Generic sidebar makes every topic feel identical",
+        "No pacing — every paragraph competes for attention"
+      ],
+      "issuesTitle": "What wasn't working"
     },
     {
-      "type": "problem",
-      "label": "The Challenge",
-      "title": "Capture techno without overdoing it",
-      "content": "Evoke the genre's raw, rhythmic energy — without the design ever getting loud enough to distract from the story.",
-      "highlight": "The vibe had to live in the rhythm — not the decoration.",
-      "image": [
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "wrapperBg": false,
-          "embedUrl": "/iframes/techno_chronicles_moodboard_mono.html",
-          "src": "",
-          "caption": "Mood and direction",
-          "isVideo": false,
-          "embedType": "iframe",
-          "isGif": false
-        }
-      ],
-      "splitRatio": 40,
-      "gridCols": 1,
-      "imageDisplayMode": "grid"
-    },
-    {
-      "type": "problem",
-      "label": "Responsive",
-      "title": "Fluid across every device",
-      "content": "Flexible grids and adaptive typography kept the experience intact from desktop to mobile — without losing visual weight.",
-      "highlight": "The rhythm had to work on any screen — not just the big one.",
-      "image": [
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776617213367/img-27vpu5b4k8.webp",
-          "caption": "Desktop, tablet, mobile",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776617213367/img-5zlu9zvqkg.webp",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776617213367/img-63zqpe17k0.webp",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
-        }
-      ],
-      "splitRatio": 40,
-      "gridCols": 2,
-      "imageDisplayMode": "carousel",
-      "imageCarouselFit": "contain",
-      "imageCarouselInterval": 1500
+      "type": "directions",
+      "label": "Ideation",
+      "title": "Directions I explored",
+      "directionCount": 3,
+      "dir1Status": "rejected",
+      "dir1Desc": "Text-forward redesign — clean type over Wikipedia's layout. It read like a design exercise, not a cultural experience.",
+      "dir2Status": "rejected",
+      "dir2Desc": "Visual maximalism — photography, gradients, full-bleed texture. The decoration competed with the story instead of carrying it.",
+      "dir3Status": "accepted",
+      "dir3Desc": "Rhythmic restraint — monochrome grain, ASCII portraits, scroll-triggered reveals. The look captures the underground feel without spelling it out. Works across every screen size."
     },
     {
       "type": "media",
-      "title": null,
+      "title": "Where information becomes atmosphere",
       "image": [
         {
           "position": "center center",
@@ -194,38 +164,25 @@
         }
       ],
       "label": "Final Design",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "description": "Monochrome grain, ASCII silhouettes, oversized type — every visual choice earned its place. Nothing made it in unless the content demanded it.",
+      "caption": "The Techno Chronicles — live on Webflow"
     },
     {
-      "type": "outcomes",
-      "label": "Key Learnings",
-      "title": "What the project reinforced",
-      "outcomes": [
-        {
-          "metric": "Rhythm",
-          "title": "Scroll-telling controls pace",
-          "description": "Scroll-triggered reveals let the story breathe."
-        },
-        {
-          "metric": "Balance",
-          "title": "Aesthetic meets usability",
-          "description": "Bold creative choices stayed readable and navigable."
-        },
-        {
-          "metric": "Responsive",
-          "title": "Seamless across devices",
-          "description": "Adaptive grids kept the experience intact on any screen."
-        },
-        {
-          "metric": "Clarity",
-          "title": "Minimalism with bold accents",
-          "description": "A clean base kept focus on the moments that mattered."
-        }
+      "type": "reflection",
+      "label": "Reflection",
+      "title": "What I'd do differently",
+      "whatWorked": [
+        "The monochrome-grain system held the aesthetic together across every section — one committed rule, no style guide needed."
       ],
-      "showNumbers": false,
-      "cardVariant": "default",
-      "gridColumns": 4,
-      "splitRatio": 40
+      "whatFailed": [
+        "I shipped on gut feeling — no scroll-speed testing, no reader feedback before launch."
+      ],
+      "whatYoudDoDifferently": [
+        "Test three scroll speeds with five readers before going live — pacing is the hardest thing to judge alone."
+      ],
+      "whatYouLearned": "Controlling where attention lands — through scroll timing or through a multi-step workflow — is the same design problem. That insight transfers.",
+      "whatYouCouldntMeasure": "Whether someone unfamiliar with techno still feels the genre's energy by the end — the whole point, and I never measured it."
     },
     {
       "type": "end",

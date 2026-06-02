@@ -9,6 +9,9 @@ Values the designer has confirmed are REAL. The critic must NOT re-flag these in
   confirmed real.
 - **Slide 14** — "10–15 min saved per session", "75% reduction in misclicks", "80% daily
   active among former non-users": confirmed real outcome metrics.
+- **Slide 3** — quote authors "Noa Avraham", "Tomer Shapira", "Yael Mizrahi" (physiotherapists):
+  confirmed real (designer kept them via resolve, 2026-06-02).
+- **Slide 12** — author "Maya Levi": confirmed real (designer kept via resolve, 2026-06-02).
 
 ## Resolved (removed from the deck) — no longer claims
 - Slide 1 "Sarah" + the "15 min / 12+ patients" quote → genericized to an unnamed clinician.
@@ -16,6 +19,5 @@ Values the designer has confirmed are REAL. The critic must NOT re-flag these in
 - Slide 0 "80%" headline metric → removed.
 - Slide 14 "55% drop in support tickets" → removed.
 
-## Still DRAFTED placeholders — keep on the verify list (replace with the real person, or keep as representative)
-- **Slide 12** author "Maya Levi" — drafted Israeli name; swap for the real clinician or keep as representative.
-- **Slide 3** authors "Noa Avraham", "Tomer Shapira", "Yael Mizrahi" — drafted Israeli names; swap for real clinicians or keep as representative.
+## Still DRAFTED placeholders — keep on the verify list
+(none — all resolved 2026-06-02: the Slide 3 and Slide 12 clinician names were confirmed real and moved to the Confirmed section above.)

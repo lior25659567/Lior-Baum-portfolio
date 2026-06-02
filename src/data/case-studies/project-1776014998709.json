@@ -1,5 +1,5 @@
 {
-  "dataVersion": 4,
+  "dataVersion": 10,
   "title": "Patient Report\nRedesign",
   "subtitle": "From a blank page into a structured, shareable communication tool.",
   "category": "Clinical UX",
@@ -9,7 +9,7 @@
     {
       "type": "intro",
       "title": "Patient Report\nRedesign",
-      "description": "After every scan, doctors had to generate a patient report from a blank page. We rebuilt it into a template-driven system that produces professional reports in minutes.",
+      "description": "Doctors were skipping the patient report — not because they didn't care, but because the tool gave them a blank page and no place to start. I redesigned it so the hard part is done before they open it.",
       "clientLabel": "Client",
       "client": "Align Technology",
       "focusLabel": "Focus",
@@ -51,22 +51,39 @@
       "splitRatio": 40,
       "imageCarouselBg": true,
       "imageCarouselFit": "contain",
-      "imageCarouselInterval": 1500
+      "imageCarouselInterval": 1500,
+      "metaItems": [
+        {
+          "label": "Role",
+          "value": "Product Designer"
+        },
+        {
+          "label": "Timeline",
+          "value": "2025"
+        },
+        {
+          "label": "Team",
+          "value": "PM · Engineering · Clinical Research"
+        },
+        {
+          "label": "Tools",
+          "value": "Figma · Notion"
+        }
+      ]
     },
     {
       "type": "problem",
       "label": "The Problem",
       "title": "A blank page after every appointment",
-      "content": "No structure, no templates, no annotation. A third of the screen was always locked to static info doctors couldn't act on while editing.",
+      "content": "No structure, no templates, no annotation tools.",
       "issuesTitle": "Where it failed",
       "issues": [
-        "Three-panel layout — sidebar wasted 25% of screen space",
-        "Share and download buttons buried in the sidebar",
+        "Sidebar locked doctor info into 25% of the screen",
         "No templates — every report started blank",
-        "Raw scan images with no annotation or tooth context",
-        "PDF output not designed for patients to read"
+        "Raw scan images with no annotation tools",
+        "PDF output not readable by patients"
       ],
-      "highlight": "The interface was designed around the tool — not the doctor using it.",
+      "highlight": "The tool was designed around the software — not the doctor using it.",
       "image": [
         {
           "position": "center center",
@@ -86,8 +103,8 @@
     {
       "type": "quotes",
       "label": "User Research",
-      "title": "What doctors told us",
-      "content": "Interviews across multiple practices. Same problems everywhere — accepted as workarounds, not reported as issues.",
+      "title": "What doctors told me",
+      "content": "I interviewed doctors across four specialties. The same problems came up every time.",
       "quotes": [
         {
           "text": "I just skip the report most of the time. It takes too long.",
@@ -110,12 +127,13 @@
       "cardHeight": "100",
       "gridColumns": 4,
       "cardVariant": "soft",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "highlight": "These problems had gone unreported — doctors assumed it was just how the tool worked."
     },
     {
       "type": "goals",
       "label": "Design Goals",
-      "title": "What we set out to fix.",
+      "title": "What I set out to fix",
       "goals": [
         {
           "number": "1",
@@ -153,6 +171,18 @@
       "splitRatio": 40
     },
     {
+      "type": "directions",
+      "label": "Ideation",
+      "title": "Layout directions I explored",
+      "directionCount": 3,
+      "dir1Status": "rejected",
+      "dir1Desc": "Collapsible sidebar — kept the three-panel layout but let doctors hide the right panel. Felt incremental. Doctors were still managing the interface instead of just writing the report.",
+      "dir2Status": "rejected",
+      "dir2Desc": "Floating action drawer — tools and metadata in an overlay. Added interaction without solving the space problem.",
+      "dir3Status": "accepted",
+      "dir3Desc": "Compact header bar — moved all metadata and actions into a single top strip, freeing the full canvas for the report. Solved the space problem without adding new interaction patterns."
+    },
+    {
       "type": "comparison",
       "label": "UI Layout",
       "title": "From three fixed panels to a full editing canvas",
@@ -182,38 +212,40 @@
           "embedType": ""
         }
       ],
-      "beforeDescription": "A permanent right sidebar locked doctor info, preview, and share buttons into 25% of the screen.",
-      "afterDescription": "Everything moved to a compact top header — doctor, clinic, patient, and actions inline.",
+      "beforeDescription": "A fixed right panel locked doctor info, preview, and sharing — the editing area squeezed in the middle.",
+      "afterDescription": "Everything moved to the header — doctor, clinic, patient, actions inline.",
       "beforeBullets": [
-        "Sidebar permanently occupied with static info",
-        "Share and download buried in the sidebar",
-        "Content squeezed between two fixed panels"
+        "Right panel permanently occupied with static info",
+        "Content squeezed between two fixed columns",
+        "Share and Export buried outside the editing flow"
       ],
       "afterBullets": [
         "Doctor, clinic, and patient editable from the header",
-        "Share and Export PDF always one click away",
-        "Full screen dedicated to report content"
+        "Share and Export PDF always within reach",
+        "Full screen for report content"
       ],
-      "highlight": "The header replaced an entire panel — and made every action faster to reach.",
+      "highlight": "I moved everything into one header line — every action now one click away.",
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "beforeLabel": "Before",
+      "afterLabel": "After"
     },
     {
       "type": "problem",
       "label": "Templates & Sections",
       "title": "A structured starting point — built to flex",
-      "content": "Procedure templates pre-seed the report with the right sections. A modular block system lets doctors add, reorder, or remove anything to fit the case.",
-      "issuesTitle": "What this enabled",
+      "content": "I built five procedure templates — so doctors start with structure, not a blank page.",
+      "issuesTitle": "How it works",
       "issues": [
         "Five templates — General Scan, Implant, Crown Prep, Follow-up, Custom",
-        "Each pre-seeded with the sections that procedure needs",
-        "Modular blocks — Image, Before/After, Clinical Details, Cost, Notes",
+        "Each pre-loaded with sections for that procedure type",
+        "Modular blocks: Image, Before/After, Clinical Details, Cost, Notes",
         "Drag to reorder, one-tap duplicate or delete"
       ],
-      "highlight": "Templates give doctors a running start — sections let them stay in control.",
+      "highlight": "Templates give doctors a running start. Blocks keep them in control.",
       "image": [
         {
           "position": "center center",
@@ -236,16 +268,16 @@
     {
       "type": "problem",
       "label": "Annotation & Tooth Chart",
-      "title": "From plain images to clinically annotated findings",
-      "content": "Doctors annotate directly on scan images and tag findings to specific teeth via an interactive FDI chart.",
-      "issuesTitle": "What this enabled",
+      "title": "From plain scan images to annotated findings",
+      "content": "I added two tools for one question: where exactly is the problem?",
+      "issuesTitle": "How it works",
       "issues": [
-        "Pen, text, and color tools — annotate full-size before saving",
-        "FDI chart — click to tag teeth, shown as numbered pills",
-        "Findings tied directly to anatomy",
-        "Patients see exactly which teeth are affected"
+        "Pen, text, and color tools — annotate at full size",
+        "Tooth chart — click to tag affected teeth, shown as numbered markers",
+        "Findings tied to anatomy — not described in a text block",
+        "Patients see which teeth are affected"
       ],
-      "highlight": "Two tools that answered the same question: where exactly is the problem?",
+      "highlight": "Show, don't describe — the principle behind both tools.",
       "image": [
         {
           "position": "center center",
@@ -295,8 +327,8 @@
           "embedType": ""
         }
       ],
-      "beforeDescription": "Three sidebar buttons — Preview, Download PDF, Share via QR. No access control, no recipient management.",
-      "afterDescription": "A full Share Report modal — email invites, access permissions, PIN protection, multi-channel delivery.",
+      "beforeDescription": "Three sidebar buttons — Preview, Download PDF, Share via QR.",
+      "afterDescription": "I replaced them with a full sharing modal — email invites, access permissions, PIN protection, multi-channel delivery.",
       "beforeBullets": [
         "Three isolated actions with no shared logic",
         "QR code was the only real sharing option",
@@ -305,51 +337,54 @@
       ],
       "afterBullets": [
         "Invite by email with ownership and access levels",
-        "PIN protection toggle for sensitive reports",
+        "PIN protection for sensitive reports",
         "Multi-channel delivery — WhatsApp, WeChat, QR, copy link",
-        "Privacy warning built into the flow"
+        "Privacy warning built in"
       ],
-      "highlight": "Sharing stopped being an afterthought — it became a controlled, secure handoff.",
+      "highlight": "Sharing stopped being an afterthought. It became a controlled, deliberate handoff.",
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "splitRatio": 40,
       "imageDisplayMode": "grid",
       "afterImageCarouselInterval": 1500,
       "afterImageCarouselFit": "contain",
-      "gridCols": 1
+      "gridCols": 1,
+      "beforeLabel": "Before",
+      "afterLabel": "After"
     },
     {
       "type": "testimonial",
       "label": "Doctor Feedback",
       "quote": "The templates actually match what I do, and everything I need is right there in front of me. ",
       "author": "Dr. N. Haddad",
-      "role": "Orthodontist, iTero early access",
-      "splitRatio": 40
+      "role": "Orthodontist, iTero early access program",
+      "splitRatio": 40,
+      "context": "Feedback collected during the iTero early access program, before full rollout."
     },
     {
       "type": "outcomes",
       "label": "Outcomes",
-      "title": "A report doctors actually use.",
+      "title": "Early-access results.",
       "outcomes": [
         {
           "metric": "Faster",
           "title": "Report creation",
-          "description": "Reports that took 15+ minutes now start in seconds."
+          "description": "The template system removed the blank-page barrier. Doctors in the early access group started and completed reports they would have skipped."
         },
         {
           "metric": "Clearer",
           "title": "Clinical communication",
-          "description": "Annotation and tooth tagging let doctors show, not describe."
+          "description": "Annotation and tooth tagging let doctors mark the exact finding instead of describing it in text — clearer for patients, faster for the doctor."
         },
         {
           "metric": "Higher",
           "title": "Completion rate",
-          "description": "With structure upfront, doctors stopped skipping the report."
+          "description": "With structure upfront, doctors who previously skipped reporting started completing it. Broader measurement is planned post-rollout."
         },
         {
           "metric": "Wider",
           "title": "Reach per report",
-          "description": "Multi-channel sharing reached patients on their preferred channel."
+          "description": "Multi-channel sharing — email, WhatsApp, WeChat, QR code — meant reports reached patients on the channel they actually check."
         }
       ],
       "showNumbers": false,
@@ -360,9 +395,27 @@
     {
       "type": "end",
       "title": "Thank You",
-      "subtitle": "Designing clinical tools that work at the speed of care.",
+      "subtitle": "I make complex workflows feel obvious — a skill for any high-pressure product.",
       "cta": "Get in touch",
       "splitRatio": 40
+    },
+    {
+      "type": "reflection",
+      "label": "Reflection",
+      "title": "What I'd do differently",
+      "whatWorked": [
+        "Defining KPIs before design work kept every decision tied to an outcome.",
+        "The modular block system — customizable structure was the right balance."
+      ],
+      "whatFailed": [
+        "I scoped annotation too late — it triggered a full rework after the first doctor feedback round."
+      ],
+      "whatYoudDoDifferently": [
+        "Test the layout with actual doctors before locking it — internal reviews weren't enough.",
+        "Define sharing permissions with engineering earlier — the edge cases compressed the handoff."
+      ],
+      "whatYouLearned": "Friction isn't bad UI — it's software that makes professionals manage it. Fix the default.",
+      "whatYouCouldntMeasure": "Long-term adoption and whether templates reduced variability — needs 6+ months of data."
     }
   ]
 }

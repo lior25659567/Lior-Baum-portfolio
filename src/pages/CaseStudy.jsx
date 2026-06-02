@@ -1651,13 +1651,13 @@ const CaseStudy = () => {
     const scaleAll = () => {
       const slides = document.querySelectorAll('.case-study-slides-wrapper .slide');
       slides.forEach((slideEl) => {
-        // Read the safe-area insets (reserved for case-nav top + nav-pill
-        // bottom). Falls back to 0 if the CSS vars aren't set.
-        const cs = getComputedStyle(slideEl);
-        const safeTop = parseFloat(cs.getPropertyValue('--slide-safe-top')) || 0;
-        const safeBottom = parseFloat(cs.getPropertyValue('--slide-safe-bottom')) || 0;
+        // PowerPoint/Figma-style "contain": fit the full 1920×1080 artboard in
+        // the full viewport, keeping the 16:9 ratio. We do NOT subtract the
+        // nav safe-areas here — the nav/pill are overlays that float over the
+        // artboard's 96px padding, so a 16:9 screen fills edge-to-edge instead
+        // of letterboxing against the reserved strip.
         const w = slideEl.clientWidth;
-        const h = slideEl.clientHeight - safeTop - safeBottom;
+        const h = slideEl.clientHeight;
         if (!w || !h) return;
         const scale = Math.min(w / SLIDE_W, h / SLIDE_H);
         slideEl.style.setProperty('--slide-canvas-scale', String(scale));

@@ -249,6 +249,72 @@
   border-radius: calc(var(--radius-md) - 2px);
 }
 
+/* Gradient-background variant — image floats centered on the warm orange
+   gradient (matches the embedded case-study iframe look) with padding */
+.project-media[data-media-mode="template"][data-card-bg="gradient"] {
+  --frame-pad: 9%;
+  /* exact colors from the report2-iframe gradient */
+  --card-gradient: linear-gradient(
+    105deg,
+    #FFE8D0 0%,
+    #FFD0A8 38%,
+    #FFAD78 68%,
+    #FF8C50 100%
+  );
+  /* override the data-fill-media edge-to-edge rule so the gradient frame shows */
+  padding: var(--frame-pad) !important;
+  background: var(--card-gradient) !important;
+  /* slight oversize so the whole gradient stays visible but still drifts */
+  background-size: 135% 135% !important;
+  background-position: 0% 0%;
+  animation: cardGradientShift 8s ease-in-out infinite;
+}
+
+@keyframes cardGradientShift {
+  0%   { background-position: 0% 0%; }
+  50%  { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-media[data-media-mode="template"][data-card-bg="gradient"] {
+    animation: none;
+  }
+}
+
+/* Wrapper is fully transparent — no card backing, no rectangular shadow */
+.project-media[data-media-mode="template"][data-card-bg="gradient"] .project-image-wrapper.media-wrapper {
+  inset: var(--frame-pad) !important;
+  border-radius: var(--radius-lg) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+/* Image floats transparently on the gradient — drop-shadow follows the
+   image's actual (non-transparent) shape, so there's no white card box */
+.project-media[data-media-mode="template"][data-card-bg="gradient"] .project-image.media-inner {
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: var(--radius-lg) !important;
+  overflow: hidden;
+  filter:
+    drop-shadow(0 4px 12px rgba(0, 0, 0, 0.14))
+    drop-shadow(0 18px 40px rgba(0, 0, 0, 0.22));
+}
+
+[data-theme="dark"] .project-media[data-media-mode="template"][data-card-bg="gradient"] .project-image.media-inner {
+  filter:
+    drop-shadow(0 4px 12px rgba(0, 0, 0, 0.45))
+    drop-shadow(0 18px 40px rgba(0, 0, 0, 0.6));
+}
+
+.project-media[data-media-mode="template"][data-card-bg="gradient"] .project-image-overlay {
+  inset: var(--frame-pad);
+  border-radius: var(--radius-md);
+}
+
 /* Animated mode — template frame + drifting accent orbs (GSAP-driven) */
 .project-media[data-media-mode="animated"] {
   --frame-pad: 18px;

@@ -611,7 +611,10 @@ body.case-study-active .footer {
    identical at every viewport width. */
 .case-study:not(.edit-mode) .slide-inner {
   position: absolute;
-  top: calc(var(--slide-safe-top, 0px) + (100% - var(--slide-safe-top, 0px) - var(--slide-safe-bottom, 0px)) / 2);
+  /* Centered in the FULL viewport (PowerPoint/Figma fill). The nav/pill are
+     overlays floating over the artboard's 96px padding, so we no longer offset
+     the artboard into a reserved safe-area band. */
+  top: 50%;
   left: 50%;
   width: 1920px;
   height: 1080px;
@@ -721,6 +724,15 @@ body.case-study-active .footer {
   line-height: var(--slide-leading-title);
   letter-spacing: var(--slide-tracking-title);
   font-weight: var(--slide-weight-medium);
+}
+
+/* Remove the gap below the intro title (requested) */
+.case-study:not(.edit-mode) .slide-inner .intro-title { margin-bottom: 0; }
+
+/* Drop the 32px gap below the intro title (spacing to the next element is
+   handled by the adjacent-sibling margin-top rule). */
+.case-study:not(.edit-mode) .slide-inner .intro-title {
+  margin-bottom: 0;
 }
 
 /* ── HEADER / H1  56px Medium  lh 1.20  ls -0.012em ── */
@@ -1622,28 +1634,39 @@ body.case-study-active .footer {
 .case-study:not(.edit-mode) .slide-end .animated-btn .btn-inner {
   gap: 12px;
 }
-/* Contact row — Body 24px, larger icons, more breathing room.
-   Cap the row width and center it so the equal columns sit close together
-   instead of spreading across the full artboard. */
+/* Contact row pinned to the bottom of the 1920×1080 artboard, centered, with
+   dot separators between items — matches the Figma close slide. The headline
+   block then centers in the full canvas height (contact is out of flow). */
 .case-study:not(.edit-mode) .slide-end .end-contact-info {
-  margin-top: 260px;
-  width: 100%;
-  max-width: 1100px;
+  position: absolute;
+  left: 50%;
+  bottom: 120px;
+  transform: translateX(-50%);
+  margin: 0;
+  width: auto;
+  max-width: none;
   justify-content: center;
-  gap: 64px;
+  gap: 28px;
 }
 .case-study:not(.edit-mode) .slide-end .end-contact-item {
-  /* Natural width, centered with a fixed gap — moderate spread, capped
-     so they don't push to the artboard edges. */
+  /* Natural width so the visible space between items is exactly the gap. */
   flex: 0 0 auto;
   gap: 12px;
   font-size: var(--slide-font-body);
   line-height: var(--slide-leading-body);
   letter-spacing: var(--slide-tracking-body);
 }
+/* Dot separator between contact items: 28px container gap + 28px margin puts
+   the dot equidistant from both neighbours. */
+.case-study:not(.edit-mode) .slide-end .end-contact-item:not(:last-child)::after {
+  content: '·';
+  margin-left: 28px;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
 .case-study:not(.edit-mode) .slide-end .end-contact-item svg {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
 }
 
 /* ═══ Process slide — Figma 1117:3526 (view/canvas mode) ═══
@@ -6327,20 +6350,17 @@ button.dir-chip:hover {
 
 /* ── Right column: tinted panel ── */
 .case-study:not(.edit-mode) .slide-intro .intro-media-panel {
-  /* Full-bleed to the TRUE slide edges (top/right/bottom). The 1920×1080
-     artboard is letterboxed inside the safe area (56px nav top + 64px pill
-     bottom) and scaled by --slide-canvas-scale, so to reach the real slide
-     edges the panel must extend past the artboard by:
-       • 128px to undo the slide-inner artboard padding, plus
-       • each safe-area inset ÷ the canvas scale (so it lands exactly on the
-         real edge after the artboard's scale transform).
-     The nav-pill (position:absolute, z-index 51) floats above the artboard,
-     so it never clips or reserves space against the panel. Left edge stays
-     at the grid column boundary so the left content keeps its inset. */
-  height: calc(100% + 256px + (var(--slide-safe-top, 56px) + var(--slide-safe-bottom, 64px)) / var(--slide-canvas-scale, 1));
+  /* Full-bleed to the artboard's top/right/bottom edges. The artboard now
+     fills the viewport (centered, no safe-area offset), so reaching the slide
+     edges only means undoing the slide-inner padding — extend 128px past the
+     artboard top and bottom (generous over-bleed) and pull up 128px. The
+     nav-pill (position:absolute, z-index 51) floats above the artboard, so it
+     never clips or reserves space against the panel. Left edge stays at the
+     grid column boundary so the left content keeps its inset. */
+  height: calc(100% + 256px);
   width: auto;
   min-height: 0;
-  margin-top: calc(-128px - var(--slide-safe-top, 56px) / var(--slide-canvas-scale, 1));
+  margin-top: -128px;
   margin-right: -128px;
   margin-bottom: 0;
   margin-left: 0;

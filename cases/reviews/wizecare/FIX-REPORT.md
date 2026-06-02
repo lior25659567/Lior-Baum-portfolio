@@ -103,6 +103,14 @@ Resolve-edit integrity check (all clean, verified against the extracted text + `
 - **No "Senior"/"SaaS" self-labeling** added anywhere; positioning kept soft per the
   `confirmed: false` flags. ✓
 
+## Verdict coverage — every recommendation accounted for
+The fix flow dispositions EVERY actionable item from all three verdicts + synthesis as
+APPLIED / DECLINED / DESIGNER — nothing applied "in general". The critic re-checks this.
+
+_(no coverage check recorded — re-run the critic)_
+
+Full matrix (one row per recommendation): `cases/reviews/wizecare/coverage-matrix.md` / `edit-summary.md`
+
 ## Verify before sending — YOUR call
 The only things the system cannot know (your real data). For each item, answer:
 **real** (keep it) · **not real** (genericize it) · **replace: <value>**. Answer in
