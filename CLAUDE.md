@@ -275,9 +275,11 @@ slugs is `src/data/case-studies/index.js` (currently: `itero-scan-workflow`,
 `project-1776014998709`, `project-1776617213367`, `project-1776628169716`,
 `timeline.html`, `wizecare`).
 
-The agents live in `.claude/agents/` (ux-reviewer, design-recruiter,
+The agents live in `.claude/agents/` (case-study-author, ux-reviewer, design-recruiter,
 design-director, case-study-editor, copy-writer, case-study-critic,
-portfolio-consistency).
+portfolio-consistency). `case-study-author` is the **inverse** of the rest: instead of
+reviewing/fixing an existing deck, it AUTHORS a brand-new one from a designer-written
+brief (see "create case study" below).
 They are **template-aware**: a generated catalog of all 20 slide templates and
 their elements lives at `cases/reviews/_slide-templates.md`, so reviewers judge
 whether each slide uses the right template and the editor can add/remove/retype
@@ -293,10 +295,17 @@ profile file is missing, create it from the template in the spec before reviewin
 A deterministic helper does all JSON I/O so no agent ever hand-edits raw JSON:
 
 ```
+node scripts/case-study-text.mjs new "<title>"    # scaffold a blank case study (slug = project-<timestamp>), register it in index.js
 node scripts/case-study-text.mjs templates        # (re)generate cases/reviews/_slide-templates.md
 node scripts/case-study-text.mjs extract <slug>   # JSON prose → cases/reviews/<slug>/extracted.md
 node scripts/case-study-text.mjs apply   <slug>   # cases/reviews/<slug>/edits.json → back into the JSON
 ```
+
+`new` writes a minimal valid skeleton (`{ dataVersion, title, subtitle, category, year,
+color, slides: [] }`) and regenerates `index.js` itself (the Vite plugin only does that on
+an HTTP save), then prints `slug: project-<timestamp>` on its last line. The
+`case-study-author` agent then fills the empty `slides` via `apply` insert ops. This is the
+ONLY way to create a new case study from the CLI — `apply` requires the JSON to already exist.
 
 `extract` surfaces, per slide: the **image files to READ** (content like quotes lives
 in images), the **available unused template fields** (so the editor adds `metaItems`
@@ -322,6 +331,74 @@ no/low `dataVersion` is invisible in the running app. `apply` therefore **auto-b
 `dataVersion` on every change** — after a fix, the user must **hard-refresh
 (Cmd+Shift+R)** to let the app reset its cache and load the new JSON. Every case
 study JSON should carry a `dataVersion` (the others use 4+).
+
+## Trigger: "create case study" / "create <brief-name>"
+Builds a BRAND-NEW case study from a designer-written brief — the inverse of
+`review`/`fix`. The designer drops a filled brief at `cases/briefs/<name>.md` (copied from
+`cases/briefs/_BRIEF-TEMPLATE.md`). The brief carries the problem, what they did, role/
+outcomes, and an **asset inventory** (videos of flows, screenshots, user-flow diagrams).
+
+1. **Check the brief exists** — `cases/briefs/<name>.md`. If missing, point the designer to
+   `cases/briefs/_BRIEF-TEMPLATE.md` ("fill this, save as `cases/briefs/<name>.md`, re-run")
+   and stop.
+2. **Prepare inputs**: `node scripts/case-study-text.mjs templates` (refresh the catalog);
+   ensure `cases/reviews/_designer-profile.md` exists (create from the spec template if not).
+3. **Scaffold + capture the slug**: `node scripts/case-study-text.mjs new "<title from the
+   brief>"`. Read the printed `slug: project-<timestamp>` — that's `<slug>` for the rest.
+   Then `node scripts/case-study-text.mjs extract <slug>` (the empty skeleton gives the
+   author its top-level path scaffold).
+4. **Backup branch**: `git branch backup/case-create-<slug>` at HEAD.
+5. **Author the deck** — run `case-study-author`: "Author a new case study. The slug is
+   `<slug>`; the brief is `cases/briefs/<name>.md`. Read in order:
+   `cases/reviews/_designer-profile.md`, that brief, `cases/reviews/_slide-templates.md`,
+   `cases/reviews/<slug>/extracted.md`. Build the deck as an ops-only edits.json (every slide
+   an `insert` with `after: -1`, intro first / end last), map the brief to the 10 canonical
+   beats, placeholder-fill any missing beat, and leave captioned empty image slots for each
+   inventory asset. Write `cases/reviews/<slug>/edits.json` and
+   `cases/reviews/<slug>/author-summary.md`."
+6. **Apply**: `node scripts/case-study-text.mjs apply <slug>` — confirm all inserts applied
+   and 0 refused. **Validate JSON**:
+   `node -e "JSON.parse(require('fs').readFileSync('src/data/case-studies/<slug>.json'))"`.
+7. **Run the full review→fix loop inline** (reuse the `review <slug>` then `fix <slug>`
+   triggers below verbatim): re-extract → ux-reviewer + design-recruiter + design-director in
+   parallel → `synthesis.md` → case-study-editor → `apply` → copy-writer → `apply` →
+   case-study-critic + the autonomous self-remediation loop. (Reviewers will note the
+   still-empty asset slots as gaps — expected; the designer fills them next.)
+8. **Cross-study fit**: run the `portfolio-consistency` agent (the study is real text now) →
+   `cases/reviews/PORTFOLIO-CONSISTENCY.md`.
+9. **Consolidated report**: `node scripts/case-study-text.mjs report <slug>` → `FIX-REPORT.md`.
+10. **Show the designer a FINISHED draft, not a gate.** Lead with the outcome ("Done — new
+    deck built: N slides across the 10 beats; critic PASS after cleanup"). Then surface:
+    the **Beat coverage map** + **Suggested/placeholder slides** (from `author-summary.md`);
+    the **Asset slots to fill** list (what to drop in via in-app edit mode); the critic's
+    **Verify before sending** checklist; and the portfolio-consistency note. Tell them:
+    hard-refresh (Cmd+Shift+R) to see it in the project grid, add the real images/videos in
+    edit mode, answer the verify checklist, then `resolve <slug>`. Undo: delete
+    `src/data/case-studies/<slug>.json` + `git checkout` `index.js`, or restore the backup branch.
+
+## Trigger: "run hub jobs"
+Drains the Agents Hub job queue — `cases/reviews/_jobs/*.json`, written by the browser
+Hub (the `/agents-hub` page). Each job names an existing pipeline to run. Never
+hand-edit job JSON — go through `scripts/hub-jobs.mjs`.
+
+1. `node scripts/hub-jobs.mjs list queued` → queued jobs (already oldest-first).
+2. For each queued job, in order:
+   a. `node scripts/hub-jobs.mjs set <id> running`.
+   b. Run the existing trigger for the job's `action`, using its fields:
+      - `create` → the browser already ran `new`, so the job carries a real `slug`.
+        Run the **author → review → fix** part of the "create case study" flow on that
+        existing `slug`, with brief `cases/briefs/<briefName>.md`. Do NOT scaffold again.
+      - `review` → the "review <slug>" flow.
+      - `fix`    → the "fix <slug>" flow.
+      - `resolve`→ the "resolve <slug>" flow, applying the job's `answers` array
+        (each item `{ item, decision: "keep"|"genericize"|"replace", value }`):
+        keep = confirm as-is, genericize = remove the unverifiable specific, replace =
+        substitute `value`. Then re-extract → critic → report as the resolve flow does.
+   c. On success: `node scripts/hub-jobs.mjs set <id> done "<one-line result>"`.
+      On any failure: `node scripts/hub-jobs.mjs set <id> error "<reason>"`, then
+      continue to the next job (one bad job never blocks the rest).
+3. Print a one-line summary per job. The browser Hub polls `/api/hub/jobs` and updates
+   itself; the designer hard-refreshes the app to see new/changed decks.
 
 ## Trigger: "review <slug>"
 Example: `review wizecare`
@@ -362,7 +439,11 @@ Example: `review wizecare`
    `cases/reviews/_slide-templates.md`, then `ux-verdict.md`, `recruiter-verdict.md`,
    `director-verdict.md`, `synthesis.md`. Write `cases/reviews/<slug>/edits.json`
    (text edits + any insert/remove/retype slide ops) and
-   `cases/reviews/<slug>/edit-summary.md`."
+   `cases/reviews/<slug>/edit-summary.md`. **First build the verdict-coverage matrix
+   (Step 1.5): enumerate EVERY actionable recommendation from all three verdicts +
+   synthesis, one row each, and disposition each as APPLIED (→ path/op) / DECLINED (→
+   reason) / DESIGNER (→ verify list). The matrix is the first section of edit-summary.md
+   and is mandatory — no verdict item may be silently skipped.**"
 3. **Apply**: `node scripts/case-study-text.mjs apply <slug>` — report applied text
    edits, applied slide ops (added/removed/retyped), and anything refused.
 4. **Verify JSON**: `node -e "JSON.parse(require('fs').readFileSync('src/data/case-studies/<slug>.json'))"`
@@ -381,11 +462,14 @@ Example: `review wizecare`
    `synthesis.md`, the three verdicts, and `_slide-templates.md`. Write
    `cases/reviews/<slug>/verify-report.md`."
    The pipeline FIXES ITS OWN problems — do not hand them to the designer:
-   - **If the critic returns CONCERNS** (agent-invented unflagged fabrication or a
-     contradiction): run a targeted remediation pass (the `case-study-editor` or
-     `copy-writer`, whichever fits) addressing ONLY those blocking issues — fix the
-     contradiction, and for an agent fabrication either flag it in "Drafted values to
-     verify" or soften it. Apply, re-extract, re-run the critic. **Loop up to 2 rounds.**
+   - **If the critic returns CONCERNS** (agent-invented unflagged fabrication, a
+     contradiction, or a **verdict-coverage gap** — a recommendation missing from the matrix
+     or marked APPLIED but not actually in the deck): run a targeted remediation pass (the
+     `case-study-editor` or `copy-writer`, whichever fits) addressing ONLY those blocking
+     issues — fix the contradiction; for an agent fabrication flag it in "Drafted values to
+     verify" or soften it; for a coverage gap APPLY the missed recommendation (or explicitly
+     DECLINE it with a reason in the matrix). Apply, re-extract, re-run the critic. **Loop up
+     to 2 rounds.**
    - **Over-budget slides** the critic lists: auto-trim them in the same remediation pass
      (never leave any slide over budget).
    - Only escalate to the designer if a BLOCKING issue genuinely survives 2 rounds.
@@ -464,18 +548,24 @@ Cross-study consistency — run MANUALLY (never inside `fix`; it reads every stu
 
 ## File structure
 ```
-src/data/case-studies/<slug>.json   ← the real case study (text + slides rewritten here)
-scripts/case-study-text.mjs         ← extract / apply / templates helper (structure-safe)
+src/data/case-studies/<slug>.json   ← the real case study (text + slides rewritten here; `new` scaffolds it)
+scripts/case-study-text.mjs         ← new / extract / apply / templates helper (structure-safe)
+scripts/hub-jobs.mjs                ← job-queue I/O (enqueue/list/set) shared by the /agents-hub UI endpoints + the "run hub jobs" trigger
+cases/reviews/_jobs/<id>.json       ← Agents Hub queue (gitignored; written by the /agents-hub UI, drained by "run hub jobs")
+cases/briefs/_BRIEF-TEMPLATE.md     ← copy this to start a NEW case study (input to case-study-author)
+cases/briefs/<name>.md              ← a filled brief: problem + what you did + asset inventory
 cases/reviews/_designer-profile.md  ← designer's target/voice/non-negotiables (ALL agents read; confirmed: flags)
 cases/reviews/_slide-templates.md   ← generated catalog of all 20 templates (agents read this)
 cases/reviews/<slug>/
+  author-summary.md                 ← (create flow) beat-coverage map, asset slots to fill, drafted values to verify
   extracted.md                      ← prose pulled from the JSON (input to reviewers + critic)
   ux-verdict.md                     ← craft + template-fit review
   recruiter-verdict.md              ← hiring review
   director-verdict.md               ← positioning + structure review
   synthesis.md                      ← unified verdict + action items
   edits.json                        ← editor's { edits, setFields, ops } (structure + content)
-  edit-summary.md                   ← what the editor changed
+  edit-summary.md                   ← what the editor changed (opens with the VERDICT COVERAGE MATRIX:
+                                       every verdict+synthesis recommendation → APPLIED/DECLINED/DESIGNER)
   copy-edits.json                   ← copy-writer's voice-pass edits (text only, no ops)
   copy-summary.md                   ← voice/jargon changes the copy-writer made
   verify-report.md                  ← critic's post-fix verdict (PASS | CONCERNS + blocking issues)
