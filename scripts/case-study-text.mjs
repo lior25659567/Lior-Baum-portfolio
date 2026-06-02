@@ -19,7 +19,8 @@
 //   { "op": "insert", "after": 3, "slide": { ...full slide... }, "reason": "..." }
 //   { "op": "remove", "index": 7, "reason": "..." }
 //   { "op": "retype", "index": 5, "slide": { ...full slide... }, "reason": "..." }
-// Use "after": -1 to insert at the very start.
+//   { "op": "move",   "index": 5, "after": 1, "reason": "..." }  // reorder only — keeps content
+// Use "after": -1 to insert/move at the very start.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -386,30 +387,55 @@ function apply(slug, editsPath) {
       removeSet.add(op.index);
       applied.push(`remove @${op.index}${op.reason ? ` (${op.reason})` : ''}`);
     }
-    let result = slides.filter((s) => !removeSet.has(s.__oi));
 
-    // insert (after original index; -1 = start). Append unplaced at end.
+    // move: pull an existing slide out of its position and re-place it after a
+    // target original index (-1 = start) — a reorder for storytelling. Carries
+    // the existing slide object, so it never changes the slide's content.
+    const moveSet = new Set();
+    const moveOps = [];
+    for (const op of ops.filter((o) => o.op === 'move')) {
+      const slide = slides.find((s) => s.__oi === op.index);
+      if (!slide) { refused.push(`move @${op.index} — index not found`); continue; }
+      if (removeSet.has(op.index)) { refused.push(`move @${op.index} — slide also removed`); continue; }
+      moveSet.add(op.index);
+      moveOps.push({ op, slide, after: Number.isInteger(op.after) ? op.after : -1 });
+    }
+
+    let result = slides.filter((s) => !removeSet.has(s.__oi) && !moveSet.has(s.__oi));
+
+    // placements = inserts (new slides) + moves (existing slides), both keyed by
+    // the original index they go AFTER (-1 = start). Append unplaced at end.
     const inserts = ops.filter((o) => o.op === 'insert');
     const byAfter = new Map();
+    const addPlacement = (key, entry) => { if (!byAfter.has(key)) byAfter.set(key, []); byAfter.get(key).push(entry); };
     for (const op of inserts) {
       if (!validSlide(op.slide)) { refused.push(`insert after ${op.after} — slide missing valid "type"`); continue; }
       const key = Number.isInteger(op.after) ? op.after : result.length ? result[result.length - 1].__oi : -1;
-      if (!byAfter.has(key)) byAfter.set(key, []);
-      byAfter.get(key).push(op);
+      addPlacement(key, { op, slide: op.slide, kind: 'insert' });
     }
+    for (const m of moveOps) addPlacement(m.after, { op: m.op, slide: m.slide, kind: 'move' });
+
     const placed = new Set();
     const finalArr = [];
-    (byAfter.get(-1) || []).forEach((op) => { finalArr.push(op.slide); placed.add(op); applied.push(`insert@start -> ${op.slide.type}${op.reason ? ` (${op.reason})` : ''}`); });
+    const emit = (e) => {
+      finalArr.push(e.slide); placed.add(e);
+      const verb = e.kind === 'move'
+        ? `move @${e.op.index} -> after ${e.op.after}`
+        : (e.op.after === -1 ? `insert@start -> ${e.slide.type}` : `insert after ${e.op.after} -> ${e.slide.type}`);
+      applied.push(`${verb}${e.op.reason ? ` (${e.op.reason})` : ''}`);
+    };
+    (byAfter.get(-1) || []).forEach(emit);
     for (const s of result) {
       finalArr.push(s);
-      (byAfter.get(s.__oi) || []).forEach((op) => { finalArr.push(op.slide); placed.add(op); applied.push(`insert after ${op.after} -> ${op.slide.type}${op.reason ? ` (${op.reason})` : ''}`); });
+      (byAfter.get(s.__oi) || []).forEach(emit);
     }
-    // any insert whose target index was removed/never matched → append at end
-    for (const op of inserts) {
-      if (placed.has(op)) continue;
-      if (refused.some((r) => r.startsWith(`insert after ${op.after} — slide missing`))) continue;
-      finalArr.push(op.slide);
-      applied.push(`insert (target ${op.after} missing → appended at end) -> ${op.slide.type}${op.reason ? ` (${op.reason})` : ''}`);
+    // any placement whose target index was removed/moved/never matched → append at end
+    for (const [, entries] of byAfter) {
+      for (const e of entries) {
+        if (placed.has(e)) continue;
+        finalArr.push(e.slide);
+        applied.push(`${e.kind} (target ${e.op.after} missing → appended at end) -> ${e.slide.type || ''}${e.op.reason ? ` (${e.op.reason})` : ''}`);
+      }
     }
 
     finalArr.forEach((s) => { if (s && typeof s === 'object') delete s.__oi; });

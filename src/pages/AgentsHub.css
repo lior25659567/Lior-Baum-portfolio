@@ -35,3 +35,6 @@
 .hub-verify-item { border: 1px solid rgba(0,0,0,.1); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
 .hub-verify-item .choices { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; align-items: center; }
 .hub-label { display: block; font-size: 12px; font-weight: 600; opacity: 0.7; margin: 10px 0 4px; }
+.hub-row-wrap { margin-bottom: 8px; }
+.hub-row-wrap .hub-row { margin-bottom: 0; }
+.hub-budget { border: 1px solid rgba(0,0,0,.08); border-top: none; border-radius: 0 0 10px 10px; padding: 2px 14px 10px; background: #fafbfc; }

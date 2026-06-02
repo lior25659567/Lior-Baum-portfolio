@@ -269,3 +269,24 @@ the slide reads complete; this list is where the "needs your input" lives.]
 - **Every slide must serve the story.** Judge (or write) each slide against the narrative:
   it must move the story forward and earn its place. If it doesn't advance the story or help
   the reader understand, cut it or merge it.
+- **You can reorder slides — not just add, remove, or retype them.** Slide *number* is
+  a storytelling choice. If a slide would serve the setup→tension→resolution arc better
+  in a different position (given the deck and the designer's context), say so. Editing
+  agents emit a `move` op — `{ "op": "move", "index": <original index>, "after": <original
+  index, or -1 for first> }` — which repositions the slide for narrative flow WITHOUT
+  changing its content. Reviewers/critic: recommend the new position and the reason.
+
+- **Audit slide ORDER on every pass — proactively, without being asked.** Slide number is
+  a storytelling decision, so on every review/fix of every case study run two checks:
+  1. **Right section.** Every slide must sit in the chapter/phase it belongs to. A slide
+     about a specific phase, feature, or decision belongs *inside that phase's chapter* —
+     never stranded in another (e.g. a toolbar decision that belongs to a "Scan" phase
+     must not sit in the "RX" phase). When you INSERT a slide, set its `after` so it lands
+     in the correct section, not merely at the end.
+  2. **Beat order.** The canonical flow is cover → problem → research → insight → goals →
+     exploration/ideation → solution → outcomes → reflection → end. The **end slide is
+     always last**; **reflection comes immediately before the end**; outcomes precede
+     reflection; a phase's ideation/decision precedes that phase's solution.
+  If any slide is in the wrong section or the beats are out of order, FIX it — editing
+  agents emit `move` ops; reviewers/critic name the exact move (which slide → after which).
+  This is a standing expectation, not something the designer should have to point out.

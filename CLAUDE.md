@@ -324,7 +324,10 @@ still need an image read). The agents are instructed to act on all of these.
 
 `apply` accepts text edits (path-id → new text), `setFields` (create/replace
 structured fields like `metaItems`/`headlineMetric`), AND structural ops
-(`insert` / `remove` / `retype` whole slides, indices referencing original order).
+(`insert` / `remove` / `retype` / `move` whole slides, indices referencing original
+order). `move` (`{ "op": "move", "index": N, "after": M }`, `after: -1` = first)
+**reorders** a slide for storytelling without changing its content — agents may
+reposition any slide when a different slide number serves the narrative better.
 It refuses to write image/layout/config keys and read-only data (`metric`,
 `number`, `year`), validates the result is valid JSON, and writes byte-for-byte
 matching formatting. `cases/reviews/<slug>/` holds all generated artifacts; the
