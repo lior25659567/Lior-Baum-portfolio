@@ -28,3 +28,6 @@ dist-ssr
 
 # Case-study image backups (produced by scripts/convert-case-study-images-to-webp.sh)
 backups/
+
+# Agents Hub job queue (transient local state)
+cases/reviews/_jobs/
