@@ -4,6 +4,7 @@
 // Text edits only touch prose fields; structural ops add/remove/retype whole
 // slides. NEVER touches JSX, React components, or CSS — only the case study JSON.
 //
+//   node scripts/case-study-text.mjs new       "<title>"  # scaffold a blank case study
 //   node scripts/case-study-text.mjs extract   <slug>
 //   node scripts/case-study-text.mjs apply     <slug> [editsPath]
 //   node scripts/case-study-text.mjs templates           # writes the template reference
@@ -124,6 +125,43 @@ function writeJsonValidated(slug, data) {
   const out = JSON.stringify(data, null, 2);
   JSON.parse(out); // throws if invalid
   fs.writeFileSync(slugFile(slug), out);
+}
+
+// Regenerate src/data/case-studies/index.js so a JSON written directly to disk is
+// importable by the app. Byte-for-byte matches the Vite plugin's updateIndex
+// (vite-plugin-save-case-study.js) so the two never fight over the file.
+function updateIndex() {
+  const files = fs.readdirSync(CS_DIR).filter((f) => f.endsWith('.json')).sort();
+  const imports = files.map((f, i) => `import cs${i} from './${f}';`);
+  const entries = files.map((f, i) => `  '${f.replace(/\.json$/, '')}': cs${i},`);
+  const content = `// Auto-generated — do not edit manually\n${imports.join('\n')}\n\nexport const savedCaseStudies = {\n${entries.join('\n')}\n};\n`;
+  fs.writeFileSync(path.join(CS_DIR, 'index.js'), content);
+}
+
+// ── new (scaffold a blank, valid, registered case study) ─────────────────────
+// Writes a minimal skeleton JSON the app can render, then regenerates index.js so
+// the case-study-author agent can build slides into it via `apply` insert ops.
+// The slug follows the app's own "new project" naming: project-<timestamp>.
+function createNew(title) {
+  if (!title) { console.error('Usage: node scripts/case-study-text.mjs new "<title>"'); process.exit(1); }
+  const slug = `project-${Date.now()}`;
+  const f = slugFile(slug);
+  if (fs.existsSync(f)) { console.error(`Already exists: ${f}`); process.exit(1); }
+  const skeleton = {
+    dataVersion: 1,
+    title,
+    subtitle: '',
+    category: '',
+    year: String(new Date().getFullYear()),
+    color: '#4A90E2', // HARD_DENY — designer recolors in-app; never set via edits
+    slides: [],        // case-study-author fills this via apply insert ops
+  };
+  fs.mkdirSync(CS_DIR, { recursive: true });
+  writeJsonValidated(slug, skeleton);
+  updateIndex();
+  console.log(`Created ${f} and updated index.js`);
+  console.log(`slug: ${slug}`); // last line — orchestrator captures this
+  return slug;
 }
 
 // ── walk string leaves (skips HARD_DENY keys) ───────────────────────────────
@@ -557,6 +595,20 @@ async function report(slug) {
   L.push(verdict || '_(no verify-report.md yet — run a fix)_');
   L.push('');
   if (blocking) { L.push(blocking); L.push(''); }
+
+  // ── verdict coverage — proof every reviewer recommendation was acted on ────
+  const coverageCheck = mdSection(f('verify-report.md'), 'Verdict coverage');
+  const coverageMatrix = mdSection(f('edit-summary.md'), 'Verdict coverage');
+  L.push('## Verdict coverage — every recommendation accounted for');
+  L.push('The fix flow dispositions EVERY actionable item from all three verdicts + synthesis as');
+  L.push('APPLIED / DECLINED / DESIGNER — nothing applied "in general". The critic re-checks this.');
+  L.push('');
+  L.push(coverageCheck || '_(no coverage check recorded — re-run the critic)_');
+  L.push('');
+  L.push('Full matrix (one row per recommendation): ' +
+    (coverageMatrix ? `\`${path.join(dir, 'edit-summary.md')}\` → "Verdict coverage matrix"`
+                    : `\`${path.join(dir, 'coverage-matrix.md')}\` / \`edit-summary.md\``));
+  L.push('');
   L.push('## Verify before sending — YOUR call');
   L.push('The only things the system cannot know (your real data). For each item, answer:');
   L.push('**real** (keep it) · **not real** (genericize it) · **replace: <value>**. Answer in');
@@ -586,8 +638,13 @@ async function report(slug) {
 const [, , mode, slug, arg3] = process.argv;
 if (mode === 'templates') {
   await templates();
+} else if (mode === 'new') {
+  // `new` takes a TITLE, not a slug — the slug is generated.
+  const title = process.argv.slice(3).join(' ').trim();
+  createNew(title);
 } else if (!mode || !slug) {
-  console.error('Usage: node scripts/case-study-text.mjs <extract|apply|templates|report|budget> <slug> [editsPath]');
+  console.error('Usage: node scripts/case-study-text.mjs <new|extract|apply|templates|report|budget> <slug|title> [editsPath]');
+  console.error('  new "<title>"   — scaffold a blank case study (slug = project-<timestamp>) and register it');
   process.exit(1);
 } else if (mode === 'extract') {
   const md = await extract(slug);
@@ -604,6 +661,6 @@ if (mode === 'templates') {
   const { table, over, count } = await buildBudgetTable(readJson(slug));
   console.log(`${slug} — ${count} slides, ${over} over budget\n${table}`);
 } else {
-  console.error(`Unknown mode "${mode}". Use extract, apply, templates, report, or budget.`);
+  console.error(`Unknown mode "${mode}". Use new, extract, apply, templates, report, or budget.`);
   process.exit(1);
 }
