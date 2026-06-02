@@ -15,6 +15,7 @@ import fsp from 'fs/promises';
 import path from 'path';
 import { exec } from 'child_process';
 import https from 'https';
+import { enqueueJob, listJobs } from './scripts/hub-jobs.mjs';
 
 const NETLIFY_BUILD_HOOK = 'https://api.netlify.com/build_hooks/69d7cb8c2578b11512ef44a2';
 
@@ -167,6 +168,105 @@ export function saveCaseStudyPlugin() {
           },
           node: process.version,
         };
+      }));
+
+      // ── Agents Hub (dev-only cockpit) ────────────────────────────────────
+      const HUB_ARTIFACTS = ['extracted', 'ux-verdict', 'recruiter-verdict', 'director-verdict', 'synthesis', 'edit-summary', 'copy-summary', 'verify-report', 'FIX-REPORT'];
+
+      // Dashboard payload: studies (+ which artifacts exist), briefs, jobs.
+      server.middlewares.use('/api/hub/overview', wrap('/api/hub/overview', async (req) => {
+        assertMethod(req, 'GET');
+        const csDir = path.resolve('src/data/case-studies');
+        const reviewsDir = path.resolve('cases/reviews');
+        const briefsDir = path.resolve('cases/briefs');
+        const studyFiles = (await pathExists(csDir)) ? (await fsp.readdir(csDir)).filter((f) => f.endsWith('.json')) : [];
+        const studies = [];
+        for (const f of studyFiles) {
+          const slug = f.replace(/\.json$/, '');
+          let title = slug, slideCount = 0;
+          try {
+            const d = JSON.parse(await fsp.readFile(path.join(csDir, f), 'utf-8'));
+            title = d.title || slug;
+            slideCount = Array.isArray(d.slides) ? d.slides.length : 0;
+          } catch { /* leave defaults */ }
+          const adir = path.join(reviewsDir, slug);
+          const artifacts = [];
+          if (await pathExists(adir)) {
+            for (const a of HUB_ARTIFACTS) if (await pathExists(path.join(adir, `${a}.md`))) artifacts.push(a);
+          }
+          studies.push({ slug, title, slideCount, artifacts });
+        }
+        studies.sort((a, b) => a.title.localeCompare(b.title));
+        const briefs = (await pathExists(briefsDir))
+          ? (await fsp.readdir(briefsDir)).filter((f) => f.endsWith('.md') && f !== '_BRIEF-TEMPLATE.md').map((f) => f.replace(/\.md$/, ''))
+          : [];
+        return { studies, briefs, jobs: listJobs() };
+      }));
+
+      // Run a WHITELISTED deterministic script subcommand. apply is NOT exposed
+      // (agents own it). new/budget/extract/templates only.
+      server.middlewares.use('/api/hub/run', wrap('/api/hub/run', async (req) => {
+        assertMethod(req, 'POST');
+        const { cmd, slug = '', title = '' } = await readJson(req);
+        const WHITELIST = new Set(['new', 'budget', 'extract', 'templates']);
+        if (!WHITELIST.has(cmd)) { const e = new Error(`cmd "${cmd}" not allowed`); e.statusCode = 400; throw e; }
+        let argline = '';
+        if (cmd === 'new') {
+          if (!title) { const e = new Error('new requires title'); e.statusCode = 400; throw e; }
+          argline = JSON.stringify(title);
+        } else if (cmd === 'budget' || cmd === 'extract') {
+          if (!/^[a-z0-9._-]+$/i.test(slug)) { const e = new Error('bad slug'); e.statusCode = 400; throw e; }
+          argline = JSON.stringify(slug);
+        }
+        const result = await new Promise((resolve) => {
+          exec(`node scripts/case-study-text.mjs ${cmd} ${argline}`.trim(), {
+            cwd: path.resolve('.'), timeout: 120_000, maxBuffer: 10 * 1024 * 1024, env: { ...process.env },
+          }, (err, stdout, stderr) => resolve({ stdout: (stdout || '').trim(), stderr: (stderr || '').trim(), code: err ? (err.code ?? 1) : 0 }));
+        });
+        if (result.code !== 0) { const e = new Error(result.stderr || result.stdout || `exit ${result.code}`); e.statusCode = 500; throw e; }
+        let newSlug;
+        if (cmd === 'new') { const m = result.stdout.match(/slug:\s*(\S+)/); newSlug = m ? m[1] : undefined; }
+        return { stdout: result.stdout, stderr: result.stderr, code: result.code, slug: newSlug };
+      }));
+
+      // Whitelisted file read for the artifact/brief viewer.
+      server.middlewares.use('/api/hub/file', wrap('/api/hub/file', async (req) => {
+        assertMethod(req, 'GET');
+        const url = new URL(req.url, 'http://localhost');
+        const rel = url.searchParams.get('path') || '';
+        if (!/^[a-zA-Z0-9_\-./]+$/.test(rel)) { const e = new Error('invalid path'); e.statusCode = 400; throw e; }
+        const safe = path.posix.normalize(rel).replace(/^\/+/, '');
+        if (safe.startsWith('..')) { const e = new Error('traversal blocked'); e.statusCode = 403; throw e; }
+        const ALLOWED = ['cases/reviews/', 'cases/briefs/'];
+        if (!ALLOWED.some((r) => safe.startsWith(r))) { const e = new Error('path not whitelisted'); e.statusCode = 403; throw e; }
+        const abs = path.resolve(safe);
+        if (!(await pathExists(abs))) { const e = new Error('not found'); e.statusCode = 404; throw e; }
+        return { path: rel, content: await fsp.readFile(abs, 'utf-8') };
+      }));
+
+      // Write a brief markdown file (name sanitized).
+      server.middlewares.use('/api/hub/brief', wrap('/api/hub/brief', async (req) => {
+        assertMethod(req, 'POST');
+        const { name, content } = await readJson(req);
+        const clean = String(name || '').replace(/[^a-z0-9-_]/gi, '').slice(0, 60);
+        if (!clean) { const e = new Error('invalid brief name'); e.statusCode = 400; throw e; }
+        const dir = path.resolve('cases/briefs');
+        await fsp.mkdir(dir, { recursive: true });
+        await fsp.writeFile(path.join(dir, `${clean}.md`), String(content ?? ''), 'utf-8');
+        return { path: `cases/briefs/${clean}.md`, name: clean };
+      }));
+
+      // List jobs (polling).
+      server.middlewares.use('/api/hub/jobs', wrap('/api/hub/jobs', async (req) => {
+        assertMethod(req, 'GET');
+        return { jobs: listJobs() };
+      }));
+
+      // Enqueue a job.
+      server.middlewares.use('/api/hub/enqueue', wrap('/api/hub/enqueue', async (req) => {
+        assertMethod(req, 'POST');
+        const { action, slug = '', briefName = '', answers = null } = await readJson(req);
+        return { job: enqueueJob({ action, slug, briefName, answers }) };
       }));
 
       // List all case studies — returns id, title, slideCount per entry.
