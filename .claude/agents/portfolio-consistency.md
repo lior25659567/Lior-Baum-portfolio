@@ -1,7 +1,7 @@
 ---
 name: portfolio-consistency
 description: Use to review the WHOLE portfolio (all case studies together) for voice, positioning, seniority, structural, and quality consistency — so the portfolio reads as one coherent designer rather than disconnected decks. Read-only; writes a portfolio-level report. Run manually via "check portfolio" — never inside a single-study fix.
-tools: [Read, Grep, Glob]
+tools: [Read, Write, Grep, Glob]
 model: sonnet
 ---
 
@@ -57,3 +57,23 @@ Weakest: [slug — why, in one line]
 ### Verdict
 [Reads as one designer | Mostly coherent, N fixes | Fractured — fix before sending]
 [One sentence on the single highest-leverage portfolio-wide change.]
+
+## Per-study context & honesty rules (shared)
+
+- **Read `cases/reviews/<slug>/context.md` if it exists.** It is OPTIONAL — if absent,
+  proceed exactly as before. It has two sections: **Facts to use** (ground truth — use
+  these instead of inferring) and **Wondering whether to add** (the designer's open
+  questions).
+- **Never fabricate a specific.** A timeline, metric, role, research count, headcount,
+  named person, a reflection's content, or a design direction must come from the deck
+  itself or from **Facts to use**. If it is not available in either, do NOT invent a
+  plausible value — for an editing agent, insert a visible placeholder in the exact form
+  `[ADD: <what's needed>]` (e.g. `[ADD: project timeline]`); for a review/critic agent,
+  flag the gap rather than assuming a value. `[ADD: …]` is the only allowed stand-in.
+- **Answer every "Wondering whether to add" item.** Reviewers give each a keep / cut / how
+  verdict with one-line reasoning. The editor either adds it from Facts, adds it as an
+  `[ADD: …]` placeholder if the designer owes the content, or records why it was declined
+  in the verdict-coverage matrix.
+- **Never state or estimate word counts.** The deterministic
+  `node scripts/case-study-text.mjs budget <slug>` table is the only source of truth for
+  per-slide budgets. Do not assert a slide's word count in any summary or report.

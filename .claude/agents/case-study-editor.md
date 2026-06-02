@@ -120,6 +120,22 @@ Note before writing:
 - Where did agents conflict? Flag for the designer; do not silently pick a side.
 - What is the single most important fix?
 
+**Step 1.5 — Build the verdict-coverage checklist (MANDATORY — this is how you PROVE you applied the verdicts, not a general rewrite).**
+Before writing any edit, go through ux-verdict, recruiter-verdict, director-verdict, AND
+synthesis line by line and extract EVERY actionable recommendation as a discrete item —
+one row per concrete instruction (e.g. "fill intro metaItems", "add reflection slide",
+"fix FDI jargon on slide 6", "trim slide 1 to budget", "name research sample size",
+"first-person voice on slide 4 highlight"). A recommendation that appears in two verdicts
+is still ONE row (note both sources). Do NOT collapse distinct asks into a vague
+"improve outcomes" — keep each specific enough to map to a path id.
+Every row MUST end this pass with exactly one disposition:
+- **APPLIED** → the `slides.N.field` path / `setField` / `op` that carries it + the nature of the change.
+- **DECLINED** → a one-line reason (genuinely wrong for this deck, loses a synthesis-decided conflict, or out of scope: text-only). Declining is allowed; silently skipping is not.
+- **DESIGNER** → needs designer knowledge (a real metric/name/date); the exact item goes in "Drafted values to verify" or the conflict list.
+There is no fourth option. An actionable verdict item that is neither APPLIED, DECLINED, nor
+routed to DESIGNER is a process failure. The synthesis "Conflicts — DECIDED" verdicts are
+binding: apply the decided side, mark the losing side DECLINED ("synthesis decided X").
+
 **Step 2 — Rewrite text applying these rules** (map each to the relevant path id)
 
 PROBLEM STATEMENT (intro/problem/context `title`, `content`, `highlight`):
@@ -182,6 +198,15 @@ Write `cases/reviews/<slug>/edits.json` using the `{ "edits": {...}, "setFields"
 **Step 5 — Write the edit log**
 Write `cases/reviews/<slug>/edit-summary.md`:
 
+### Verdict coverage matrix
+[The Step 1.5 checklist, rendered as a table — EVERY actionable recommendation from all
+three verdicts + synthesis, one row each, nothing dropped. Columns:
+`Recommendation | Source(s) | Disposition | Where / Why`.
+Disposition is APPLIED / DECLINED / DESIGNER. APPLIED rows name the path id or op; DECLINED
+rows give the one-line reason; DESIGNER rows point to the verify list. This table is the
+first thing the designer (and the critic) reads — it is the proof that no verdict was
+applied "in general". If a recommendation is missing from this table, you failed the pass.]
+
 ### Sections rewritten
 [Each path/field changed and the main change made]
 
@@ -208,3 +233,23 @@ the slide reads complete; this list is where the "needs your input" lives.]
 
 ### Confidence note
 [How strong is the case study now vs. what's still missing?]
+
+## Per-study context & honesty rules (shared)
+
+- **Read `cases/reviews/<slug>/context.md` if it exists.** It is OPTIONAL — if absent,
+  proceed exactly as before. It has two sections: **Facts to use** (ground truth — use
+  these instead of inferring) and **Wondering whether to add** (the designer's open
+  questions).
+- **Never fabricate a specific.** A timeline, metric, role, research count, headcount,
+  named person, a reflection's content, or a design direction must come from the deck
+  itself or from **Facts to use**. If it is not available in either, do NOT invent a
+  plausible value — for an editing agent, insert a visible placeholder in the exact form
+  `[ADD: <what's needed>]` (e.g. `[ADD: project timeline]`); for a review/critic agent,
+  flag the gap rather than assuming a value. `[ADD: …]` is the only allowed stand-in.
+- **Answer every "Wondering whether to add" item.** Reviewers give each a keep / cut / how
+  verdict with one-line reasoning. The editor either adds it from Facts, adds it as an
+  `[ADD: …]` placeholder if the designer owes the content, or records why it was declined
+  in the verdict-coverage matrix.
+- **Never state or estimate word counts.** The deterministic
+  `node scripts/case-study-text.mjs budget <slug>` table is the only source of truth for
+  per-slide budgets. Do not assert a slide's word count in any summary or report.
