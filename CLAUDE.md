@@ -292,6 +292,14 @@ profile value carries a `confirmed: true/false` flag — agents may rely on conf
 values but must keep claims soft where they depend on an unconfirmed one. If the
 profile file is missing, create it from the template in the spec before reviewing.
 
+They are also **context-aware**: each study may carry an OPTIONAL
+`cases/reviews/<slug>/context.md` (written from the Agents Hub Context tab) with two
+sections — **Facts to use** (real timeline/role/research/outcomes the agents must use
+instead of inventing) and **Wondering whether to add** (open questions the reviewers
+answer and the fix acts on). If the file is absent, the pipeline behaves exactly as
+before. With it present, agents **never fabricate**: anything missing and uncovered
+becomes a visible `[ADD: …]` placeholder rather than a guess.
+
 A deterministic helper does all JSON I/O so no agent ever hand-edits raw JSON:
 
 ```
@@ -412,11 +420,16 @@ Example: `review wizecare`
    calls — do not wait for one before the next). Each reads the extracted file, the
    template catalog, AND `cases/reviews/_designer-profile.md`:
    - `ux-reviewer` → "Review `cases/reviews/<slug>/extracted.md` (templates:
-     `cases/reviews/_slide-templates.md`, profile: `cases/reviews/_designer-profile.md`).
+     `cases/reviews/_slide-templates.md`, profile: `cases/reviews/_designer-profile.md`,
+     plus `cases/reviews/<slug>/context.md` if it exists).
      Apply your full 6-step framework, including template fit and missing slides, aimed
      at the profile's target. Write to `cases/reviews/<slug>/ux-verdict.md`."
-   - `design-recruiter` → same, writing to `recruiter-verdict.md`.
-   - `design-director` → same, writing to `director-verdict.md`.
+   - `design-recruiter` → same (templates: `cases/reviews/_slide-templates.md`, profile:
+     `cases/reviews/_designer-profile.md`, plus `cases/reviews/<slug>/context.md` if it
+     exists), writing to `recruiter-verdict.md`.
+   - `design-director` → same (templates: `cases/reviews/_slide-templates.md`, profile:
+     `cases/reviews/_designer-profile.md`, plus `cases/reviews/<slug>/context.md` if it
+     exists), writing to `director-verdict.md`.
 4. **After all 3 finish, synthesize** — read the 3 verdicts, write
    `cases/reviews/<slug>/synthesis.md`:
    - `## Where all 3 agents agree` — highest-confidence, non-negotiable fixes
@@ -436,7 +449,8 @@ Example: `review wizecare`
    it already exists). This is editing live site content — always back up.
 2. Run `case-study-editor` with: "The slug is <slug>. Read in order:
    `cases/reviews/_designer-profile.md`, `cases/reviews/<slug>/extracted.md`,
-   `cases/reviews/_slide-templates.md`, then `ux-verdict.md`, `recruiter-verdict.md`,
+   `cases/reviews/<slug>/context.md` (if it exists), `cases/reviews/_slide-templates.md`,
+   then `ux-verdict.md`, `recruiter-verdict.md`,
    `director-verdict.md`, `synthesis.md`. Write `cases/reviews/<slug>/edits.json`
    (text edits + any insert/remove/retype slide ops) and
    `cases/reviews/<slug>/edit-summary.md`. **First build the verdict-coverage matrix
@@ -451,16 +465,20 @@ Example: `review wizecare`
 4.25 **Copy-writer (automatic — voice pass)**: re-extract the post-editor text
    (`node scripts/case-study-text.mjs extract <slug>`), then run the `copy-writer` agent:
    "Voice-polish case study <slug>. Read `_designer-profile.md` (Voice / English notes /
-   jargon rule are your brief), `cases/reviews/<slug>/extracted.md`, and `edit-summary.md`.
+   jargon rule are your brief), `cases/reviews/<slug>/extracted.md`,
+   `cases/reviews/<slug>/context.md` (if it exists), and `edit-summary.md`.
    Write `cases/reviews/<slug>/copy-edits.json` and `cases/reviews/<slug>/copy-summary.md`."
    Then apply it explicitly: `node scripts/case-study-text.mjs apply <slug>
    cases/reviews/<slug>/copy-edits.json`. (Voice only — it emits no slide ops.)
 4.5 **Critic + autonomous self-remediation loop (always run).** Re-extract
    (`node scripts/case-study-text.mjs extract <slug>`), then run `case-study-critic`:
    "Critique the post-fix case study <slug>. Read `_designer-profile.md`,
-   `cases/reviews/<slug>/extracted.md`, `edit-summary.md`, `copy-summary.md`,
-   `synthesis.md`, the three verdicts, and `_slide-templates.md`. Write
-   `cases/reviews/<slug>/verify-report.md`."
+   `cases/reviews/<slug>/extracted.md`, `cases/reviews/<slug>/context.md` (if it exists),
+   `edit-summary.md`, `copy-summary.md`, `synthesis.md`, the three verdicts, and
+   `_slide-templates.md`. Write `cases/reviews/<slug>/verify-report.md`.
+   Anything the agents could not source from the deck or Facts to use must appear as an
+   `[ADD: …]` placeholder, NOT an invented value — flag any invented specific as a
+   blocking CONCERN."
    The pipeline FIXES ITS OWN problems — do not hand them to the designer:
    - **If the critic returns CONCERNS** (agent-invented unflagged fabrication, a
      contradiction, or a **verdict-coverage gap** — a recommendation missing from the matrix
