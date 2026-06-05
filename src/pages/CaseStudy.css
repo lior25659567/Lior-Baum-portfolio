@@ -2053,7 +2053,9 @@ body.case-study-active .footer {
   margin-top: 24px;
 }
 .case-study:not(.edit-mode) .slide-before-after .ba-columns {
-  gap: 48px;
+  /* Before column narrower so the After (the solution) gets more room. */
+  grid-template-columns: 3fr 7fr;
+  gap: 96px;
   flex: 1;
   min-height: 0;
   align-content: stretch;
@@ -2186,6 +2188,21 @@ body.case-study-active .footer {
 .case-study:not(.edit-mode) .slide-before-after .ba-col > .ba-col-images {
   flex: none;
   height: 100%;
+  min-height: 0;
+}
+/* The After column is the solution — let its image fill the full column height
+   instead of being capped by the subgrid's shared image row. It still spans all
+   three row tracks (so it reaches top to bottom), but as an independent flex
+   column its image grows to take every pixel the After's own text leaves, no
+   longer shrunk by the narrower Before column's taller wrapped text. */
+.case-study:not(.edit-mode) .slide-before-after .ba-col-after {
+  display: flex;
+  flex-direction: column;
+  grid-row: span 3;
+}
+.case-study:not(.edit-mode) .slide-before-after .ba-col-after > .ba-col-images {
+  flex: 1 1 0;
+  height: auto;
   min-height: 0;
 }
 
@@ -6275,6 +6292,20 @@ button.dir-chip:hover {
   min-height: 0 !important;
   margin: 0 !important;
 }
+/* The <img> carries inline `width:auto; height:auto` plus `sizes="100vw"`, so
+   with a w-descriptor srcset the browser renders it at the *viewport* width
+   (~390px on a phone) — far smaller than the ~1000px artboard column, leaving
+   it stranded small and centered. On desktop 100vw is huge so it caps to the
+   wrapper and fills; mobile doesn't. Force the img box to fill its wrapper in
+   view mode (object-fit stays inline: contain/cover, so fitting is unchanged)
+   — now identical to the desktop deck at every width. */
+.case-study:not(.edit-mode) .split-images-wrapper .dynamic-image-wrapper img,
+.case-study:not(.edit-mode) .intro-images-wrapper .dynamic-image-wrapper img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
 
 /* ════════════════════════════════════════════════════════════════════
    Intro redesign (view/canvas mode only): circular logo chip, a
@@ -6694,10 +6725,12 @@ button.dir-chip:hover {
     display: none !important;
   }
 
-  /* Force ALL split layouts to vertical stack */
-  .slide-split,
-  .slide-intro-layout,
-  .slide-image-layout {
+  /* Force ALL split layouts to vertical stack — EDIT MODE ONLY. In view mode
+     slides render on the 1920×1080 desktop canvas (artboard on phones) and must
+     keep the desktop side-by-side layout + full-bleed images. */
+  .case-study.edit-mode .slide-split,
+  .case-study.edit-mode .slide-intro-layout,
+  .case-study.edit-mode .slide-image-layout {
     display: flex !important;
     flex-direction: column !important;
     gap: 2rem !important;
@@ -6706,9 +6739,9 @@ button.dir-chip:hover {
   }
 
   /* Text content ALWAYS comes first */
-  .split-content,
-  .intro-content,
-  .image-text-content {
+  .case-study.edit-mode .split-content,
+  .case-study.edit-mode .intro-content,
+  .case-study.edit-mode .image-text-content {
     order: 1 !important;
     flex: none !important;
     width: 100% !important;
@@ -6716,11 +6749,11 @@ button.dir-chip:hover {
   }
 
   /* Images ALWAYS come after text */
-  .split-images-wrapper,
-  .intro-images-wrapper,
-  .image-gallery-wrapper,
-  .dynamic-images,
-  .split-image {
+  .case-study.edit-mode .split-images-wrapper,
+  .case-study.edit-mode .intro-images-wrapper,
+  .case-study.edit-mode .image-gallery-wrapper,
+  .case-study.edit-mode .dynamic-images,
+  .case-study.edit-mode .split-image {
     order: 2 !important;
     flex: none !important;
     width: 100% !important;
@@ -6729,30 +6762,30 @@ button.dir-chip:hover {
   }
 
   /* Reset all dynamic image containers */
-  .dynamic-images {
+  .case-study.edit-mode .dynamic-images {
     height: auto !important;
   }
 
-  .dynamic-images-grid {
+  .case-study.edit-mode .dynamic-images-grid {
     display: flex !important;
     flex-direction: column !important;
     gap: 1.5rem !important;
     height: auto !important;
   }
 
-  .dynamic-image-item {
+  .case-study.edit-mode .dynamic-image-item {
     height: auto !important;
     flex: none !important;
     width: 100% !important;
   }
 
   /* ALL images get consistent fixed sizing - ignore size presets (except embeds) */
-  .dynamic-image-wrapper:not(.has-embed),
-  .dynamic-image-item.img-size-small .dynamic-image-wrapper:not(.has-embed),
-  .dynamic-image-item.img-size-medium .dynamic-image-wrapper:not(.has-embed),
-  .dynamic-image-item.img-size-large .dynamic-image-wrapper:not(.has-embed),
-  .split-image,
-  .intro-image {
+  .case-study.edit-mode .dynamic-image-wrapper:not(.has-embed),
+  .case-study.edit-mode .dynamic-image-item.img-size-small .dynamic-image-wrapper:not(.has-embed),
+  .case-study.edit-mode .dynamic-image-item.img-size-medium .dynamic-image-wrapper:not(.has-embed),
+  .case-study.edit-mode .dynamic-image-item.img-size-large .dynamic-image-wrapper:not(.has-embed),
+  .case-study.edit-mode .split-image,
+  .case-study.edit-mode .intro-image {
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
@@ -6763,9 +6796,9 @@ button.dir-chip:hover {
     margin: 0 !important;
   }
 
-  .dynamic-image-wrapper img,
-  .split-image img,
-  .intro-image img {
+  .case-study.edit-mode .dynamic-image-wrapper img,
+  .case-study.edit-mode .split-image img,
+  .case-study.edit-mode .intro-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -6787,15 +6820,17 @@ button.dir-chip:hover {
 /* ========== MOBILE - Under 768px ========== */
 @media (max-width: 767px) {
 
-  .slide-split,
-  .slide-intro-layout {
+  /* Reflow scoped to EDIT MODE only — in view mode the slide renders on the
+     1920×1080 desktop canvas (artboard on phones) and must NOT be reflowed. */
+  .case-study.edit-mode .slide-split,
+  .case-study.edit-mode .slide-intro-layout {
     gap: 1rem !important;
   }
 
-  .dynamic-image-wrapper,
-  .dynamic-image-item.img-size-small .dynamic-image-wrapper,
-  .dynamic-image-item.img-size-medium .dynamic-image-wrapper,
-  .dynamic-image-item.img-size-large .dynamic-image-wrapper {
+  .case-study.edit-mode .dynamic-image-wrapper,
+  .case-study.edit-mode .dynamic-image-item.img-size-small .dynamic-image-wrapper,
+  .case-study.edit-mode .dynamic-image-item.img-size-medium .dynamic-image-wrapper,
+  .case-study.edit-mode .dynamic-image-item.img-size-large .dynamic-image-wrapper {
     min-height: 140px !important;
     max-height: 30vh !important;
   }
@@ -6844,7 +6879,7 @@ button.dir-chip:hover {
     margin-top: 0.5rem !important;
   }
 
-  .slide-image .image-gallery-wrapper .dynamic-images-grid {
+  .case-study.edit-mode .slide-image .image-gallery-wrapper .dynamic-images-grid {
     gap: 1rem;
   }
 }
@@ -7082,12 +7117,13 @@ button.dir-chip:hover {
   }
 
 
-  .slide {
+  /* Reflow scoped to EDIT MODE only — view mode uses the desktop canvas. */
+  .case-study.edit-mode .slide {
     overflow-y: auto;
     align-items: flex-start;
   }
 
-  .slide-inner {
+  .case-study.edit-mode .slide-inner {
     height: auto;
     min-height: calc(100vh - var(--slide-pad-top) - var(--slide-pad-bottom));
     min-height: calc(100dvh - var(--slide-pad-top) - var(--slide-pad-bottom));
@@ -7099,25 +7135,25 @@ button.dir-chip:hover {
     margin-bottom: 0.35rem;
   }
 
-  .info-grid {
+  .case-study.edit-mode .info-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
 
-  .info-item {
+  .case-study.edit-mode .info-item {
     padding-bottom: 0.75rem;
   }
 
-  .stats-grid {
+  .case-study.edit-mode .stats-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 1rem;
   }
 
-  .stat-item {
+  .case-study.edit-mode .stat-item {
     min-width: 0;
   }
 
-  .stat-item .stat-label {
+  .case-study.edit-mode .stat-item .stat-label {
     max-width: 100%;
   }
 
@@ -7125,19 +7161,20 @@ button.dir-chip:hover {
     font-size: clamp(1.5rem, 6vw, 2.5rem);
   }
 
-  .end-cta-group {
+  /* All reflow below scoped to EDIT MODE — view mode uses the desktop canvas. */
+  .case-study.edit-mode .end-cta-group {
     flex-direction: column;
     align-items: center;
     gap: 0.75rem;
   }
 
   /* Timeline: stack vertical on mobile */
-  .timeline-events {
+  .case-study.edit-mode .timeline-events {
     flex-direction: column;
     gap: 1.5rem;
   }
 
-  .timeline-events::before {
+  .case-study.edit-mode .timeline-events::before {
     left: 6px;
     top: 0;
     bottom: 0;
@@ -7147,29 +7184,29 @@ button.dir-chip:hover {
     background: linear-gradient(180deg, var(--color-accent), var(--color-border));
   }
 
-  .timeline-event {
+  .case-study.edit-mode .timeline-event {
     padding-top: 0;
     padding-left: 2.5rem;
     padding-right: 0;
   }
 
-  .timeline-event::before {
+  .case-study.edit-mode .timeline-event::before {
     top: 0;
     left: 0;
   }
 
   /* Process: single column on mobile */
-  .process-steps {
+  .case-study.edit-mode .process-steps {
     grid-template-columns: 1fr;
   }
 
   /* Tools: single column on mobile */
-  .tools-grid {
+  .case-study.edit-mode .tools-grid {
     grid-template-columns: 1fr;
   }
 
   /* Outcomes: 2-column on mobile */
-  .outcomes-grid {
+  .case-study.edit-mode .outcomes-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
   }
@@ -7184,7 +7221,7 @@ button.dir-chip:hover {
     top: -1.5rem;
   }
 
-  .comparison-image {
+  .case-study.edit-mode .comparison-image {
     width: 100%;
     height: auto;
     max-height: 40vh;
@@ -7192,7 +7229,7 @@ button.dir-chip:hover {
     aspect-ratio: 16/10;
   }
 
-  .intro-content {
+  .case-study.edit-mode .intro-content {
     text-align: left;
   }
 
@@ -7200,7 +7237,7 @@ button.dir-chip:hover {
     font-size: clamp(1.5rem, 5vw, 2rem);
   }
 
-  .intro-meta-row {
+  .case-study.edit-mode .intro-meta-row {
     justify-content: center;
     gap: 2rem;
   }
@@ -7218,31 +7255,31 @@ button.dir-chip:hover {
     font-size: var(--text-body-sm);
   }
 
-  .problem-issues {
+  .case-study.edit-mode .problem-issues {
     margin-bottom: 0.75rem;
   }
 
-  .quotes-grid {
+  .case-study.edit-mode .quotes-grid {
     grid-template-columns: 1fr;
     gap: 0.75rem;
   }
 
-  .quote-card {
+  .case-study.edit-mode .quote-card {
     padding: 1rem 1.25rem;
     min-height: auto;
   }
 
-  .goals-grid {
+  .case-study.edit-mode .goals-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 0.5rem;
   }
 
-  .issues-breakdown-grid {
+  .case-study.edit-mode .issues-breakdown-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 0.5rem;
   }
 
-  .goals-grid .goal-item {
+  .case-study.edit-mode .goals-grid .goal-item {
     padding: 0.6rem 0.5rem;
     flex-direction: column;
     align-items: flex-start;
@@ -7265,7 +7302,7 @@ button.dir-chip:hover {
     font-size: 0.75rem !important;
   }
 
-  .kpis-grid {
+  .case-study.edit-mode .kpis-grid {
     --kpis-cols: 2;
     gap: 0.5rem;
   }
@@ -7307,7 +7344,7 @@ button.dir-chip:hover {
     font-size: 0.7rem;
   }
 
-  .slide-goals .goals-content {
+  .case-study.edit-mode .slide-goals .goals-content {
     gap: 0.5rem;
   }
 
@@ -7316,16 +7353,16 @@ button.dir-chip:hover {
     margin-bottom: 0;
   }
 
-  .slide-goals .goals-description-wrapper {
+  .case-study.edit-mode .slide-goals .goals-description-wrapper {
     margin-bottom: 0.25rem;
   }
 
-  .goals-cards-section-wrapper,
-  .kpis-section-wrapper {
+  .case-study.edit-mode .goals-cards-section-wrapper,
+  .case-study.edit-mode .kpis-section-wrapper {
     gap: 0.25rem;
   }
 
-  .outcomes-grid {
+  .case-study.edit-mode .outcomes-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
   }
@@ -7334,13 +7371,13 @@ button.dir-chip:hover {
     font-size: 0.75rem;
   }
 
-  .twi-images-grid {
+  .case-study.edit-mode .twi-images-grid {
     grid-template-columns: 1fr !important;
     gap: 1.5rem;
     max-height: none;
   }
 
-  .twi-image-wrapper {
+  .case-study.edit-mode .twi-image-wrapper {
     height: auto;
     aspect-ratio: 16/10;
   }
@@ -7381,7 +7418,7 @@ button.dir-chip:hover {
     margin-bottom: 0.75rem;
   }
 
-  .info-item {
+  .case-study.edit-mode .info-item {
     gap: 0.3rem;
   }
 
@@ -7389,18 +7426,18 @@ button.dir-chip:hover {
     font-size: 0.75rem;
   }
 
-  .stats-grid {
+  .case-study.edit-mode .stats-grid {
     gap: 0.75rem;
   }
 
-  .end-cta-group {
+  .case-study.edit-mode .end-cta-group {
     gap: 0.5rem;
   }
 
-  .split-image,
-  .image-visual,
-  .intro-image-wrapper,
-  .image-wrapper {
+  .case-study.edit-mode .split-image,
+  .case-study.edit-mode .image-visual,
+  .case-study.edit-mode .intro-image-wrapper,
+  .case-study.edit-mode .image-wrapper {
     height: auto;
     min-height: 140px;
     max-height: 30vh;
@@ -7410,14 +7447,14 @@ button.dir-chip:hover {
 
 /* --- 360px — Very Small Screens --- */
 @media (max-width: 360px) {
-  .stats-grid {
+  .case-study.edit-mode .stats-grid {
     gap: 0.75rem;
   }
 
-  .split-image,
-  .image-visual,
-  .intro-image-wrapper,
-  .image-wrapper {
+  .case-study.edit-mode .split-image,
+  .case-study.edit-mode .image-visual,
+  .case-study.edit-mode .intro-image-wrapper,
+  .case-study.edit-mode .image-wrapper {
     height: auto;
     min-height: 120px;
     max-height: 28vh;
@@ -7427,12 +7464,12 @@ button.dir-chip:hover {
 
 /* --- Landscape orientation on mobile --- */
 @media (max-height: 500px) and (orientation: landscape) {
-  .slide {
+  .case-study.edit-mode .slide {
     overflow-y: auto;
     align-items: flex-start;
   }
 
-  .slide-inner {
+  .case-study.edit-mode .slide-inner {
     height: auto;
     min-height: calc(100vh - var(--slide-pad-top) - var(--slide-pad-bottom));
     min-height: calc(100dvh - var(--slide-pad-top) - var(--slide-pad-bottom));
@@ -7453,12 +7490,12 @@ button.dir-chip:hover {
     margin-bottom: 0.75rem;
   }
 
-  .info-grid {
+  .case-study.edit-mode .info-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
   }
 
-  .stats-grid {
+  .case-study.edit-mode .stats-grid {
     gap: 2rem;
   }
 
@@ -7466,10 +7503,10 @@ button.dir-chip:hover {
     font-size: clamp(1.5rem, 5vh, 3rem);
   }
 
-  .split-image,
-  .image-visual,
-  .intro-image-wrapper,
-  .image-wrapper {
+  .case-study.edit-mode .split-image,
+  .case-study.edit-mode .image-visual,
+  .case-study.edit-mode .intro-image-wrapper,
+  .case-study.edit-mode .image-wrapper {
     height: 50vh;
     max-height: 50vh;
   }
@@ -7478,12 +7515,12 @@ button.dir-chip:hover {
     font-size: clamp(1.5rem, 5vh, 3rem);
   }
 
-  .quotes-grid {
+  .case-study.edit-mode .quotes-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
 
-  .goals-grid {
+  .case-study.edit-mode .goals-grid {
     gap: 1rem;
   }
 }
@@ -15951,16 +15988,18 @@ textarea.editable-field {
 /* ═══════════════════════════════════════════════════════════════════════
    CASE-STUDY MOBILE SCALED SLIDE VIEWER (≤767px only)
    ─────────────────────────────────────────────────────────────────────
-   Each slide is frozen at a 1440×810 desktop artboard and scaled UNIFORMLY
-   by react-zoom-pan-pinch (library initialScale = fitScale = viewportW/1440)
-   so it fits the phone viewport. Pinch / double-tap / pan are library-owned.
+   Each slide uses the SAME 1920×1080 desktop reference canvas and is scaled
+   UNIFORMLY by react-zoom-pan-pinch (initialScale = fitScale =
+   min(viewportW/1920, viewportH/1080) — contain fit, matching the desktop JS
+   scaler) so the whole slide is framed in the phone viewport, reading exactly
+   like the desktop deck. Pinch / double-tap / pan are library-owned.
 
    Anatomy (each flex child of .slides-track, on mobile):
      .slide-zoom-wrapper  ← TransformComponent outer: the slide's flex slot
                              (100vw × 100dvh, overflow: hidden, letterbox)
        .slide-canvas      ← library-transformed element
                              (width: fit-content = 1440px natural)
-         .slide-design    ← fixed 1440×810 artboard
+         .slide-design    ← fixed 1920×1080 artboard (= desktop canvas)
            <slide JSX>    ← original desktop composition, untouched
    Library scale = fitScale ⇒ fit-to-width; scale = fitScale × 4 ⇒ max zoom.
    All mobile reflow rules below are NEUTRALIZED inside .slide-design so
@@ -16005,47 +16044,22 @@ textarea.editable-field {
     will-change: transform;
   }
 
-  /* Frozen 1440×810 desktop artboard. The LIBRARY (not CSS) scales this —
-     do not add transform here.
-     Token overrides below pin the fluid `clamp()` typography + spacing to
-     their computed values at a 1440px desktop viewport so the scaled
-     artboard preserves the full type hierarchy instead of collapsing to
-     mobile sizes (since vw/vh inside still resolve against the phone). */
+  /* 1920×1080 desktop reference artboard. The LIBRARY (not CSS) scales this —
+     do not add transform here. It inherits the desktop canvas tokens and the
+     canvas-mode typography layer (no per-class re-pins needed), so the slide
+     composes identically to the desktop deck. */
   .slide-design {
-    width: 1440px;
-    height: 810px;
+    width: 1920px;
+    height: 1080px;
     flex: 0 0 auto;
     position: relative;
     background: var(--color-bg);
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.04);
-
-    /* Typography — Figma scale px ÷ 16 = rem for the 1440×810 mobile artboard */
-    --text-display:   5rem;    /* Display/Display + Special/Stat  80px */
-    --text-hero:      4rem;    /* Headings/Title  64px */
-    --text-stat:      5rem;    /* alias for --text-display */
-    --text-h1:        3.5rem;  /* Headings/Subtitle  56px */
-    --text-h2:        3rem;    /* Headings/Heading  48px */
-    --text-h3:        2.25rem; /* Headings/Subheading  36px */
-    --text-h4:        2rem;    /* Body/Body Large  32px */
-    --text-subtitle:  1.75rem; /* Meta/Meta Value  28px */
-    --text-body:      1.5rem;  /* Body/Body  24px */
-    --text-body-sm:   1.25rem; /* Body/Body Small  20px */
-    --text-caption:   1rem;    /* Utility/Caption  16px */
-
-    /* Spacing — desktop base */
-    --spacing-xs: 0.5rem;
-    --spacing-sm: 0.75rem;
-    --spacing-md: 1.5rem;
-    --spacing-lg: 2.5rem;
-    --spacing-xl: 4.5rem;
-    --spacing-2xl: 6rem;
-
-    /* Slide layout — 1440px viewport */
-    --slide-max-w: 100%;
-    --slide-pad-x: 100px;
-    --slide-pad-top: 144px;
-    --slide-pad-bottom: 144px;
-    --slide-gap: 144px;
+    /* SAME 1920×1080 reference canvas as desktop. No token overrides here: the
+       artboard inherits the desktop canvas tokens from `.case-study:not(.edit-mode)`
+       (pad 96 / gap 64 / grid-gap 24 / card-mins / rhythm) and the canvas-mode
+       typography layer governs type — so a slide reads pixel-identically to the
+       desktop deck. The library only scales this artboard to fit the phone. */
   }
 
   /* Dark presentation chrome on the whole case study page when the mobile
@@ -16057,6 +16071,12 @@ textarea.editable-field {
   .case-study .case-nav {
     background: rgba(10, 10, 10, 0.88) !important;
     border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+    /* The nav is overlay chrome OUTSIDE the artboard, rendered at real
+       viewport scale — so it must use the real mobile edge padding (24px),
+       not the canvas `--slide-pad-x` (96px) which would push the back button
+       far from the screen edge. Aligns the nav to the mobile viewport width. */
+    padding-left: 24px !important;
+    padding-right: 24px !important;
   }
   .case-study .case-nav,
   .case-study .case-nav .progress-current,
@@ -16090,249 +16110,56 @@ textarea.editable-field {
      slide/slide-inner to their desktop boxes so templates render
      identically to ≥768px viewports. */
   .slide-design .slide {
-    width: 1440px !important;
-    min-width: 1440px !important;
-    max-width: 1440px !important;
-    height: 810px !important;
-    min-height: 810px !important;
-    max-height: 810px !important;
+    width: 1920px !important;
+    min-width: 1920px !important;
+    max-width: 1920px !important;
+    height: 1080px !important;
+    min-height: 1080px !important;
+    max-height: 1080px !important;
     padding: 0 !important;
     overflow: hidden !important;
     align-items: stretch !important;
     flex: 0 0 auto !important;
   }
+  /* slide-inner keeps its canvas-mode rule (position:absolute, 1920×1080,
+     padding 96, transform: scale(var(--slide-canvas-scale))). With .slide
+     forced to 1920×1080 the JS scaler resolves --slide-canvas-scale to 1, so
+     the inner fills the artboard 1:1 — then the library scales the whole
+     artboard to the viewport. We only re-assert the box + clipping here. */
   .slide-design .slide-inner {
-    width: 1440px !important;
-    max-width: 1440px !important;
-    height: 810px !important;
-    min-height: 810px !important;
-    padding: 72px 96px !important;
+    width: 1920px !important;
+    max-width: 1920px !important;
+    height: 1080px !important;
+    min-height: 1080px !important;
+    padding: 96px !important;
     overflow: hidden !important;
     justify-content: center !important;
   }
 
-  /* ── Restore desktop layout + typography inside .slide-design ────────
-     The mobile reflow rules (lines 4066–4238, 4444+) use `!important` to
-     stack splits, re-order columns, shrink images, and shrink typography
-     on phones. `revert !important` falls back to UA defaults (block
-     layout, unstyled text) — not to the desktop author rules — so each
-     touched property is re-declared here with its explicit desktop value
-     at higher specificity. */
+  /* ── NO layout restores for splits / image chain ───────────────────────
+     The mobile reflow that stacked splits + capped images is now scoped to
+     `.case-study.edit-mode` (blocks at ~6705 / 6805 / 7076 / 480 / 360 /
+     landscape). So in view mode the artboard inherits the SAME desktop
+     view-mode rules as the desktop deck (`.case-study:not(.edit-mode)
+     .split-images-wrapper { height:100% }`, the 40/60 inline split, etc.) —
+     re-declaring them here only risked diverging (e.g. forcing 1fr 1fr over
+     the slide's real 40/60, or width:auto shrinking the image). Pure desktop
+     parity instead. */
 
-  /* Split / intro / image-text layouts — desktop is a 1fr 1fr grid */
-  .slide-design .slide-split,
-  .slide-design .slide-intro-layout {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: var(--slide-gap) !important;
-    flex: 1 !important;
-    min-height: 0 !important;
-    align-items: stretch !important;
-    flex-direction: row !important;
-  }
-
-  .slide-design .slide-image-layout {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: var(--slide-gap) !important;
-    flex: 1 !important;
-    min-height: 0 !important;
-    align-items: center !important;
-    flex-direction: row !important;
-  }
-
-  /* Text columns — natural flow, flex column, no forced full-width */
-  .slide-design .split-content,
-  .slide-design .intro-content,
-  .slide-design .image-text-content {
-    display: flex !important;
-    flex-direction: column !important;
-    order: 0 !important;
-    flex: 0 1 auto !important;
-    width: auto !important;
-    max-width: none !important;
-    text-align: left !important;
-  }
-
-  /* Image columns — fill their grid cell */
-  .slide-design .split-images-wrapper,
-  .slide-design .intro-images-wrapper,
-  .slide-design .image-gallery-wrapper {
-    display: flex !important;
-    flex-direction: column !important;
-    order: 0 !important;
-    flex: 1 !important;
-    width: auto !important;
-    max-width: none !important;
-    height: auto !important;
-    max-height: none !important;
-    min-width: 0 !important;
-    min-height: 0 !important;
-  }
-
-  .slide-design .dynamic-images {
-    display: flex !important;
-    flex-direction: column !important;
-    order: 0 !important;
-    flex: 1 !important;
-    width: 100% !important;
-    height: 100% !important;
-    max-height: none !important;
-    min-height: 0 !important;
-  }
-
-  .slide-design .dynamic-images-grid {
-    display: grid !important;
-    flex-direction: initial !important;
-    gap: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    flex: 1 !important;
-    min-height: 0 !important;
-  }
-
-  .slide-design .dynamic-image-item {
-    display: flex !important;
-    flex-direction: column !important;
-    height: 100% !important;
-    width: auto !important;
-    flex: 0 1 auto !important;
-    min-height: 0 !important;
-    min-width: 0 !important;
-  }
-
-  .slide-design .dynamic-image-wrapper,
-  .slide-design .dynamic-image-item.img-size-small .dynamic-image-wrapper,
-  .slide-design .dynamic-image-item.img-size-medium .dynamic-image-wrapper,
-  .slide-design .dynamic-image-item.img-size-large .dynamic-image-wrapper,
-  .slide-design .split-image,
-  .slide-design .intro-image {
-    width: 100% !important;
-    max-width: none !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    aspect-ratio: auto !important;
-    flex: 1 !important;
-    margin: 0 !important;
-  }
-
-  /* Typography at desktop sizes */
-  .slide-design .intro-title {
-    font-size: 5rem !important;
-    line-height: 1.06 !important;
-    margin-bottom: 0 !important;
-  }
-
-  /* Logo sizes that originally used vw clamp need fixed values too */
+  /* Logo sizes that originally used vw clamp need fixed values too —
+     sized to the 64px intro-title (canvas --slide-font-title). */
   .slide-design .intro-logo-in-title-position .intro-logo-img img,
   .slide-design .intro-logo-img-title-size img {
-    max-height: 5rem !important;
+    max-height: 4rem !important;
     max-width: min(100%, 320px) !important;
   }
 
-  .slide-design .context-title,
-  .slide-design .problem-title {
-    font-size: var(--text-h2) !important;
-    line-height: var(--lh-heading) !important;
-    margin-bottom: 1rem !important;
-  }
-
-  .slide-design .feature-title,
-  .slide-design .testing-title {
-    font-size: var(--text-h3) !important;
-    line-height: var(--lh-heading) !important;
-    margin-bottom: 1rem !important;
-  }
-
-  .slide-design .image-title {
-    font-size: var(--text-h4) !important;
-    line-height: var(--lh-heading) !important;
-    margin-bottom: 1rem !important;
-  }
-
-  .slide-design .end-title {
-    font-size: var(--text-hero) !important;
-    line-height: var(--lh-heading) !important;
-  }
-
-  .slide-design .problem-text,
-  .slide-design .context-text {
-    font-size: var(--text-body) !important;
-    line-height: 1.7 !important;
-    margin-bottom: 1rem !important;
-    padding: 0 !important;
-  }
-
-  .slide-design .feature-text,
-  .slide-design .testing-text {
-    font-size: var(--text-body-sm) !important;
-    line-height: 1.7 !important;
-    margin-bottom: 1rem !important;
-    padding: 0 !important;
-  }
-
-  .slide-design .problem-issues,
-  .slide-design .context-issues {
-    gap: 0 !important;
-    margin-bottom: 1rem !important;
-  }
-
-  .slide-design .problem-issues li,
-  .slide-design .context-issues li {
-    font-size: var(--text-body-sm) !important;
-    line-height: 1.6 !important;
-    padding-left: 1.5rem !important;
-  }
-
-  .slide-design .problem-conclusion,
-  .slide-design .context-highlight,
-  .slide-design .problem-highlight {
-    font-size: var(--text-body-sm) !important;
-    padding: 1rem 1.25rem !important;
-    margin-top: 0 !important;
-  }
-
-  .slide-design .slide-label {
-    font-size: 0.75rem !important;
-    margin-bottom: 0 !important;
-    padding: 0 !important;
-  }
-
-  /* Stat / outcome / process numbers (big accent numbers) */
-  .slide-design .stat-value,
-  .slide-design .stat-number,
-  .slide-design .kpi-value,
-  .slide-design [data-card-variant="minimal"] .issue-breakdown-number,
-  .slide-design [data-card-variant="minimal"] .goals-grid .goal-number,
-  .slide-design [data-card-variant="minimal"] .step-number {
-    font-size: 2.25rem !important;
-  }
-
-  .slide-design .outcome-metric {
-    font-size: 2rem !important;
-  }
-
-  /* Secondary titles (outcomes, process steps, breakdowns) */
-  .slide-design .outcome-title,
-  .slide-design .step-title,
-  .slide-design .issue-breakdown-heading {
-    font-size: 1.4rem !important;
-  }
-
-  .slide-design .issues-breakdown-cards-title {
-    font-size: 1.2rem !important;
-  }
-
-  .slide-design .old-experience-subtitle {
-    font-size: 1.05rem !important;
-  }
-
-  /* Intro subtitle / description + body subtitles using vw */
-  .slide-design .intro-subtitle,
-  .slide-design .intro-description {
-    font-size: 1.25rem !important;
-  }
+  /* All per-class TYPE re-pins removed: the canvas-mode typography override
+     layer (.case-study:not(.edit-mode) .slide-inner …) governs type inside the
+     artboard exactly as on desktop. (In view mode no `!important` reflow rule
+     competes — the mobile type-shrink rules are all .edit-mode-scoped.) Only
+     the LAYOUT restores below remain — they defend against the global ≤767px
+     column-stacking so multi-column grids stay as on desktop. */
 
   /* Info / stats / quotes / metric grids — back to desktop columns */
   .slide-design .info-grid {
@@ -16356,12 +16183,10 @@ textarea.editable-field {
     flex-direction: initial !important;
   }
 
-  .slide-design .kpis-grid {
-    display: grid !important;
-    grid-template-columns: repeat(var(--kpis-cols, 3), 1fr) !important;
-    gap: 1rem !important;
-    flex-direction: initial !important;
-  }
+  /* kpis-grid: NO restore — desktop view mode uses
+     `.case-study:not(.edit-mode) .kpis-grid { auto-fit minmax(--kpi-min,1fr) }`
+     which yields a single column in the narrow KPIs section (vertical, like
+     desktop). Forcing repeat(--kpis-cols) here made it horizontal. */
 
   .slide-design .outcomes-grid {
     display: grid !important;
@@ -16370,11 +16195,9 @@ textarea.editable-field {
     flex-direction: initial !important;
   }
 
-  .slide-design .goals-grid {
-    display: grid !important;
-    gap: 2rem !important;
-    flex-direction: initial !important;
-  }
+  /* goals-grid: NO restore — desktop `.slide-goals .goals-grid` is flex-column
+     (vertical), and no global reflow changes its direction. Forcing grid here
+     re-activated the JSX inline grid-template-columns → wrong horizontal rows. */
 
   .slide-design .process-steps {
     display: grid !important;
@@ -16436,19 +16259,7 @@ textarea.editable-field {
     gap: 0 !important;
   }
 
-  .slide-design .intro-meta-label {
-    font-size: 0.75rem !important;
-  }
-
-  .slide-design .intro-meta-value {
-    font-size: 1rem !important;
-  }
-
-  /* Testimonial / comparison */
-  .slide-design .testimonial-quote {
-    font-size: var(--text-h3) !important;
-  }
-
+  /* Comparison image fills its grid cell */
   .slide-design .comparison-image {
     width: 100% !important;
     height: 100% !important;

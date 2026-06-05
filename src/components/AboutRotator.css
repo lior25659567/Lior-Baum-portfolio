@@ -17,8 +17,15 @@
      on 1920+ screens, capped at 880px. 90vw guards small screens. Everything
      else (inner radius, label + accent text, center mark) is derived from this,
      so the whole wheel scales as one. */
-  --rotator-size: min(90vw, clamp(720px, 48vw, 880px));
-  --rotator-inner-radius: calc(var(--rotator-size) * 110 / 720);
+  /* The wheel renders 1.14× the section's height budget (--rotator-box,
+     inherited from .about-rotator-stage) at EVERY breakpoint, so the increase
+     is uniform and the section never grows. Capped at 96vw so it never clips
+     off-screen on phones. The fallback keeps it standalone if used outside the
+     stage. */
+  --rotator-size: min(96vw, calc(var(--rotator-box, min(90vw, clamp(720px, 48vw, 880px))) * 1.14));
+  /* Slightly larger inner radius too → the ring of words sits wider, not just
+     bigger glyphs. Scales with the wheel like everything else. */
+  --rotator-inner-radius: calc(var(--rotator-size) * 124 / 720);
 
   position: relative;
   width: var(--rotator-size);

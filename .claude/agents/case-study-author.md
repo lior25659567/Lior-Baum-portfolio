@@ -201,3 +201,8 @@ How complete the deck is, and the biggest gap the brief left.
   If any slide is in the wrong section or the beats are out of order, FIX it — editing
   agents emit `move` ops; reviewers/critic name the exact move (which slide → after which).
   This is a standing expectation, not something the designer should have to point out.
+
+- **Build at the right granularity — judged per beat, no default.** Give a beat as many slides
+  as its content genuinely needs from the brief: don't cram several distinct decisions into one
+  frame so the reasoning is lost, and don't pad one thin point across several slides. Decide per
+  beat, with no default preference for splitting or merging.

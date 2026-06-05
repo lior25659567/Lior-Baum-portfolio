@@ -1,149 +1,136 @@
-# Edit summary — itero-scan-workflow (context.md directives pass)
+# Edit summary — itero-scan-workflow (OLD→IDEATION→NEW split pass)
+
+This pass implements the "adopt-with-changes" structural decision: split the RX Setup and Scan Toolbar comparisons into three-beat sequences (OLD → IDEATION → NEW), leaving Tooth Selection and View Tools comparisons intact. Net result: 20 slides → 22 slides.
 
 ---
 
-## Verdict / Context Coverage Matrix
+## Verdict coverage matrix
 
-| Directive | Source | Disposition | Where / Why |
+| Recommendation | Source(s) | Disposition | Where / Why |
 |---|---|---|---|
-| Show that the existing user flow was **mapped before redesigning** | context.md | **APPLIED** | `slides.4.*` — slide 4 (textAndImage) retitled and reframed as "Mapping the flow before touching the design"; the `[ADD: journey map image]` placeholder stays. No new slide added — the existing slide already has the right template and image slot. |
-| **Three RX Info Page iterations** explored + why final direction was chosen | context.md | **APPLIED** | `ops[0]` — new `directions` slide inserted `after: 9` (in the RX chapter, between tooth selection and the Scan & View chapter divider). All three direction descriptions are `[ADD: …]` — the designer must supply the specifics. |
-| **Icon redesign** — toolbar icons AND procedure icons (Info Page) | context.md | **APPLIED** | `ops[1]` — new `comparison` slide inserted `after: 9` (same RX chapter region, landing before the iterations slide per sequential-insert ordering; see note below on ordering). All image and description fields are `[ADD: …]`. |
-| "Suggest how many slides and what each should include" | context.md | **APPLIED** | Answered in the **Slide-count plan** section below. |
-
-**Insert-ordering note.** Both new slides use `after: 9` (original index) because both belong in the RX chapter. The ops array lists the icon-redesign slide first and the iterations slide second. When the apply script processes both ops sequentially against original indices, the second insert (iterations) lands immediately after original slide 9, pushing the first insert (icon redesign) one position further — resulting in the narrative order: slide 9 (Tooth Selection) → icon redesign → iterations → slide 10 (Scan & View chapter). If your apply script produces the reverse order, swap the two ops in the array. The intended narrative is: **icon redesign first** (the visual language established), then **iterations of the full Info Page layout** (how that language was applied across three direction candidates).
-
----
-
-## Sections rewritten
-
-| Path | Change |
-|---|---|
-| `slides.4.label` | "Key Insight" → "User Flow Mapping" — labels the slide's actual job |
-| `slides.4.title` | "Where the friction lived in the flow" → "Mapping the flow before touching the design" — makes the pre-design mapping activity explicit |
-| `slides.4.content` | Rewritten to name the mapping step as a deliberate decision before any design work began |
-| `slides.4.issuesTitle` | "The three friction clusters" → "What the flow revealed" — positions them as findings from the map, not standalone assertions |
-| `slides.4.issues.0–2` | Reworded to read as flow-map findings rather than problem restatements — maintains the three-handoff structure |
-| `slides.4.highlight` | Sharpened from "One fix per handoff." to a finding statement that ties the insight to the mapping activity |
+| RETYPE orig slide 9 (comparison "RX Setup") → textAndImage/problem, NEW-only; migrate before-* to new OLD slide | Brief — RX Setup split | **APPLIED** | `ops[0]` — retype index 9 to type `problem`, label "RX Setup — After", content + issues from afterDescription/afterBullets |
+| INSERT OLD: RX Setup slide after chapter slide 7 (before directions slide 8) | Brief — RX Setup split | **APPLIED** | `ops[1]` — insert after: 7; type `problem`, label "RX Setup — Before"; content + issues migrated from orig slide 9 beforeDescription/beforeBullets |
+| Move orig directions slide 8 to sit between OLD and NEW (chapter → OLD → IDEATION → NEW) | Brief — RX Setup ordering | **APPLIED** (implicit) | Insert `after: 7` naturally places OLD between chapter 7 and directions 8 — no explicit move op needed. Final order is correct without it. |
+| RETYPE orig slide 13 (comparison "Scan Toolbar") → textAndImage/problem, NEW-only; migrate before-* to new OLD slide | Brief — Toolbar split | **APPLIED** | `ops[2]` — retype index 13 to type `problem`, label "Scan Toolbar — After"; content + issues from afterDescription/afterBullets + bullets2 for icon redesign; highlight carried |
+| INSERT OLD: Scan Toolbar slide after chapter slide 11 (before directions slide 12) | Brief — Toolbar split | **APPLIED** | `ops[3]` — insert after: 11; type `problem`, label "Scan Toolbar — Before"; content + issues migrated from orig slide 13 beforeDescription/beforeBullets |
+| Move orig directions slide 12 to sit between OLD and NEW (chapter → OLD → IDEATION → NEW) | Brief — Toolbar ordering | **APPLIED** (implicit) | Insert `after: 11` naturally places OLD between chapter 11 and directions 12 — no explicit move op needed. |
+| Carry existing highlight "Tools were now one tap away…" to retyped NEW Toolbar slide | Brief — content carry-over | **APPLIED** | `ops[2]` slide includes `highlight` field with that text |
+| Add bullets2 + bullets2Title for icon redesign on NEW Toolbar slide (context.md item) | Brief — icon redesign | **APPLIED** | `ops[2]` slide: `bullets2Title: "Icon redesign"`, two bullets covering visual system + readability |
+| Add highlight to OLD: RX Setup — "Every second here was a second the patient sat waiting" | Brief — drafted highlight | **APPLIED** | `ops[1]` slide includes this highlight; flagged as agent-drafted in verify list |
+| KEEP orig slide 10 (comparison "RX Tooth Selection") — no split, no ideation beat | Brief — Tooth Selection | **APPLIED** | No op on index 10. Slide unchanged. Deliberate: no documented exploration exists; inventing one is forbidden. |
+| KEEP orig slide 14 (problem "Multi-scan & Compare") — no change | Brief | **APPLIED** | No op on index 14. |
+| KEEP orig slide 15 (comparison "View Tools") — no split; strongest visual contrast in deck | Brief — View Tools | **APPLIED** | No op on index 15. |
+| Do NOT touch slides 0–7, 16–19 content | Brief — hard rule | **APPLIED** | No edits on any of those paths. |
+| Do NOT invent metrics, named people, or a tooth-selection ideation beat | Brief — hard rule | **APPLIED** | No metrics invented. No names added. Tooth Selection untouched. |
+| Leave image slots empty with captions — designer fills via edit mode | Brief — verify notes | **APPLIED** | All four new slides have `image: ""` and a `caption` describing the asset to add. |
+| Info-Page three-iteration request (context.md) — deliberately deferred | Brief — out of scope | **DECLINED** | Brief explicitly defers this to avoid pushing deck past 22 slides. Raise as a separate addition. |
 
 ---
 
 ## Slides added / removed / retyped
 
-### Slide A — `directions` (Ideation) — "Three directions for the Info Page"
-**Inserted after original slide 9** (RX Tooth Selection), inside the RX chapter.
+### Op 1 — RETYPE index 9 → type `problem` ("RX Setup — After")
+The before/after comparison (orig slide 9) split into two. This slide keeps the after-state only: single-view RX setup, inline patient selection, no blocking modal. Before-state content migrated to the new OLD slide. Image slot empty — designer adds vid-aouv40ns6o0.mp4.
 
-**Why `directions` and not `comparison`:** Three candidates with explicit accepted/rejected verdicts is exactly what the `directions` (Ideation) template was built for. This also mirrors slide 11 (toolbar position), making the deck structurally consistent: every major design decision gets a directions slide showing the diverge→converge move.
+### Op 2 — INSERT after: 7 → type `problem` ("RX Setup — Before")
+New OLD slide. Content migrated verbatim from orig slide 9's `beforeDescription` and `beforeBullets`. Lands between chapter 7 and directions slide 8, producing the sequence: chapter → OLD → IDEATION → NEW. Highlight line is agent-drafted (see verify list).
 
-**What the designer must supply:**
-- `dir1Desc` — what the first RX Info Page layout/approach was and why it was rejected
-- `dir2Desc` — what the second iteration tried, and what failed
-- `dir3Desc` — the chosen direction and the deciding factor
-- `dir1Image`, `dir2Image`, `dir3Image` — one image per direction (can be added in edit mode)
+### Op 3 — RETYPE index 13 → type `problem` ("Scan Toolbar — After")
+The Scan Toolbar comparison (orig slide 13) split into two. This slide keeps the after-state only: unified collapsible toolbar, one visual language. Before-state content migrated to new OLD slide. Icon redesign work from context.md added via `bullets2`/`bullets2Title`. Existing highlight carried. Image slot empty — designer adds vid-g2r58c0dp9s.mp4.
 
----
+### Op 4 — INSERT after: 11 → type `problem` ("Scan Toolbar — Before")
+New OLD slide. Content migrated verbatim from orig slide 13's `beforeDescription` and `beforeBullets`. Lands between chapter 11 and directions slide 12, producing the sequence: chapter → OLD → IDEATION → NEW. Image slot empty with a designer-verify note about confirming the image shows icon fragmentation. No highlight (brief did not specify one for this slide; none invented).
 
-### Slide B — `comparison` — "Redesigning the icons — toolbar and procedure"
-**Inserted after original slide 9** (RX chapter), landing before the iterations slide in the final deck order (see insert-ordering note above).
-
-**Why `comparison`:** The icon work is a before/after visual story — old icon set vs redesigned set, covering both toolbar icons and procedure icons. A `comparison` slide surfaces the visual delta in a format hiring managers scan in seconds.
-
-**What the designer must supply:**
-- `beforeImage` — old icon set (toolbar + procedure icons, or side-by-side)
-- `afterImage` — redesigned icon set
-- `beforeDescription` — what made the original icons problematic in clinical use
-- `afterDescription` — the design principles applied and what changed
-- All six `beforeBullets` / `afterBullets` items — the `[ADD: …]` placeholders name what kind of content belongs in each slot
+**Net: 20 slides → 22 slides. No slides removed.**
 
 ---
 
-## Slide-count plan — answering the designer's question
+## Ordering assembly — how the 22-slide final order is achieved
 
-The designer asked: **how many slides for the design-process part and what each should include.**
+The two inserts (`after: 7` and `after: 11`) naturally produce the correct order without explicit move ops:
 
-The answer is **three slides** for this work, using existing slide 4 plus two new slides. Here is the full plan:
+**RX section (original indices 7–10):**
+After insert `after: 7`:
+7 (chapter) → [NEW: OLD RX Setup] → 8 (directions, unchanged) → 9 (retyped: NEW RX Setup) → 10 (comparison tooth, unchanged)
 
-**1. Slide 4 (existing, revised) — "Mapping the flow before touching the design"**
-Type: `textAndImage` (problem).
-Content: States that the first step was mapping the RX→Scan→View journey as users actually experienced it. The flow map image goes here. The three friction clusters appear as bulleted findings.
-Purpose: Establishes the research-before-design credibility. Answers "why these three pain points?" before the solutions arrive.
+**Scan & View section (original indices 11–15):**
+After insert `after: 11`:
+11 (chapter) → [NEW: OLD Toolbar] → 12 (directions, unchanged) → 13 (retyped: NEW Toolbar) → 14 (multi-scan, unchanged) → 15 (view tools, unchanged)
 
-**2. New slide (icon redesign) — "Redesigning the icons — toolbar and procedure"**
-Type: `comparison`.
-Content: Before/after of the icon visual design — both toolbar icons (used in the Scan phase) and procedure icons (used on the RX Info Page). Placed in the RX chapter because the procedure icons are an RX deliverable; the toolbar icons can be cross-referenced from slide 12.
-Purpose: Surfaces the visual design craft. Without this, the deck shows layout decisions but not visual-language decisions — a gap for a product designer role.
+Full 22-slide sequence matches `finalStructure` exactly.
 
-**3. New slide (RX iterations) — "Three directions for the Info Page"**
-Type: `directions` (Ideation).
-Content: Three layout/approach candidates for the RX Info Page. Two rejected, one accepted. Each gets a description and an image slot.
-Purpose: Makes the design judgment explicit. Anyone reading the deck can see that the final RX layout was chosen, not defaulted to. Mirrors the toolbar-position directions slide (slide 11) for structural consistency across chapters.
+---
 
-**Not recommended:** Adding a fourth dedicated "user flow" slide. The existing slide 4 with its image slot already covers this — duplicating it would repeat the content rather than advance the story.
+## Content migrated (no content lost)
+
+| Content | From | To |
+|---|---|---|
+| `beforeDescription` (RX blocking form) | orig slide 9 | NEW: OLD RX Setup — `content` field |
+| `beforeBullets` × 3 (RX) | orig slide 9 | NEW: OLD RX Setup — `issues` array |
+| `afterDescription` (RX inline) | orig slide 9 | Retyped slide 9 — `content` field |
+| `afterBullets` × 3 (RX) | orig slide 9 | Retyped slide 9 — `issues` array |
+| `beforeDescription` (Toolbar scattered) | orig slide 13 | NEW: OLD Toolbar — `content` field |
+| `beforeBullets` × 3 (Toolbar) | orig slide 13 | NEW: OLD Toolbar — `issues` array |
+| `afterDescription` (Toolbar unified) | orig slide 13 | Retyped slide 13 — `content` field |
+| `afterBullets` × 3 (Toolbar) | orig slide 13 | Retyped slide 13 — `issues` array |
+| `highlight` (Tools were now one tap away…) | orig slide 13 | Retyped slide 13 — `highlight` field |
 
 ---
 
 ## Content added that wasn't there before
 
-- Explicit framing of the flow-mapping step as a design activity (slide 4) — previously implied by the reflection slide ("mapping the full flow first") but never shown in the main narrative
-- A diverge→converge moment for the RX Info Page (new directions slide) — the toolbar has this on slide 11; now the RX chapter has one too
-- Icon redesign as a visual-design artifact (new comparison slide) — was entirely absent from the deck
+- **OLD: RX Setup highlight** — "Every second here was a second the patient sat waiting." Agent-drafted tension line. See verify list.
+- **NEW: Toolbar bullets2 / bullets2Title** — "Icon redesign" section with two bullets: "Toolbar and procedure icons rebuilt into one visual system" and "Every tool reads at a glance — nothing to memorise." Derived from context.md icon redesign request and dir3Desc of existing directions slide 12. See verify list.
+- **Captioned empty image slots** — four slides now have captions naming the asset to drop in.
 
 ---
 
-## Drafted / placeholder values to verify
+## Drafted values to verify
 
-All `[ADD: …]` markers below were inserted by this pass. None are invented — they are explicit requests for the designer's own content.
+Every item below is agent-drafted or agent-inferred. The designer must confirm or replace before sending.
 
-| Placeholder | Slide | What to supply |
-|---|---|---|
-| `[ADD: user flow / journey map image showing the RX→Scan→View sequence with friction points annotated]` | Slide 4 (existing) | The journey-map image — already there before this pass, carried forward |
-| `[ADD: describe first RX Info Page iteration…]` | New directions slide, dir1Desc | What the first layout direction was and why it was set aside |
-| `[ADD: describe second RX Info Page iteration…]` | New directions slide, dir2Desc | What the second direction tried, what failed |
-| `[ADD: describe the chosen RX Info Page direction…]` | New directions slide, dir3Desc | The accepted direction and the deciding factor |
-| `dir1Image`, `dir2Image`, `dir3Image` | New directions slide | One screenshot / sketch per direction (add in edit mode) |
-| `[ADD: describe the original icon set…]` | New comparison slide, beforeDescription | What made the original icons problematic |
-| `[ADD: describe the redesigned icon set…]` | New comparison slide, afterDescription | Design principles and what changed |
-| `beforeImage`, `afterImage` | New comparison slide | Before/after icon images (add in edit mode) |
-| Six `[ADD: …]` bullet slots | New comparison slide | Specific problems and improvements per icon family |
-
-**Pre-existing `[ADD: …]` markers** (not introduced by this pass, carried through from the previous edit):
-- `slides.3.content` — participant count and research scope
-- `slides.11.dir3Desc` — which toolbar position won and why
-- `slides.12.afterDescription` — which toolbar position won, N tested, key finding
-- `slides.15.outcomes.*.description` — real metrics once available
-- `slides.15.highlight` — first real metric post-launch
-- `slides.17.whatFailed.1`, `slides.17.whatYoudDoDifferently.1`, `slides.17.whatYouCouldntMeasure` — reflection gaps
-- `slides.0.metaItems.0–2.value` — role, timeline, team
-- `slides.0.headlineMetric` — headline metric
-- `slides.16.image` — design system component image
+| Item | Slide | Status | What to confirm |
+|---|---|---|---|
+| Highlight: "Every second here was a second the patient sat waiting." | OLD: RX Setup (inserted) | **agent-draft** | Does this match your framing of the waiting-patient cost? Soften or replace if needed. |
+| bullets2[1]: "Every tool reads at a glance — nothing to memorise" | NEW: Scan Toolbar — After (retyped 13) | **agent-draft** | Derived from dir3Desc of existing directions slide. Confirm this accurately describes the icon redesign outcome. |
+| OLD Toolbar image note: "DESIGNER: confirm this image shows icon fragmentation" | OLD: Scan Toolbar — Before | **pre-existing flag** | img-c1djiu0kh0.webp — ux-reviewer flagged this may show the new 3D scan view with a left rail, not old scattered icons. If so, supply a real old-toolbar screenshot. |
+| Six clinician quotes and participant names (Dr. Yael Levi et al.) | Slide 3 (quotes) | **pre-existing, unconfirmed** | These names are unchanged from the existing deck. Confirm they are real participants or genericize (e.g. "Dr. Y.L., orthodontist"). |
+| Participant count and research scope [ADD: …] | Slide 3 (quotes) | **pre-existing [ADD]** | Fill in the actual count and session scope. |
+| Role / Timeline / Team metaItems [ADD: …] | Slide 0 (intro) | **pre-existing [ADD]** | Fill in your actual role, project timeline, and team composition. |
+| Design system image [ADD: …] | Slide 17 (Lasting Impact) | **pre-existing [ADD]** | Add the real design-system component image (img-5pdk4g6ngg.webp was suggested). |
+| Reflection gaps (whatFailed.1, whatYoudDoDifferently.1, whatYouCouldntMeasure) | Slide 18 (Reflection) | **pre-existing [ADD]** | Supply one more specific failure, one more concrete action, and real post-launch data when available. |
+| Real post-launch metrics | Slide 16 (Outcomes) | **pre-existing [ADD]** | Replace [ADD: real metric…] placeholders once post-launch data is available. |
 
 ---
 
-## Word-budget trims
+## Word-budget check — new slides
 
-Slide 4 was 79 words against a ~75-word budget (⚠ OVER). The rewrite targets the budget — the revised content is tight and scannable. No other slides were touched.
+Both inserted slides use the `textAndImage` budget (~75 words on screen).
 
-Slide 0 (intro) was already flagged ⚠ OVER at 97 words against ~75. This pass did not touch slide 0 — its budget issue is a separate concern not covered by the context.md directives.
+- **OLD: RX Setup** — label + title + content (1 sentence) + 3 issue bullets + issuesTitle + highlight = ~45 words prose. Well within budget.
+- **OLD: Scan Toolbar** — label + title + content (1 sentence) + 3 issue bullets + issuesTitle = ~35 words prose. Well within budget.
+- **NEW: RX Setup** (retyped 9) — label + title + content (1 sentence) + 3 issue bullets + issuesTitle + caption = ~40 words prose. Within budget.
+- **NEW: Scan Toolbar** (retyped 13) — label + title + content (1 sentence) + 3 issue bullets + issuesTitle + bullets2Title + 2 bullets2 + highlight = ~65 words prose. Within budget.
 
 ---
 
 ## Agent conflicts flagged
 
-None. This pass acts entirely on the designer's own context.md directives; no reviewer disagreement applies.
+None. This pass executes a decided structural verdict with no reviewer disagreement.
 
 ---
 
-## What was NOT changed
+## Intentional non-changes
 
-All slides outside slide 4 were left as-is. The existing `directions` slide 11 (toolbar position — Scan & View chapter) is untouched; the new directions slide is explicitly a separate RX chapter artifact. The reflection (slide 17) and end (slide 18) are untouched — canonical arc preserved.
+- **Tooth Selection (orig 10) and View Tools (orig 15)** remain `comparison` type. This is a deliberate decision, not an omission. No documented exploration exists for Tooth Selection; no split was requested for View Tools. Do not let a later pass split them.
+- **Slides 0–7, 16–19**: content unchanged.
+- **Orig directions slides 8 and 12**: content unchanged — only their position in the deck changes as a result of the inserts landing before them.
+- **Context.md Info-Page three-iteration request**: deliberately out of scope for this pass. Raise as a separate addition when the designer has distinct Info Page exploration assets.
 
 ---
 
 ## Confidence note
 
-After this pass, the deck gains three things the context.md asked for:
-1. An explicit flow-mapping moment before the design phase begins.
-2. A diverge→converge evidence slide for the RX chapter (matching the pattern already present for the Scan chapter).
-3. An icon visual-design slide that makes the craft visible.
+After this pass the two split beats are structurally complete: each reads OLD (the problem state) → IDEATION (why we chose this direction) → NEW (the solution). The deck tells a clear decision story for both RX Setup and Scan Toolbar. The four empty image slots are the only remaining gap before this section is portfolio-ready — the text case is fully made.
 
-The deck cannot be completed until the designer fills the `[ADD: …]` slots with real iteration images and descriptions. Once those are in, the RX chapter will tell a complete story: map → iterate → icon redesign → final solution.
+**Run `node scripts/case-study-text.mjs apply itero-scan-workflow` then validate JSON with `node -e "JSON.parse(require('fs').readFileSync('src/data/case-studies/itero-scan-workflow.json'))"`. Hard-refresh (Cmd+Shift+R) to see changes. Undo: `git checkout src/data/case-studies/itero-scan-workflow.json` or restore the backup branch.**

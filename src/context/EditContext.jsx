@@ -85,13 +85,34 @@ const defaultContent = {
     sectionLabel: 'Playground',
     sectionTitle: 'Experiments & side bets',
     intro: "Between client work, I run small experiments — the bets I make when nobody hands me a brief. Some shipped, some didn't. Every one taught me something.",
+    // Long-form project write-ups. Each item is a section: sticky title + meta,
+    // a column of body paragraphs, an optional link, a full-width `hero` media
+    // object, and a `gallery` of image/video media objects (2-col masonry).
+    // Media objects: { type:'image'|'video', src, poster?, aspect? }.
     items: [
-      { id: 'pg-1', title: 'A title that names the outcome', context: 'One line on the situation: what I noticed, wanted to test, or was curious about.', learned: 'What it proved — the one thing this experiment taught me.', role: 'Solo', year: '2025', labels: ['Tool', 'Figma'], image: '', url: '', linkLabel: '' },
-      { id: 'pg-2', title: 'Another small bet', context: 'The constraint I set for myself and why it was interesting.', learned: 'The insight I walked away with.', role: 'Solo', year: '2025', labels: ['Visual'], image: '', url: '', linkLabel: '' },
-      { id: 'pg-3', title: 'A weekend build', context: 'A thing I wanted to exist, so I made it.', learned: 'What building it taught me about the problem.', role: 'Solo', year: '2024', labels: ['Concept', 'Code'], image: '', url: '', linkLabel: '' },
-      { id: 'pg-4', title: 'A quick redesign exercise', context: 'Something felt broken, so I had an opinion and acted on it.', learned: 'The principle it confirmed for me.', role: 'Solo', year: '2024', labels: ['System'], image: '', url: '', linkLabel: '' },
-      { id: 'pg-5', title: 'A motion / craft experiment', context: 'I wanted to push a detail further than a brief would allow.', learned: 'What it sharpened in my craft.', role: 'Solo', year: '2024', labels: ['Motion'], image: '', url: '', linkLabel: '' },
-      { id: 'pg-6', title: 'An exploration that hit a dead end', context: 'It didn’t go anywhere — but the reason it failed was the point.', learned: 'The useful insight the dead end produced.', role: 'Solo', year: '2023', labels: ['Concept'], image: '', url: '', linkLabel: '' },
+      {
+        id: 'pg-1',
+        title: 'A project name',
+        meta: '2025 · Side bet',
+        paragraphs: [
+          'Open this in edit mode (Cmd+E) and rewrite these paragraphs. Describe what the project is, why you built it, and what it explores. Add as many paragraphs as you need.',
+          'A second paragraph for context — the idea behind it, the constraint you set, or what made it interesting to chase.',
+        ],
+        link: { url: '', label: '' },
+        hero: null,
+        gallery: [],
+      },
+      {
+        id: 'pg-2',
+        title: 'Another project',
+        meta: '2024',
+        paragraphs: [
+          'A short write-up for the next experiment. Drop in a hero image or video, then add a gallery of stills and clips below.',
+        ],
+        link: { url: '', label: '' },
+        hero: null,
+        gallery: [],
+      },
     ],
   },
   footer: {

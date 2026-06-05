@@ -295,26 +295,32 @@ function useMediaQuery(query) {
 }
 
 // ─── Mobile slide artboard ───────────────────────────────────────────────
-// Desktop-composed slides render into a fixed 1440×810 (16:9) artboard on
-// phones — the reference width desktop CSS is tuned for. react-zoom-pan-pinch
-// scales the artboard to fit the viewport width; pinch zooms up to 4× from
+// Slides render into the SAME fixed 1920×1080 (16:9) artboard desktop uses,
+// so a slide looks identical to the desktop deck. react-zoom-pan-pinch frames
+// the artboard to fit the viewport (contain fit); pinch zooms up to 4× from
 // that base. The library owns the transform — no CSS transform is stacked.
-const SLIDE_DESIGN_W = 1440;
-const SLIDE_DESIGN_H = 810;
-const DEFAULT_FIT_SCALE = 0.26; // safe SSR default (~375px / 1440)
+// Mobile uses the SAME 1920×1080 reference canvas as desktop so a slide reads
+// pixel-identically to the desktop deck — only the fit scale differs. The
+// library frames the whole 1920×1080 artboard to the phone viewport (contain
+// fit: min of width-fit and height-fit, matching the desktop JS scaler), then
+// pinch zooms up to 4× from that base.
+const SLIDE_DESIGN_W = 1920;
+const SLIDE_DESIGN_H = 1080;
+const DEFAULT_FIT_SCALE = 0.195; // safe SSR default (~375px / 1920)
 
 function computeFitScale() {
   if (typeof window === 'undefined') return DEFAULT_FIT_SCALE;
   const vw = window.innerWidth || document.documentElement.clientWidth || 375;
-  return Math.max(0.05, vw / SLIDE_DESIGN_W);
+  const vh = window.innerHeight || document.documentElement.clientHeight || 667;
+  return Math.max(0.05, Math.min(vw / SLIDE_DESIGN_W, vh / SLIDE_DESIGN_H));
 }
 
 /**
  * SlideContainer
  * ---------------
  * On mobile (≤767px) wraps a slide in a pan/zoom surface that behaves
- * like a Figma/Canva presentation: a fixed 1440×810 artboard scaled
- * uniformly to fit the viewport width, with pinch/double-tap zoom, and
+ * like a Figma/Canva presentation: the fixed 1920×1080 desktop artboard
+ * scaled uniformly to fit the viewport (contain), with pinch/double-tap zoom, and
  * panning constrained to the slide edges (no wandering into the dark
  * letterbox). On desktop (≥768px) this is a passthrough.
  */
@@ -1598,11 +1604,11 @@ const CaseStudy = () => {
 
   // ── Mobile Figma/Canva-style scaled slide viewer ───────────────────────
   // Below 768px we render each slide inside a TransformWrapper (pinch-zoom
-  // & pan) over a fixed 1440×810 design canvas. At desktop widths this is
-  // a pass-through — no visual change.
+  // & pan) over the SAME 1920×1080 reference canvas as desktop. At desktop
+  // widths this is a pass-through — no visual change.
   const isMobileSlide = useMediaQuery('(max-width: 767px)');
   // Tracks the active slide's library scale. Because the library's base
-  // (fit-to-viewport) scale is NOT 1 on mobile (it's viewportW/1440), we
+  // (contain-fit) scale is NOT 1 on mobile (it's min(vw/1920, vh/1080)), we
   // also track the fitScale so we can detect "zoomed in" as scale > fit.
   const currentScaleRef = useRef(1);
   const baseFitScaleRef = useRef(1);

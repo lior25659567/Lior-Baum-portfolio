@@ -1,5 +1,5 @@
 {
-  "dataVersion": 16,
+  "dataVersion": 19,
   "title": "Clinical Scanning\nWorkflow",
   "subtitle": "Redesigning the clinical scanning workflow for speed, clarity, and decision-making in real treatment conditions.",
   "category": "Clinical Workflow Redesign",
@@ -268,8 +268,23 @@
       "type": "chapter",
       "number": "01",
       "title": "RX",
-      "subtitle": "The prescription step — defining patient, procedure, and case details before scanning.",
+      "subtitle": "Defining the patient, procedure, and case before scanning — and the setup gate I had to clear first.",
       "splitRatio": 40
+    },
+    {
+      "type": "problem",
+      "label": "RX Setup — Before",
+      "title": "Setup blocked the scan before it could start",
+      "content": "The old product was a dense, multi-step form — patient and procedure gated behind a blocking modal before scanning could begin.",
+      "issues": [
+        "Patient selection required a multi-step modal",
+        "Procedure had to be defined upfront",
+        "Dropdown disconnected from the dental chart"
+      ],
+      "issuesTitle": "Where it broke",
+      "highlight": "Every second here was a second the patient sat waiting.",
+      "image": "",
+      "caption": "Old RX setup — the blocking multi-step form. (Add img-uykask3eo.webp)"
     },
     {
       "type": "directions",
@@ -318,71 +333,18 @@
       "highlight": null
     },
     {
-      "type": "comparison",
-      "label": "RX Setup — Before & After",
-      "title": "From a blocking form to a single view",
-      "beforeImage": [
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-uykask3eo.webp",
-          "caption": "Old — rigid multi-step setup sequence",
-          "isVideo": false,
-          "embedType": ""
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "",
-          "caption": ""
-        },
-        {
-          "src": "",
-          "caption": "",
-          "position": "center center",
-          "size": "large",
-          "embedUrl": ""
-        }
-      ],
-      "afterImage": [
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/vid-aouv40ns6o0.mp4",
-          "isVideo": true,
-          "isGif": false,
-          "embedType": ""
-        }
-      ],
-      "beforeDescription": "The old product was a dense, multi-step form — patient and procedure gated behind a blocking modal before scanning could begin.",
-      "afterDescription": "Users start right away — patient context fills in as they go, not as a prerequisite.",
-      "beforeBullets": [
-        "Patient selection required a multi-step modal",
-        "Procedure had to be defined upfront",
-        "Dropdown disconnected from the dental chart"
-      ],
-      "afterBullets": [
+      "type": "problem",
+      "label": "RX Setup — After",
+      "title": "Users start scanning right away",
+      "content": "Users start right away — patient context fills in as they go, not as a prerequisite.",
+      "issues": [
         "Inline patient selection — no modal",
         "Patient context stays visible throughout",
         "Procedure selection tied to teeth structure"
       ],
-      "gridCols": 1,
-      "imageDisplayMode": "grid",
-      "splitRatio": 40,
-      "slideMode": "before-after",
-      "switcherStyle": "pill",
-      "afterImageCarouselFit": "contain",
-      "afterImageCarouselInterval": 2000,
-      "beforeImageCarouselBg": true
+      "issuesTitle": "What changed",
+      "image": "",
+      "caption": "New RX setup — single-view, no blocking form. (Add vid-aouv40ns6o0.mp4)"
     },
     {
       "type": "comparison",
@@ -440,60 +402,57 @@
       "type": "chapter",
       "number": "02",
       "title": "Scan & View",
-      "subtitle": "Capturing and validating a 3D model — before anything reaches the lab. The toolbar decision started here.",
+      "subtitle": "Capturing and validating a 3D model before lab submission — starting with where the tools should live.",
       "splitRatio": 40
     },
     {
-      "type": "comparison",
-      "label": "Scan Toolbar",
-      "title": "From scattered icons to a system users can learn once",
-      "beforeImage": [
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-c1djiu0kh0.webp",
-          "caption": "Old — mixed styles, no consistent location",
-          "isVideo": false,
-          "embedType": ""
-        }
-      ],
-      "afterImage": [
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/vid-g2r58c0dp9s.mp4",
-          "caption": "New — unified icons in a single collapsible toolbar",
-          "isVideo": true,
-          "isGif": false,
-          "embedType": ""
-        }
-      ],
-      "beforeDescription": "Icons built up from different sources, no shared style — and no consistent place to find them.",
-      "afterDescription": "A unified icon set in a collapsible toolbar — one visual language, one fixed location. I tested multiple positions before landing here. [ADD: which position won, N tested, key finding]",
-      "beforeBullets": [
+      "type": "problem",
+      "label": "Scan Toolbar — Before",
+      "title": "Tools scattered, with no home",
+      "content": "Icons built up from different sources, no shared style — and no consistent place to find them.",
+      "issues": [
         "No shared visual language across icons",
         "No dedicated place for tools",
         "Every new feature added more scatter"
       ],
-      "afterBullets": [
+      "issuesTitle": "Where it broke",
+      "image": "",
+      "caption": "Old toolbar — scattered, mixed-style icons. (Add img-c1djiu0kh0.webp — DESIGNER: confirm this image shows icon fragmentation, else supply a real old-toolbar screenshot.)"
+    },
+    {
+      "type": "directions",
+      "label": "Toolbar — Exploration",
+      "title": "Where should the tools live?",
+      "directionCount": 3,
+      "dir1Status": "rejected",
+      "dir1Desc": "A fixed left rail — always visible. In practice it ate horizontal scan space and narrowed the 3D view at the worst moment.",
+      "dir1Image": "",
+      "dir2Status": "rejected",
+      "dir2Desc": "A top bar anchored above the viewport. Tidier than the rail, but reaching up pulled focus away from the live scan.",
+      "dir2Image": "",
+      "dir3Status": "accepted",
+      "dir3Desc": "One collapsible toolbar, fixed to one corner. Opens when needed, hides when not. I rebuilt the toolbar and procedure icons into one visual language as part of this — every tool reads at a glance.",
+      "dir3Image": ""
+    },
+    {
+      "type": "problem",
+      "label": "Scan Toolbar — After",
+      "title": "One toolbar, one visual language",
+      "content": "A unified icon set in a collapsible toolbar — one language, one home.",
+      "issues": [
         "Unified icon set — each maps to its action",
-        "One collapsible toolbar, always in the same place",
+        "One collapsible toolbar, always in one place",
         "Scalable — new tools slot in without disruption"
       ],
-      "gridCols": 1,
-      "imageDisplayMode": "grid",
-      "splitRatio": 40,
-      "slideMode": "before-after",
-      "switcherStyle": "pill",
-      "afterImageCarouselInterval": 2500,
-      "afterImageCarouselFit": "contain",
-      "highlight": "Tools were now one tap away — comparing more than one scan was the next problem."
+      "issuesTitle": "What changed",
+      "bullets2Title": "Icon redesign",
+      "bullets2": [
+        "Toolbar and procedure icons rebuilt into one visual system",
+        "Every tool reads at a glance"
+      ],
+      "highlight": "",
+      "image": "",
+      "caption": "New collapsible toolbar + unified icon set. (Add vid-g2r58c0dp9s.mp4)"
     },
     {
       "type": "problem",

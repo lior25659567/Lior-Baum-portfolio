@@ -4,7 +4,7 @@ import './AboutRotator.css';
 // Curated 20 — the personal, human things Lior values at work: the kind of
 // environment, team and energy he wants to be part of (not a hard-skills list).
 // Kept to moderate lengths so the radial wheel stays visually balanced.
-const DEFAULT_SKILLS = [
+export const DEFAULT_SKILLS = [
   'Good Energy',
   'Kindness',
   'Humor',
@@ -53,14 +53,14 @@ const MAX_VEL = 110;               // deg/sec clamp so a fast scroll never whips
 const smooth = (x) => x * x * (3 - 2 * x);
 
 /**
- * AboutRotator — radial skills wheel, always in motion, labels always upright.
+ * AboutRotator — radial skills wheel, always in motion.
  *
  * The ring's rotation comes from idle drift + scroll + page-wide mouse motion.
- * Because the ring turns continuously, each label's flip is recomputed every
- * frame from its live world-angle: any label whose world-angle falls in
- * (90°,270°) is flipped 180° so it stays upright and reads left-to-right — no
- * upside-down or inward-reading text at any rotation. Emphasis is positional:
- * proximity to the nearest cardinal axis (0/90/180/270) drives opacity/color.
+ * Each label's orientation is FIXED per spoke (set once in JSX from its base
+ * angle): lower-half spokes are flipped 180° so the word reads outward, and it
+ * keeps that orientation as the ring turns — no abrupt 180° flip mid-spin.
+ * Emphasis is positional: proximity to the nearest cardinal axis
+ * (0/90/180/270) drives opacity/color, recomputed every frame.
  */
 const AboutRotator = ({ items }) => {
   const labels = useMemo(() => {
@@ -82,11 +82,10 @@ const AboutRotator = ({ items }) => {
     // Reduced motion: no rotation — pin every label upright and readable.
     const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) {
-      textRefs.current.forEach((el, i) => {
+      textRefs.current.forEach((el) => {
         if (!el) return;
         el.style.opacity = MAX_OPACITY;
-        const a = (360 / labels.length) * i;
-        el.style.transform = a > 90 && a < 270 ? 'rotate(180deg)' : 'rotate(0deg)';
+        el.style.transform = 'rotate(0deg)';
       });
       return;
     }
@@ -147,8 +146,8 @@ const AboutRotator = ({ items }) => {
         let worldAngle = (baseAngle + rot) % 360;
         if (worldAngle < 0) worldAngle += 360;
 
-        // Keep every label upright + reading left-to-right, whatever the rotation.
-        el.style.transform = worldAngle > 90 && worldAngle < 270 ? 'rotate(180deg)' : 'rotate(0deg)';
+        // Orientation is FIXED per spoke (set once in JSX), so a word never
+        // snaps 180° mid-spin — it keeps one orientation as the ring turns.
 
         // Positional emphasis — proximity to the nearest cardinal axis, eased.
         const dCard = nearestCardinalDist(worldAngle);
@@ -195,6 +194,9 @@ const AboutRotator = ({ items }) => {
         <div className="abt-anim-label-w">
           {labels.map((label, i) => {
             const angle = (360 / labels.length) * i;
+            // Every word keeps the SAME orientation (no 180° flip) — the text is
+            // never rotated relative to its spoke, so they all align uniformly.
+            const flip = 0;
             return (
               <div
                 key={`${label}-${i}`}
@@ -205,6 +207,7 @@ const AboutRotator = ({ items }) => {
                 <div
                   ref={(el) => { textRefs.current[i] = el; }}
                   className="text-small is-abt"
+                  style={{ transform: `rotate(${flip}deg)` }}
                 >
                   {label}
                 </div>

@@ -156,3 +156,17 @@ Write your full verdict to the output file path given to you.
   If any slide is in the wrong section or the beats are out of order, FIX it — editing
   agents emit `move` ops; reviewers/critic name the exact move (which slide → after which).
   This is a standing expectation, not something the designer should have to point out.
+
+- **Reach your OWN verdict — reason from first principles, don't anchor on the framing.**
+  When asked to evaluate a specific change, judge the GOAL behind it on the evidence and reach
+  your own conclusion — adopt, modify, OR reject, and "leave it exactly as it is" is a fully
+  valid verdict. A proposal is not right because it was proposed, and change is not warranted
+  just because it was raised. State your genuine assessment even when it contradicts the
+  designer's idea or how the question was framed — that honest, independent read is the entire
+  value you add. Don't soften it to agree, and don't manufacture a critique to seem rigorous.
+
+- **Judge granularity, not just presence — and in BOTH directions.** Beyond "is this beat
+  here?", ask whether its content sits at the right slide-level granularity: a slide can
+  *compress* too much (distinct decisions crammed into one frame, the reasoning lost) or a beat
+  can be *over-split* (padded across slides that each say little). Call it whichever way the
+  evidence points — with no default toward splitting or merging.

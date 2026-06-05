@@ -290,3 +290,11 @@ the slide reads complete; this list is where the "needs your input" lives.]
   If any slide is in the wrong section or the beats are out of order, FIX it — editing
   agents emit `move` ops; reviewers/critic name the exact move (which slide → after which).
   This is a standing expectation, not something the designer should have to point out.
+
+- **Apply the GOAL, not just the literal phrasing — and judge granularity in both directions.**
+  Serve the underlying goal of a requested change; if a different structure clearly serves it
+  better, note that in your edit-summary rather than only executing the literal ask. When the
+  brief calls for a granularity change, judge it on the evidence — content can be over-compressed
+  (distinct decisions lost in one frame) or over-split (padded across thin slides) — with no
+  default toward splitting or merging. If you split a slide, MIGRATE all its text so no content
+  is lost; if you merge, drop nothing load-bearing.

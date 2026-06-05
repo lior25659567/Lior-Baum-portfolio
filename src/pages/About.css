@@ -295,6 +295,13 @@
   justify-content: center;
   padding: 0;
   width: 100%;
+  /* The section's height budget — the wheel's PREVIOUS size at every
+     breakpoint. The rotator (inside) reads this var and renders 1.14× larger,
+     spilling equally above/below into the section padding. Because both the
+     height here and the wheel size derive from this ONE value, the scale-up is
+     identical across all breakpoints and the section never grows. */
+  --rotator-box: min(90vw, clamp(720px, 48vw, 880px));
+  height: var(--rotator-box);
   /* visible so the radial labels can extend past the wheel without being
      clipped; overflow-x stays clipped to avoid a horizontal page scrollbar */
   overflow: visible;
@@ -315,6 +322,40 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-md);
+}
+
+/* Rotator words editor (edit mode only) — the words shown in the spinning wheel */
+.rotator-word-editor {
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.rotator-word-editor-label {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--text-caption);
+  color: var(--color-text-muted);
+  letter-spacing: var(--ls-meta);
+}
+
+.rotator-word-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.rotator-word-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.35rem 0.6rem;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 100px;
+  font-size: var(--text-caption);
 }
 
 .skill-card {

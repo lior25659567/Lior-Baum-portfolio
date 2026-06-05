@@ -289,7 +289,9 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
-  overflow-x: hidden;
+  /* `clip` (not `hidden`) so html/body don't become a scroll container —
+     `overflow-x: hidden` silently breaks `position: sticky` for descendants. */
+  overflow-x: clip;
   max-width: 100%;
 }
 
@@ -319,7 +321,7 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color var(--transition-medium), color var(--transition-medium);

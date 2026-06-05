@@ -4,7 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEdit } from '../context/EditContext';
 import AnimatedButton from '../components/AnimatedButton';
-import AboutRotator from '../components/AboutRotator';
+import AboutRotator, { DEFAULT_SKILLS as DEFAULT_VALUE_WORDS } from '../components/AboutRotator';
 import Footer from '../components/Footer';
 import './About.css';
 import './HomePublishBar.css';
@@ -86,6 +86,8 @@ const About = () => {
   const about = content.about || {};
   const skills = about.skills || [];
   const experience = about.experience || [];
+  // Rotator words ("what matters to me") — editable, falls back to the curated default list.
+  const valueWords = about.valueWords?.length ? about.valueWords : DEFAULT_VALUE_WORDS;
 
   // Helpers to update nested about content
   const updateAbout = useCallback((key, value) => {
@@ -140,6 +142,20 @@ const About = () => {
   const removeSkillGroup = useCallback((groupIndex) => {
     updateAbout('skills', skills.filter((_, i) => i !== groupIndex));
   }, [skills, updateAbout]);
+
+  // Rotator value-word helpers — seed from the current list (defaults included)
+  // on first edit so the user always edits the live 20.
+  const updateValueWord = useCallback((i, text) => {
+    updateAbout('valueWords', valueWords.map((w, idx) => (idx === i ? text : w)));
+  }, [valueWords, updateAbout]);
+
+  const addValueWord = useCallback(() => {
+    updateAbout('valueWords', [...valueWords, 'New value']);
+  }, [valueWords, updateAbout]);
+
+  const removeValueWord = useCallback((i) => {
+    updateAbout('valueWords', valueWords.filter((_, idx) => idx !== i));
+  }, [valueWords, updateAbout]);
 
   // Experience helpers
   const updateExperienceField = useCallback((expIndex, field, value) => {
@@ -467,6 +483,20 @@ const About = () => {
           <Editable tag="h2" className="section-heading" value={about.skillsTitle || 'What Matters to Me as a Designer'} onChange={(v) => updateAbout('skillsTitle', v)} />
           {editMode ? (
             <>
+              {/* Rotator words — the list shown spinning in view mode. */}
+              <div className="rotator-word-editor">
+                <p className="rotator-word-editor-label">Wheel words (shown in the spinning circle)</p>
+                <div className="rotator-word-chips">
+                  {valueWords.map((word, i) => (
+                    <span key={i} className="rotator-word-chip">
+                      <Editable value={word} onChange={(v) => updateValueWord(i, v)} placeholder="Value" />
+                      <button className="about-remove-btn small inline" onClick={() => removeValueWord(i)} title="Remove word">&times;</button>
+                    </span>
+                  ))}
+                </div>
+                <button className="about-add-btn small" onClick={addValueWord}>+ Add word</button>
+              </div>
+
               <div className="skills-grid" ref={skillsRef}>
                 {skills.map((skillGroup, gi) => (
                   <div key={gi} className="skill-card">
@@ -490,10 +520,9 @@ const About = () => {
             </>
           ) : (
             <div className="about-rotator-stage" ref={skillsRef}>
-              {/* Rotator uses its own curated 20 skills (the design-spec list).
-                  All editable categories still live in the grid above when in
-                  edit mode. */}
-              <AboutRotator />
+              {/* Words come from about.valueWords (editable in edit mode),
+                  falling back to the curated default list. */}
+              <AboutRotator items={valueWords} />
             </div>
           )}
         </div>
