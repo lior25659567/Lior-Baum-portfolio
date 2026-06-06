@@ -60,19 +60,19 @@
       "metaItems": [
         {
           "label": "Role",
-          "value": "[ADD: your role — e.g. Lead Product Designer]"
+          "value": "Product Designer"
         },
         {
           "label": "Timeline",
-          "value": "[ADD: project timeline — e.g. 6 months · 2024]"
+          "value": "3 months "
         },
         {
           "label": "Team",
-          "value": "[ADD: team — e.g. 1 PM · 2 engineers · 1 researcher]"
+          "value": "1 PM · 4 engineers"
         },
         {
           "label": "Tools",
-          "value": "Figma · Coded prototype · Claude Code"
+          "value": "Figma · Claude Code"
         }
       ],
       "headlineMetric": null
@@ -174,25 +174,6 @@
       "splitRatio": 40
     },
     {
-      "type": "problem",
-      "label": "User Flow Mapping",
-      "title": "Mapping the flow before touching the design",
-      "content": "Before designing, I mapped the full RX→Scan→View sequence as users lived it. The friction clusters were impossible to ignore.",
-      "issues": [
-        "RX setup blocked the clinician before any scan began",
-        "Tool access broke the clinician's rhythm mid-scan",
-        "No completion signal — View felt unfinished"
-      ],
-      "issuesTitle": "What the flow revealed",
-      "highlight": "The friction wasn't random — it lived at every phase handoff.",
-      "image": "/case-studies/itero-scan-workflow/img-t2to0gdcf0.png",
-      "splitRatio": 40,
-      "imageIsVideo": false,
-      "imageEmbedUrl": "",
-      "imageWrapperBg": false,
-      "imageFit": "contain"
-    },
-    {
       "type": "goals",
       "label": "Design Goals",
       "title": "Four problems. Four things to get right.",
@@ -233,6 +214,25 @@
       "kpisCardVariant": "soft",
       "goalsCardVariant": "minimal",
       "splitRatio": 40
+    },
+    {
+      "type": "problem",
+      "label": "User Flow Mapping",
+      "title": "Mapping the flow before touching the design",
+      "content": "Before designing, I mapped the full RX→Scan→View sequence as users lived it. The friction clusters were impossible to ignore.",
+      "issues": [
+        "RX setup blocked the clinician before any scan began",
+        "Tool access broke the clinician's rhythm mid-scan",
+        "No completion signal — View felt unfinished"
+      ],
+      "issuesTitle": "What the flow revealed",
+      "highlight": "The friction wasn't random — it lived at every phase handoff.",
+      "image": "/case-studies/itero-scan-workflow/img-t2to0gdcf0.png",
+      "splitRatio": 40,
+      "imageIsVideo": false,
+      "imageEmbedUrl": "",
+      "imageWrapperBg": false,
+      "imageFit": "contain"
     },
     {
       "type": "problem",
