@@ -1,5 +1,5 @@
 {
-  "dataVersion": 11,
+  "dataVersion": 21,
   "title": "Patient Report\nRedesign",
   "subtitle": "From a blank page into a structured, shareable communication tool.",
   "category": "Clinical UX",
@@ -13,7 +13,7 @@
       "clientLabel": "Client",
       "client": "Align Technology",
       "focusLabel": "Focus",
-      "focus": "Clinical Reporting UX",
+      "focus": "Workflow UX · B2B SaaS",
       "image": [
         {
           "position": "center center",
@@ -75,7 +75,7 @@
       "type": "problem",
       "label": "The Problem",
       "title": "A blank page after every appointment",
-      "content": "No structure, no templates, no annotation tools.",
+      "content": "A skipped report cost more than doctor time — [ADD: name the downstream cost].",
       "issuesTitle": "Where it failed",
       "issues": [
         "Sidebar locked doctor info into 25% of the screen",
@@ -104,7 +104,7 @@
       "type": "quotes",
       "label": "User Research",
       "title": "What doctors told me",
-      "content": "I interviewed doctors across four specialties. The same problems came up every time.",
+      "content": "I interviewed [ADD: number of] doctors across four specialties. The same problems came up every time.",
       "quotes": [
         {
           "text": "I just skip the report most of the time. It takes too long.",
@@ -168,19 +168,43 @@
       "kpisGridColumns": 2,
       "showKpisSection": true,
       "goalsCardVariant": "minimal",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "description": "Each goal maps directly to a failure doctors named in the research — not assumed upfront."
     },
     {
       "type": "directions",
       "label": "Ideation",
-      "title": "Layout directions I explored",
-      "directionCount": 3,
+      "title": "Two ways to edit",
+      "directionCount": 2,
       "dir1Status": "rejected",
-      "dir1Desc": "Collapsible sidebar — kept the three-panel layout but let doctors hide the right panel. Felt incremental. Doctors were still managing the interface instead of just writing the report.",
-      "dir2Status": "rejected",
-      "dir2Desc": "Floating action drawer — tools and metadata in an overlay. Added interaction without solving the space problem.",
-      "dir3Status": "accepted",
-      "dir3Desc": "Compact header bar — moved all metadata and actions into a single top strip, freeing the full canvas for the report. Solved the space problem without adding new interaction patterns."
+      "dir1Desc": "Edit from the sidebar. The controls sit in a left-rail list and the canvas is just a preview — you change a section in one place and check the result in another.",
+      "dir2Status": "accepted",
+      "dir2Desc": "Edit on the content. Annotate, tag teeth, title and note each image right where it sits. The control lives on the thing it changes — no context switch.",
+      "dir3Status": "",
+      "dir3Desc": "",
+      "description": "After the goals, I built two editing directions and compared them. The majority preferred the second — and the mechanic backs them up.",
+      "dir1Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-1kpvq4sizhc.png",
+          "isVideo": false
+        }
+      ],
+      "dir2Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-1te5c1kqfg.png",
+          "isVideo": false
+        }
+      ]
     },
     {
       "type": "comparison",
@@ -231,13 +255,14 @@
       "gridCols": 1,
       "imageDisplayMode": "grid",
       "beforeLabel": "Before",
-      "afterLabel": "After"
+      "afterLabel": "After",
+      "description": "The compact header direction set one constraint: the doctor should focus on the report, not the interface. This is what that looks like."
     },
     {
       "type": "problem",
       "label": "Templates & Sections",
       "title": "A structured starting point — built to flex",
-      "content": "I built five procedure templates — so doctors start with structure, not a blank page.",
+      "content": "I built five procedure templates — so doctors start with structure, not a blank decision.",
       "issuesTitle": "How it works",
       "issues": [
         "Five templates — General Scan, Implant, Crown Prep, Follow-up, Custom",
@@ -364,33 +389,34 @@
     {
       "type": "outcomes",
       "label": "Outcomes",
-      "title": "Early-access results.",
+      "title": "Early-access results",
       "outcomes": [
         {
           "metric": "Faster",
           "title": "Report creation",
-          "description": "The template system removed the blank-page barrier. Doctors in the early access group started and completed reports they would have skipped."
+          "description": "Doctors in the early access group completed reports they had previously skipped."
         },
         {
           "metric": "Clearer",
           "title": "Clinical communication",
-          "description": "Annotation and tooth tagging let doctors mark the exact finding instead of describing it in text — clearer for patients, faster for the doctor."
+          "description": "Doctors marked findings on the image — clearer for patients, faster for the doctor."
         },
         {
           "metric": "Higher",
           "title": "Completion rate",
-          "description": "With structure upfront, doctors who previously skipped reporting started completing it. Broader measurement is planned post-rollout."
+          "description": "With structure given upfront, doctors who had been skipping reporting started completing it."
         },
         {
           "metric": "Wider",
           "title": "Reach per report",
-          "description": "Multi-channel sharing — email, WhatsApp, WeChat, QR code — meant reports reached patients on the channel they actually check."
+          "description": "Reports reached patients on the channel they actually check — email, WhatsApp, WeChat, or QR."
         }
       ],
       "showNumbers": false,
       "cardVariant": "default",
       "gridColumns": 4,
-      "splitRatio": 40
+      "splitRatio": 40,
+      "highlight": "iTero early access program, before full rollout. [ADD: participant count and period if available]"
     },
     {
       "type": "reflection",
@@ -413,7 +439,7 @@
     {
       "type": "end",
       "title": "Thank You",
-      "subtitle": "I make complex workflows feel obvious — a skill for any high-pressure product.",
+      "subtitle": "I fix the defaults professionals shouldn't have to manage.",
       "cta": "Get in touch",
       "splitRatio": 40
     }

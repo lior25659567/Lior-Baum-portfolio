@@ -656,8 +656,13 @@
         "Progress states — uploading, processing, complete, failed"
       ],
       "highlight": "These decisions became what every feature was built on.",
-      "image": "[ADD: design-system component image — use the original img-5pdk4g6ngg.webp]",
-      "caption": "Design system components formalised from the redesign"
+      "image": "/case-studies/itero-scan-workflow/img-5ljyfdsz90.png",
+      "caption": "Design system components formalised from the redesign",
+      "imageIsVideo": false,
+      "imageEmbedUrl": "",
+      "imageWrapperBg": false,
+      "imageFit": "contain",
+      "splitRatio": 40
     },
     {
       "type": "reflection",
