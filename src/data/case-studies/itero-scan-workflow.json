@@ -283,7 +283,18 @@
       ],
       "issuesTitle": "Where it broke",
       "highlight": "Every second here was a second the patient sat waiting.",
-      "image": "",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-14ptax4ol0.png",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
       "caption": "Old RX setup — the blocking multi-step form. (Add img-uykask3eo.webp)"
     },
     {
@@ -292,7 +303,7 @@
       "title": "Three approaches to RX setup",
       "directionCount": 3,
       "dir1Status": "rejected",
-      "dir1Desc": "A collapse/expand layout — tap to open, read, close, repeat. In practice it meant constantly reopening the same section. That friction alone killed it.",
+      "dir1Desc": "Broke setup into a step-by-step wizard — organised, but more clicks and a slower start.",
       "dir1Image": [
         {
           "position": "center center",
@@ -300,12 +311,13 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-9399qcjdwc.png",
-          "isVideo": false
+          "src": "/case-studies/itero-scan-workflow/img-1hrv6w761k.png",
+          "isVideo": false,
+          "embedType": ""
         }
       ],
       "dir2Status": "rejected",
-      "dir2Desc": "Broke setup into a step-by-step wizard — organised, but more clicks and a slower start.",
+      "dir2Desc": "A collapse/expand layout — tap to open, read, close, repeat. In practice it meant constantly reopening the same section. That friction alone killed it.",
       "dir2Image": [
         {
           "position": "center center",
@@ -313,8 +325,9 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-6v6qayitu4.png",
-          "isVideo": false
+          "src": "/case-studies/itero-scan-workflow/img-14c9uopols.png",
+          "isVideo": false,
+          "embedType": ""
         }
       ],
       "dir3Status": "accepted",
@@ -326,8 +339,9 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-e382hxcguo.png",
-          "isVideo": false
+          "src": "/case-studies/itero-scan-workflow/img-23dgjitb5o.png",
+          "isVideo": false,
+          "embedType": ""
         }
       ],
       "highlight": null
@@ -343,8 +357,20 @@
         "Procedure selection tied to teeth structure"
       ],
       "issuesTitle": "What changed",
-      "image": "",
-      "caption": "New RX setup — single-view, no blocking form. (Add vid-aouv40ns6o0.mp4)"
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/vid-oj0333hv40.mp4",
+          "isVideo": true,
+          "isGif": false
+        }
+      ],
+      "caption": "New RX setup — single-view, no blocking form. (Add vid-aouv40ns6o0.mp4)",
+      "splitRatio": 30
     },
     {
       "type": "comparison",
@@ -358,7 +384,7 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-cy7ucjs8u0.png",
-          "caption": "Old — one modal per tooth, no overview",
+          "caption": "",
           "isVideo": false,
           "embedType": ""
         }
@@ -370,7 +396,7 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/vid-581c99ziag0.mp4",
+          "src": "/case-studies/itero-scan-workflow/vid-6slnlvn2tb4.mp4",
           "isVideo": true,
           "isGif": false,
           "embedType": ""
@@ -380,7 +406,6 @@
       "afterDescription": "Teeth selected directly on the chart — one or many at once — with procedures assigned inline.",
       "beforeBullets": [
         "One blocking modal per tooth — no multi-select",
-        "No color coding — no clinical overview",
         "Complex cases required repetitive steps"
       ],
       "afterBullets": [
@@ -416,8 +441,19 @@
         "Every new feature added more scatter"
       ],
       "issuesTitle": "Where it broke",
-      "image": "",
-      "caption": "Old toolbar — scattered, mixed-style icons. (Add img-c1djiu0kh0.webp — DESIGNER: confirm this image shows icon fragmentation, else supply a real old-toolbar screenshot.)"
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-73988r6wpso.png",
+          "isVideo": false
+        }
+      ],
+      "caption": "Old toolbar — scattered, mixed-style icons. (Add img-c1djiu0kh0.webp — DESIGNER: confirm this image shows icon fragmentation, else supply a real old-toolbar screenshot.)",
+      "splitRatio": 40
     },
     {
       "type": "directions",
@@ -426,13 +462,43 @@
       "directionCount": 3,
       "dir1Status": "rejected",
       "dir1Desc": "A fixed left rail — always visible. In practice it ate horizontal scan space and narrowed the 3D view at the worst moment.",
-      "dir1Image": "",
+      "dir1Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-e18ubxd5eo.png",
+          "isVideo": false
+        }
+      ],
       "dir2Status": "rejected",
       "dir2Desc": "A top bar anchored above the viewport. Tidier than the rail, but reaching up pulled focus away from the live scan.",
-      "dir2Image": "",
+      "dir2Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-aqspm4gaww.png",
+          "isVideo": false
+        }
+      ],
       "dir3Status": "accepted",
       "dir3Desc": "One collapsible toolbar, fixed to one corner. Opens when needed, hides when not. I rebuilt the toolbar and procedure icons into one visual language as part of this — every tool reads at a glance.",
-      "dir3Image": ""
+      "dir3Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-59lf56vcn4.png",
+          "isVideo": false
+        }
+      ]
     },
     {
       "type": "problem",
@@ -441,7 +507,7 @@
       "content": "A unified icon set in a collapsible toolbar — one language, one home.",
       "issues": [
         "Unified icon set — each maps to its action",
-        "One collapsible toolbar, always in one place",
+        "One collapsible toolbar, always in  one place",
         "Scalable — new tools slot in without disruption"
       ],
       "issuesTitle": "What changed",
@@ -450,9 +516,21 @@
         "Toolbar and procedure icons rebuilt into one visual system",
         "Every tool reads at a glance"
       ],
-      "highlight": "",
-      "image": "",
-      "caption": "New collapsible toolbar + unified icon set. (Add vid-g2r58c0dp9s.mp4)"
+      "highlight": null,
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/vid-bfheykewnxs.mp4",
+          "isVideo": true,
+          "isGif": false
+        }
+      ],
+      "caption": "New collapsible toolbar + unified icon set. (Add vid-g2r58c0dp9s.mp4)",
+      "splitRatio": 40
     },
     {
       "type": "problem",
@@ -473,7 +551,7 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/vid-539c9v0rkkc.mp4",
+          "src": "/case-studies/itero-scan-workflow/vid-7n89uy3l420.mp4",
           "isVideo": true,
           "embedType": "",
           "isGif": false
@@ -497,7 +575,7 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-aeiguj0sno.webp",
-          "caption": "Old — unlabelled icon clusters, no hierarchy",
+          "caption": "",
           "isVideo": false,
           "embedType": ""
         }
@@ -510,7 +588,7 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-2x1frtk9p0.webp",
-          "caption": "New — named panels with one primary CTA per tool",
+          "caption": "",
           "isVideo": false,
           "embedType": ""
         }
@@ -563,7 +641,7 @@
       "cardVariant": "default",
       "gridColumns": 4,
       "splitRatio": 40,
-      "highlight": "Outcomes based on prototype testing and clinician sessions. [ADD: first real metric or post-launch quote once available]"
+      "highlight": null
     },
     {
       "type": "problem",
