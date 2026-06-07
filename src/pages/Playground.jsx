@@ -1,6 +1,7 @@
-import { useRef, useCallback, useMemo, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useRef, useState, useCallback, useMemo, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useEdit } from '../context/EditContext';
+import AnimatedButton from '../components/AnimatedButton';
 import './Playground.css';
 
 // Add scheme to bare URLs so `dribbble.com/...` works as an external link.
@@ -21,6 +22,12 @@ const getHero = (p) =>
   (p.video ? { type: 'video', src: p.video, poster: p.image || '' } : null) ||
   (p.image ? { type: 'image', src: p.image, aspect: p.aspect } : null);
 const getGallery = (p) => (Array.isArray(p.gallery) ? p.gallery : []);
+// How many of this item fit across a row: 1 (full), 2 (half), 3 (third).
+// Migrates the old per-item `fullWidth` flag (full → 1, otherwise 2).
+const itemPerRow = (m) => {
+  if (m.perRow === 1 || m.perRow === 2 || m.perRow === 3) return m.perRow;
+  return m.fullWidth ? 1 : 2;
+};
 const getLink = (p) => p.link || { url: p.url || '', label: p.linkLabel || '' };
 const getCta = (p) => p.cta || { url: '', label: '' };
 
@@ -69,17 +76,62 @@ const Editable = ({ value, onChange, tag: Tag = 'span', className, multiline = f
   const { editMode } = useEdit();
   const ref = useRef(null);
 
-  const handleBlur = () => {
+  // Keep the latest typed text + props in refs so we can commit reliably even
+  // when blur never fires (navigating away, toggling edit mode off, unmount).
+  const pendingRef = useRef(value);
+  const valueRef = useRef(value);
+  const onChangeRef = useRef(onChange);
+  valueRef.current = value;
+  onChangeRef.current = onChange;
+  // Re-sync the pending buffer whenever the saved value changes from outside
+  // (e.g. after a commit) so a later flush can't clobber it with stale text.
+  useEffect(() => { pendingRef.current = value; }, [value]);
+
+  const commit = useCallback(() => {
+    if (pendingRef.current !== valueRef.current) onChangeRef.current(pendingRef.current);
+  }, []);
+
+  // Capture every keystroke/paste into the ref (no React state → no re-render,
+  // so the caret never jumps mid-typing).
+  const handleInput = () => {
     const el = ref.current;
     if (!el) return;
-    const next = multiline ? el.innerText : el.innerText.replace(/\n/g, ' ');
-    if (next !== value) onChange(next);
+    pendingRef.current = multiline ? el.innerText : el.innerText.replace(/\n/g, ' ');
+  };
+
+  // Flush when leaving edit mode (component stays mounted, just swaps to the
+  // read-only branch) and when unmounting (page navigation).
+  useEffect(() => {
+    if (!editMode) commit();
+  }, [editMode, commit]);
+  useEffect(() => () => commit(), [commit]);
+
+  const handleBlur = () => {
+    handleInput();
+    commit();
   };
   const handleKeyDown = (e) => {
     if (!multiline && e.key === 'Enter') {
       e.preventDefault();
       e.target.blur();
     }
+  };
+
+  // Paste as PLAIN TEXT — strip the source's font/color/markup so pasted
+  // titles/copy inherit the site's styling instead of foreign formatting.
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+    const clean = multiline ? text : text.replace(/\s+/g, ' ');
+    if (document.execCommand) {
+      document.execCommand('insertText', false, clean);
+      return;
+    }
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return;
+    sel.deleteFromDocument();
+    sel.getRangeAt(0).insertNode(document.createTextNode(clean));
+    sel.collapseToEnd();
   };
 
   if (!editMode) {
@@ -92,8 +144,10 @@ const Editable = ({ value, onChange, tag: Tag = 'span', className, multiline = f
       className={`${className || ''} pg-editable`}
       contentEditable
       suppressContentEditableWarning
+      onInput={handleInput}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
+      onPaste={handlePaste}
       data-placeholder={placeholder}
     >
       {value}
@@ -187,7 +241,66 @@ const MediaUploader = ({ media, onChange, label = 'media' }) => {
   );
 };
 
-const PlaygroundProject = ({ project, index, total, editMode, onUpdate, onRemove, onMove, fallbackCtaUrl }) => {
+// Fullscreen image viewer. Closes on backdrop click / ✕ / Esc; ←/→ navigate.
+const Lightbox = ({ items, index, onClose, onNav }) => {
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      else if (e.key === 'ArrowLeft') onNav(-1);
+      else if (e.key === 'ArrowRight') onNav(1);
+    };
+    window.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [onClose, onNav]);
+
+  const multiple = items.length > 1;
+
+  return (
+    <motion.div
+      className="pg-lightbox"
+      onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <button type="button" className="pg-lightbox-close" onClick={onClose} aria-label="Close">✕</button>
+      {multiple && (
+        <button
+          type="button"
+          className="pg-lightbox-nav pg-lightbox-nav--prev"
+          onClick={(e) => { e.stopPropagation(); onNav(-1); }}
+          aria-label="Previous"
+        >‹</button>
+      )}
+      <motion.img
+        key={index}
+        className="pg-lightbox-img"
+        src={items[index]}
+        alt=""
+        onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.2 }}
+      />
+      {multiple && (
+        <button
+          type="button"
+          className="pg-lightbox-nav pg-lightbox-nav--next"
+          onClick={(e) => { e.stopPropagation(); onNav(1); }}
+          aria-label="Next"
+        >›</button>
+      )}
+      {multiple && <span className="pg-lightbox-count">{index + 1} / {items.length}</span>}
+    </motion.div>
+  );
+};
+
+const PlaygroundProject = ({ project, index, total, editMode, onUpdate, onRemove, onMove, onReorder, onOpenLightbox, fallbackCtaUrl }) => {
   const paragraphs = getParagraphs(project);
   const hero = getHero(project);
   const gallery = getGallery(project);
@@ -199,6 +312,19 @@ const PlaygroundProject = ({ project, index, total, editMode, onUpdate, onRemove
   const ctaUrl = normalizeUrl(cta.url) || fallbackCtaUrl;
 
   const set = useCallback((patch) => onUpdate(project.id, patch), [onUpdate, project.id]);
+
+  // All zoomable images in this project (hero first, then gallery) — drives the lightbox.
+  const lightboxImages = useMemo(() => {
+    const arr = [];
+    if (hero?.type === 'image' && hero.src) arr.push(hero.src);
+    gallery.forEach((m) => { if (m.type === 'image' && m.src) arr.push(m.src); });
+    return arr;
+  }, [hero, gallery]);
+  const openImage = (src) => {
+    const i = lightboxImages.indexOf(src);
+    if (i >= 0) onOpenLightbox(lightboxImages, i);
+  };
+  const canZoom = (m) => !editMode && m?.type === 'image' && !!m.src;
 
   // Paragraph ops
   const setParagraph = (i, text) => {
@@ -237,7 +363,7 @@ const PlaygroundProject = ({ project, index, total, editMode, onUpdate, onRemove
         <Editable
           value={project.title}
           onChange={(v) => set({ title: v })}
-          tag="h2"
+          tag="h3"
           className="pg-project-title"
           placeholder="Project name"
         />
@@ -268,15 +394,31 @@ const PlaygroundProject = ({ project, index, total, editMode, onUpdate, onRemove
           </div>
         ) : (
           ctaUrl && cta.label && (
-            <a className="pg-cta" href={ctaUrl} target="_blank" rel="noopener noreferrer">
-              <span>{cta.label}</span>
-              <span className="pg-cta-arrow" aria-hidden="true">→</span>
-            </a>
+            <AnimatedButton
+              href={ctaUrl}
+              variant="outline"
+              target="_blank"
+              className="pg-cta"
+            >
+              {cta.label}
+            </AnimatedButton>
           )
         )}
 
         {editMode && (
           <div className="pg-project-controls">
+            <label className="pg-pos" title="Set position">
+              <span className="pg-pos-label">Position</span>
+              <select
+                className="pg-pos-select"
+                value={index}
+                onChange={(e) => onReorder(project.id, Number(e.target.value))}
+              >
+                {Array.from({ length: total }, (_, i) => (
+                  <option key={i} value={i}>{i + 1}</option>
+                ))}
+              </select>
+            </label>
             <button type="button" className="pg-ctrl" onClick={() => onMove(project.id, -1)} disabled={index === 0} title="Move up">↑</button>
             <button type="button" className="pg-ctrl" onClick={() => onMove(project.id, 1)} disabled={index === total - 1} title="Move down">↓</button>
             <button type="button" className="pg-ctrl pg-ctrl--danger" onClick={() => onRemove(project.id)} title="Delete project">✕</button>
@@ -337,7 +479,13 @@ const PlaygroundProject = ({ project, index, total, editMode, onUpdate, onRemove
         {/* Hero media — full width */}
         {(hero?.src || editMode) && (
           <div className="pg-hero">
-            <Media media={hero} className="pg-hero-media" />
+            {canZoom(hero) ? (
+              <button type="button" className="pg-media-zoom" onClick={() => openImage(hero.src)} aria-label="View image">
+                <Media media={hero} className="pg-hero-media" />
+              </button>
+            ) : (
+              hero?.src && <div className="pg-media-frame"><Media media={hero} className="pg-hero-media" /></div>
+            )}
             {!hero?.src && !editMode ? null : null}
             {!hero?.src && editMode && <div className="pg-slot-empty">Hero image / video</div>}
             {editMode && (
@@ -348,26 +496,47 @@ const PlaygroundProject = ({ project, index, total, editMode, onUpdate, onRemove
           </div>
         )}
 
-        {/* Gallery — 2-column masonry of images / videos */}
+        {/* Gallery — grid of images / videos; each item is 1, 2, or 3 across */}
         {(gallery.length > 0 || editMode) && (
           <>
             <div className="pg-gallery">
-              {gallery.map((m, gi) => (
-                <div className="pg-gallery-item" key={m.id || gi}>
-                  <Media media={m} className="pg-gallery-media" />
+              {gallery.map((m, gi) => {
+                const perRow = itemPerRow(m);
+                return (
+                <div className={`pg-gallery-item pg-gallery-item--w${perRow}`} key={m.id || gi}>
+                  {canZoom(m) ? (
+                    <button type="button" className="pg-media-zoom" onClick={() => openImage(m.src)} aria-label="View image">
+                      <Media media={m} className="pg-gallery-media" />
+                    </button>
+                  ) : (
+                    m.src && <div className="pg-media-frame"><Media media={m} className="pg-gallery-media" /></div>
+                  )}
                   {!m.src && editMode && <div className="pg-slot-empty pg-slot-empty--gallery">{m.type === 'video' ? 'Video' : 'Image'}</div>}
                   {editMode && (
                     <div className="pg-gallery-edit">
                       <div className="pg-gallery-tools">
                         <button type="button" className="pg-ctrl" onClick={() => moveGallery(m.id, -1)} disabled={gi === 0} title="Earlier">←</button>
                         <button type="button" className="pg-ctrl" onClick={() => moveGallery(m.id, 1)} disabled={gi === gallery.length - 1} title="Later">→</button>
+                        <span className="pg-perrow" title="Items per row (1 = full width)">
+                          {[1, 2, 3].map((n) => (
+                            <button
+                              key={n}
+                              type="button"
+                              className={`pg-ctrl${perRow === n ? ' is-active' : ''}`}
+                              onClick={() => updateGallery(m.id, { perRow: n })}
+                            >
+                              {n}
+                            </button>
+                          ))}
+                        </span>
                         <button type="button" className="pg-ctrl pg-ctrl--danger" onClick={() => removeGallery(m.id)} title="Remove">✕</button>
                       </div>
                       <MediaUploader media={m} onChange={(media) => updateGallery(m.id, media)} label="" />
                     </div>
                   )}
                 </div>
-              ))}
+                );
+              })}
             </div>
             {editMode && (
               <div className="pg-gallery-add">
@@ -387,6 +556,15 @@ const Playground = () => {
   const playground = content.playground || {};
   const items = useMemo(() => playground.items || [], [playground.items]);
   const fallbackCtaUrl = normalizeUrl(content.hero?.cvLink || '');
+
+  // Lightbox: { items: [src…], index } or null.
+  const [lightbox, setLightbox] = useState(null);
+  const openLightbox = useCallback((imgs, index) => setLightbox({ items: imgs, index }), []);
+  const closeLightbox = useCallback(() => setLightbox(null), []);
+  const navLightbox = useCallback(
+    (dir) => setLightbox((lb) => (lb ? { ...lb, index: (lb.index + dir + lb.items.length) % lb.items.length } : lb)),
+    []
+  );
 
   const setItems = (next) => updateContent('playground', 'items', next);
   const updateItem = (id, patch) => setItems(items.map((it) => (it.id === id ? { ...it, ...patch } : it)));
@@ -413,6 +591,15 @@ const Playground = () => {
     [next[i], next[j]] = [next[j], next[i]];
     setItems(next);
   };
+  // Move a project directly to a chosen position (0-based).
+  const reorderItem = (id, toIndex) => {
+    const i = items.findIndex((it) => it.id === id);
+    if (i < 0 || toIndex < 0 || toIndex >= items.length || toIndex === i) return;
+    const next = [...items];
+    const [moved] = next.splice(i, 1);
+    next.splice(toIndex, 0, moved);
+    setItems(next);
+  };
 
   return (
     <div className="playground-page">
@@ -423,27 +610,39 @@ const Playground = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
         >
-          <Editable
-            value={playground.sectionLabel}
-            onChange={(v) => updateContent('playground', 'sectionLabel', v)}
-            className="playground-label"
-            placeholder="Playground"
-          />
-          <Editable
-            value={playground.sectionTitle}
-            onChange={(v) => updateContent('playground', 'sectionTitle', v)}
-            tag="h1"
-            className="playground-title"
-            placeholder="Experiments & side bets"
-          />
-          <Editable
-            value={playground.intro}
-            onChange={(v) => updateContent('playground', 'intro', v)}
-            tag="p"
-            className="playground-intro"
-            multiline
-            placeholder="A line or two framing why these exist…"
-          />
+          <div className="title-line-wrapper">
+            <span className="section-label">
+              <Editable
+                value={playground.sectionLabel}
+                onChange={(v) => updateContent('playground', 'sectionLabel', v)}
+                placeholder="Playground"
+              />
+            </span>
+          </div>
+          <h1 className="playground-title">
+            <div className="title-line-wrapper">
+              <div className="title-line">
+                <span className="sans">
+                  <Editable
+                    value={playground.titleSans ?? playground.sectionTitle ?? ''}
+                    onChange={(v) => updateContent('playground', 'titleSans', v)}
+                    placeholder="A place for experiments between"
+                  />
+                </span>
+              </div>
+            </div>
+            <div className="title-line-wrapper">
+              <div className="title-line">
+                <span className="serif accent">
+                  <Editable
+                    value={playground.titleSerif ?? ''}
+                    onChange={(v) => updateContent('playground', 'titleSerif', v)}
+                    placeholder="design and code"
+                  />
+                </span>
+              </div>
+            </div>
+          </h1>
         </motion.header>
 
         {items.length === 0 && !editMode ? (
@@ -460,6 +659,8 @@ const Playground = () => {
                 onUpdate={updateItem}
                 onRemove={removeItem}
                 onMove={moveItem}
+                onReorder={reorderItem}
+                onOpenLightbox={openLightbox}
                 fallbackCtaUrl={fallbackCtaUrl}
               />
             ))}
@@ -473,6 +674,17 @@ const Playground = () => {
           </div>
         )}
       </div>
+
+      <AnimatePresence>
+        {lightbox && (
+          <Lightbox
+            items={lightbox.items}
+            index={lightbox.index}
+            onClose={closeLightbox}
+            onNav={navLightbox}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

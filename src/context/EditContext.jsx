@@ -83,8 +83,9 @@ const defaultContent = {
   // Items are placeholders to be replaced in edit mode (Cmd+E → /playground).
   playground: {
     sectionLabel: 'Playground',
-    sectionTitle: 'Experiments & side bets',
-    intro: "Between client work, I run small experiments — the bets I make when nobody hands me a brief. Some shipped, some didn't. Every one taught me something.",
+    sectionTitle: 'Design experiments in code',
+    titleSans: 'Design experiments',
+    titleSerif: 'in code',
     // Long-form project write-ups. Each item is a section: sticky title + meta,
     // a column of body paragraphs, an optional link, a full-width `hero` media
     // object, and a `gallery` of image/video media objects (2-col masonry).
