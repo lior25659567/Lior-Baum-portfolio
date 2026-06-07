@@ -1291,6 +1291,12 @@ body.case-study-active .footer {
    Two columns side by side: left = numbered "KPI Goals" list, right =
    "Key Metrics" big-number rows, split by a vertical divider. Each row is
    a flat line with a 1px bottom divider — no cards. View-mode only. */
+/* By default the header wrapper is transparent to layout (display: contents),
+   so edit mode and single-section view behave exactly as before the wrapper
+   existed. The canvas 2-column rule below promotes it to a real grid item. */
+.goals-header {
+  display: contents;
+}
 .case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1301,14 +1307,18 @@ body.case-study-active .footer {
   height: 100%;
   flex: 1;
 }
-/* Header (+ optional description / highlight) spans both columns. */
-.case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-content > .slide-label,
-.case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-content > .goals-title,
-.case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-content > .goals-description-wrapper,
+/* The header (label + title + description) is one grid item pinned to the top
+   row, spanning both columns; its children stack normally inside. The highlight
+   (optional-field) also spans both columns and auto-flows to the bottom row. */
+.case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-content > .goals-header {
+  display: block;
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
 .case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-content > .optional-field-wrapper {
   grid-column: 1 / -1;
 }
-.case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-content > .goals-title {
+.case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-title {
   margin-bottom: 0;
 }
 .case-study:not(.edit-mode) .slide-goals:not(.goals-single-section) .goals-cards-section-wrapper {
@@ -1957,7 +1967,7 @@ body.case-study-active .footer {
   text-transform: none;
   border-bottom: none;
   padding: 0;
-  margin: 0 0 24px;
+  margin: 0 0 32px;
 }
 .case-study:not(.edit-mode) .slide-reflection .reflection-col ul {
   list-style: none;
@@ -1967,9 +1977,11 @@ body.case-study-active .footer {
   flex-direction: column;
   gap: 16px;
 }
-.case-study:not(.edit-mode) .slide-reflection .reflection-col li {
+.case-study:not(.edit-mode) .slide-reflection .reflection-col li,
+.case-study:not(.edit-mode) .slide-reflection .reflection-col .dynamic-bullets .bullet-list li {
   position: relative;
-  padding-left: 24px;
+  padding: 0 0 0 24px;
+  margin-bottom: 0;
   color: var(--color-text-muted);
 }
 .case-study:not(.edit-mode) .slide-reflection .reflection-col li::before {
@@ -3470,6 +3482,19 @@ button.dir-chip:hover {
   text-align: center;
   margin-top: 1.5rem;
   font-style: normal;
+}
+/* Canvas/view mode: tighten the gap above the context note. The flex container
+   (.slide-testimonial .slide-inner) adds a 1rem gap between items, so we pull
+   the wrapper up against it and zero the paragraph's own margin. */
+.case-study:not(.edit-mode) .slide-inner .testimonial-context {
+  margin-top: 0;
+}
+.case-study:not(.edit-mode) .slide-testimonial .slide-inner > .optional-field-wrapper:has(.testimonial-context) {
+  margin-top: -10px;
+}
+.case-study:not(.edit-mode) .slide-inner .testimonial-author {
+  margin-top: 0;
+  padding-top: 32px;
 }
 
 
@@ -10867,7 +10892,8 @@ textarea.editable-field {
 .edit-mode .stat-item:hover .remove-item-btn,
 .edit-mode .issue-item:hover .remove-item-btn,
 .edit-mode .intro-meta-item:hover .remove-item-btn,
-.edit-mode .outcome-item:hover .remove-item-btn {
+.edit-mode .outcome-item:hover .remove-item-btn,
+.edit-mode .reflection-col:hover .remove-item-btn {
   opacity: 1;
 }
 
@@ -16355,6 +16381,100 @@ textarea.editable-field {
   border-radius: 4px;
   position: relative;
 }
+
+/* ── Column wrapper for the cover image + an optional metric beneath it ── */
+.intro-media-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: visible;
+}
+/* The cover panel must NOT shrink to the column height — it keeps its full
+   over-bleed (calc(100% + 256px)) so the gray fills the slide height as before.
+   Without this, the flex column shrinks it (flex-shrink defaults to 1). */
+.intro-media-col > .intro-media-panel {
+  flex: 0 0 auto;
+  align-self: stretch;
+}
+
+/* ── Headline metric, "under image" placement — centered, Figma-style.
+   Drops the left-accent banner: big accent value, bold label, muted caption,
+   all centered. Type sizes come from the canvas typography layer in view mode
+   (display / h3 / caption), so it reads identically to the desktop deck. ── */
+.intro-headline-metric--under-image {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border-left: none;
+  background: transparent;
+  border-radius: 0;
+  flex: 0 0 auto;
+  width: 100%;
+}
+.intro-headline-metric--under-image .intro-metric-label {
+  font-weight: var(--fw-semibold, 600);
+}
+.intro-headline-metric--under-image .intro-metric-context {
+  flex-basis: auto;
+  font-style: normal;
+  max-width: 90%;
+}
+
+/* Metric under the image, INSIDE the gray panel (view mode): the panel becomes
+   a column — image on top, metric centered beneath it. Bottom over-bleed is
+   dropped (top bleed kept) so the metric stays inside the visible slide. */
+.case-study:not(.edit-mode) .slide-intro .intro-media-col.has-under-metric .intro-media-panel {
+  flex-direction: column;
+  gap: 28px;
+  /* Keep the FULL over-bleed (same as the no-metric panel) so the gray fills
+     completely as before; the larger bottom padding lifts the metric clear of
+     the 128px bottom bleed that .slide clips. */
+  height: calc(100% + 256px);
+  margin-top: -128px;
+  margin-bottom: 0;
+  padding-top: 148px;
+  padding-bottom: 156px;
+}
+.case-study:not(.edit-mode) .slide-intro .intro-media-col.has-under-metric .intro-media-panel > .intro-images-wrapper {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+}
+.case-study.edit-mode .slide-intro .intro-media-col {
+  gap: 16px;
+}
+
+/* Edit-mode segmented control to move the metric between placements. */
+.intro-metric-placement-toggle {
+  display: inline-flex;
+  flex-basis: 100%;
+  justify-content: center;
+  gap: 2px;
+  width: fit-content;
+  margin: 8px auto 0;
+  padding: 2px;
+  background: var(--color-bg-secondary);
+  border-radius: 8px;
+}
+.intro-metric-placement-toggle button {
+  font-size: 0.7rem;
+  padding: 0.25rem 0.6rem;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+.intro-metric-placement-toggle button.active {
+  background: var(--color-accent);
+  color: #fff;
+}
 .intro-metric-value {
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 3.5vw, 2.6rem);
@@ -16697,15 +16817,22 @@ textarea.editable-field {
 }
 .reflection-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(var(--reflection-cols, 3), 1fr);
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
 .reflection-col {
+  position: relative;
   border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 1rem;
   background: var(--color-bg);
+}
+.reflection-add-cols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
 }
 .reflection-col h3 {
   font-family: var(--font-body);

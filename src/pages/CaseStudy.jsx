@@ -5906,6 +5906,82 @@ My instructions: `;
           </div>
         );
 
+        // Headline metric placement: 'below-text' (default, left-accent banner under
+        // the description) or 'under-image' (centered metric block beneath the cover
+        // image — Figma-style). One metric, rendered only in its chosen position.
+        const metricPos = slide.headlineMetricPosition || 'below-text';
+        const renderHeadlineMetric = (variant) => {
+          const hasMetric = !!slide.headlineMetric;
+          if (hasMetric && metricPos !== variant) return null; // only show at its position
+          if (!hasMetric && !editMode) return null;
+          const wrapClass = `intro-headline-metric${variant === 'under-image' ? ' intro-headline-metric--under-image' : ''}`;
+          return (
+            <div className={wrapClass}>
+              {!hasMetric && editMode && (
+                <button
+                  type="button"
+                  className="intro-headline-metric-add"
+                  onClick={() => updateSlide(index, {
+                    headlineMetric: { value: '+47%', label: 'Task completion', context: '12K sessions, 4 weeks post-launch' },
+                    headlineMetricPosition: variant,
+                  })}
+                >
+                  + Add {variant === 'under-image' ? 'metric under image' : 'headline metric'}
+                </button>
+              )}
+              {hasMetric && (
+                <>
+                  <span className="intro-metric-value" style={{ '--color': project.color }}>
+                    <EditableField
+                      value={slide.headlineMetric.value || ''}
+                      onChange={(v) => updateSlide(index, { headlineMetric: { ...slide.headlineMetric, value: v } })}
+                    />
+                  </span>
+                  <span className="intro-metric-label">
+                    <EditableField
+                      value={slide.headlineMetric.label || ''}
+                      onChange={(v) => updateSlide(index, { headlineMetric: { ...slide.headlineMetric, label: v } })}
+                    />
+                  </span>
+                  {(slide.headlineMetric.context || editMode) && (
+                    <span className="intro-metric-context">
+                      <EditableField
+                        value={slide.headlineMetric.context || ''}
+                        placeholder="measured how, sample size, time frame"
+                        onChange={(v) => updateSlide(index, { headlineMetric: { ...slide.headlineMetric, context: v } })}
+                      />
+                    </span>
+                  )}
+                  {editMode && (
+                    <div className="intro-metric-placement-toggle" role="group" aria-label="Metric placement">
+                      <button
+                        type="button"
+                        className={metricPos === 'below-text' ? 'active' : ''}
+                        onClick={() => updateSlide(index, { headlineMetricPosition: 'below-text' })}
+                      >Below text</button>
+                      <button
+                        type="button"
+                        className={metricPos === 'under-image' ? 'active' : ''}
+                        onClick={() => updateSlide(index, { headlineMetricPosition: 'under-image' })}
+                      >Under image</button>
+                    </div>
+                  )}
+                  {editMode && (
+                    <button
+                      type="button"
+                      className="intro-metric-remove"
+                      onClick={() => updateSlide(index, { headlineMetric: null })}
+                      title="Remove headline metric"
+                    >
+                      ×
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
+          );
+        };
+
         return (
           <div className="slide slide-intro" key={index} style={spacingStyle}>
             {slideControls}
@@ -5947,55 +6023,8 @@ My instructions: `;
                   </p>
                 </OptionalField>
 
-                {/* Headline metric — caught in first 6 seconds of scanning */}
-                {(slide.headlineMetric?.value || slide.headlineMetric?.label || editMode) && (
-                  <div className="intro-headline-metric">
-                    {editMode && !slide.headlineMetric && (
-                      <button
-                        type="button"
-                        className="intro-headline-metric-add"
-                        onClick={() => updateSlide(index, { headlineMetric: { value: '+47%', label: 'Task completion', context: '12K sessions, 4 weeks post-launch' } })}
-                      >
-                        + Add headline metric
-                      </button>
-                    )}
-                    {slide.headlineMetric && (
-                      <>
-                        <span className="intro-metric-value" style={{ '--color': project.color }}>
-                          <EditableField
-                            value={slide.headlineMetric.value || ''}
-                            onChange={(v) => updateSlide(index, { headlineMetric: { ...slide.headlineMetric, value: v } })}
-                          />
-                        </span>
-                        <span className="intro-metric-label">
-                          <EditableField
-                            value={slide.headlineMetric.label || ''}
-                            onChange={(v) => updateSlide(index, { headlineMetric: { ...slide.headlineMetric, label: v } })}
-                          />
-                        </span>
-                        {(slide.headlineMetric.context || editMode) && (
-                          <span className="intro-metric-context">
-                            <EditableField
-                              value={slide.headlineMetric.context || ''}
-                              placeholder="measured how, sample size, time frame"
-                              onChange={(v) => updateSlide(index, { headlineMetric: { ...slide.headlineMetric, context: v } })}
-                            />
-                          </span>
-                        )}
-                        {editMode && (
-                          <button
-                            type="button"
-                            className="intro-metric-remove"
-                            onClick={() => updateSlide(index, { headlineMetric: null })}
-                            title="Remove headline metric"
-                          >
-                            ×
-                          </button>
-                        )}
-                      </>
-                    )}
-                  </div>
-                )}
+                {/* Headline metric (below-text placement) — caught in first 6s of scanning */}
+                {renderHeadlineMetric('below-text')}
 
                 {/* CTA Button — placed above meta row so it's out of the bottom nav hover zone */}
                 {slide.cta ? (
@@ -6085,14 +6114,21 @@ My instructions: `;
 
               <SplitDragHandle slide={slide} slideIndex={index} />
 
-              {/* ── Right: cover image on a tinted panel (no device frame), plain in edit mode ── */}
-              {editMode ? (
-                <DynamicImages slide={slide} slideIndex={index} field="image" className="intro-images-wrapper" />
-              ) : (
-                <div className="intro-media-panel">
-                  <DynamicImages slide={slide} slideIndex={index} field="image" className="intro-images-wrapper" />
-                </div>
-              )}
+              {/* ── Right: cover image with the optional metric INSIDE the gray panel, under the image ── */}
+              <div className={`intro-media-col${metricPos === 'under-image' && slide.headlineMetric ? ' has-under-metric' : ''}`}>
+                {editMode ? (
+                  <>
+                    <DynamicImages slide={slide} slideIndex={index} field="image" className="intro-images-wrapper" />
+                    {renderHeadlineMetric('under-image')}
+                  </>
+                ) : (
+                  <div className="intro-media-panel">
+                    <DynamicImages slide={slide} slideIndex={index} field="image" className="intro-images-wrapper" />
+                    {/* Headline metric (under-image) — centered, inside the gray panel */}
+                    {renderHeadlineMetric('under-image')}
+                  </div>
+                )}
+              </div>
 
             </div>
           </div>
@@ -6593,21 +6629,23 @@ My instructions: `;
             {titleSpacingControl}
             <div className="slide-inner">
               <div className="goals-content">
-                <span className="slide-label">
-                  <EditableField
-                    value={slide.label}
-                    onChange={(v) => updateSlide(index, { label: v })}
-                  />
-                </span>
-                <h2 className="goals-title">
-                  <EditableField
-                    value={slide.title}
-                    onChange={(v) => updateSlide(index, { title: v })}
-                    allowLineBreaks
-                  />
-                </h2>
-                <DynamicContent slide={slide} slideIndex={index} field="description" className="goals-description-wrapper" maxParagraphs={3} optional />
-                
+                <div className="goals-header">
+                  <span className="slide-label">
+                    <EditableField
+                      value={slide.label}
+                      onChange={(v) => updateSlide(index, { label: v })}
+                    />
+                  </span>
+                  <h2 className="goals-title">
+                    <EditableField
+                      value={slide.title}
+                      onChange={(v) => updateSlide(index, { title: v })}
+                      allowLineBreaks
+                    />
+                  </h2>
+                  <DynamicContent slide={slide} slideIndex={index} field="description" className="goals-description-wrapper" maxParagraphs={3} optional />
+                </div>
+
                 {/* Grid Layout Control */}
                 {editMode && (
                   <div className="grid-layout-control">
@@ -6864,7 +6902,7 @@ My instructions: `;
                 </div>
               )}
               {slide.outcomes?.length > 0 && (
-              <div className="outcomes-grid" style={{ gridTemplateColumns: `repeat(${slide.gridColumns || 2}, 1fr)` }}>
+              <div className="outcomes-grid" style={{ gridTemplateColumns: `repeat(${Math.min(slide.gridColumns || 2, slide.outcomes.length)}, 1fr)` }}>
                 {slide.outcomes.map((outcome, i) => (
                   <div key={i} className="outcome-item">
                       {slide.showNumbers !== false && <div className="outcome-number">{String(i + 1).padStart(2, '0')}</div>}
@@ -7734,7 +7772,16 @@ My instructions: `;
 
       // ─── Ideation ───────────────────────────────────────────────
       // ─── Reflection ─────────────────────────────────────────────
-      case 'reflection':
+      case 'reflection': {
+        const reflectionCols = [
+          { key: 'worked', titleField: 'workedTitle', defaultTitle: 'Key Learning', descField: 'workedDesc', bulletsField: 'whatWorked', colClass: 'reflection-col--worked' },
+          { key: 'failed', titleField: 'failedTitle', defaultTitle: 'Main Challenge', descField: 'failedDesc', bulletsField: 'whatFailed', colClass: 'reflection-col--failed' },
+          { key: 'differently', titleField: 'differentlyTitle', defaultTitle: 'What I Would Do Next', descField: 'differentlyDesc', bulletsField: 'whatYoudDoDifferently', colClass: 'reflection-col--differently' },
+        ];
+        const hiddenCols = slide.hiddenCols || [];
+        const visibleCols = reflectionCols.filter(c => !hiddenCols.includes(c.key));
+        const hiddenColDefs = reflectionCols.filter(c => hiddenCols.includes(c.key));
+        const visibleCount = Math.max(visibleCols.length, 1);
         return (
           <div className="slide slide-reflection" key={index} style={spacingStyle}>
             {slideControls}
@@ -7760,44 +7807,37 @@ My instructions: `;
               {editMode && (slide.subtitle == null || slide.subtitle === '') && (
                 <button className="add-field-btn" onClick={() => updateSlide(index, { subtitle: 'Subtitle' })}>+ Add subtitle</button>
               )}
-              <div className="reflection-grid">
-                <div className="reflection-col reflection-col--worked">
-                  <h3>
-                    <EditableField value={slide.workedTitle ?? 'Key Learning'} onChange={(v) => updateSlide(index, { workedTitle: v })} />
-                  </h3>
-                  <OptionalField slide={slide} index={index} field="workedDesc" label="Description" defaultValue="Add a short description…" multiline>
-                    <p className="reflection-col-desc">
-                      <EditableField value={slide.workedDesc} onChange={(v) => updateSlide(index, { workedDesc: v })} multiline />
-                    </p>
-                  </OptionalField>
-                  <DynamicBullets slide={slide} slideIndex={index} field="whatWorked" className="reflection-bullets" label="Point" />
-                </div>
-                <div className="reflection-col reflection-col--failed">
-                  <h3>
-                    <EditableField value={slide.failedTitle ?? 'Main Challenge'} onChange={(v) => updateSlide(index, { failedTitle: v })} />
-                  </h3>
-                  <OptionalField slide={slide} index={index} field="failedDesc" label="Description" defaultValue="Add a short description…" multiline>
-                    <p className="reflection-col-desc">
-                      <EditableField value={slide.failedDesc} onChange={(v) => updateSlide(index, { failedDesc: v })} multiline />
-                    </p>
-                  </OptionalField>
-                  <DynamicBullets slide={slide} slideIndex={index} field="whatFailed" className="reflection-bullets" label="Point" />
-                </div>
-                <div className="reflection-col reflection-col--differently">
-                  <h3>
-                    <EditableField value={slide.differentlyTitle ?? 'What I Would Do Next'} onChange={(v) => updateSlide(index, { differentlyTitle: v })} />
-                  </h3>
-                  <OptionalField slide={slide} index={index} field="differentlyDesc" label="Description" defaultValue="Add a short description…" multiline>
-                    <p className="reflection-col-desc">
-                      <EditableField value={slide.differentlyDesc} onChange={(v) => updateSlide(index, { differentlyDesc: v })} multiline />
-                    </p>
-                  </OptionalField>
-                  <DynamicBullets slide={slide} slideIndex={index} field="whatYoudDoDifferently" className="reflection-bullets" label="Point" />
-                </div>
+              <div className="reflection-grid" style={{ '--reflection-cols': visibleCount }}>
+                {visibleCols.map((col) => (
+                  <div key={col.key} className={`reflection-col ${col.colClass}`}>
+                    {editMode && visibleCols.length > 1 && (
+                      <button type="button" className="remove-item-btn" title="Remove column" onClick={() => updateSlide(index, { hiddenCols: [...hiddenCols, col.key] })}>×</button>
+                    )}
+                    <h3>
+                      <EditableField value={slide[col.titleField] ?? col.defaultTitle} onChange={(v) => updateSlide(index, { [col.titleField]: v })} />
+                    </h3>
+                    <OptionalField slide={slide} index={index} field={col.descField} label="Description" defaultValue="Add a short description…" multiline>
+                      <p className="reflection-col-desc">
+                        <EditableField value={slide[col.descField]} onChange={(v) => updateSlide(index, { [col.descField]: v })} multiline />
+                      </p>
+                    </OptionalField>
+                    <DynamicBullets slide={slide} slideIndex={index} field={col.bulletsField} className="reflection-bullets" label="Point" />
+                  </div>
+                ))}
               </div>
+              {editMode && hiddenColDefs.length > 0 && (
+                <div className="reflection-add-cols">
+                  {hiddenColDefs.map((col) => (
+                    <button key={col.key} type="button" className="add-field-btn" onClick={() => updateSlide(index, { hiddenCols: hiddenCols.filter(k => k !== col.key) })}>
+                      + Add “{slide[col.titleField] ?? col.defaultTitle}” column
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         );
+      }
 
       default:
         return (
