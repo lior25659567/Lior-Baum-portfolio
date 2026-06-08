@@ -292,7 +292,9 @@ const About = () => {
       const tl = gsap.timeline({ delay: 0.15 });
       tl.fromTo(labelRef.current,
         { y: 18, opacity: 0, filter: 'blur(4px)' },
-        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.6, ease: 'power2.out' }
+        // Settle at 0.65 (not 1) so the eyebrow stays muted — matches the
+        // Playground hero label; full opacity here overrode the CSS .65.
+        { y: 0, opacity: 0.65, filter: 'blur(0px)', duration: 0.6, ease: 'power2.out' }
       );
       if (line1Ref.current) {
         tl.fromTo(line1Ref.current,
@@ -312,16 +314,19 @@ const About = () => {
       // Scroll-away / scroll-back — mirrors the home hero exactly:
       // discrete in/out on threshold crossings instead of a scrubbed blur,
       // so the motion feels identical in both places.
-      const elements = [labelRef, line1Ref, line2Ref]
-        .map(r => r.current).filter(Boolean);
+      const lineEls = [line1Ref, line2Ref].map(r => r.current).filter(Boolean);
+      const elements = [labelRef.current, ...lineEls].filter(Boolean);
       ScrollTrigger.create({
         trigger: heroRef.current,
         start: 'top top',
         end: 'bottom 20%',
         onLeave: () =>
           gsap.to(elements, { y: -50, opacity: 0, duration: 0.35, stagger: 0.025, ease: 'power2.in' }),
-        onEnterBack: () =>
-          gsap.to(elements, { y: 0, opacity: 1, duration: 0.5, stagger: 0.04, ease: 'power3.out' }),
+        onEnterBack: () => {
+          // Title lines return to full opacity; the label stays muted at 0.65.
+          gsap.to(lineEls, { y: 0, opacity: 1, duration: 0.5, stagger: 0.04, ease: 'power3.out' });
+          gsap.to(labelRef.current, { y: 0, opacity: 0.65, duration: 0.5, ease: 'power3.out' });
+        },
       });
     }, heroRef);
     const t = setTimeout(() => ScrollTrigger.refresh(), 100);

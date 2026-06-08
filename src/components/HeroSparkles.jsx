@@ -11,7 +11,7 @@ import { useEffect, useRef } from 'react';
      into soft metaball blobs — the luminous look of the reference shader.
    - A faint ambient mote drift keeps the hero alive when the pointer is idle.
    - Honors prefers-reduced-motion (static, no rAF) and pauses when tab hidden. */
-const MAX_PARTICLES = 90;
+const MAX_PARTICLES = 150;
 const MAX_TRAIL = 30;
 
 const HeroSparkles = () => {
@@ -33,6 +33,7 @@ const HeroSparkles = () => {
     const particles = [];
     const trail = [];
     const motes = [];
+    const rings = [];               // expanding click shockwaves
     let lastEmit = null;            // last point a trail/spawn was emitted from
     let ghostLast = {};             // per-ghost previous point (intro sweep)
     // Self-demo: a ghost pointer sweeps the hero on load to show the effect is
@@ -41,7 +42,7 @@ const HeroSparkles = () => {
     let autoStarted = false;
     let autoStartT = 0.6;               // t at which the current intro began
     let lastMoveT = 0;                  // t of the last real pointer move
-    const IDLE_RESTART = 4;             // seconds of stillness → replay the intro
+    const IDLE_RESTART = 1.5;           // seconds of stillness → replay the intro
     let introFade = reduce ? 1 : 0;     // 0→1 ease-in of the whole intro
     let absorb = 0;                     // handoff pulse: cursor "swallows" the intro
     const cur = { x: 0, y: 0, vx: 0, vy: 0, has: false };
@@ -79,9 +80,13 @@ const HeroSparkles = () => {
       const count = Math.round(Math.min(28, Math.max(10, (width * height) / 90000)));
       motes.length = 0;
       for (let i = 0; i < count; i++) {
+        const bx = Math.random() * width;
+        const by = Math.random() * height;
         motes.push({
-          bx: Math.random() * width,
-          by: Math.random() * height,
+          bx,
+          by,
+          mx: bx,            // live position (eased by the cursor swirl)
+          my: by,
           r: rand(8, 22),
           depth: rand(0.3, 1),
           baseA: rand(0.05, 0.16),
@@ -119,19 +124,25 @@ const HeroSparkles = () => {
       ctx.fill();
     };
 
-    const spawn = (x, y, dx, dy) => {
+    // Hot ramp for fast (high-energy) motion — biases toward white/gold.
+    const HOT = ['#fff4e8', '#ffe1b0', '#ffc78f'];
+    const hotColor = () => (Math.random() < 0.4 ? trailCore : HOT[(Math.random() * HOT.length) | 0]);
+
+    const spawn = (x, y, dx, dy, energy = 0) => {
       if (particles.length >= MAX_PARTICLES) return;
       const len = Math.hypot(dx, dy) || 1;
-      const speed = rand(2, 10);
+      const speed = rand(2, 10) * (1 + energy * 1.3);
       const ang = Math.atan2(dy, dx) + (rand(-25, 25) * Math.PI) / 180;
+      // Fast flicks throw hotter, heftier sparks.
+      const hot = energy > 0.45 && Math.random() < energy;
       particles.push({
         x,
         y,
         vx: Math.cos(ang) * speed * (len > 0 ? 1 : 0),
         vy: Math.sin(ang) * speed,
-        mass: rand(1, 20),
+        mass: rand(1, 20) * (1 + energy * 0.9),
         drag: rand(0.92, 0.97),
-        color: palette[(Math.random() * palette.length) | 0],
+        color: hot ? hotColor() : palette[(Math.random() * palette.length) | 0],
       });
     };
 
@@ -143,9 +154,38 @@ const HeroSparkles = () => {
       if (lastEmit) {
         const dx = x - lastEmit[0];
         const dy = y - lastEmit[1];
-        if (Math.hypot(dx, dy) > 8) spawn(lastEmit[0], lastEmit[1], dx, dy);
+        const seg = Math.hypot(dx, dy);
+        if (seg > 8) {
+          // Speed-reactive: faster cursor → more sparks, hotter colour.
+          const energy = Math.min(1, seg / 45);
+          const n = 1 + Math.floor(energy * 3);
+          for (let k = 0; k < n; k++) {
+            const f = k / n;
+            spawn(lastEmit[0] + dx * f, lastEmit[1] + dy * f, dx, dy, energy);
+          }
+        }
       }
       lastEmit = [x, y];
+    };
+
+    // Radial shockwave on click/tap — an explosion of sparks + an expanding ring.
+    const burst = (x, y) => {
+      const count = 28;
+      for (let i = 0; i < count; i++) {
+        if (particles.length >= MAX_PARTICLES) break;
+        const ang = (i / count) * Math.PI * 2 + rand(-0.16, 0.16);
+        const speed = rand(6, 17);
+        particles.push({
+          x,
+          y,
+          vx: Math.cos(ang) * speed,
+          vy: Math.sin(ang) * speed,
+          mass: rand(6, 22),
+          drag: rand(0.9, 0.95),
+          color: Math.random() < 0.5 ? hotColor() : palette[(Math.random() * palette.length) | 0],
+        });
+      }
+      rings.push({ x, y, r: 6, a: dark ? 0.75 : 0.5 });
     };
 
     // Like emit(), but each intro ghost keeps its own previous point so the
@@ -222,10 +262,55 @@ const HeroSparkles = () => {
         if (a > 12) { auto = false; lastEmit = null; ghostLast = {}; }
       }
 
-      // Ambient motes — quiet life when the pointer is idle.
+      // Motes — pulled into a swirl around the cursor, then eased home.
+      const SWIRL_R = 240;
+      for (const m of motes) {
+        if (cur.has && !reduce) {
+          const dx = cur.x - m.mx;
+          const dy = cur.y - m.my;
+          const d = Math.hypot(dx, dy) || 1;
+          if (d < SWIRL_R) {
+            const pull = (1 - d / SWIRL_R) * (0.5 + m.depth);
+            // small radial draw-in + strong tangential push = orbital swirl
+            m.mx += (dx / d) * pull * 0.6 + (-dy / d) * pull * 2.4;
+            m.my += (dy / d) * pull * 0.6 + (dx / d) * pull * 2.4;
+          }
+        }
+        m.mx += (m.bx - m.mx) * 0.05;   // ease back to home base
+        m.my += (m.by - m.my) * 0.05;
+      }
+
+      // Constellation web — faint links between nearby motes, lit up near the cursor.
+      const LINK = 175;
+      for (let i = 0; i < motes.length; i++) {
+        for (let j = i + 1; j < motes.length; j++) {
+          const a = motes[i];
+          const b = motes[j];
+          const dx = b.mx - a.mx;
+          const dy = b.my - a.my;
+          const d = Math.hypot(dx, dy);
+          if (d >= LINK) continue;
+          let alpha = (1 - d / LINK) * (dark ? 0.16 : 0.1);
+          if (cur.has) {
+            const cd = Math.hypot(cur.x - (a.mx + b.mx) / 2, cur.y - (a.my + b.my) / 2);
+            if (cd < SWIRL_R) alpha *= 1 + (1 - cd / SWIRL_R) * 2.5;
+          }
+          alpha *= introFade;
+          if (alpha < 0.004) continue;
+          const [lr, lg, lb] = hexToRgb(a.color);
+          ctx.strokeStyle = `rgba(${lr},${lg},${lb},${alpha})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(a.mx, a.my);
+          ctx.lineTo(b.mx, b.my);
+          ctx.stroke();
+        }
+      }
+
+      // Mote glows at their live (swirled) positions.
       for (const m of motes) {
         const tw = 0.6 + 0.4 * Math.sin(t * m.tw + m.ph);
-        glow(m.bx, m.by, m.r, m.color, m.baseA * tw);
+        glow(m.mx, m.my, m.r, m.color, m.baseA * tw);
       }
 
       // Trail — the hot comet core that the particles peel off of.
@@ -263,6 +348,20 @@ const HeroSparkles = () => {
         const radius = 12 + energy * 90;
         const alpha = Math.min(dark ? 0.4 : 0.26, 0.05 + energy * 1.1) * introFade;
         glow(p.x, p.y, radius, p.color, alpha);
+      }
+
+      // Click shockwave rings — expand outward and fade.
+      for (let i = rings.length - 1; i >= 0; i--) {
+        const ring = rings[i];
+        ring.r += 9;
+        ring.a *= 0.93;
+        if (ring.a < 0.02) { rings.splice(i, 1); continue; }
+        const [rr, rg, rb] = hexToRgb(trailCore);
+        ctx.strokeStyle = `rgba(${rr},${rg},${rb},${ring.a * introFade})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(ring.x, ring.y, ring.r, 0, Math.PI * 2);
+        ctx.stroke();
       }
 
       ctx.globalCompositeOperation = 'source-over';
@@ -305,6 +404,15 @@ const HeroSparkles = () => {
       emit(x, y);
     };
     const onLeave = () => {};
+    const onDown = (e) => {
+      if (reduce) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      if (x < 0 || y < 0 || x > width || y > height) return;
+      burst(x, y);
+      lastMoveT = t;
+    };
 
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
@@ -319,6 +427,7 @@ const HeroSparkles = () => {
 
     window.addEventListener('pointermove', onMove, { passive: true });
     window.addEventListener('pointerout', onLeave, { passive: true });
+    window.addEventListener('pointerdown', onDown, { passive: true });
 
     const onVis = () => {
       if (document.hidden) { running = false; cancelAnimationFrame(raf); }
@@ -336,6 +445,7 @@ const HeroSparkles = () => {
       themeObs.disconnect();
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerout', onLeave);
+      window.removeEventListener('pointerdown', onDown);
       document.removeEventListener('visibilitychange', onVis);
     };
   }, []);

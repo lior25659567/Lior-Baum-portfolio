@@ -185,7 +185,7 @@
 }
 
 /* 1440px */
-@media (max-width: 1440px) {
+@media (max-width: 1535.98px) {
   .footer-decoration {
     width: 240px;
     height: 240px;
@@ -194,7 +194,7 @@
 }
 
 /* 1200px */
-@media (max-width: 1200px) {
+@media (max-width: 1279.98px) {
   .footer-cta-wrapper {
     min-height: 260px;
   }
@@ -214,7 +214,7 @@
 }
 
 /* 1024px - Tablet */
-@media (max-width: 1024px) {
+@media (max-width: 1023.98px) {
   .footer {
     padding: var(--spacing-xl) var(--spacing-md);
   }
@@ -237,7 +237,7 @@
 }
 
 /* 768px - Mobile */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   .footer {
     padding: var(--spacing-xl) var(--spacing-md) var(--spacing-lg);
   }
@@ -277,7 +277,7 @@
 }
 
 /* ===== Mobile responsiveness overrides (≤767px only) ===== */
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   .footer {
     padding: 3.5rem var(--spacing-md) 2rem;
   }

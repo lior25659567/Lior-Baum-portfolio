@@ -142,7 +142,10 @@
 /* Grid */
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  /* minmax(0, 1fr) (not 1fr) so neither column can grow past its share when a
+     card holds non-shrinkable content (wide media, long word, an input) —
+     guarantees both cards are exactly equal width. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--spacing-md);
 }
 
@@ -151,6 +154,7 @@
 .projects-grid-cell {
   display: flex;
   flex-direction: column;
+  min-width: 0; /* allow the cell to shrink to its track instead of overflowing */
 }
 
 /* Card */
@@ -5268,7 +5272,7 @@
 }
 
 /* 1440px */
-@media (max-width: 1440px) {
+@media (max-width: 1535.98px) {
   .projects-container {
     padding: 0 var(--spacing-lg);
   }
@@ -5279,7 +5283,7 @@
 }
 
 /* 1200px */
-@media (max-width: 1200px) {
+@media (max-width: 1279.98px) {
   .projects-container {
     padding: 0 var(--spacing-lg);
   }
@@ -5289,7 +5293,7 @@
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1023.98px) {
   .projects-container {
     padding: 0 var(--spacing-md);
   }
@@ -5299,7 +5303,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   .projects-container {
     padding: 0 var(--spacing-md);
   }
@@ -5360,7 +5364,7 @@
 
 /* ===== Mobile responsiveness overrides (≤767px only) =====
    Placed BEFORE the ≤480 block so source-order cascade lets ≤480 overrides win. */
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   .projects {
     padding: var(--spacing-xl) 0;
   }

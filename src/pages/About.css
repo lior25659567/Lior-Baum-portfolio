@@ -488,7 +488,7 @@
 }
 
 /* 1440px */
-@media (max-width: 1440px) {
+@media (max-width: 1535.98px) {
   .about-container {
     padding: 0 var(--spacing-lg);
   }
@@ -503,7 +503,7 @@
 }
 
 /* 1200px */
-@media (max-width: 1200px) {
+@media (max-width: 1279.98px) {
   .about-container {
     padding: 0 var(--spacing-lg);
   }
@@ -526,7 +526,7 @@
 }
 
 /* Tablet */
-@media (max-width: 1024px) {
+@media (max-width: 1023.98px) {
   .about-container {
     padding: 0 var(--spacing-md);
   }
@@ -556,7 +556,7 @@
 }
 
 /* Mobile */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   .about-container {
     padding: 0 var(--spacing-md);
   }
@@ -785,7 +785,7 @@
    MOBILE RESPONSIVENESS OVERRIDES (≤767px only)
    Scoped strictly to phones/small tablets. No ≥768px rules touched.
    ═══════════════════════════════════════════════════════════════════════ */
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   /* Hero block — widen vertical padding to 48px per section rhythm spec */
   .about-hero {
     padding: var(--spacing-xl) 0; /* resolves to 48px */

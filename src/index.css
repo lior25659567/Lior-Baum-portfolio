@@ -299,15 +299,15 @@ html {
   html { font-size: 18px; }
 }
 
-@media (max-width: 1440px) {
+@media (max-width: 1535.98px) {
   html { font-size: 15.5px; }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1279.98px) {
   html { font-size: 15px; }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   html { font-size: 14.5px; }
 }
 
@@ -388,7 +388,7 @@ img {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   .container {
     padding: 0 var(--spacing-md);
   }
@@ -406,7 +406,7 @@ img {
    touching any ≥768px rules. Satisfies: no text < 12px; body ≥ 14px; clean
    4/8px spacing scale; H1 32–40 / H2 26–32 / H3 20–24; eyebrow ≥ 14px.
    ───────────────────────────────────────────────────────────────────────── */
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   :root {
     --text-caption: clamp(0.8125rem, 2.4vw, 0.9375rem); /* ≥13px floor, up to 15px */
     --text-body-sm: clamp(0.875rem, 2.6vw, 1rem);        /* ≥14px floor */
@@ -442,7 +442,7 @@ img {
 
 /* Mobile eyebrow treatment — promote section-labels to a prominent,
    uppercase, tracked eyebrow. Scoped strictly to ≤767px. */
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   .section-label {
     font-size: var(--text-eyebrow);
     font-weight: 600;

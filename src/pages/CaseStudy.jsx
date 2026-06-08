@@ -7782,6 +7782,9 @@ My instructions: `;
         const visibleCols = reflectionCols.filter(c => !hiddenCols.includes(c.key));
         const hiddenColDefs = reflectionCols.filter(c => hiddenCols.includes(c.key));
         const visibleCount = Math.max(visibleCols.length, 1);
+        // Layout: 'horizontal' (cards side by side, default) or 'vertical' (stacked).
+        const reflectionLayout = slide.reflectionLayout === 'vertical' ? 'vertical' : 'horizontal';
+        const reflectionGridCols = reflectionLayout === 'vertical' ? 1 : visibleCount;
         return (
           <div className="slide slide-reflection" key={index} style={spacingStyle}>
             {slideControls}
@@ -7807,7 +7810,14 @@ My instructions: `;
               {editMode && (slide.subtitle == null || slide.subtitle === '') && (
                 <button className="add-field-btn" onClick={() => updateSlide(index, { subtitle: 'Subtitle' })}>+ Add subtitle</button>
               )}
-              <div className="reflection-grid" style={{ '--reflection-cols': visibleCount }}>
+              {editMode && (
+                <div className="reflection-layout-toggle">
+                  <span className="reflection-layout-label">Layout</span>
+                  <button type="button" className={`add-field-btn${reflectionLayout === 'horizontal' ? ' is-active' : ''}`} onClick={() => updateSlide(index, { reflectionLayout: 'horizontal' })}>Horizontal</button>
+                  <button type="button" className={`add-field-btn${reflectionLayout === 'vertical' ? ' is-active' : ''}`} onClick={() => updateSlide(index, { reflectionLayout: 'vertical' })}>Vertical</button>
+                </div>
+              )}
+              <div className={`reflection-grid reflection-grid--${reflectionLayout}`} style={{ '--reflection-cols': reflectionGridCols }}>
                 {visibleCols.map((col) => (
                   <div key={col.key} className={`reflection-col ${col.colClass}`}>
                     {editMode && visibleCols.length > 1 && (

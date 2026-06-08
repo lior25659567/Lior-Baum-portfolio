@@ -16821,6 +16821,30 @@ textarea.editable-field {
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
+/* Vertical layout — cards stacked one per row (full width). */
+.reflection-grid--vertical {
+  grid-template-columns: 1fr;
+}
+/* Layout toggle (edit mode only) */
+.reflection-layout-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+}
+.reflection-layout-label {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+.reflection-layout-toggle .add-field-btn.is-active {
+  background: var(--color-text);
+  color: var(--color-bg);
+  border-color: var(--color-text);
+}
 .reflection-col {
   position: relative;
   border: 1px solid var(--color-border);
