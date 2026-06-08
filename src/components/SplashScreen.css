@@ -194,7 +194,7 @@
 }
 
 /* Tablet */
-@media (max-width: 1024px) {
+@media (max-width: 1023.98px) {
   .splash-orb.orb-1 {
     width: 400px;
     height: 400px;
@@ -216,7 +216,7 @@
 }
 
 /* Mobile */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   .splash-content {
     gap: 1.5rem;
   }

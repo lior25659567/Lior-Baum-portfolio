@@ -94,13 +94,13 @@ main {
 }
 
 /* Utility classes for responsive visibility */
-@media (max-width: 1024px) {
+@media (max-width: 1023.98px) {
   .hide-tablet {
     display: none !important;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   .hide-mobile {
     display: none !important;
   }
@@ -146,7 +146,7 @@ main {
   transition: margin-right 0.3s ease;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   .app:has(.edit-panel) main,
   .app:has(.edit-panel) .footer {
     margin-right: 0;

@@ -67,7 +67,7 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   .toggle-track {
     width: 44px;
     height: 24px;
@@ -87,7 +87,7 @@
 /* Mobile (≤767px): enlarge invisible hit area to 44×44 without scaling
    the visual pill. The button itself receives the padding, so the track
    stays the same size while tap target is 44×44. */
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   .theme-toggle {
     min-width: 44px;
     min-height: 44px;

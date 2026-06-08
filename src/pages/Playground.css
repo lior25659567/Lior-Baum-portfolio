@@ -666,7 +666,7 @@
 }
 
 /* ── Responsive ─────────────────────────────────────────── */
-@media (min-width: 1921px) {
+@media (min-width: 1920px) {
   .playground-container {
     max-width: var(--w-content);
   }

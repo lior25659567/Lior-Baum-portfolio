@@ -257,7 +257,7 @@
 /* Responsive */
 
 /* 1920px+ - Large Desktop */
-@media (min-width: 1921px) {
+@media (min-width: 1920px) {
   .navigation {
     padding: var(--spacing-sm) var(--spacing-xl);
   }
@@ -286,7 +286,7 @@
 }
 
 /* 1440px */
-@media (max-width: 1440px) {
+@media (max-width: 1535.98px) {
   .navigation {
     padding: var(--spacing-sm) var(--spacing-lg);
   }
@@ -296,7 +296,7 @@
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1279.98px) {
   .navigation {
     padding: var(--spacing-sm) var(--spacing-lg);
   }
@@ -307,7 +307,7 @@
 }
 
 /* Tablet - Show hamburger */
-@media (max-width: 1024px) {
+@media (max-width: 1023.98px) {
   .navigation {
     padding: var(--spacing-sm) var(--spacing-md);
   }
@@ -331,7 +331,7 @@
 }
 
 /* Mobile */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
   .navigation {
     padding: var(--spacing-sm) var(--spacing-md);
   }
@@ -424,7 +424,7 @@
 }
 
 /* ===== Mobile responsiveness overrides (≤767px only) ===== */
-@media (max-width: 767px) {
+@media (max-width: 767.98px) {
   /* 44×44 minimum tap target for hamburger across all phone sizes */
   .hamburger {
     width: 44px;

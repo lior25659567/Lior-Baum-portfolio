@@ -167,7 +167,7 @@
      from mobile through desktop instead of stepping at each breakpoint.
      Floor/ceiling are anchored so sizes never get cramped or excessive.
      Media-query overrides further down adjust only spacing-sm/md on
-     small phones, and bump everything at ≥1921px ultrawide. */
+     small phones, and bump everything at ≥1920px ultrawide. */
   --spacing-xs: 0.5rem;
   --spacing-sm: 0.75rem;
   --spacing-md: clamp(1rem, 0.85rem + 0.4vw, 1.5rem);
@@ -185,7 +185,7 @@
   /* ── Section max-widths (apply per section TYPE, not one-size-fits-all) ──
      --w-grid    : showcase grids (Projects, Playground). Wide so more cards
                    fit per row; rides the --container-xl responsive bumps
-                   (1600 → 1760 @≥1921 → 1920 @≥2400).
+                   (1600 → 1760 @≥1920 → 1920 @≥2560).
      --w-content : text-led sections (Hero, About, Footer). Capped tighter so
                    reading lines and centred compositions stay focused on big
                    screens instead of stretching to the grid width.
@@ -251,7 +251,7 @@
    uses the extra screen width (home, about, projects) instead of
    floating in a sea of empty gutter. Slight spacing bump for breathing
    room. */
-@media (min-width: 1921px) {
+@media (min-width: 1920px) {
   :root {
     --spacing-lg: 3rem;
     --spacing-xl: 4.5rem;
@@ -262,9 +262,9 @@
   }
 }
 
-/* 2400px+ — true ultrawide / 4K. Bump containers further; keep padding
+/* 2560px+ — QHD / ultrawide. Bump containers further; keep padding
    modest so content isn't lost in the gutters. */
-@media (min-width: 2400px) {
+@media (min-width: 2560px) {
   :root {
     --container-xl: 1920px;
     --container-2xl: 2200px;
@@ -295,7 +295,7 @@ html {
   max-width: 100%;
 }
 
-@media (min-width: 1921px) {
+@media (min-width: 1920px) {
   html { font-size: 18px; }
 }
 
@@ -381,7 +381,7 @@ img {
   padding: 0 var(--spacing-lg);
 }
 
-@media (min-width: 1921px) {
+@media (min-width: 1920px) {
   .container {
     max-width: var(--container-2xl);
     padding: 0 var(--spacing-xl);

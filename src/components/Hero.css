@@ -483,7 +483,7 @@
 }
 
 /* 1920px+ — Large desktop */
-@media (min-width: 1921px) {
+@media (min-width: 1920px) {
   .hero-container {
     max-width: var(--w-content);
     padding: clamp(130px, 16vh, 200px) var(--spacing-xl) clamp(60px, 7vh, 100px);

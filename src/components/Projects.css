@@ -5260,7 +5260,7 @@
 
 /* 1920px+ - Large Desktop. Wider container + lighter horizontal padding
    so content fills the screen instead of floating in empty gutters. */
-@media (min-width: 1921px) {
+@media (min-width: 1920px) {
   .projects-container {
     max-width: var(--w-content);
     padding: 0 var(--spacing-lg);
