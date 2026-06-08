@@ -31,3 +31,16 @@ backups/
 
 # Agents Hub job queue (transient local state)
 cases/reviews/_jobs/
+
+# macOS / iCloud filename-conflict duplicates ("File 2.ext", "File 3.ext").
+# These are copies the OS makes on sync conflicts — never the file the app
+# imports. Ignored so they don't clutter git; the originals are untouched.
+* 2.*
+* 3.*
+* 2/
+* 3/
+
+# Broken node_modules set aside during a dependency repair (safe to delete by
+# hand anytime; left on disk so nothing the app uses is removed).
+.node_modules_trash/
+.nm_trash2/
