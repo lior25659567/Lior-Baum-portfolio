@@ -42,11 +42,11 @@ const DRIFT = 5;                   // deg/sec — idle speed
 const DRIFT_HOVER = 13;            // deg/sec — idle speed while hovering the wheel
 const DRIFT_EASE = 0.1;            // how fast drift eases toward its target
 const SCROLL_ACTIVE_MS = 160;      // within this of a scroll event = "actively scrolling"
-const SCROLL_IMPULSE = 0.08;       // deg/sec added per px of scroll delta (calmer — was 0.2)
+const SCROLL_IMPULSE = 0.42;       // deg/sec added per px of scroll delta (scroll drives the wheel hard, both ways)
 const MOUSE_IMPULSE = 0.16;        // deg/sec added per px of cursor movement
 const MOUSE_HOVER_MULT = 1.3;      // extra mouse gain while hovering the wheel
-const FRICTION = 0.88;             // per-frame velocity decay (lower = stops sooner)
-const MAX_VEL = 110;               // deg/sec clamp so a fast scroll never whips the wheel
+const FRICTION = 0.90;             // per-frame velocity decay (higher = momentum carries longer)
+const MAX_VEL = 340;               // deg/sec clamp so a fast scroll never whips the wheel
 
 // Smoothstep — eases the emphasis falloff so labels brighten/dim with a soft
 // curve instead of a hard linear ramp (animation-principles: ease, don't jerk).
@@ -95,6 +95,7 @@ const AboutRotator = ({ items }) => {
     let lastT = performance.now();
     let lastScrollY = window.scrollY;
     let lastScrollAt = -Infinity;
+    let lastWheelAt = -Infinity;
     let lastMouseX = null;
 
     const nearestCardinalDist = (angle) => {
@@ -104,9 +105,22 @@ const AboutRotator = ({ items }) => {
 
     const onScroll = () => {
       const y = window.scrollY;
-      velRef.current += (y - lastScrollY) * SCROLL_IMPULSE;
+      // If a wheel event just drove the velocity, don't double-count via the
+      // position delta. Keyboard / scrollbar / touch scrolling (no wheel) still
+      // spins the ring through this path.
+      if (performance.now() - lastWheelAt > 120) {
+        velRef.current += (y - lastScrollY) * SCROLL_IMPULSE;
+      }
       lastScrollY = y;
       lastScrollAt = performance.now();
+    };
+    // Drive the ring directly off the scroll INPUT (wheel/trackpad delta), not
+    // just the page position — so it spins even at the scroll boundaries, on a
+    // short page, or inside a scroll container where window.scrollY won't move.
+    const onWheel = (e) => {
+      velRef.current += e.deltaY * SCROLL_IMPULSE;
+      lastScrollAt = performance.now();
+      lastWheelAt = lastScrollAt;
     };
     const onMouseMove = (e) => {
       if (lastMouseX !== null) {
@@ -116,6 +130,7 @@ const AboutRotator = ({ items }) => {
       lastMouseX = e.clientX;
     };
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('wheel', onWheel, { passive: true });
     window.addEventListener('mousemove', onMouseMove, { passive: true });
 
     const tick = (now) => {
@@ -167,6 +182,7 @@ const AboutRotator = ({ items }) => {
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('wheel', onWheel);
       window.removeEventListener('mousemove', onMouseMove);
     };
   }, [labels.length]);
