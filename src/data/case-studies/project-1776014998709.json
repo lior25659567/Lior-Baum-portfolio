@@ -1,5 +1,5 @@
 {
-  "dataVersion": 21,
+  "dataVersion": 32,
   "title": "Patient Report\nRedesign",
   "subtitle": "From a blank page into a structured, shareable communication tool.",
   "category": "Clinical UX",
@@ -9,7 +9,7 @@
     {
       "type": "intro",
       "title": "Patient Report\nRedesign",
-      "description": "Doctors were skipping the patient report — not because they didn't care, but because the tool gave them a blank page and no place to start. I redesigned it so the hard part is done before they open it.",
+      "description": "Doctors were using the patient report — the tool just couldn't keep up. Too little functionality, unclear output, a layout that pulled attention from what mattered. I had to add everything they needed without making the report harder to use.",
       "clientLabel": "Client",
       "client": "Align Technology",
       "focusLabel": "Focus",
@@ -75,15 +75,15 @@
       "type": "problem",
       "label": "The Problem",
       "title": "A blank page after every appointment",
-      "content": "A skipped report cost more than doctor time — [ADD: name the downstream cost].",
+      "content": "Doctors were using the report — the ceiling was the problem, not adoption.",
       "issuesTitle": "Where it failed",
       "issues": [
         "Sidebar locked doctor info into 25% of the screen",
         "No templates — every report started blank",
-        "Raw scan images with no annotation tools",
+        "No modular blocks — no cost breakdown, before/after, or treatment plan",
         "PDF output not readable by patients"
       ],
-      "highlight": "The tool was designed around the software — not the doctor using it.",
+      "highlight": "Built around the software — not the doctor.",
       "image": [
         {
           "position": "center center",
@@ -91,7 +91,7 @@
           "fit": "contain",
           "embedUrl": "",
           "src": "/case-studies/project-1776014998709/img-i06atssrj0.webp",
-          "caption": "Old — three-panel split, static sidebar, blank content area",
+          "caption": "Old UI — sidebar-locked editing, blank content area, QR-only sharing",
           "isVideo": false,
           "embedType": ""
         }
@@ -104,7 +104,7 @@
       "type": "quotes",
       "label": "User Research",
       "title": "What doctors told me",
-      "content": "I interviewed [ADD: number of] doctors across four specialties. The same problems came up every time.",
+      "content": "I interviewed doctors across four specialties. They weren't complaining about the report existing — they were working around everything it couldn't do.",
       "quotes": [
         {
           "text": "I just skip the report most of the time. It takes too long.",
@@ -169,7 +169,20 @@
       "showKpisSection": true,
       "goalsCardVariant": "minimal",
       "splitRatio": 40,
-      "description": "Each goal maps directly to a failure doctors named in the research — not assumed upfront."
+      "description": "Each goal answers the same question: how do I add more without overwhelming the doctor? Everything here came from doctors — nothing assumed."
+    },
+    {
+      "type": "problem",
+      "label": "Structure",
+      "title": "Mapping the flow before designing the features",
+      "content": "Templates, modular blocks, annotation, sharing — four features that all live inside one workflow. I mapped the full report flow before designing any of them. I needed to understand how they connect before designing or testing each piece individually. Get the structure wrong and everything built on top of it is wrong too.",
+      "highlight": "Structure first. Features second.",
+      "image": [
+        {
+          "src": "",
+          "caption": "[ASSET: user-flow map — add in edit mode]"
+        }
+      ]
     },
     {
       "type": "directions",
@@ -177,12 +190,12 @@
       "title": "Two ways to edit",
       "directionCount": 2,
       "dir1Status": "rejected",
-      "dir1Desc": "Edit from the sidebar. The controls sit in a left-rail list and the canvas is just a preview — you change a section in one place and check the result in another.",
+      "dir1Desc": "Edit from the sidebar. The controls sit in a side panel and the canvas is just a preview — you change one place and check another.",
       "dir2Status": "accepted",
       "dir2Desc": "Edit on the content. Annotate, tag teeth, title and note each image right where it sits. The control lives on the thing it changes — no context switch.",
       "dir3Status": "",
       "dir3Desc": "",
-      "description": "After the goals, I built two editing directions and compared them. The majority preferred the second — and the mechanic backs them up.",
+      "description": "After the goals, I built both directions and user-tested them on the same task — same content, different model. Doctors preferred editing in place.",
       "dir1Image": [
         {
           "position": "center center",
@@ -207,70 +220,18 @@
       ]
     },
     {
-      "type": "comparison",
-      "label": "UI Layout",
-      "title": "From three fixed panels to a full editing canvas",
-      "beforeImage": [
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "wrapperBg": false,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-ih6r6wqz8g.webp",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
-        }
-      ],
-      "afterImage": [
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-1kpvq4sizhc.png",
-          "caption": "",
-          "isVideo": false,
-          "embedType": ""
-        }
-      ],
-      "beforeDescription": "A fixed right panel locked doctor info, preview, and sharing — the editing area squeezed in the middle.",
-      "afterDescription": "Everything moved to the header — doctor, clinic, patient, actions inline.",
-      "beforeBullets": [
-        "Right panel permanently occupied with static info",
-        "Content squeezed between two fixed columns",
-        "Share and Export buried outside the editing flow"
-      ],
-      "afterBullets": [
-        "Doctor, clinic, and patient editable from the header",
-        "Share and Export PDF always within reach",
-        "Full screen for report content"
-      ],
-      "highlight": null,
-      "slideMode": "before-after",
-      "switcherStyle": "pill",
-      "splitRatio": 40,
-      "gridCols": 1,
-      "imageDisplayMode": "grid",
-      "beforeLabel": "Before",
-      "afterLabel": "After",
-      "description": "The compact header direction set one constraint: the doctor should focus on the report, not the interface. This is what that looks like."
-    },
-    {
       "type": "problem",
       "label": "Templates & Sections",
-      "title": "A structured starting point — built to flex",
-      "content": "I built five procedure templates — so doctors start with structure, not a blank decision.",
+      "title": "A structured starting point",
+      "content": "Doctors were building every report from scratch — same procedure, blank page every time. Templates fix that default. The structure is ready before they open it.",
       "issuesTitle": "How it works",
       "issues": [
         "Five templates — General Scan, Implant, Crown Prep, Follow-up, Custom",
-        "Each pre-loaded with sections for that procedure type",
+        "Pre-loaded with sections for that procedure",
         "Modular blocks: Image, Before/After, Clinical Details, Cost, Notes",
-        "Drag to reorder, one-tap duplicate or delete"
+        "Drag to reorder, duplicate, or delete"
       ],
-      "highlight": "Templates give doctors a running start. Blocks keep them in control.",
+      "highlight": "Templates give a running start. Blocks give control.",
       "image": [
         {
           "position": "center center",
@@ -293,16 +254,15 @@
     {
       "type": "problem",
       "label": "Annotation & Tooth Chart",
-      "title": "From plain scan images to annotated findings",
-      "content": "I added two tools for one question: where exactly is the problem?",
+      "title": "From plain scans to annotated findings",
+      "content": "Doctors were describing findings in text next to images that showed them clearly. I added two tools to close that gap — so findings are marked, not explained.",
       "issuesTitle": "How it works",
       "issues": [
-        "Pen, text, and color tools — annotate at full size",
-        "Tooth chart — click to tag affected teeth, shown as numbered markers",
-        "Findings tied to anatomy — not described in a text block",
+        "Pen, text, color — annotate at full size",
+        "Tooth chart — click to tag affected teeth, shown as markers",
         "Patients see which teeth are affected"
       ],
-      "highlight": "Show, don't describe — the principle behind both tools.",
+      "highlight": "Show, don't describe — the principle behind both.",
       "image": [
         {
           "position": "center center",
@@ -325,7 +285,7 @@
     {
       "type": "comparison",
       "label": "Share & Export",
-      "title": "From three basic buttons to a full sharing system",
+      "title": "From three buttons to a full sharing system",
       "beforeImage": [
         {
           "position": "center center",
@@ -361,7 +321,7 @@
         "No way to invite specific recipients"
       ],
       "afterBullets": [
-        "Invite by email with ownership and access levels",
+        "Email invites with access levels",
         "PIN protection for sensitive reports",
         "Multi-channel delivery — WhatsApp, WeChat, QR, copy link",
         "Privacy warning built in"
@@ -375,7 +335,8 @@
       "afterImageCarouselFit": "contain",
       "gridCols": 1,
       "beforeLabel": "Before",
-      "afterLabel": "After"
+      "afterLabel": "After",
+      "description": "I replaced the three isolated buttons with a deliberate flow — delivery as part of the report, not a step after it."
     },
     {
       "type": "testimonial",
@@ -394,7 +355,7 @@
         {
           "metric": "Faster",
           "title": "Report creation",
-          "description": "Doctors in the early access group completed reports they had previously skipped."
+          "description": "Templates removed the blank-page barrier — doctors started from structure, not nothing, and reached a finished report faster."
         },
         {
           "metric": "Clearer",
@@ -404,7 +365,7 @@
         {
           "metric": "Higher",
           "title": "Completion rate",
-          "description": "With structure given upfront, doctors who had been skipping reporting started completing it."
+          "description": "The templates gave doctors a starting point. Reports came back more complete — and more detailed than the old tool allowed."
         },
         {
           "metric": "Wider",
@@ -416,25 +377,26 @@
       "cardVariant": "default",
       "gridColumns": 4,
       "splitRatio": 40,
-      "highlight": "iTero early access program, before full rollout. [ADD: participant count and period if available]"
+      "highlight": "These are early-access signals, not final measurements. Quantitative targets are defined and tracked post-rollout."
     },
     {
       "type": "reflection",
       "label": "Reflection",
       "title": "What I'd do differently",
       "whatWorked": [
-        "Defining KPIs before design work kept every decision tied to an outcome.",
-        "The modular block system — customizable structure was the right balance."
+        "Defining KPIs before design kept every decision tied to an outcome.",
+        "Modular blocks — customizable structure was the right balance."
       ],
       "whatFailed": [
-        "I scoped annotation too late — it triggered a full rework after the first doctor feedback round."
+        "I scoped annotation too late, triggering a full rework after the first feedback round."
       ],
       "whatYoudDoDifferently": [
-        "Test the layout with actual doctors before locking it — internal reviews weren't enough.",
-        "Define sharing permissions with engineering earlier — the edge cases compressed the handoff."
+        "Test with actual doctors before locking — internal reviews weren't enough.",
+        "Define sharing permissions with engineering earlier — edge cases made the handoff harder."
       ],
       "whatYouLearned": "Friction isn't bad UI — it's software that makes professionals manage it. Fix the default.",
-      "whatYouCouldntMeasure": "Long-term adoption and whether templates reduced variability — needs 6+ months of data."
+      "whatYouCouldntMeasure": "Long-term adoption and variability — needs 6+ months of data.",
+      "subtitle": "The decisions I'd change weren't mistakes. They were sequencing problems."
     },
     {
       "type": "end",
