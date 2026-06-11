@@ -13,14 +13,14 @@ data into prose.
 
 ---
 ## Slide 0 — type: intro
-_Words on screen: **65** · budget ~75_
+_Words on screen: **68** · budget ~75_
 
 - **title**  `[slides.0.title]`
   Patient Report
   Redesign
 
 - **description**  `[slides.0.description]`
-  Doctors were skipping the patient report — not because they didn't care, but because the tool gave them a blank page and no place to start. I redesigned it so the hard part is done before they open it.
+  Doctors were using the patient report — the tool just couldn't keep up. Too little functionality, unclear output, a layout that pulled attention from what mattered. I had to add everything they needed without making the report harder to use.
 
 - **clientLabel**  `[slides.0.clientLabel]`
   Client
@@ -32,7 +32,7 @@ _Words on screen: **65** · budget ~75_
   Focus
 
 - **focus**  `[slides.0.focus]`
-  Clinical Reporting UX
+  Workflow UX · B2B SaaS
 
 - **label**  `[slides.0.metaItems.0.label]`
   Role
@@ -64,7 +64,7 @@ _Available unused fields (`intro` template): subtitle, logo, introHeaderMode, ct
 
 ---
 ## Slide 1 — type: problem
-_Words on screen: **69** · budget ~75_
+_Words on screen: **75** · budget ~75_
 
 - **label**  `[slides.1.label]`
   The Problem
@@ -73,7 +73,7 @@ _Words on screen: **69** · budget ~75_
   A blank page after every appointment
 
 - **content**  `[slides.1.content]`
-  No structure, no templates, no annotation tools.
+  Doctors were using the report — the ceiling was the problem, not adoption.
 
 - **issuesTitle**  `[slides.1.issuesTitle]`
   Where it failed
@@ -85,16 +85,16 @@ _Words on screen: **69** · budget ~75_
   No templates — every report started blank
 
 - **issues**  `[slides.1.issues.2]`
-  Raw scan images with no annotation tools
+  No modular blocks — no cost breakdown, before/after, or treatment plan
 
 - **issues**  `[slides.1.issues.3]`
   PDF output not readable by patients
 
 - **highlight**  `[slides.1.highlight]`
-  The tool was designed around the software — not the doctor using it.
+  Built around the software — not the doctor.
 
 - **caption**  `[slides.1.image.0.caption]`
-  Old — three-panel split, static sidebar, blank content area
+  Old UI — sidebar-locked editing, blank content area, QR-only sharing
 
 _Images (READ these — content may live here):_ `public/case-studies/project-1776014998709/img-i06atssrj0.webp`
 
@@ -102,7 +102,7 @@ _Available unused fields (`textAndImage` template): bullets2, bullets2Title, con
 
 ---
 ## Slide 2 — type: quotes
-_Words on screen: **93** · budget ~110_
+_Words on screen: **102** · budget ~110_
 
 - **label**  `[slides.2.label]`
   User Research
@@ -111,7 +111,7 @@ _Words on screen: **93** · budget ~110_
   What doctors told me
 
 - **content**  `[slides.2.content]`
-  I interviewed doctors across four specialties. The same problems came up every time.
+  I interviewed doctors across four specialties. They weren't complaining about the report existing — they were working around everything it couldn't do.
 
 - **text**  `[slides.2.quotes.0.text]`
   I just skip the report most of the time. It takes too long.
@@ -144,7 +144,7 @@ _Available unused fields (`quotes` template): bulletsTitle_
 
 ---
 ## Slide 3 — type: goals
-_Words on screen: **75** · budget ~100_
+_Words on screen: **98** · budget ~100_
 
 - **label**  `[slides.3.label]`
   Design Goals
@@ -203,103 +203,73 @@ _Words on screen: **75** · budget ~100_
 - **goalsCardsTitle**  `[slides.3.goalsCardsTitle]`
   Goals
 
-_Available unused fields (`goals` template): description, showGoalsSection, highlight, cardVariant, showNumbers_
+- **description**  `[slides.3.description]`
+  Each goal answers the same question: how do I add more without overwhelming the doctor? Everything here came from doctors — nothing assumed.
+
+_Available unused fields (`goals` template): showGoalsSection, highlight, cardVariant, showNumbers_
 
 ---
-## Slide 4 — type: directions
-_Words on screen: **83** · budget ~90_
+## Slide 4 — type: problem
+_Words on screen: **73** · budget ~75_
 
 - **label**  `[slides.4.label]`
-  Ideation
+  Structure
 
 - **title**  `[slides.4.title]`
-  Layout directions I explored
+  Mapping the flow before designing the features
 
-- **dir1Status**  `[slides.4.dir1Status]`
-  rejected
+- **content**  `[slides.4.content]`
+  Templates, modular blocks, annotation, sharing — four features that all live inside one workflow. I mapped the full report flow before designing any of them. I needed to understand how they connect before designing or testing each piece individually. Get the structure wrong and everything built on top of it is wrong too.
 
-- **dir1Desc**  `[slides.4.dir1Desc]`
-  Collapsible sidebar — kept the three-panel layout but let doctors hide the right panel. Felt incremental. Doctors were still managing the interface instead of just writing the report.
+- **highlight**  `[slides.4.highlight]`
+  Structure first. Features second.
 
-- **dir2Status**  `[slides.4.dir2Status]`
-  rejected
+- **caption**  `[slides.4.image.0.caption]`
+  [ASSET: user-flow map — add in edit mode]
 
-- **dir2Desc**  `[slides.4.dir2Desc]`
-  Floating action drawer — tools and metadata in an overlay. Added interaction without solving the space problem.
-
-- **dir3Status**  `[slides.4.dir3Status]`
-  accepted
-
-- **dir3Desc**  `[slides.4.dir3Desc]`
-  Compact header bar — moved all metadata and actions into a single top strip, freeing the full canvas for the report. Solved the space problem without adding new interaction patterns.
-
-_Available unused fields (`directions` template): dir1Image, dir2Image, dir3Image_
+_Available unused fields (`textAndImage` template): issues, issuesTitle, bullets2, bullets2Title, conclusion, splitRatio_
 
 ---
-## Slide 5 — type: comparison
-_Words on screen: **110** · budget ~110_
+## Slide 5 — type: directions
+_Words on screen: **85** · budget ~90_
 
 - **label**  `[slides.5.label]`
-  UI Layout
+  Ideation
 
 - **title**  `[slides.5.title]`
-  From three fixed panels to a full editing canvas
+  Two ways to edit
 
-- **caption**  `[slides.5.beforeImage.0.caption]`
-  Old — static three-panel split
+- **dir1Status**  `[slides.5.dir1Status]`
+  rejected
 
-- **caption**  `[slides.5.afterImage.0.caption]`
-  New — compact header, full canvas for editing
+- **dir1Desc**  `[slides.5.dir1Desc]`
+  Edit from the sidebar. The controls sit in a side panel and the canvas is just a preview — you change one place and check another.
 
-- **beforeDescription**  `[slides.5.beforeDescription]`
-  A fixed right panel locked doctor info, preview, and sharing — the editing area squeezed in the middle.
+- **dir2Status**  `[slides.5.dir2Status]`
+  accepted
 
-- **afterDescription**  `[slides.5.afterDescription]`
-  Everything moved to the header — doctor, clinic, patient, actions inline.
+- **dir2Desc**  `[slides.5.dir2Desc]`
+  Edit on the content. Annotate, tag teeth, title and note each image right where it sits. The control lives on the thing it changes — no context switch.
 
-- **beforeBullets**  `[slides.5.beforeBullets.0]`
-  Right panel permanently occupied with static info
+- **description**  `[slides.5.description]`
+  After the goals, I built both directions and user-tested them on the same task — same content, different model. Doctors preferred editing in place.
 
-- **beforeBullets**  `[slides.5.beforeBullets.1]`
-  Content squeezed between two fixed columns
+_Images (READ these — content may live here):_ `public/case-studies/project-1776014998709/img-1kpvq4sizhc.png`, `public/case-studies/project-1776014998709/img-1te5c1kqfg.png`
 
-- **beforeBullets**  `[slides.5.beforeBullets.2]`
-  Share and Export buried outside the editing flow
-
-- **afterBullets**  `[slides.5.afterBullets.0]`
-  Doctor, clinic, and patient editable from the header
-
-- **afterBullets**  `[slides.5.afterBullets.1]`
-  Share and Export PDF always within reach
-
-- **afterBullets**  `[slides.5.afterBullets.2]`
-  Full screen for report content
-
-- **highlight**  `[slides.5.highlight]`
-  I moved everything into one header line — every action now one click away.
-
-- **beforeLabel**  `[slides.5.beforeLabel]`
-  Before
-
-- **afterLabel**  `[slides.5.afterLabel]`
-  After
-
-_Images (READ these — content may live here):_ `public/case-studies/project-1776014998709/img-ih6r6wqz8g.webp`, `public/case-studies/project-1776014998709/img-1kpvq4sizhc.png`
-
-_Available unused fields (`comparison` template): description, beforeBulletsTitle, afterBulletsTitle, bullets, bulletsTitle_
+_Available unused fields (`directions` template): dir3Image_
 
 ---
 ## Slide 6 — type: problem
-_Words on screen: **73** · budget ~75_
+_Words on screen: **74** · budget ~75_
 
 - **label**  `[slides.6.label]`
   Templates & Sections
 
 - **title**  `[slides.6.title]`
-  A structured starting point — built to flex
+  A structured starting point
 
 - **content**  `[slides.6.content]`
-  I built five procedure templates — so doctors start with structure, not a blank page.
+  Doctors were building every report from scratch — same procedure, blank page every time. Templates fix that default. The structure is ready before they open it.
 
 - **issuesTitle**  `[slides.6.issuesTitle]`
   How it works
@@ -308,16 +278,16 @@ _Words on screen: **73** · budget ~75_
   Five templates — General Scan, Implant, Crown Prep, Follow-up, Custom
 
 - **issues**  `[slides.6.issues.1]`
-  Each pre-loaded with sections for that procedure type
+  Pre-loaded with sections for that procedure
 
 - **issues**  `[slides.6.issues.2]`
   Modular blocks: Image, Before/After, Clinical Details, Cost, Notes
 
 - **issues**  `[slides.6.issues.3]`
-  Drag to reorder, one-tap duplicate or delete
+  Drag to reorder, duplicate, or delete
 
 - **highlight**  `[slides.6.highlight]`
-  Templates give doctors a running start. Blocks keep them in control.
+  Templates give a running start. Blocks give control.
 
 _Images (READ these — content may live here):_ `public/case-studies/project-1776014998709/vid-fay0vqurotc.mp4`
 
@@ -331,28 +301,25 @@ _Words on screen: **74** · budget ~75_
   Annotation & Tooth Chart
 
 - **title**  `[slides.7.title]`
-  From plain scan images to annotated findings
+  From plain scans to annotated findings
 
 - **content**  `[slides.7.content]`
-  I added two tools for one question: where exactly is the problem?
+  Doctors were describing findings in text next to images that showed them clearly. I added two tools to close that gap — so findings are marked, not explained.
 
 - **issuesTitle**  `[slides.7.issuesTitle]`
   How it works
 
 - **issues**  `[slides.7.issues.0]`
-  Pen, text, and color tools — annotate at full size
+  Pen, text, color — annotate at full size
 
 - **issues**  `[slides.7.issues.1]`
-  Tooth chart — click to tag affected teeth, shown as numbered markers
+  Tooth chart — click to tag affected teeth, shown as markers
 
 - **issues**  `[slides.7.issues.2]`
-  Findings tied to anatomy — not described in a text block
-
-- **issues**  `[slides.7.issues.3]`
   Patients see which teeth are affected
 
 - **highlight**  `[slides.7.highlight]`
-  Show, don't describe — the principle behind both tools.
+  Show, don't describe — the principle behind both.
 
 _Images (READ these — content may live here):_ `public/case-studies/project-1776014998709/vid-jl0tegce3qg.mp4`
 
@@ -360,16 +327,13 @@ _Available unused fields (`textAndImage` template): bullets2, bullets2Title, con
 
 ---
 ## Slide 8 — type: comparison
-_Words on screen: **109** · budget ~110_
+_Words on screen: **108** · budget ~110_
 
 - **label**  `[slides.8.label]`
   Share & Export
 
 - **title**  `[slides.8.title]`
-  From three basic buttons to a full sharing system
-
-- **caption**  `[slides.8.beforeImage.0.caption]`
-  Old — Preview, Download PDF, Share via QR
+  From three buttons to a full sharing system
 
 - **beforeDescription**  `[slides.8.beforeDescription]`
   Three sidebar buttons — Preview, Download PDF, Share via QR.
@@ -390,7 +354,7 @@ _Words on screen: **109** · budget ~110_
   No way to invite specific recipients
 
 - **afterBullets**  `[slides.8.afterBullets.0]`
-  Invite by email with ownership and access levels
+  Email invites with access levels
 
 - **afterBullets**  `[slides.8.afterBullets.1]`
   PIN protection for sensitive reports
@@ -401,18 +365,18 @@ _Words on screen: **109** · budget ~110_
 - **afterBullets**  `[slides.8.afterBullets.3]`
   Privacy warning built in
 
-- **highlight**  `[slides.8.highlight]`
-  Sharing stopped being an afterthought. It became a controlled, deliberate handoff.
-
 - **beforeLabel**  `[slides.8.beforeLabel]`
   Before
 
 - **afterLabel**  `[slides.8.afterLabel]`
   After
 
+- **description**  `[slides.8.description]`
+  I replaced the three isolated buttons with a deliberate flow — delivery as part of the report, not a step after it.
+
 _Images (READ these — content may live here):_ `public/case-studies/project-1776014998709/img-mpp2k7l6t4.webp`, `public/case-studies/project-1776014998709/vid-47ggf6tvc0.mp4`
 
-_Available unused fields (`comparison` template): description, beforeBulletsTitle, afterBulletsTitle, bullets, bulletsTitle_
+_Available unused fields (`comparison` template): beforeBulletsTitle, afterBulletsTitle, bullets, bulletsTitle_
 
 ---
 ## Slide 9 — type: testimonial
@@ -437,13 +401,13 @@ _Available unused fields (`testimonial` template): highlight_
 
 ---
 ## Slide 10 — type: outcomes
-_Words on screen: **92** · budget ~95_
+_Words on screen: **94** · budget ~95_
 
 - **label**  `[slides.10.label]`
   Outcomes
 
 - **title**  `[slides.10.title]`
-  Early-access results.
+  Early-access results
 
 - **metric** (read-only)  `[slides.10.outcomes.0.metric]`
   Faster
@@ -452,7 +416,7 @@ _Words on screen: **92** · budget ~95_
   Report creation
 
 - **description**  `[slides.10.outcomes.0.description]`
-  The template system removed the blank-page barrier. Doctors in the early access group started and completed reports they would have skipped.
+  Templates removed the blank-page barrier — doctors started from structure, not nothing, and reached a finished report faster.
 
 - **metric** (read-only)  `[slides.10.outcomes.1.metric]`
   Clearer
@@ -461,7 +425,7 @@ _Words on screen: **92** · budget ~95_
   Clinical communication
 
 - **description**  `[slides.10.outcomes.1.description]`
-  Annotation and tooth tagging let doctors mark the exact finding instead of describing it in text — clearer for patients, faster for the doctor.
+  Doctors marked findings on the image — clearer for patients, faster for the doctor.
 
 - **metric** (read-only)  `[slides.10.outcomes.2.metric]`
   Higher
@@ -470,7 +434,7 @@ _Words on screen: **92** · budget ~95_
   Completion rate
 
 - **description**  `[slides.10.outcomes.2.description]`
-  With structure upfront, doctors who previously skipped reporting started completing it. Broader measurement is planned post-rollout.
+  The templates gave doctors a starting point. Reports came back more complete — and more detailed than the old tool allowed.
 
 - **metric** (read-only)  `[slides.10.outcomes.3.metric]`
   Wider
@@ -479,55 +443,59 @@ _Words on screen: **92** · budget ~95_
   Reach per report
 
 - **description**  `[slides.10.outcomes.3.description]`
-  Multi-channel sharing — email, WhatsApp, WeChat, QR code — meant reports reached patients on the channel they actually check.
+  Reports reached patients on the channel they actually check — email, WhatsApp, WeChat, or QR.
 
-_Available unused fields (`outcomes` template): highlight_
+- **highlight**  `[slides.10.highlight]`
+  These are early-access signals, not final measurements. Quantitative targets are defined and tracked post-rollout.
 
 ---
-## Slide 11 — type: end
-_Words on screen: **18** · budget ~18_
+## Slide 11 — type: reflection
+_Words on screen: **98** · budget ~100_
+
+- **label**  `[slides.11.label]`
+  Reflection
 
 - **title**  `[slides.11.title]`
-  Thank You
+  What I'd do differently
+
+- **whatWorked**  `[slides.11.whatWorked.0]`
+  Defining KPIs before design kept every decision tied to an outcome.
+
+- **whatWorked**  `[slides.11.whatWorked.1]`
+  Modular blocks — customizable structure was the right balance.
+
+- **whatFailed**  `[slides.11.whatFailed.0]`
+  I scoped annotation too late, triggering a full rework after the first feedback round.
+
+- **whatYoudDoDifferently**  `[slides.11.whatYoudDoDifferently.0]`
+  Test with actual doctors before locking — internal reviews weren't enough.
+
+- **whatYoudDoDifferently**  `[slides.11.whatYoudDoDifferently.1]`
+  Define sharing permissions with engineering earlier — edge cases made the handoff harder.
+
+- **whatYouLearned**  `[slides.11.whatYouLearned]`
+  Friction isn't bad UI — it's software that makes professionals manage it. Fix the default.
+
+- **whatYouCouldntMeasure**  `[slides.11.whatYouCouldntMeasure]`
+  Long-term adoption and variability — needs 6+ months of data.
 
 - **subtitle**  `[slides.11.subtitle]`
-  I make complex workflows feel obvious — a skill for any high-pressure product.
+  The decisions I'd change weren't mistakes. They were sequencing problems.
 
-- **cta**  `[slides.11.cta]`
+_Available unused fields (`reflection` template): nextIteration_
+
+---
+## Slide 12 — type: end
+_Words on screen: **14** · budget ~18_
+
+- **title**  `[slides.12.title]`
+  Thank You
+
+- **subtitle**  `[slides.12.subtitle]`
+  I fix the defaults professionals shouldn't have to manage.
+
+- **cta**  `[slides.12.cta]`
   Get in touch
 
 _Available unused fields (`end` template): buttons, email, phone, linkedinUrl_
-
----
-## Slide 12 — type: reflection
-_Words on screen: **100** · budget ~100_
-
-- **label**  `[slides.12.label]`
-  Reflection
-
-- **title**  `[slides.12.title]`
-  What I'd do differently
-
-- **whatWorked**  `[slides.12.whatWorked.0]`
-  Defining KPIs before design work kept every decision tied to an outcome.
-
-- **whatWorked**  `[slides.12.whatWorked.1]`
-  The modular block system — customizable structure was the right balance.
-
-- **whatFailed**  `[slides.12.whatFailed.0]`
-  I scoped annotation too late — it triggered a full rework after the first doctor feedback round.
-
-- **whatYoudDoDifferently**  `[slides.12.whatYoudDoDifferently.0]`
-  Test the layout with actual doctors before locking it — internal reviews weren't enough.
-
-- **whatYoudDoDifferently**  `[slides.12.whatYoudDoDifferently.1]`
-  Define sharing permissions with engineering earlier — the edge cases compressed the handoff.
-
-- **whatYouLearned**  `[slides.12.whatYouLearned]`
-  Friction isn't bad UI — it's software that makes professionals manage it. Fix the default.
-
-- **whatYouCouldntMeasure**  `[slides.12.whatYouCouldntMeasure]`
-  Long-term adoption and whether templates reduced variability — needs 6+ months of data.
-
-_Available unused fields (`reflection` template): nextIteration_
 

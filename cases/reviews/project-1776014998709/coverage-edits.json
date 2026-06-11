@@ -1,0 +1,14 @@
+{
+  "edits": {
+    "slides.5.highlight": "I moved everything into one header line — and made every action one click away.",
+    "slides.7.content": "I added two tools for one question: where exactly is the problem?"
+  },
+  "setFields": {
+    "slides.2.highlight": "These problems had gone unreported — doctors assumed it was just how the tool worked.",
+    "slides.5.beforeLabel": "Before",
+    "slides.5.afterLabel": "After",
+    "slides.8.beforeLabel": "Before",
+    "slides.8.afterLabel": "After",
+    "slides.9.context": "Feedback collected during the iTero early access program, before full rollout."
+  }
+}

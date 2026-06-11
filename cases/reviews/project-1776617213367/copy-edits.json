@@ -1,0 +1,15 @@
+{
+  "edits": {
+    "slides.0.description": "No brief, no client, no user research — so I gave myself one constraint: make Wikipedia's techno content feel like the music sounds. Built solo in Figma and Webflow.",
+    "slides.1.content": "Wikipedia covers the history. None of it feels like the music. My rule: take the same source and make it feel like what it describes.",
+    "slides.1.issuesTitle": "What wasn't working",
+    "slides.1.issues.0": "Dense text walls, no visual hierarchy — information, not experience",
+    "slides.1.issues.1": "Generic sidebar makes every topic feel identical",
+    "slides.2.dir1Desc": "Text-forward redesign — clean type over Wikipedia's layout. It read like a design exercise, not a cultural experience.",
+    "slides.2.dir2Desc": "Visual maximalism — photography, gradients, full-bleed texture. The decoration competed with the story instead of carrying it.",
+    "slides.2.dir3Desc": "Rhythmic restraint — monochrome grain, ASCII portraits, scroll-triggered reveals. The look captures the underground feel without spelling it out. Works across every screen size.",
+    "slides.3.description": "Monochrome grain, ASCII silhouettes, oversized type — every visual choice earned its place. Nothing made it in unless the content demanded it.",
+    "slides.4.whatYouLearned": "Controlling where attention lands — through scroll timing or through a multi-step workflow — is the same design problem. That insight transfers.",
+    "slides.4.whatYoudDoDifferently": "Test three scroll speeds with five readers before going live — pacing is the hardest thing to judge alone."
+  }
+}

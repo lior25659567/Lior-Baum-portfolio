@@ -1,0 +1,7 @@
+{
+  "edits": {
+    "slides.4.description": "Two ways to rebuild the editor: give doctors everything, or get out of their way.",
+    "slides.4.dir1Desc": "A maximal builder: an Add Section menu of eight block types — Before/After, Summary, Prescription, Patient Instructions and more — with annotation and notes inline on every image. Complete, but more interface to manage.",
+    "slides.4.dir2Desc": "The streamlined one. Metadata and actions collapse into a compact top strip; procedure templates and a simple section list drive a clean canvas. Fewer choices, less to manage — the doctor focuses on the report."
+  }
+}

@@ -1,1 +1,43 @@
-{ "ops": [ { "op": "move", "index": 12, "after": 10, "reason": "Reflection was after the end card; move it before the end (Outcomes → Reflection → end) so the deck's strongest seniority signal isn't unreachable. All 3 reviewers agree." } ] }
+{
+  "edits": {
+    "slides.1.content": "Doctors were using the report — the ceiling was the problem, not adoption. The tool held scan images well; everything else had to be improvised.",
+    "slides.1.highlight": "Built around the software — not the doctor using it.",
+    "slides.1.image.0.caption": "Old UI — sidebar-locked editing, blank content area, QR-only sharing",
+    "slides.5.description": "I built two editing directions and ran user testing on both with the same task — same content, different model. One asks the doctor to edit in one place and check the result in another. The other puts the control on the thing it changes. Doctors preferred editing in place, so I took that forward.",
+    "slides.7.content": "Doctors were describing findings in text next to images that showed them clearly. I added two tools to close that gap — so findings are marked, not explained.",
+    "slides.8.afterBullets.0": "Email invites with access levels"
+  },
+  "setFields": {
+    "slides.1.issues": [
+      "Sidebar locked doctor info into 25% of the screen",
+      "No templates — every report started blank",
+      "No modular blocks — no cost breakdown, before/after, or treatment plan",
+      "PDF output not readable by patients"
+    ]
+  },
+  "ops": [
+    {
+      "op": "remove",
+      "index": 2,
+      "reason": "Same beat as Slide 1; merged into the single problem slide. Two back-to-back problem slides read as indecision."
+    },
+    {
+      "op": "insert",
+      "after": 4,
+      "reason": "IA-before-UI process beat — designer mapped the full report flow to organize the new templates/features before designing/testing; answers how the problem space was organized between Goals and Ideation.",
+      "slide": {
+        "type": "problem",
+        "label": "Structure",
+        "title": "Mapping the flow before designing the features",
+        "content": "The redesign added templates, modular blocks, annotation, and sharing — four features that all connect inside one workflow. Before designing any of them, I mapped the full report flow to work out how everything fits together. Structure first, so the pieces would be right before I designed or tested them.",
+        "highlight": "Structure first. Features second.",
+        "image": [
+          {
+            "src": "",
+            "caption": "[ASSET: user-flow map — add in edit mode]"
+          }
+        ]
+      }
+    }
+  ]
+}

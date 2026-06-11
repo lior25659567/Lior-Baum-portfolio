@@ -1,0 +1,7 @@
+{
+  "edits": {
+    "slides.1.content": "Doctors were using the report — the ceiling was the problem, not adoption.",
+    "slides.1.highlight": "Built around the software — not the doctor.",
+    "slides.4.content": "Templates, modular blocks, annotation, sharing — four features that all live inside one workflow. I mapped the full report flow before designing any of them. I needed to understand how they connect before designing or testing each piece individually. Get the structure wrong and everything built on top of it is wrong too."
+  }
+}

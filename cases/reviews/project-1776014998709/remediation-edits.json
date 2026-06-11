@@ -1,0 +1,25 @@
+{
+  "edits": {
+    "slides.1.content": "No structure, no templates, no annotation tools.",
+    "slides.3.title": "What I set out to fix",
+    "slides.5.afterDescription": "Everything moved to the header — doctor, clinic, patient, actions inline.",
+    "slides.5.afterBullets.2": "Full screen for report content",
+    "slides.7.content": "Two tools for the question doctors kept asking: where exactly is the problem?",
+    "slides.7.issues.0": "Pen, text, and color tools — annotate at full size",
+    "slides.7.issues.3": "Patients see which teeth are affected",
+    "slides.8.beforeDescription": "Three sidebar buttons — Preview, Download PDF, Share via QR. No access control.",
+    "slides.8.afterDescription": "I replaced them with a full sharing modal — email invites, access permissions, PIN protection, multi-channel delivery.",
+    "slides.8.afterBullets.1": "PIN protection for sensitive reports",
+    "slides.8.afterBullets.3": "Privacy warning built in",
+    "slides.12.whatWorked.1": "The modular block system — customizable structure was the right balance.",
+    "slides.12.whatYouCouldntMeasure": "Long-term adoption and whether templates reduced variability — needs 6+ months of data."
+  },
+  "setFields": {
+    "slides.0.metaItems": [
+      {"label": "Role", "value": "Product Designer"},
+      {"label": "Timeline", "value": "2025"},
+      {"label": "Team", "value": "PM · Engineering · Clinical Research"},
+      {"label": "Tools", "value": "Figma · Notion"}
+    ]
+  }
+}

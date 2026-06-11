@@ -1,0 +1,12 @@
+{
+  "edits": {
+    "slides.5.dir1Desc": "Edit from the sidebar. The controls sit in a side panel and the canvas is just a preview — you change one place and check another."
+  },
+  "setFields": {
+    "slides.7.issues": [
+      "Pen, text, color — annotate at full size",
+      "Tooth chart — click to tag affected teeth, shown as markers",
+      "Patients see which teeth are affected"
+    ]
+  }
+}
