@@ -20,6 +20,10 @@ const AgentsHub = lazy(() => import('./pages/AgentsHub'));
 function AppLayout() {
   const location = useLocation();
   const isAbout = location.pathname === '/about';
+  // About and Playground render their OWN <Footer /> inside the page so it
+  // mounts fresh on each visit and its scroll-reveal animation replays.
+  // The global footer here would be a persistent, already-settled duplicate.
+  const isPlayground = location.pathname === '/playground';
 
   return (
     <>
@@ -40,7 +44,7 @@ function AppLayout() {
           </Suspense>
         </RouteErrorBoundary>
       </main>
-      {!isAbout && <Footer />}
+      {!isAbout && !isPlayground && <Footer />}
       <EditPanel />
     </>
   );

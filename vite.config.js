@@ -25,6 +25,12 @@ export default defineConfig(async () => {
       // Heavy deps (jspdf, html2canvas) can take 20-30s to bundle;
       // with holdUntilCrawlEnd=true that blocks the ENTIRE first page load.
       holdUntilCrawlEnd: false,
+      // Skip the source-graph crawl entirely. On a cold cache the scanner can
+      // wedge mid-crawl ("scanning for dependencies… Crawling using entries:
+      // index.html" then never finishes), which holds every dev-server request
+      // forever. The `include` list below already enumerates every prebundled
+      // dep, so discovery has nothing to add — skip it and bundle the list.
+      noDiscovery: true,
       include: [
         'react', 'react-dom', 'react-dom/client',
         'react-router-dom',

@@ -206,3 +206,43 @@ Keep the report tight and specific — paths and concrete fixes, no generic advi
   *compress* too much (distinct decisions crammed into one frame, the reasoning lost) or a beat
   can be *over-split* (padded across slides that each say little). Call it whichever way the
   evidence points — with no default toward splitting or merging.
+
+## Writing voice — enforce product-first, anti-tagline (shared)
+
+Read `cases/reviews/_writing-voice.md` (the standard) and `cases/reviews/_ux-lexicon.md`
+(the rare-use reference). As the post-fix gate, check the copy against the doctrine and
+list violations for a remediation pass:
+- **Broken throughline** — slides that read as disconnected facts with no causal link to
+  the slide before or after. Read consecutive slides back to back: if the reader can't see
+  *why* slide N+1 follows N (a decision with no finding behind it, a problem that doesn't
+  set up its solution, outcomes not tied back to the problems they fixed), flag the missing
+  bridge and name where it belongs. The deck must read as one story, not a pile of slides.
+- **Repeated connective vocabulary** — the opposite failure: the same non-obvious word
+  used to carry the link across many slides (e.g. "handoff"/"workflow"/"phase" on slide
+  after slide). Count how often a connective term recurs; if a non-domain word lands on 3+
+  slides, flag it and suggest varied phrasing. Connection must come from logic, not from
+  echoing a keyword. (Domain words like clinician/scan may recur.)
+- **Portfolio taglines / dramatic one-liners** ("The system grew. The experience didn't.",
+  "This map became the contract.", "Map the flow first. Design second.", "Setup gone.
+  Start scanning.") — flag each; the fix is the plain version.
+- **Over-used or unearned UX jargon** — a UX term used before (or instead of) a concrete
+  product example, the same term repeated across slides, or mid-sentence capitalized terms.
+  Flag "UX about UX": copy that names concepts instead of telling the product story.
+- **Vague claims** ("improved clarity", "reduced friction") with no concrete detail of what
+  changed; **abstract bullets** ("Reduced cognitive load") that aren't observable.
+- **Faked impact / invented specifics** — any metric, count, name, or quote not in the deck
+  or Facts is a **blocking CONCERN** (fabrication). Honest qualification or `[ADD: …]` is
+  fine; a fake number is not.
+- Only on the rare occasion a method IS named: an invented label where an established term
+  exists. (Do NOT recommend adding terms to plain copy that reads well.)
+
+Taglines, unearned jargon, and vague claims are quality issues for the remediation pass;
+invented specifics are blocking. Don't wave either through.
+
+## Media safety (shared)
+
+Check that the fix did not strip media: every video/image present before the fix must still
+be present after it. If a slide lost an asset, that is a **blocking CONCERN**. (The `apply`
+script refuses media removal and preserves media on retype, so a loss would mean something
+bypassed the helper — flag it loudly.) Never recommend deleting a media slide as a fix;
+recommend rewording or repositioning instead.

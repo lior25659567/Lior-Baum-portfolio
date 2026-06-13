@@ -14,7 +14,7 @@
 
 .playground-page {
   padding-top: calc(var(--nav-height) + var(--spacing-lg));
-  padding-bottom: var(--spacing-2xl);
+  padding-bottom: 0;
   min-height: 100vh;
   background: var(--color-bg);
 }
@@ -50,7 +50,13 @@
   padding-bottom: 0.1em;
 }
 
+/* Hug the text (no full-width block box / no max-height clip) while still
+   honouring the hero's text-align via inline-level layout. Uses inline-block,
+   NOT flex: a flex container drops whitespace-only text nodes, which would
+   delete the space between adjacent words. Kept identical to the About hero. */
 .title-line {
+  display: inline-block;
+  vertical-align: top;
   will-change: transform;
 }
 
@@ -69,6 +75,7 @@
   font-weight: var(--fw-body);
   color: var(--color-text);
   display: inline-block;
+  overflow: visible !important;
 }
 
 .playground-title .serif {
@@ -77,6 +84,7 @@
   font-weight: var(--fw-body);
   color: var(--color-text);
   display: inline-block;
+  overflow: visible !important;
 }
 
 .playground-title .accent {

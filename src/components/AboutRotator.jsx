@@ -16,7 +16,7 @@ export const DEFAULT_SKILLS = [
   'Active Listening',
   'Playfulness',
   'Open Feedback',
-  'Psychological Safety',
+  'Belonging',
   'Growth Mindset',
   'Generosity',
   'Patience',
@@ -134,6 +134,12 @@ const AboutRotator = ({ items }) => {
     window.addEventListener('mousemove', onMouseMove, { passive: true });
 
     const tick = (now) => {
+      // The ring ref can be momentarily null (a stray frame queued across a
+      // mount/unmount or a labels change). Skip this frame and retry rather
+      // than dereference null — the next frame self-heals once it's attached.
+      const ring = ringRef.current;
+      if (!ring) { rafId = requestAnimationFrame(tick); return; }
+
       const dt = Math.min(0.05, (now - lastT) / 1000);   // clamp big gaps (tab refocus)
       lastT = now;
 
@@ -150,7 +156,7 @@ const AboutRotator = ({ items }) => {
       else if (velRef.current < -MAX_VEL) velRef.current = -MAX_VEL;
       rotationRef.current += (driftRef.current + velRef.current) * dt;
       const rot = rotationRef.current;
-      ringRef.current.style.transform = `rotate(${rot}deg)`;
+      ring.style.transform = `rotate(${rot}deg)`;
 
       const refs = textRefs.current;
       for (let i = 0; i < N; i++) {

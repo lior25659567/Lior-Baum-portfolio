@@ -375,7 +375,7 @@ const About = () => {
               <div className="title-line" ref={line1Ref}>
                 <span className="sans"><Editable value={about.title1 || 'Designing'} onChange={(v) => updateAbout('title1', v)} /></span>
                 {' '}
-                <span className="serif"><Editable value={about.title2 || 'experiences'} onChange={(v) => updateAbout('title2', v)} /></span>
+                <span className="sans"><Editable value={about.title2 || 'experiences'} onChange={(v) => updateAbout('title2', v)} /></span>
               </div>
             </div>
             <div className="title-line-wrapper">

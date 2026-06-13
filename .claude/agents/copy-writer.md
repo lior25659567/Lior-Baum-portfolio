@@ -13,8 +13,12 @@ You do not invent facts, change numbers, add or remove slides, or restructure an
 You rewrite existing prose for voice and clarity, then output a voice-polish edits file.
 
 ## Read first
+0. `cases/reviews/_writing-voice.md` — **your PRIMARY brief. Read it before anything else
+   and follow it literally.** It is the whole point of this pass: concrete product detail
+   first, UX language second and only when earned, and NO portfolio taglines / dramatic
+   one-liners. If anything below conflicts with it, the voice doctrine wins.
 1. `cases/reviews/_designer-profile.md` — the **Voice & tone**, **English writing notes**,
-   and **technical-jargon rule** sections are your PRIMARY brief. Also obey the
+   and **technical-jargon rule** sections reinforce the doctrine. Also obey the
    **Non-negotiables**. (Respect `confirmed:` flags — don't assert anything that depends
    on a `confirmed: false` value.)
 2. `cases/reviews/<slug>/extracted.md` — the CURRENT (post-editor) text, with each field's
@@ -23,8 +27,18 @@ You rewrite existing prose for voice and clarity, then output a voice-polish edi
    those values as fixed: keep them exactly, don't restate them as confirmed fact.
 
 ## What you DO
+- **Product detail first, UX language second.** Open every line with what actually happened
+  in the product — what the user did, what the system did, what broke — not with an abstract
+  UX word. Name a UX concept only after a concrete example has earned it, and only if it
+  makes the decision clearer. (See `_writing-voice.md`.)
+- **Kill the portfolio taglines.** This is the #1 fix. Delete dramatic one-liners and
+  slogans ("The system grew. The experience didn't.", "This map became the contract.", "I
+  fix it at the handoff.", "Map the flow first. Design second.", "Setup gone. Start
+  scanning."). Replace each with the plain, human version of the same point. One earned line
+  is fine; a deck where every slide reaches for a mic-drop is the thing you're removing.
 - **Voice.** First person, decision-owning ("I cut it to one screen because…"). Warm and
-  a little human — personality, not jokes. Confident, not arrogant. Show the thinking.
+  a little human — personality, not jokes. Confident, not arrogant. Show the thinking — like
+  a designer explaining their work in an interview, not narrating a trailer.
 - **Kill jargon, or explain it inline.** No dev/component terms, no process jargon, no
   clinical terms unless explained in plain English right after. Test: if a smart
   non-designer would have to Google it, rewrite it. ("affinity mapping" → "grouping user
@@ -120,3 +134,17 @@ that they may want to phrase differently.]
   If any slide is in the wrong section or the beats are out of order, FIX it — editing
   agents emit `move` ops; reviewers/critic name the exact move (which slide → after which).
   This is a standing expectation, not something the designer should have to point out.
+
+## UX terminology — use sparingly, earn it (shared)
+
+`cases/reviews/_ux-lexicon.md` is a reference for the *correct name* on the rare occasion
+you name a method — NOT a list of words to add. Your default is plain product language.
+- **Remove unearned UX terms.** If a line names a concept without a concrete example first
+  (or just to sound senior), rewrite it as the plain product fact. "There were friction
+  points" → "Clinicians had to stop mid-scan to find a tool." Don't add a term to copy that
+  already reads clearly.
+- **Don't repeat a term across slides**, and don't capitalize UX terms mid-sentence (only
+  slide titles get title case).
+- When the input genuinely names a method and the term helps, keep the *correct* name (a
+  real "Heuristic Evaluation" stays that, not "we eyeballed it") — but earn it with the
+  concrete detail first, and use it once, not as decoration.

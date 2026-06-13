@@ -285,6 +285,43 @@ export const slideTemplateDocs = {
     },
   },
 
+  splitList: {
+    shortDescription: 'Editorial split: a big section title on the left, a scannable list on the right. Switch between simple list, two columns, or a single highlight paragraph.',
+    purpose: 'Lay out a short set of related points (or one key takeaway) against a prominent section title.',
+    whenToUse: 'When you have a handful of equal-weight points to scan, a two-column summary, or a single important statement to spotlight.',
+    layoutDescription: 'Left column holds a large vertically-centered title (and the nav label). Right column switches via layoutVariant: "list" (one column of title + description rows), "columns" (the same rows in a 2-up grid, title column narrows), or "highlight" (a single body-large paragraph, no list).',
+    mediaFields: [],
+    requiredFields: ['title'],
+    optionalFields: ['label', 'layoutVariant', 'items', 'highlight'],
+    contentLimits: {
+      items: { max: 6, recommended: '2-4 items', note: 'Each item is { title, description }; used by the list and columns layouts' },
+      highlight: { recommended: '1-2 sentences', note: 'Only shown by the "highlight" layout' },
+    },
+    aiSelectionHints: {
+      signals: ['simple list', 'two columns', 'highlight', 'key points', 'summary list', 'at a glance', 'one important thing'],
+      priority: 4,
+    },
+    specialBehaviors: [
+      'layoutVariant switches the right column: "list" | "columns" | "highlight"',
+      'The left title uses the Title type scale and is vertically centered against the artboard',
+      'In view mode the nav label is hidden (the title carries the slide); it still drives the slide nav',
+      'list/columns share the same items array — switching variants does not lose content',
+      'highlight uses the slide.highlight string instead of the items list',
+    ],
+    exampleUsage: {
+      type: 'splitList',
+      label: 'Overview',
+      title: 'Simple list',
+      layoutVariant: 'list',
+      items: [
+        { title: 'First thing', description: "Add a quick description of each thing, with enough context to understand what's up." },
+        { title: 'Second thing', description: "Keep 'em short and sweet, so they're easy to scan and remember." },
+        { title: 'Third thing', description: "If you've got a bunch, add another row, or use multiple copies of this slide." },
+      ],
+      highlight: 'Use this slide to highlight a single, important thing.',
+    },
+  },
+
   quotes: {
     shortDescription: 'User research quotes displayed in a card grid layout with author badges. Supports card style variants.',
     purpose: 'Present user research quotes in visually distinct cards.',

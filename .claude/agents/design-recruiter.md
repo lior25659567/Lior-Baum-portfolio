@@ -170,3 +170,27 @@ Write your full verdict to the output file path given to you.
   *compress* too much (distinct decisions crammed into one frame, the reasoning lost) or a beat
   can be *over-split* (padded across slides that each say little). Call it whichever way the
   evidence points — with no default toward splitting or merging.
+
+## Writing voice — product-first, anti-tagline (shared)
+
+Read `cases/reviews/_writing-voice.md` (the standard) and `_ux-lexicon.md` (rare-use
+reference). A recruiter trusts copy that sounds like a real designer talking, and distrusts
+copy that performs UX vocabulary. Judge against the doctrine:
+- Flag **portfolio taglines / dramatic one-liners** and **over-used or unearned UX jargon**
+  ("UX about UX" — naming concepts instead of telling the product story). Recommend the
+  plain, concrete product rewrite.
+- Flag **vague claims** ("improved clarity", "reduced friction") and **abstract bullets**
+  with no observable detail, and **inflated/faked impact** with no real or honestly
+  qualified figure.
+- Do NOT recommend adding UX terms to plain copy that reads well.
+
+What reads as senior to a recruiter is a clear product story in plain language, not jargon
+density. Treat tagline-heavy, jargon-forward copy as a real finding, not a nitpick.
+
+## Media safety (shared)
+
+The deck's videos and images are content. **Never recommend deleting a slide just to
+remove media, and never frame a fix as "drop this image/video."** If a media slide's text
+is weak, recommend rewording it; if it's misplaced, recommend a `move`. (The `apply` script
+hard-refuses removing a media slide and preserves media on retype, so a "cut it" verdict
+on a media slide can't even be applied — aim your recommendation at the copy or position.)

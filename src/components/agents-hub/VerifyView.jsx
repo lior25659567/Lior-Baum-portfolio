@@ -1,16 +1,22 @@
 import { useState, useEffect } from 'react';
 import { readFile, enqueueJob } from '../../data/agentsHubApi';
 
-// Pull the "Verify before sending" bullet list out of FIX-REPORT.md.
+// Pull the "Verify before sending" list out of FIX-REPORT.md. The report can
+// carry two "## Verify before sending …" headings (an intro/instructions block
+// then the actual list) and writes the items as a NUMBERED list — so we stay
+// "in section" across any verify heading, exit on any other ## heading, and
+// accept both bullet (-, *) and numbered (1., 1)) list markers.
 function parseVerifyItems(mdText) {
   if (!mdText) return [];
-  const lines = mdText.split('\n');
-  const start = lines.findIndex((l) => /^##\s+Verify before sending/i.test(l));
-  if (start < 0) return [];
   const items = [];
-  for (let i = start + 1; i < lines.length; i++) {
-    if (/^##\s+/.test(lines[i])) break;
-    const m = lines[i].match(/^\s*[-*]\s+(.*\S)\s*$/);
+  let inSection = false;
+  for (const line of mdText.split('\n')) {
+    if (/^##\s+/.test(line)) {
+      inSection = /^##\s+Verify before sending/i.test(line);
+      continue;
+    }
+    if (!inSection) continue;
+    const m = line.match(/^\s*(?:[-*]|\d+[.)])\s+(.*\S)\s*$/);
     if (m) items.push(m[1].trim());
   }
   return items;

@@ -151,3 +151,26 @@
 @media (prefers-reduced-motion: reduce) {
   .abt-anim-label .text-small { opacity: 1; }
 }
+
+/* ── Mobile (≤767px) ───────────────────────────────────────────────────
+   Two fixes: (1) the wheel-proportional font rule bottoms out at its ~13px
+   floor on phones, so labels read tiny — raise the floor. (2) at 96vw the
+   wheel is nearly full-width and the long horizontal words clip against the
+   stage edges asymmetrically, so it reads off-center — shrink the wheel and
+   pull the ring inward so the whole ring of words fits and centers cleanly. */
+@media (max-width: 767.98px) {
+  .abt-anim-text-rotator-wrap {
+    --rotator-size: min(80vw, 340px);
+    /* wider inner radius → the ring of words spreads outward; smaller type
+       below keeps the longer labels from running off the rim */
+    --rotator-inner-radius: calc(var(--rotator-size) * 142 / 720);
+  }
+
+  .abt-anim-label .text-small {
+    font-size: clamp(0.9rem, 3.7vw, 1.05rem);
+  }
+
+  .abt-anim-label .text-small.is-lit {
+    font-size: clamp(1.1rem, 4.7vw, 1.35rem);
+  }
+}

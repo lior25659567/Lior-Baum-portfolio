@@ -1,0 +1,11 @@
+{
+  "edits": {
+    "slides.0.description": "The patient is in the chair. The scanner is ready. The system isn't. I redesigned Align Technology's RX, Scan, and View workflow — three tools built separately, but used by clinicians as one appointment. The same kind of handoff problem shows up in any workflow product that outgrew its original design.",
+    "slides.4.content": "I mapped the RX → Scan → View flow as clinicians lived it. The same problem showed up at each transition.",
+    "slides.4.highlight": "Mapping the flow showed where clinicians lost time, and gave each goal a specific problem to fix.",
+    "slides.8.content": "The old setup was a multi-step form — patient details and procedure locked behind a blocking modal before anything could start.",
+    "slides.13.issues.2": "Every new feature added more for clinicians to remember",
+    "slides.21.whatWorked.0": "The coded prototype caught timing failures Figma never would have.",
+    "slides.21.whatYoudDoDifferently.1": "Run toolbar testing before wireframes — placement ripples into everything."
+  }
+}

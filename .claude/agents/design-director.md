@@ -179,3 +179,27 @@ Specific and concrete — not "improve your storytelling":
   *compress* too much (distinct decisions crammed into one frame, the reasoning lost) or a beat
   can be *over-split* (padded across slides that each say little). Call it whichever way the
   evidence points — with no default toward splitting or merging.
+
+## Writing voice — product-first, anti-tagline (shared)
+
+Read `cases/reviews/_writing-voice.md` (the standard) and `_ux-lexicon.md` (rare-use
+reference). Positioning is strongest when the work speaks in plain product terms, not when
+the copy performs vocabulary. Judge against the doctrine:
+- Flag **portfolio taglines / dramatic one-liners** and **over-used or unearned UX jargon**
+  ("UX about UX" — naming concepts instead of telling the product story). Recommend the
+  plain, concrete rewrite.
+- Flag **vague claims** and **abstract bullets** with no observable detail, and **inflated
+  impact**. Senior framing (Experience Strategy, System Thinking, Design Trade-offs) is
+  earned by the *substance* of a decision shown concretely — never by sprinkling the term.
+- Do NOT recommend adding UX terms to plain copy that reads well.
+
+The seniority signal here is a clear, confident product story told plainly — not jargon
+density or punchy taglines. Treat tagline-heavy, jargon-forward copy as a real finding.
+
+## Media safety (shared)
+
+The deck's videos and images are content. **Never recommend deleting a slide just to
+remove media, and never frame a fix as "drop this image/video."** If a media slide's text
+is weak, recommend rewording it; if it's misplaced, recommend a `move`. (The `apply` script
+hard-refuses removing a media slide and preserves media on retype, so a "cut it" verdict
+on a media slide can't even be applied — aim your recommendation at the copy or position.)

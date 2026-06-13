@@ -288,6 +288,41 @@ Notes:
 ```
 
 ---
+## `splitList` — renders type `splitList`
+**Purpose:** Lay out a short set of related points (or one key takeaway) against a prominent section title.
+**When to use:** When you have a handful of equal-weight points to scan, a two-column summary, or a single important statement to spotlight.
+**Required fields:** title
+**Optional fields:** label, layoutVariant, items, highlight
+**Choose this when the content reads like:** simple list · two columns · highlight · key points · summary list · at a glance · one important thing
+**Content limits:**
+- items: rec 2-4 items; max 6; Each item is { title, description }; used by the list and columns layouts
+- highlight: rec 1-2 sentences; Only shown by the "highlight" layout
+**Skeleton (copy for insert/retype; replace text with `[FILL IN: …]`):**
+```json
+{
+  "type": "splitList",
+  "label": "Overview",
+  "title": "Simple list",
+  "layoutVariant": "list",
+  "items": [
+    {
+      "title": "First thing",
+      "description": "Add a quick description of each thing, with enough context to understand what's up."
+    },
+    {
+      "title": "Second thing",
+      "description": "Keep 'em short and sweet, so they're easy to scan and remember."
+    },
+    {
+      "title": "Third thing",
+      "description": "If you've got a bunch, add another row, or use multiple copies of this slide."
+    }
+  ],
+  "highlight": "Use this slide to highlight a single, important thing."
+}
+```
+
+---
 ## `quotes` — renders type `quotes`
 **Purpose:** Present user research quotes in visually distinct cards.
 **When to use:** After conducting user interviews or surveys, to showcase direct user quotes that support your findings.

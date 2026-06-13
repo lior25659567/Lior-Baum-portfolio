@@ -285,6 +285,17 @@ their elements lives at `cases/reviews/_slide-templates.md`, so reviewers judge
 whether each slide uses the right template and the editor can add/remove/retype
 slides correctly.
 
+They are also **voice-aware**: the primary writing standard is
+`cases/reviews/_writing-voice.md` — **concrete product detail first, UX language second
+and only when earned, and NO portfolio taglines / dramatic one-liners.** The copy must
+sound like a real product designer explaining their work in an interview, not a UX
+textbook or a trailer. Every writing agent (author/editor/copy-writer) follows it
+literally; the critic and reviewers enforce it (flagging taglines, over-used or unearned
+jargon, "UX about UX", vague claims, and faked impact). The companion
+`cases/reviews/_ux-lexicon.md` is **subordinate** to the voice doctrine: it is only a
+reference for the *correct name* on the rare occasion a method is actually named — never a
+list of words to sprinkle across slides.
+
 They are also **personalized**: every agent reads `cases/reviews/_designer-profile.md`
 (the designer's target role/level, industries, positioning, voice, and
 non-negotiables) and aims its work at that target instead of a generic role. Each
@@ -333,6 +344,18 @@ It refuses to write image/layout/config keys and read-only data (`metric`,
 matching formatting. `cases/reviews/<slug>/` holds all generated artifacts; the
 JSON in `src/data/case-studies/` is the only thing that changes.
 
+**Media is never lost — guaranteed deterministically by `apply`.** The text agents
+touch copy only, so the script hard-protects every video/image in a slide, three ways:
+(1) media keys (`image`, `images`, `beforeImage`, `afterImage`, `src`, `poster`, …) are
+refused for any text/`setField` edit, so prose can't overwrite an asset path; (2) a
+`remove` op targeting a slide that **carries media is refused** — agents may reword or
+`move` a media slide, but only the designer can delete it (in edit mode); (3) a `retype`
+op **carries the original slide's media fields over** to the replacement, so changing a
+slide's type/text can never drop its video or image. Detection is value-based (any
+`/case-studies/…` path or `data:image|video` URI, anywhere in the slide), so it is not
+fooled by key renames. Reviewers/critic should therefore **never recommend deleting a
+media slide** — recommend rewording or repositioning instead.
+
 **Why JSON edits may not show in the app — `dataVersion`.** In dev the app loads
 each case study from **IndexedDB/localStorage first** (the user's edit-mode copy)
 and only falls back to the JSON; it discards the cached copy only when the JSON's
@@ -361,7 +384,9 @@ outcomes, and an **asset inventory** (videos of flows, screenshots, user-flow di
 4. **Backup branch**: `git branch backup/case-create-<slug>` at HEAD.
 5. **Author the deck** — run `case-study-author`: "Author a new case study. The slug is
    `<slug>`; the brief is `cases/briefs/<name>.md`. Read in order:
-   `cases/reviews/_designer-profile.md`, that brief, `cases/reviews/_slide-templates.md`,
+   `cases/reviews/_writing-voice.md` (PRIMARY writing standard — product detail first, no
+   taglines), `cases/reviews/_designer-profile.md`, that brief,
+   `cases/reviews/_slide-templates.md`, `cases/reviews/_ux-lexicon.md`,
    `cases/reviews/<slug>/extracted.md`. Build the deck as an ops-only edits.json (every slide
    an `insert` with `after: -1`, intro first / end last), map the brief to the 10 canonical
    beats, placeholder-fill any missing beat, and leave captioned empty image slots for each
@@ -421,16 +446,21 @@ Example: `review wizecare`
    <slug>` (writes `cases/reviews/<slug>/extracted.md`).
 3. **Spawn all 3 review agents in parallel** (single message, multiple Agent
    calls — do not wait for one before the next). Each reads the extracted file, the
-   template catalog, AND `cases/reviews/_designer-profile.md`:
+   template catalog, the writing-voice doctrine (`cases/reviews/_writing-voice.md`), the
+   UX lexicon (`cases/reviews/_ux-lexicon.md`), AND `cases/reviews/_designer-profile.md`:
    - `ux-reviewer` → "Review `cases/reviews/<slug>/extracted.md` (templates:
-     `cases/reviews/_slide-templates.md`, profile: `cases/reviews/_designer-profile.md`,
+     `cases/reviews/_slide-templates.md`, voice: `cases/reviews/_writing-voice.md`,
+     lexicon: `cases/reviews/_ux-lexicon.md`,
+     profile: `cases/reviews/_designer-profile.md`,
      plus `cases/reviews/<slug>/context.md` if it exists).
      Apply your full 6-step framework, including template fit and missing slides, aimed
      at the profile's target. Write to `cases/reviews/<slug>/ux-verdict.md`."
-   - `design-recruiter` → same (templates: `cases/reviews/_slide-templates.md`, profile:
+   - `design-recruiter` → same (templates: `cases/reviews/_slide-templates.md`, voice:
+     `cases/reviews/_writing-voice.md`, lexicon: `cases/reviews/_ux-lexicon.md`, profile:
      `cases/reviews/_designer-profile.md`, plus `cases/reviews/<slug>/context.md` if it
      exists), writing to `recruiter-verdict.md`.
-   - `design-director` → same (templates: `cases/reviews/_slide-templates.md`, profile:
+   - `design-director` → same (templates: `cases/reviews/_slide-templates.md`, voice:
+     `cases/reviews/_writing-voice.md`, lexicon: `cases/reviews/_ux-lexicon.md`, profile:
      `cases/reviews/_designer-profile.md`, plus `cases/reviews/<slug>/context.md` if it
      exists), writing to `director-verdict.md`.
 4. **After all 3 finish, synthesize** — read the 3 verdicts, write
@@ -451,7 +481,9 @@ Example: `review wizecare`
 1. **Backup branch first**: `git branch backup/case-text-<slug>` at HEAD (skip if
    it already exists). This is editing live site content — always back up.
 2. Run `case-study-editor` with: "The slug is <slug>. Read in order:
-   `cases/reviews/_designer-profile.md`, `cases/reviews/<slug>/extracted.md`,
+   `cases/reviews/_writing-voice.md` (PRIMARY writing standard — product detail first, no
+   taglines), `cases/reviews/_designer-profile.md`, `cases/reviews/_ux-lexicon.md`,
+   `cases/reviews/<slug>/extracted.md`,
    `cases/reviews/<slug>/context.md` (if it exists), `cases/reviews/_slide-templates.md`,
    then `ux-verdict.md`, `recruiter-verdict.md`,
    `director-verdict.md`, `synthesis.md`. Write `cases/reviews/<slug>/edits.json`
@@ -467,8 +499,11 @@ Example: `review wizecare`
    (confirms valid JSON); optionally `npm run build`.
 4.25 **Copy-writer (automatic — voice pass)**: re-extract the post-editor text
    (`node scripts/case-study-text.mjs extract <slug>`), then run the `copy-writer` agent:
-   "Voice-polish case study <slug>. Read `_designer-profile.md` (Voice / English notes /
-   jargon rule are your brief), `cases/reviews/<slug>/extracted.md`,
+   "Voice-polish case study <slug>. Read `cases/reviews/_writing-voice.md` FIRST — it is
+   your PRIMARY brief (concrete product detail first, UX language second and earned, NO
+   portfolio taglines / dramatic one-liners; sound like a designer in an interview). Then
+   `_designer-profile.md` (Voice / English notes / jargon rule), `cases/reviews/_ux-lexicon.md`
+   (rare-use reference only — never sprinkle terms), `cases/reviews/<slug>/extracted.md`,
    `cases/reviews/<slug>/context.md` (if it exists), and `edit-summary.md`.
    Write `cases/reviews/<slug>/copy-edits.json` and `cases/reviews/<slug>/copy-summary.md`."
    Then apply it explicitly: `node scripts/case-study-text.mjs apply <slug>
@@ -477,8 +512,10 @@ Example: `review wizecare`
    (`node scripts/case-study-text.mjs extract <slug>`), then run `case-study-critic`:
    "Critique the post-fix case study <slug>. Read `_designer-profile.md`,
    `cases/reviews/<slug>/extracted.md`, `cases/reviews/<slug>/context.md` (if it exists),
-   `edit-summary.md`, `copy-summary.md`, `synthesis.md`, the three verdicts, and
-   `_slide-templates.md`. Write `cases/reviews/<slug>/verify-report.md`.
+   `edit-summary.md`, `copy-summary.md`, `synthesis.md`, the three verdicts,
+   `_slide-templates.md`, `cases/reviews/_writing-voice.md` (enforce it — flag taglines,
+   over-used/unearned jargon, "UX about UX", vague claims, faked impact), and
+   `cases/reviews/_ux-lexicon.md`. Write `cases/reviews/<slug>/verify-report.md`.
    Anything the agents could not source from the deck or Facts to use must appear as an
    `[ADD: …]` placeholder, NOT an invented value — flag any invented specific as a
    blocking CONCERN."
@@ -557,9 +594,10 @@ Cross-study consistency — run MANUALLY (never inside `fix`; it reads every stu
 1. Refresh extracted text for every slug in `index.js`
    (`node scripts/case-study-text.mjs extract <slug>` for each).
 2. Run the `portfolio-consistency` agent: "Review the whole portfolio for voice,
-   positioning, seniority, structural, and quality consistency against
-   `cases/reviews/_designer-profile.md`. Read every `cases/reviews/<slug>/extracted.md`.
-   Write `cases/reviews/PORTFOLIO-CONSISTENCY.md`."
+   positioning, seniority, terminology, structural, and quality consistency against
+   `cases/reviews/_writing-voice.md` (the primary voice standard), `cases/reviews/_designer-profile.md`,
+   and `cases/reviews/_ux-lexicon.md`. Read every `cases/reviews/<slug>/extracted.md`. Write
+   `cases/reviews/PORTFOLIO-CONSISTENCY.md`."
 3. Show the report in the terminal.
 
 ## The 10 canonical case-study beats (for judging completeness)
@@ -576,6 +614,8 @@ cases/reviews/_jobs/<id>.json       ← Agents Hub queue (gitignored; written by
 cases/briefs/_BRIEF-TEMPLATE.md     ← copy this to start a NEW case study (input to case-study-author)
 cases/briefs/<name>.md              ← a filled brief: problem + what you did + asset inventory
 cases/reviews/_designer-profile.md  ← designer's target/voice/non-negotiables (ALL agents read; confirmed: flags)
+cases/reviews/_writing-voice.md     ← PRIMARY writing standard — product detail first, no taglines, earn UX terms (ALL copy agents follow; critic/reviewers enforce)
+cases/reviews/_ux-lexicon.md        ← subordinate vocabulary reference — correct name when a method IS named; NOT a list to sprinkle (ALL agents read)
 cases/reviews/_slide-templates.md   ← generated catalog of all 20 templates (agents read this)
 cases/reviews/<slug>/
   author-summary.md                 ← (create flow) beat-coverage map, asset slots to fill, drafted values to verify

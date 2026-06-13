@@ -1,89 +1,13 @@
 {
-  "edits": {},
-  "setFields": {},
-  "ops": [
-    {
-      "op": "retype",
-      "index": 9,
-      "reason": "Split RX Setup comparison into OLD → IDEATION → NEW sequence. Orig slide 9 becomes the NEW-only solution slide; before-* content migrated to the inserted OLD slide (below).",
-      "slide": {
-        "type": "problem",
-        "label": "RX Setup — After",
-        "title": "Users start scanning right away",
-        "content": "Users start right away — patient context fills in as they go, not as a prerequisite.",
-        "issues": [
-          "Inline patient selection — no modal",
-          "Patient context stays visible throughout",
-          "Procedure selection tied to teeth structure"
-        ],
-        "issuesTitle": "What changed",
-        "image": "",
-        "caption": "New RX setup — single-view, no blocking form. (Add vid-aouv40ns6o0.mp4)"
-      }
-    },
-    {
-      "op": "insert",
-      "after": 7,
-      "reason": "OLD: RX Setup slide — shows the blocking multi-step form before the redesign. Migrates beforeDescription + beforeBullets from orig comparison slide 9. Inserted between chapter 7 and directions slide 8 so the RX beat reads: chapter → OLD → IDEATION → NEW.",
-      "slide": {
-        "type": "problem",
-        "label": "RX Setup — Before",
-        "title": "Setup blocked the scan before it could start",
-        "content": "The old product was a dense, multi-step form — patient and procedure gated behind a blocking modal before scanning could begin.",
-        "issues": [
-          "Patient selection required a multi-step modal",
-          "Procedure had to be defined upfront",
-          "Dropdown disconnected from the dental chart"
-        ],
-        "issuesTitle": "Where it broke",
-        "highlight": "Every second here was a second the patient sat waiting.",
-        "image": "",
-        "caption": "Old RX setup — the blocking multi-step form. (Add img-uykask3eo.webp)"
-      }
-    },
-    {
-      "op": "retype",
-      "index": 13,
-      "reason": "Split Scan Toolbar comparison into OLD → IDEATION → NEW sequence. Orig slide 13 becomes the NEW-only solution slide; before-* content migrated to the inserted OLD slide (below). Icon redesign work from context.md lands here via bullets2.",
-      "slide": {
-        "type": "problem",
-        "label": "Scan Toolbar — After",
-        "title": "One toolbar, one visual language",
-        "content": "A unified icon set in a collapsible toolbar — one visual language, one fixed location.",
-        "issues": [
-          "Unified icon set — each maps to its action",
-          "One collapsible toolbar, always in the same place",
-          "Scalable — new tools slot in without disruption"
-        ],
-        "issuesTitle": "What changed",
-        "bullets2Title": "Icon redesign",
-        "bullets2": [
-          "Toolbar and procedure icons rebuilt into one visual system",
-          "Every tool reads at a glance — nothing to memorise"
-        ],
-        "highlight": "Tools were now one tap away — comparing more than one scan was the next problem.",
-        "image": "",
-        "caption": "New collapsible toolbar + unified icon set. (Add vid-g2r58c0dp9s.mp4)"
-      }
-    },
-    {
-      "op": "insert",
-      "after": 11,
-      "reason": "OLD: Scan Toolbar slide — shows scattered, mixed-style icons with no consistent home. Migrates beforeDescription + beforeBullets from orig comparison slide 13. Inserted between chapter 11 and directions slide 12 so the Toolbar beat reads: chapter → OLD → IDEATION → NEW.",
-      "slide": {
-        "type": "problem",
-        "label": "Scan Toolbar — Before",
-        "title": "Tools scattered, with no home",
-        "content": "Icons built up from different sources, no shared style — and no consistent place to find them.",
-        "issues": [
-          "No shared visual language across icons",
-          "No dedicated place for tools",
-          "Every new feature added more scatter"
-        ],
-        "issuesTitle": "Where it broke",
-        "image": "",
-        "caption": "Old toolbar — scattered, mixed-style icons. (Add img-c1djiu0kh0.webp — DESIGNER: confirm this image shows icon fragmentation, else supply a real old-toolbar screenshot.)"
-      }
-    }
-  ]
+  "edits": {
+    "slides.8.content": "Tap targets sized for gloved hands. Nothing essential could depend on hover.",
+    "slides.8.issuesTitle": "What each constraint demanded",
+    "slides.8.issues.0": "Three surfaces: scanner hardware (Element, Lumina), MIDC desktop, and myitero.com",
+    "slides.8.issues.1": "Compatible with in-progress cases on the old Rx",
+    "slides.8.issues.2": "Feature-flagged — no persistent onboarding; learnable on first contact",
+    "slides.8.issues.3": "Read and demo states designed in from day one",
+    "slides.8.issues.4": "M&I and Labs out of scope — IA built to absorb them",
+    "slides.19.content": "Multi-visit cases need more than one scan. Clinicians had to track changes between appointments. Pre- and post-treatment scans sit in tabs, with overlay and adjustable opacity.",
+    "slides.19.bullets2.2": "What clinicians held in memory, now visible on screen"
+  }
 }

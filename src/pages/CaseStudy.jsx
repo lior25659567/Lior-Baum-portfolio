@@ -423,6 +423,7 @@ const TemplatePreview = ({ type }) => {
     timeline: 'Horizontal timeline of project phases or events on a connector line.',
     tools: 'Tools and technologies as soft accent cards, each with a circle marker.',
     testimonial: 'Large quote/testimonial centered on the slide.',
+    splitList: 'Big section title on the left, a scannable list on the right. Switch between Simple list, Two columns, or a single Highlight paragraph — add/edit/remove items inline.',
     issuesBreakdown: 'Issues displayed in a 2x2 grid with numbered circles. Includes conclusion box.',
     achieveGoals: 'Two-column layout with KPIs on the left and Key Metrics on the right, each with numbered items.',
     imageMosaic: 'Tiled image grid background with a centered title overlay. Perfect for showing old versions, screen collections, or visual overviews.',
@@ -1257,7 +1258,7 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
                     </div>
                   ) : tabSrc ? (
                     <div className="ps-img-wrap ps-img-contain">
-                      <div className="ps-img-inner" onClick={() => { if (editMode) openFileForPsTab(tabIdx); else if (tabSrc && setLightboxImage) setLightboxImage(tabSrc); }}>
+                      <div className="ps-img-inner" onClick={(e) => { if (editMode) openFileForPsTab(tabIdx); else if (tabSrc && setLightboxImage) { e.stopPropagation(); setLightboxImage(tabSrc); } }}>
                         <img src={tabSrc} alt={tab.label || `Tab ${tabIdx + 1}`} style={{ objectFit: 'contain' }} />
                         {editMode && <div className="image-edit-overlay">Click to change</div>}
                       </div>
@@ -1350,7 +1351,7 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
                     <img
                       src={img.src}
                       alt={img.caption || `Slide ${ci + 1}`}
-                      onClick={() => { if (!editMode && setLightboxImage) setLightboxImage(img.src); }}
+                      onClick={(e) => { if (!editMode && setLightboxImage) { e.stopPropagation(); setLightboxImage(img.src); } }}
                       style={{ cursor: editMode ? 'default' : 'pointer' }}
                     />
                   ) : (
@@ -4734,7 +4735,7 @@ My instructions: `;
                               decoding="async"
                               fetchpriority={imgFetchPriority}
                               style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }}
-                              onClick={() => !editMode && setLightboxImage && setLightboxImage(imgData.src)}
+                              onClick={(e) => { if (!editMode && setLightboxImage) { e.stopPropagation(); setLightboxImage(imgData.src); } }}
                             />
                           )}
                           {editMode && (
@@ -4943,11 +4944,14 @@ My instructions: `;
                 <div 
                   className={`dynamic-image-wrapper ${!editMode && (imgData.src || imgData.embedUrl) ? 'clickable' : ''} ${imgData.embedUrl ? 'has-embed' : ''}`}
                   style={imgData.embedUrl ? {} : wrapperContainStyle}
-                  onClick={() => {
+                  onClick={(e) => {
                     if (imgData.embedUrl) return;
                     if (editMode && !activePositionControl) {
                       handleDynamicImageUpload(imgIndex);
                     } else if (!editMode && imgData.src) {
+                      // Stop the click bubbling to the slides-container handler,
+                      // which would advance to the next slide behind the lightbox.
+                      e.stopPropagation();
                       setLightboxImage(imgData.src);
                     }
                   }}
@@ -5661,6 +5665,33 @@ My instructions: `;
               key={opt.value}
               className={`spacing-preset ${cardHeight === opt.value ? 'active' : ''}`}
               onClick={() => updateSlide(slideIndex, { cardHeight: opt.value })}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }, [editMode, updateSlide]);
+
+  // Split-list layout switcher — toggles between simple list / two columns / highlight
+  const SplitListVariantControl = useMemo(() => ({ slide, slideIndex }) => {
+    if (!editMode) return null;
+    const variant = slide.layoutVariant || 'list';
+    const options = [
+      { label: 'Simple list', value: 'list' },
+      { label: 'Two columns', value: 'columns' },
+      { label: 'Highlight', value: 'highlight' },
+    ];
+    return (
+      <div className="card-variant-control">
+        <span className="spacing-label">Layout:</span>
+        <div className="spacing-presets">
+          {options.map(opt => (
+            <button
+              key={opt.value}
+              className={`spacing-preset ${variant === opt.value ? 'active' : ''}`}
+              onClick={() => updateSlide(slideIndex, { layoutVariant: opt.value })}
             >
               {opt.label}
             </button>
@@ -6573,7 +6604,7 @@ My instructions: `;
                   const initials = (quote.author || '')
                     .trim().split(/\s+/).map((w) => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
                   return (
-                  <div key={i} className="quote-card">
+                  <div key={i} className={`quote-card${quote.hideAuthor ? ' quote-card--no-author' : ''}`}>
                       <span className="quote-mark" aria-hidden="true">&ldquo;</span>
                       <p className="quote-text">
                         "<EditableField
@@ -6581,6 +6612,8 @@ My instructions: `;
                           onChange={(v) => updateSlideItem(index, 'quotes', i, { ...quote, text: v })}
                         />"
                       </p>
+                      {!quote.hideAuthor && (
+                      <>
                       <div className="quote-divider" aria-hidden="true" />
                       <div className="quote-attribution">
                         <span className="quote-avatar" aria-hidden="true">{initials || '—'}</span>
@@ -6602,6 +6635,18 @@ My instructions: `;
                           )}
                         </div>
                       </div>
+                      </>
+                      )}
+                      {editMode && (
+                        <button
+                          type="button"
+                          className="quote-author-toggle"
+                          onClick={() => updateSlideItem(index, 'quotes', i, { ...quote, hideAuthor: !quote.hideAuthor })}
+                          title={quote.hideAuthor ? 'Add the person back' : 'Remove the person from this quote'}
+                        >
+                          {quote.hideAuthor ? '+ Add person' : '× Remove person'}
+                        </button>
+                      )}
                       <ArrayItemControls onRemove={() => removeArrayItem(index, 'quotes', i)} />
                   </div>
                   );
@@ -7498,6 +7543,78 @@ My instructions: `;
             </div>
           </div>
         );
+
+      // === SPLIT LIST - left title · right list / columns / highlight ===
+      case 'splitList': {
+        const listVariant = slide.layoutVariant || 'list';
+        return (
+          <div className="slide slide-split-list" key={index} style={spacingStyle} data-list-variant={listVariant}>
+            {slideControls}
+            {titleSpacingControl}
+            <SplitListVariantControl slide={slide} slideIndex={index} />
+            <div className="slide-inner">
+              <div className="split-list-layout">
+                <div className="split-list-aside">
+                  <span className="slide-label">
+                    <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
+                  </span>
+                  <h2 className="split-list-title">
+                    <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
+                  </h2>
+                </div>
+                <div className="split-list-main">
+                  {listVariant === 'highlight' ? (
+                    <p className="split-list-highlight">
+                      <EditableField
+                        value={slide.highlight}
+                        onChange={(v) => updateSlide(index, { highlight: v })}
+                        multiline
+                        placeholder="Highlight a single, important thing…"
+                      />
+                    </p>
+                  ) : (
+                    <>
+                      <div className="split-list-items">
+                        {slide.items?.map((item, i) => (
+                          <div key={i} className="split-list-item">
+                            <h3 className="split-list-item-title">
+                              <EditableField
+                                value={item.title}
+                                onChange={(v) => updateSlideItem(index, 'items', i, { ...item, title: v })}
+                              />
+                            </h3>
+                            <p className="split-list-item-desc">
+                              <EditableField
+                                value={item.description}
+                                onChange={(v) => updateSlideItem(index, 'items', i, { ...item, description: v })}
+                                multiline
+                              />
+                            </p>
+                            {editMode && (
+                              <button
+                                type="button"
+                                className="remove-item-btn split-list-remove-item"
+                                onClick={() => removeArrayItem(index, 'items', i)}
+                                title="Remove item"
+                              >
+                                ×
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      <AddItemButton
+                        onClick={() => addArrayItem(index, 'items', { title: 'New thing', description: 'Add a quick description.' })}
+                        label="thing"
+                      />
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
 
       // === ACHIEVE GOALS - two-column goals layout ===
       case 'achieveGoals':

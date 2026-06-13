@@ -1,5 +1,5 @@
 {
-  "dataVersion": 19,
+  "dataVersion": 61,
   "title": "Clinical Scanning\nWorkflow",
   "subtitle": "Redesigning the clinical scanning workflow for speed, clarity, and decision-making in real treatment conditions.",
   "category": "Clinical Workflow Redesign",
@@ -9,7 +9,7 @@
     {
       "type": "intro",
       "title": "Clinical Scanning\nWorkflow",
-      "description": "The patient is in the chair. The scanner is ready. The system isn't.\nI redesigned Align Technology's RX, Scan, and View workflow into one continuous system.",
+      "description": "The patient is in the chair. The scanner is ready. The system isn't.\niTero is a digital intraoral scanner used chairside during live patient appointments. I redesigned Align Technology's RX, Scan, and View workflow into one continuous system.",
       "clientLabel": "Client",
       "client": "Align Technology",
       "focusLabel": "Focus",
@@ -109,14 +109,14 @@
     {
       "type": "problem",
       "label": "The Problem",
-      "title": "The system grew. The experience didn't.",
-      "content": "RX, Scan, and View grew independently over time — three disconnected systems dressed up as one workflow.",
-      "issuesTitle": "Where it broke down",
+      "title": "The Rx was built as a sequential form",
+      "content": "Sequential, popup-heavy, and rigid — it forced clinical decisions before clinicians had the information to make them.",
+      "issuesTitle": "What broke",
       "issues": [
-        "Setup blocked users before they could scan",
-        "Procedure and tooth selection took too much effort",
-        "Scanning stopped every time a tool needed adjusting",
-        "Nothing signalled when a scan was complete"
+        "Every tooth, material, and spec triggered a modal",
+        "No multi-select — procedures set tooth by tooth",
+        "Changing a procedure meant starting over",
+        "Setup had to finish before scanning could begin"
       ],
       "image": [
         {
@@ -135,37 +135,65 @@
       "gridCols": 1,
       "imageDisplayMode": "grid",
       "imageCarouselInterval": 1500,
-      "highlight": "A bad scan means rescanning — with the patient still in the chair."
+      "highlight": "At 37 million cases a year, even one unnecessary popup per case is not a small problem."
+    },
+    {
+      "type": "issuesBreakdown",
+      "label": "Who It Affected",
+      "title": "The problem reached further than the chair",
+      "description": "Setup failures didn't stop at the clinician. Every incomplete field and blocking modal sent ripple effects downstream.",
+      "issues": [
+        {
+          "number": "1",
+          "title": "Dentists",
+          "description": "Every extra click was time not spent on the patient — setup friction happened chair-side, with the patient watching."
+        },
+        {
+          "number": "2",
+          "title": "Clinical staff",
+          "description": "Incomplete cases and mandatory-field errors generated resubmissions — administrative work created by avoidable UI gaps."
+        },
+        {
+          "number": "3",
+          "title": "Labs",
+          "description": "Received Rx data that was incomplete or unstructured for complex procedures like All-on-X and multi-phase treatments."
+        }
+      ]
+    },
+    {
+      "type": "problem",
+      "label": "Why Now",
+      "title": "Three signals converged at once",
+      "content": "3Shape, Medit, and Shining3D had already modernised their Rx flows. The iTero architecture had been patched too many times to patch again — the only path forward was a rebuild.",
+      "issues": [
+        "Competitors had modernised — iTero's Rx flow was visibly behind",
+        "At this scale, every extra popup per case was expensive",
+        "The codebase couldn't absorb another patch — only a rebuild would hold"
+      ],
+      "issuesTitle": "The case for a rebuild",
+      "highlight": "At 37 million cases a year, one unnecessary popup per case adds up fast."
     },
     {
       "type": "quotes",
-      "label": "User Research",
-      "title": "What I heard in the room",
-      "content": "Chair-side observations and follow-up interviews with clinicians. The same frustrations, everywhere — accepted as part of the job. [ADD: participant count and research scope — e.g. N clinicians across N sessions]",
+      "label": "Research",
+      "title": "Six clinicians. The same three problems, every session.",
+      "content": "Chairside observation, then six interviews. I asked clinicians to walk through a real case — where they hesitated, what they'd change. Six interviews is a small sample; these themes held across every session.",
       "quotes": [
         {
-          "text": "The patient popup interrupts me before I even start.",
-          "author": "Dr. Yael Levi"
+          "text": "It feels like a long boring form — and I'm doing it with a patient in the chair.",
+          "author": "Restorative specialist"
         },
         {
           "text": "I change the procedure multiple times before I even begin scanning.",
-          "author": "Dr. Amir Cohen"
+          "author": "General dentist"
         },
         {
           "text": "The moment I go looking for a tool, I lose my rhythm completely.",
-          "author": "Dr. Noa Ben-David"
+          "author": "Orthodontist"
         },
         {
           "text": "I never fully trust the result the first time I see it.",
-          "author": "Dr. Efrat Mizrahi"
-        },
-        {
-          "text": "Even when I'm done, I keep going back to check.",
-          "author": "Dr. Daniel Katz"
-        },
-        {
-          "text": "I never know if I'm selecting the right tooth.",
-          "author": "Dr. Lior Haddad"
+          "author": "Restorative specialist"
         }
       ],
       "bullets": [],
@@ -176,34 +204,46 @@
     {
       "type": "goals",
       "label": "Design Goals",
-      "title": "Four problems. Four things to get right.",
+      "title": "Six problems to solve. Six ways to measure them.",
       "goals": [
         {
           "number": "1",
-          "title": "Start without friction",
-          "description": "Remove the setup gates that block users before scanning."
+          "title": "Flow alongside the scan",
+          "description": "Setup should not gate the capture — Rx runs parallel, not before."
         },
         {
           "number": "2",
-          "title": "Keep scanning unbroken",
-          "description": "Stop the interface from interrupting the act of scanning."
+          "title": "Eliminate one-at-a-time configuration",
+          "description": "Multi-select teeth, group materials, apply in one step."
         },
         {
           "number": "3",
-          "title": "Make every tool self-explanatory",
-          "description": "Clarity built in — not figured out over time."
+          "title": "Editable at any point",
+          "description": "Change procedure or material mid-workflow without restarting."
         },
         {
           "number": "4",
-          "title": "Make results trustworthy on first view",
-          "description": "A clear signal that the scan is done — no re-checks."
+          "title": "Keep scanning uninterrupted",
+          "description": "Tools accessible without leaving the capture context."
+        },
+        {
+          "number": "5",
+          "title": "One visual language",
+          "description": "No icon memorisation, no mixed styles across tools."
+        },
+        {
+          "number": "6",
+          "title": "A clear completion signal",
+          "description": "One done state in View — re-checking becomes a choice, not a reflex."
         }
       ],
       "kpis": [
-        "Time from RX entry to first scan action",
-        "Number of tool interactions mid-scan",
-        "Rescan rate per case",
-        "Self-reported confidence in scan result"
+        "Time from case open to first scan action",
+        "Popup count per case submission",
+        "Multi-tooth task completion rate",
+        "Mid-workflow restart rate",
+        "Tool interactions that exit the scan context",
+        "Re-check rate per scan"
       ],
       "goalsCardsTitle": "Goals",
       "gridColumns": 2,
@@ -219,7 +259,7 @@
       "type": "problem",
       "label": "User Flow Mapping",
       "title": "Mapping the flow before touching the design",
-      "content": "Before designing, I mapped the full RX→Scan→View sequence as users lived it. The friction clusters were impossible to ignore.",
+      "content": "With the goals in place, I mapped the full appointment as clinicians actually moved through it — not the designed flow, the real one. Three breakpoints emerged immediately.",
       "issues": [
         "RX setup blocked the clinician before any scan began",
         "Tool access broke the clinician's rhythm mid-scan",
@@ -236,16 +276,30 @@
     },
     {
       "type": "problem",
+      "label": "Constraints",
+      "title": "What the design had to work across",
+      "content": "Tap targets sized for gloved hands. Nothing essential could depend on hover.",
+      "issues": [
+        "Three surfaces: scanner hardware (Element, Lumina), MIDC desktop, and myitero.com",
+        "Compatible with in-progress cases on the old Rx",
+        "Feature-flagged — no persistent onboarding; learnable on first contact",
+        "Read and demo states designed in from day one",
+        "M&I and Labs out of scope — IA built to absorb them"
+      ],
+      "issuesTitle": "What each constraint demanded"
+    },
+    {
+      "type": "problem",
       "label": "Interactive Prototype",
-      "title": "Testing decisions before they became real",
-      "content": "I built an interactive prototype in code to simulate the real workflow before development started. Static screens can't capture continuous motion or tool sequencing — this could.",
+      "title": "A coded prototype to test decisions before development",
+      "content": "Figma shows what a toolbar looks like — it can't show whether placement breaks scanning rhythm the moment a clinician reaches for a tool. I built the prototype in code before any screens so timing failures surfaced immediately.",
       "bullets2Title": "What this enabled",
       "bullets2": [
-        "Real workflow simulation — not static screens",
-        "Friction caught before development",
-        "Changes tested the same day"
+        "Timing failures caught before any screen was locked",
+        "Tool-reach problems visible in motion, not static frames",
+        "A decision made in the morning, tested the same afternoon"
       ],
-      "highlight": "I caught real issues here: the exact moment a scan loses rhythm, the tool reach that breaks focus. None of that shows up on a static frame.",
+      "highlight": "The toolbar placement decision could not have been made correctly from static screens.",
       "image": [
         {
           "position": "center center",
@@ -426,15 +480,15 @@
     {
       "type": "chapter",
       "number": "02",
-      "title": "Scan & View",
-      "subtitle": "Capturing and validating a 3D model before lab submission — starting with where the tools should live.",
+      "title": "Scan",
+      "subtitle": "Capturing a 3D model before lab submission — starting with where the tools should live.",
       "splitRatio": 40
     },
     {
       "type": "problem",
       "label": "Scan Toolbar — Before",
       "title": "Tools scattered, with no home",
-      "content": "Icons built up from different sources, no shared style — and no consistent place to find them.",
+      "content": "Icons built up from different eras, different styles, no shared visual language — and no consistent place to find them mid-scan.",
       "issues": [
         "No shared visual language across icons",
         "No dedicated place for tools",
@@ -458,10 +512,10 @@
     {
       "type": "directions",
       "label": "Toolbar — Exploration",
-      "title": "Where should the tools live?",
+      "title": "I tested three placements with clinicians during live scanning",
       "directionCount": 3,
       "dir1Status": "rejected",
-      "dir1Desc": "A fixed left rail — always visible. In practice it ate horizontal scan space and narrowed the 3D view at the worst moment.",
+      "dir1Desc": "Bottom center — sat across the occlusal area, obscuring the scan detail that needed the most visual attention during capture.",
       "dir1Image": [
         {
           "position": "center center",
@@ -474,7 +528,7 @@
         }
       ],
       "dir2Status": "rejected",
-      "dir2Desc": "A top bar anchored above the viewport. Tidier than the rail, but reaching up pulled focus away from the live scan.",
+      "dir2Desc": "Vertical right rail — consistent location, but always-visible consumed viewport space even when no tool was needed.",
       "dir2Image": [
         {
           "position": "center center",
@@ -487,7 +541,7 @@
         }
       ],
       "dir3Status": "accepted",
-      "dir3Desc": "One collapsible toolbar, fixed to one corner. Opens when needed, hides when not. I rebuilt the toolbar and procedure icons into one visual language as part of this — every tool reads at a glance.",
+      "dir3Desc": "Top-right corner, collapsible — the only position clinicians could reach without pulling their eyes off the model. With placement settled, the icon problem surfaced: a correctly placed toolbar with unmemorable icons was still broken.",
       "dir3Image": [
         {
           "position": "center center",
@@ -504,17 +558,17 @@
       "type": "problem",
       "label": "Scan Toolbar — After",
       "title": "One toolbar, one visual language",
-      "content": "A unified icon set in a collapsible toolbar — one language, one home.",
+      "content": "A collapsible toolbar anchored to the top-right, rebuilt with a unified icon system — consistent line weight, consistent style, labeled.",
       "issues": [
-        "Unified icon set — each maps to its action",
-        "One collapsible toolbar, always in  one place",
-        "Scalable — new tools slot in without disruption"
+        "Toolbar fixed to one corner — always findable, never in the way",
+        "Unified icon set — each tool reads at a glance",
+        "New tools slot in without requiring new conventions"
       ],
       "issuesTitle": "What changed",
       "bullets2Title": "Icon redesign",
       "bullets2": [
-        "Toolbar and procedure icons rebuilt into one visual system",
-        "Every tool reads at a glance"
+        "Toolbar and procedure icons rebuilt as one visual system",
+        "Consistent line weight and style across every tool"
       ],
       "highlight": null,
       "image": [
@@ -535,15 +589,15 @@
     {
       "type": "problem",
       "label": "Multi-scan & Compare",
-      "title": "Managing multiple scans  and comparing them",
-      "content": "Pre-treatment, post-treatment, and additional scans — organised by tabs, compared in a multi-layer panel.",
-      "bullets2Title": "What this unlocked",
+      "title": "Managing multiple scans and comparing them",
+      "content": "Multi-visit cases need more than one scan. Clinicians had to track changes between appointments. Pre- and post-treatment scans sit in tabs, with overlay and adjustable opacity.",
+      "bullets2Title": "How it works",
       "bullets2": [
-        "Add and switch between scans within one session",
-        "Overlay scans and adjust opacity in real time",
-        "Comparison becomes visual, not mental"
+        "Add scans within one session — tabs keep them organised",
+        "Overlay scans with adjustable opacity — compare in real time",
+        "What clinicians held in memory, now visible on screen"
       ],
-      "highlight": "What used to be a mental task — holding two scans in your head — became a visual action. Overlay, adjust opacity, compare in seconds.",
+      "highlight": "Comparing two scans became visual instead of mental.",
       "image": [
         {
           "position": "center center",
@@ -562,6 +616,20 @@
       "imageDisplayMode": "grid",
       "imageCarouselFit": "contain",
       "imageCarouselInterval": 2000
+    },
+    {
+      "type": "chapter",
+      "number": "03",
+      "title": "View",
+      "subtitle": "Validating the 3D model before lab submission — and giving clinicians a clear sense of done.",
+      "splitRatio": 40
+    },
+    {
+      "type": "problem",
+      "label": "View — Before",
+      "title": "No signal that the work was done",
+      "content": "Unlabelled icons. No hierarchy between primary and destructive actions. No completion signal. Clinicians re-checked every scan by habit — not because anything was wrong, but because nothing told them they were done.",
+      "highlight": "Re-checking is a trust symptom, not a workflow preference."
     },
     {
       "type": "comparison",
@@ -609,45 +677,14 @@
       "imageDisplayMode": "grid",
       "splitRatio": 40,
       "slideMode": "before-after",
-      "switcherStyle": "pill"
-    },
-    {
-      "type": "outcomes",
-      "label": "Outcomes",
-      "title": "What changed — and what I still need to measure",
-      "outcomes": [
-        {
-          "metric": "Faster",
-          "title": "Time to start scanning",
-          "description": "Setup removed — straight to scan. [ADD: real metric or post-launch quote if available]"
-        },
-        {
-          "metric": "Fewer",
-          "title": "Interruptions mid-scan",
-          "description": "Fixed toolbar kept the rhythm. [ADD: real metric or post-launch quote if available]"
-        },
-        {
-          "metric": "Clearer",
-          "title": "Tool clarity",
-          "description": "Named panels — each tells you what it does."
-        },
-        {
-          "metric": "Higher",
-          "title": "Confidence in results",
-          "description": "One primary action per tool. No reason to re-check."
-        }
-      ],
-      "showNumbers": false,
-      "cardVariant": "default",
-      "gridColumns": 4,
-      "splitRatio": 40,
-      "highlight": null
+      "switcherStyle": "pill",
+      "highlight": "Before the redesign, clinicians paused to recall what each icon meant. Named panels removed that step."
     },
     {
       "type": "problem",
-      "label": "Lasting Impact",
-      "title": "The work became the system",
-      "content": "Redesign patterns became a design system — documented in Figma, built in code.",
+      "label": "Design System",
+      "title": "Every component built in three states from the start",
+      "content": "Every pattern from the redesign became a reusable component, built in three states from the start: editable, read-only, and demo. Retrofitting read mode after the fact produces visual inconsistency — in a clinical context, that inconsistency erodes trust.",
       "issuesTitle": "What got formalised",
       "issues": [
         "Input states — default, filled, disabled, error",
@@ -655,7 +692,7 @@
         "Selection controls — checkbox, indeterminate, disabled",
         "Progress states — uploading, processing, complete, failed"
       ],
-      "highlight": "These decisions became what every feature was built on.",
+      "highlight": "The three-state architecture became the shared language the rest of the product was built on.",
       "image": "/case-studies/itero-scan-workflow/img-5ljyfdsz90.png",
       "caption": "Design system components formalised from the redesign",
       "imageIsVideo": false,
@@ -665,27 +702,82 @@
       "splitRatio": 40
     },
     {
+      "type": "outcomes",
+      "label": "Outcomes",
+      "title": "What changed",
+      "outcomes": [
+        {
+          "metric": "Faster",
+          "title": "No blocking gate to the scan",
+          "description": "Case open → first scan with no mandatory setup step. [ADD: setup time measurement from usability testing or post-launch analytics]"
+        },
+        {
+          "metric": "Fewer",
+          "title": "Multi-tooth selection in one step",
+          "description": "Select a range, apply material and spec in one interaction — no tooth-by-tooth modals. [ADD: multi-tooth task completion rate from testing]"
+        },
+        {
+          "metric": "Clearer",
+          "title": "Zero blocking modals on the critical path",
+          "description": "Between case open and scan start, no popup blocks progress."
+        },
+        {
+          "metric": "Higher",
+          "title": "Mid-workflow changes without restarts",
+          "description": "Procedure and materials changeable at any point. [ADD: restart rate before/after from testing or analytics]"
+        }
+      ],
+      "showNumbers": false,
+      "cardVariant": "default",
+      "gridColumns": 4,
+      "splitRatio": 40,
+      "highlight": null
+    },
+    {
+      "type": "process",
+      "label": "Next Steps",
+      "title": "What comes next — sequenced with the PM",
+      "steps": [
+        {
+          "number": "Now",
+          "title": "Smart defaults",
+          "description": "Last-used materials, common shade selections, saved configurations — the interaction model is in place; the intelligence layer isn't yet."
+        },
+        {
+          "number": "Next",
+          "title": "Rx Summary & Send",
+          "description": "The final phase — showing missing fields, allowing last edits, sending the case — was out of scope. It inherits every problem the new Rx flow was designed to solve."
+        },
+        {
+          "number": "Later",
+          "title": "Lab-side connection",
+          "description": "The tooth chart, grouped definitions, and materials summary were designed to be extensible. When lab workflows connect to the same surface, the architecture is ready."
+        }
+      ]
+    },
+    {
       "type": "reflection",
       "label": "Reflection",
       "title": "What I'd do differently",
       "whatWorked": [
-        "Coded prototype — timing issues static screens never surface.",
-        "Mapping the full flow first — each goal had a clear owner."
+        "A coded prototype surfaced timing failures static screens miss — the toolbar decision depended on it.",
+        "Mapping the flow first made the three-phase structure obvious before any design began."
       ],
       "whatFailed": [
-        "Toolbar test came after early designs were reviewed.",
-        "[ADD: one more specific thing that didn't go as planned — a decision that needed more iteration, a constraint that changed late, a stakeholder dynamic]"
+        "Toolbar exploration ran sequentially, not constraints-first — the rejections were obvious from sketch one.",
+        "Grouped materials definition came in late, compressing testing time for edge cases."
       ],
       "whatYoudDoDifferently": [
-        "Journey map in front of the team in week one.",
-        "[ADD: one concrete action — e.g. run the toolbar position test before wireframes, not alongside them]"
+        "Define toolbar placement constraints before generating options.",
+        "Bring grouped materials into scope in week one — the highest-leverage feature, found too late."
       ],
-      "whatYouCouldntMeasure": "Based on testing. [ADD: update with real post-launch data — rescan rate, setup time, satisfaction score]"
+      "whatYouCouldntMeasure": "Outcomes were validated in prototype testing, not the field. [ADD: post-launch resubmission rate, setup time, and mandatory-field error rate.]",
+      "whatYouLearned": "The Rx looked like a form problem. It was an architecture problem — setup gated the scan instead of running alongside it. Getting that diagnosis right before Figma shaped everything."
     },
     {
       "type": "end",
       "title": "Thank You",
-      "subtitle": "One mental model. Three phases. Every clinician's rhythm intact.",
+      "subtitle": "Three phases that were built separately now work as one appointment.",
       "email": "lior2565967@gmail.com",
       "phone": "050-5550409",
       "linkedinUrl": "https://www.linkedin.com/in/lior-baum/",

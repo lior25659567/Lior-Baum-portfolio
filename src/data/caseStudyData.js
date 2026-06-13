@@ -205,6 +205,21 @@ export const slideTemplates = {
   },
 
 
+  // Split List - left title · right list / two-columns / highlight
+  splitList: {
+    type: 'splitList',
+    label: 'Overview',
+    title: 'Simple list',
+    layoutVariant: 'list', // 'list' | 'columns' | 'highlight'
+    items: [
+      { title: 'First thing', description: "Add a quick description of each thing, with enough context to understand what's up." },
+      { title: 'Second thing', description: "Keep 'em short and sweet, so they're easy to scan and remember." },
+      { title: 'Third thing', description: "If you've got a bunch, add another row, or use multiple copies of this slide." },
+    ],
+    highlight: 'Use this slide to highlight a single, important thing. To keep it short and sweet, you might link away to a relevant doc or file.',
+  },
+
+
   // Achievement Goals - two-column goals layout
   achieveGoals: {
     type: 'achieveGoals',
@@ -300,7 +315,7 @@ export const slideTemplates = {
 export const templateCategories = {
   'Introduction': ['intro', 'info', 'chapter'],
   'Visual': ['media', 'imageMosaic'],
-  'Layout': ['testimonial'],
+  'Layout': ['splitList', 'testimonial'],
   'Research': ['textAndImage', 'issuesBreakdown', 'quotes'],
   'Define': ['directions'],
   'Process': ['goals', 'achieveGoals', 'process', 'timeline'],

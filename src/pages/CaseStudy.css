@@ -719,6 +719,7 @@ body.case-study-active .footer {
 
 /* ── TITLE  64px Medium  lh 1.18  ls -0.015em ── */
 .case-study:not(.edit-mode) .slide-inner .intro-title,
+.case-study:not(.edit-mode) .slide-inner .split-list-title,
 .case-study:not(.edit-mode) .slide-inner .info-title {
   font-size: var(--slide-font-title);
   line-height: var(--slide-leading-title);
@@ -735,7 +736,7 @@ body.case-study-active .footer {
   margin-bottom: 0;
 }
 
-/* ── HEADER / H1  56px Medium  lh 1.20  ls -0.012em ── */
+/* ── HEADER / H1 → Heading 48px Medium  lh 1.20  ls -0.012em ── */
 .case-study:not(.edit-mode) .slide-inner h1,
 .case-study:not(.edit-mode) .slide-inner h2,
 .case-study:not(.edit-mode) .slide-inner .end-title,
@@ -765,7 +766,8 @@ body.case-study-active .footer {
 .case-study:not(.edit-mode) .slide-inner .issues-breakdown-title,
 .case-study:not(.edit-mode) .slide-inner .old-experience-title,
 .case-study:not(.edit-mode) .slide-inner .ps-title {
-  font-size: var(--slide-font-header);
+  /* All slide titles use the Heading tier (48px) rather than Header (56px). */
+  font-size: var(--slide-font-h2);
   line-height: var(--slide-leading-heading);
   letter-spacing: var(--slide-tracking-heading);
   font-weight: var(--slide-weight-medium);
@@ -807,6 +809,7 @@ body.case-study-active .footer {
 .case-study:not(.edit-mode) .slide-inner .ps-subtitle,
 .case-study:not(.edit-mode) .slide-inner .issue-breakdown-heading,
 .case-study:not(.edit-mode) .slide-inner .outcome-title,
+.case-study:not(.edit-mode) .slide-inner .split-list-item-title,
 .case-study:not(.edit-mode) .slide-inner .info-metric-label,
 .case-study:not(.edit-mode) .slide-inner .info-methodology-name,
 .case-study:not(.edit-mode) .slide-inner .info-phase-name,
@@ -825,6 +828,7 @@ body.case-study-active .footer {
 .case-study:not(.edit-mode) .slide-inner .feature-description,
 .case-study:not(.edit-mode) .slide-inner .end-subtitle,
 .case-study:not(.edit-mode) .slide-inner .info-intro-hook,
+.case-study:not(.edit-mode) .slide-inner .split-list-highlight,
 .case-study:not(.edit-mode) .slide-inner .comparison-side-description {
   font-size: var(--slide-font-body-lg);
   line-height: var(--slide-leading-body-lg);
@@ -879,6 +883,7 @@ body.case-study-active .footer {
 .case-study:not(.edit-mode) .slide-inner .ideation-chosen-rationale,
 .case-study:not(.edit-mode) .slide-inner .end-contact-value,
 .case-study:not(.edit-mode) .slide-inner .issue-breakdown-desc,
+.case-study:not(.edit-mode) .slide-inner .split-list-item-desc,
 .case-study:not(.edit-mode) .slide-inner .info-value,
 .case-study:not(.edit-mode) .slide-inner .kpi-card-desc,
 .case-study:not(.edit-mode) .slide-inner .ps-paragraph,
@@ -968,7 +973,7 @@ body.case-study-active .footer {
   border-radius: 0 !important;
   background: transparent !important;
   color: var(--color-text) !important;
-  font-size: var(--slide-font-h3) !important;
+  font-size: var(--slide-font-body-lg) !important;
   line-height: var(--slide-leading-subhead) !important;
   letter-spacing: var(--slide-tracking-subhead) !important;
   font-weight: var(--slide-weight-medium) !important;
@@ -1231,6 +1236,74 @@ body.case-study-active .footer {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
+   Split List slide — Figma 153:47 / 153:109 / 153:131
+   ─────────────────────────────────────────────────────────────────────
+   Left column = big section title (vertically centered). Right column =
+   one of three layouts switched via data-list-variant:
+     list      → single column of title + description rows
+     columns   → same rows in a 2-up grid (title column narrows)
+     highlight → one large body-large paragraph (no item list)
+   Structural rules are mode-agnostic; type sizes come from the canvas
+   override layer above. Edit mode keeps the fluid type but shares layout.
+   ═══════════════════════════════════════════════════════════════════════ */
+.split-list-layout {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  align-items: center;
+  gap: 80px;
+  width: 100%;
+}
+.slide-split-list[data-list-variant="columns"] .split-list-layout {
+  grid-template-columns: 0.62fr 1.38fr;
+}
+.split-list-aside {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.split-list-title {
+  margin: 0;
+  text-align: left;
+}
+.split-list-main {
+  min-width: 0;
+}
+.split-list-items {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px 64px;
+}
+.slide-split-list[data-list-variant="columns"] .split-list-items {
+  grid-template-columns: 1fr 1fr;
+}
+.split-list-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.split-list-item-title {
+  margin: 0;
+}
+.split-list-item-desc {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+.split-list-highlight {
+  margin: 0;
+  max-width: 760px;
+}
+/* View mode: vertically center the split against the artboard. */
+.case-study:not(.edit-mode) .slide-split-list .slide-inner {
+  justify-content: center;
+}
+/* Edit mode: the remove-item button sits just left of each row. */
+.case-study.edit-mode .split-list-item .split-list-remove-item {
+  top: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
    Text + Image content slide — Figma node 1045:3526
    ─────────────────────────────────────────────────────────────────────
    Slides: problem · context · feature · testing · comparison-unified ·
@@ -1439,11 +1512,13 @@ body.case-study-active .footer {
   font-weight: var(--slide-weight-regular);
 }
 
-/* KPI rows with no description: only the metric value line is present, so
-   tighten the vertical padding so the row collapses to fit. Type style
-   (Subheading 36px accent) is unchanged. */
+/* KPI rows with no description: only the title line is present, so tighten the
+   vertical padding and centre the title within the card's height (cards stretch
+   to equal height in the grid, so a title-only card would otherwise sit pinned
+   to the top next to taller, described cards). Type style unchanged. */
 .case-study:not(.edit-mode) .slide-goals .kpi-card:not(:has(.kpi-card-desc)) {
   padding: 12px 0;
+  justify-content: center;
 }
 
 /* Equal-height quote cards. */
@@ -3721,6 +3796,31 @@ button.dir-chip:hover {
   font-family: var(--font-body);
   color: var(--color-text-muted);
   font-weight: 400;
+}
+
+/* Edit-mode toggle: drop / restore the person (author block) on a quote card. */
+.quote-author-toggle {
+  margin-top: 10px;
+  align-self: flex-start;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px dashed var(--color-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+.quote-author-toggle:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+/* Person-less quote card: with no attribution row, centre the quote within the
+   equal-height card so it reads as intentional next to authored cards. */
+.case-study:not(.edit-mode) .slide-inner .quote-card--no-author {
+  justify-content: center;
 }
 
 /* Goals Slide */

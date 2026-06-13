@@ -1,7 +1,12 @@
 import { useRef, useState, useCallback, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 import { useEdit } from '../context/EditContext';
 import AnimatedButton from '../components/AnimatedButton';
+import Footer from '../components/Footer';
 import './Playground.css';
 
 // Add scheme to bare URLs so `dribbble.com/...` works as an external link.
@@ -353,10 +358,10 @@ const PlaygroundProject = ({ project, index, total, editMode, onUpdate, onRemove
   return (
     <motion.section
       className={`pg-project${editMode ? ' pg-project--editing' : ''}`}
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
+      transition={{ duration: 0.75, ease: [0.33, 1, 0.68, 1] }}
     >
       {/* Left rail — sticky title */}
       <div className="pg-project-rail">
@@ -601,17 +606,65 @@ const Playground = () => {
     setItems(next);
   };
 
+  // Hero intro — same reveal as the About hero (page load / refresh): the
+  // eyebrow blur-fades up to its muted 0.65, then the two title lines rise
+  // from below their clip mask with a gentle overshoot, slightly overlapped
+  // so they read as one connected motion.
+  const headerRef = useRef(null);
+  const labelRef = useRef(null);
+  const line1Ref = useRef(null);
+  const line2Ref = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ delay: 0.15 });
+      tl.fromTo(labelRef.current,
+        { y: 18, opacity: 0, filter: 'blur(4px)' },
+        { y: 0, opacity: 0.65, filter: 'blur(0px)', duration: 0.6, ease: 'power2.out' }
+      );
+      if (line1Ref.current) {
+        tl.fromTo(line1Ref.current,
+          { yPercent: 120, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 0.8, ease: 'back.out(1.4)' },
+          '-=0.35'
+        );
+      }
+      if (line2Ref.current) {
+        tl.fromTo(line2Ref.current,
+          { yPercent: 120, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 0.8, ease: 'back.out(1.4)' },
+          '-=0.55'
+        );
+      }
+
+      // Scroll-away / scroll-back — mirrors the About hero exactly: discrete
+      // in/out on threshold crossings. Scrolling past the header fades the
+      // title up and out; scrolling back brings the lines to full opacity and
+      // the label back to its muted 0.65.
+      const lineEls = [line1Ref, line2Ref].map((r) => r.current).filter(Boolean);
+      const elements = [labelRef.current, ...lineEls].filter(Boolean);
+      ScrollTrigger.create({
+        trigger: headerRef.current,
+        start: 'top top',
+        end: 'bottom 20%',
+        onLeave: () =>
+          gsap.to(elements, { y: -50, opacity: 0, duration: 0.35, stagger: 0.025, ease: 'power2.in' }),
+        onEnterBack: () => {
+          gsap.to(lineEls, { y: 0, opacity: 1, duration: 0.5, stagger: 0.04, ease: 'power3.out' });
+          gsap.to(labelRef.current, { y: 0, opacity: 0.65, duration: 0.5, ease: 'power3.out' });
+        },
+      });
+    }, headerRef);
+    const t = setTimeout(() => ScrollTrigger.refresh(), 100);
+    return () => { clearTimeout(t); ctx.revert(); };
+  }, []);
+
   return (
     <div className="playground-page">
       <div className="playground-container">
-        <motion.header
-          className="playground-header"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-        >
+        <header className="playground-header" ref={headerRef}>
           <div className="title-line-wrapper">
-            <span className="section-label">
+            <span className="section-label" ref={labelRef}>
               <Editable
                 value={playground.sectionLabel}
                 onChange={(v) => updateContent('playground', 'sectionLabel', v)}
@@ -621,7 +674,7 @@ const Playground = () => {
           </div>
           <h1 className="playground-title">
             <div className="title-line-wrapper">
-              <div className="title-line">
+              <div className="title-line" ref={line1Ref}>
                 <span className="sans">
                   <Editable
                     value={playground.titleSans ?? playground.sectionTitle ?? ''}
@@ -632,7 +685,7 @@ const Playground = () => {
               </div>
             </div>
             <div className="title-line-wrapper">
-              <div className="title-line">
+              <div className="title-line" ref={line2Ref}>
                 <span className="serif accent">
                   <Editable
                     value={playground.titleSerif ?? ''}
@@ -643,7 +696,7 @@ const Playground = () => {
               </div>
             </div>
           </h1>
-        </motion.header>
+        </header>
 
         {items.length === 0 && !editMode ? (
           <p className="playground-empty">Nothing here yet — experiments are on the way.</p>
@@ -674,6 +727,8 @@ const Playground = () => {
           </div>
         )}
       </div>
+
+      <Footer />
 
       <AnimatePresence>
         {lightbox && (

@@ -400,6 +400,40 @@ img {
   }
 }
 
+/* ── Standard mobile section gutters ──────────────────────────────────────
+   Every page-level container + the footer shipped 16px (≤767) / 8px (≤480)
+   side padding, which reads cramped on phones. Standardize to 20px / 16px so
+   content keeps a comfortable edge gap on every page. Scoped with `html` for
+   specificity so it wins over the per-page container rules regardless of
+   stylesheet import order; only padding-left/right are set, so the hero's and
+   footer's vertical-padding clamps are preserved. Case-study slides use the
+   fixed-canvas system (not these containers) and are intentionally excluded. */
+@media (max-width: 767.98px) {
+  html .container,
+  html .about-container,
+  html .playground-container,
+  html .projects-container,
+  html .services-section-container,
+  html .hero-container,
+  html .footer {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  html .container,
+  html .about-container,
+  html .playground-container,
+  html .projects-container,
+  html .services-section-container,
+  html .hero-container,
+  html .footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 /* ─────────────────────────────────────────────────────────────────────────
    Mobile responsiveness overlay — applies ONLY at ≤767px.
    Placed AFTER the desktop/tablet blocks so these overrides win without

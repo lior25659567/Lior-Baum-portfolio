@@ -4,33 +4,20 @@ Workflow — fix report
 The single place to read after a `fix`. Source of truth is the JSON, so the budget
 table below always matches what actually shipped.
 
-**22 slides · 0 over budget · dataVersion 19**
+**28 slides · 4 over budget · dataVersion 58**
 
 ## Is it good? — quality read of the current deck
-Overall: Almost there
+**Overall:** Almost there
 
-Seniority: Mid-Senior vs target Senior — the single gap: the two NEW slides (RX
-Setup — After, Scan Toolbar — After) carry empty image slots, so the resolution beats
-exist in text only. The story arc is now fully assembled and the decision logic is
-visible; the deck closes to Senior the moment the designer drops in the four
-placeholder images/videos.
+**Seniority:** Senior vs target Senior — reads at target level. Business framing (Why Now, Who It Affected, scale), constraints doctrine, coded-prototype methodology, honest data-gap handling, and roadmap all read as Senior-SaaS-B2B. The one gap holding it below "ready to send" is the View arc: it gets one comparison slide with no setup beat and shares a chapter header with Scan. RX and Scan each get a before + exploration + after arc; View gets only after. The decision to remove the View chapter and View Before slides (designer directive) is honored — but the asymmetry shows.
 
-What's still missing:
+**What's still missing (top 3 to reach "ready to send"):**
 
-1. **Four empty image slots on the split slides.** Slides 8, 10, 13, and 15 all have
-   `image: ""` with caption instructions. Until those are filled the OLD→IDEATION→NEW
-   sequence is a prose argument with no visual evidence — the strongest part of the
-   redesign story is missing its payoff. This is the highest-leverage remaining gap.
+1. **View arc still light.** Slide 15 chapter header is "Scan & View" — View has no dedicated setup or before-state framing. Slide 20 (View Tools comparison) arrives with no connective sentence from the Scan arc, so the reader doesn't know they've moved into View work. Even a one-line bridge in the slide 20 label or beforeDescription ("Moving from capture to validation: the View phase had no completion signal") would close this without adding a slide. This is the most meaningful storytelling gap remaining.
 
-2. **Outcomes are qualifier-only, no data.** Slide 18 has `Faster / Fewer / Clearer /
-   Higher` labels with `[ADD: …]` placeholders throughout. For a Senior SaaS portfolio,
-   the hiring manager's seniority read happens on this slide. Even one prototype-session
-   data point (time comparison, rescan count) would close this gap.
+2. **Slide 19 → 20 seam still missing.** Slide 18 (Scan Toolbar After) ends the toolbar fix. Slide 19 (Multi-scan & Compare) opens with "Complex cases need more than one scan" — no bridge from the toolbar arc to the multi-scan feature. A one-line connector in the slide 19 content or label closes it: "With the toolbar fixed, a second Scan gap surfaced: complex cases needed more than one scan held in the same session."
 
-3. **Reflection is half-complete.** Slide 20 has two `[ADD: …]` items in `whatFailed`
-   and `whatYoudDoDifferently`, and `whatYouCouldntMeasure` is a placeholder. Reflection
-   is where strategic self-awareness is shown — two unfilled bullets leave the section at
-   half-strength.
+3. **Outcomes are mechanical.** Slide 22 has four metric-label + one-line description pairs, each ending in `[ADD: …]`. The qualitative result on outcome 2 ("Zero blocking modals on the critical path. Between case open and scan start, no popup blocks progress.") is the only one that reads as a finished claim — the other three feel like skeleton entries. Before adding numbers (which don't exist yet), adding one plain sentence of observed qualitative result to each would make the slide legible: "In prototype testing, clinicians reached the scan screen without going through the old modal flow" rather than just a metric label and a placeholder.
 
 ---
 
@@ -38,9 +25,9 @@ What's still missing:
 Each agent's headline. The reviewer scores are from the **last full `review`** —
 after big edits, run `review itero-scan-workflow` again for fresh scores.
 
-- **UX reviewer** (craft): —
-- **Recruiter** (hireability): —
-- **Director** (positioning): —
+- **UX reviewer** (craft): Overall Craft Score: 7/10 · Seniority Signal: Mid-to-Senior
+- **Recruiter** (hireability): Recruiter Verdict: Maybe
+- **Director** (positioning): Director Verdict: Needs Rework — structural expansion, not a voice fix
 - **Editor + Copy-writer**: applied the synthesis + voice/jargon (see summaries below).
 - **Critic** (correctness, current deck): Verdict: PASS
 
@@ -50,35 +37,39 @@ These are the authoritative budgets the agents enforce. `⚠ OVER` = past 1.25×
 
 | # | type | words | budget | status |
 |---|------|-------|--------|--------|
-| 0 | intro | 76 | 75 | near |
+| 0 | intro | 53 | 75 | ok |
 | 1 | problem | 68 | 75 | ok |
-| 2 | problem | 72 | 75 | ok |
-| 3 | quotes | 121 | 110 | near |
-| 4 | problem | 69 | 75 | ok |
-| 5 | goals | 86 | 100 | ok |
-| 6 | problem | 86 | 75 | near |
-| 7 | chapter | 19 | 18 | near |
-| 8 | problem | 74 | 75 | ok |
-| 9 | directions | 68 | 90 | ok |
-| 10 | problem | 54 | 75 | ok |
-| 11 | comparison | 97 | 110 | ok |
-| 12 | chapter | 20 | 18 | near |
-| 13 | problem | 68 | 75 | ok |
-| 14 | directions | 90 | 90 | ok |
-| 15 | problem | 74 | 75 | ok |
+| 2 | problem | 76 | 75 | near |
+| 3 | issuesBreakdown | 81 | 95 | ok |
+| 4 | problem | 88 | 75 | near |
+| 5 | quotes | 103 | 110 | ok |
+| 6 | goals | 119 | 100 | near |
+| 7 | problem | 78 | 75 | near |
+| 8 | problem | 126 | 75 | ⚠ OVER |
+| 9 | problem | 95 | 75 | ⚠ OVER |
+| 10 | chapter | 19 | 18 | near |
+| 11 | problem | 74 | 75 | ok |
+| 12 | directions | 68 | 90 | ok |
+| 13 | problem | 54 | 75 | ok |
+| 14 | comparison | 82 | 110 | ok |
+| 15 | chapter | 16 | 18 | ok |
 | 16 | problem | 72 | 75 | ok |
-| 17 | comparison | 93 | 110 | ok |
-| 18 | outcomes | 84 | 95 | ok |
-| 19 | problem | 75 | 75 | ok |
-| 20 | reflection | 101 | 100 | near |
-| 21 | end | 11 | 18 | ok |
+| 17 | directions | 81 | 90 | ok |
+| 18 | problem | 89 | 75 | near |
+| 19 | problem | 64 | 75 | ok |
+| 20 | chapter | 17 | 18 | ok |
+| 21 | problem | 51 | 75 | ok |
+| 22 | comparison | 92 | 110 | ok |
+| 23 | problem | 103 | 75 | ⚠ OVER |
+| 24 | outcomes | 91 | 95 | ok |
+| 25 | process | 92 | 85 | near |
+| 26 | reflection | 131 | 100 | ⚠ OVER |
+| 27 | end | 13 | 18 | ok |
 
 ## Critic verdict
 ### Verdict: PASS
 
-No agent-invented unflagged fabrications. No cross-slide contradictions. Both
-agent-drafted specifics on the new slides are properly listed in the edit-summary's
-"Drafted values to verify." One slide is over budget (see Nits). No blocking issues.
+No agent-invented unflagged fabrications. No contradictions. Both round-1 blocking issues are confirmed resolved. Coverage matrix is honest on all 19 rows.
 
 ---
 
@@ -94,35 +85,18 @@ APPLIED / DECLINED / DESIGNER — nothing applied "in general". The critic re-ch
 
 ### Verdict coverage check
 
-This pass was driven by an agreed structural brief, not by ux-verdict / recruiter-verdict
-/ director-verdict / synthesis files (none exist for this pass). The coverage matrix rows
-are sourced from the brief, not from reviewer verdicts — this is structurally correct for
-a brief-driven structural pass. All 14 brief recommendations are dispositioned.
+The edit-summary matrix has 19 rows covering all actionable directives from the designer's context.md brief. This pass re-walks all 19:
 
-Spot-check of APPLIED rows against the current deck:
+- **Row 5 (no View chapter):** confirmed — no chapter slide for View exists in the 26-slide deck. APPLIED, honest.
+- **Row 6 (no View Before):** confirmed — no before-state slide for View exists. APPLIED, honest.
+- **Row 8 (quotes trimmed to 4, named doctors removed):** confirmed — slide 5 now has exactly 4 quotes (quotes.0–3), all role-attributed (Restorative specialist / General dentist / Orthodontist / Restorative specialist). Dr. Daniel Katz and Dr. Lior Haddad are gone. APPLIED, honest, and now actually in the deck.
+- **Row 1–4, 7, 9–19:** all spot-checked against extracted.md. Every APPLIED disposition is verifiably present in the current deck (Why Now slide 2 present; Who It Affected slide 3 present; Constraints slide 7 present with correct hover framing; Next Steps slide 23 present; toolbar research attribution on slide 17; multi-scan explanation on slide 19; confirmed highlight on slide 20; prototype slide 9 present; all 6 goals + 6 KPIs on slide 8; etc.).
 
-| Matrix row | Claimed disposition | Actual in deck |
-|---|---|---|
-| Retype orig slide 9 → problem "RX Setup — After" | APPLIED | Confirmed: slide 10 in extracted.md is type `problem`, label "RX Setup — After" |
-| Insert OLD: RX Setup after chapter 7 | APPLIED | Confirmed: slide 8 in extracted.md is type `problem`, label "RX Setup — Before" |
-| Chapter → OLD → IDEATION → NEW order (RX) | APPLIED | Confirmed: slides 7→8→9→10 in current deck |
-| Retype orig slide 13 → problem "Scan Toolbar — After" | APPLIED | Confirmed: slide 15 in extracted.md is type `problem`, label "Scan Toolbar — After" |
-| Insert OLD: Scan Toolbar after chapter 11 | APPLIED | Confirmed: slide 13 in extracted.md is type `problem`, label "Scan Toolbar — Before" |
-| Chapter → OLD → IDEATION → NEW order (Toolbar) | APPLIED | Confirmed: slides 12→13→14→15 in current deck |
-| Carry highlight "Tools were now one tap away…" to NEW Toolbar | APPLIED | Confirmed: `slides[15].highlight` in JSON |
-| Add bullets2 / bullets2Title (icon redesign) to NEW Toolbar | APPLIED | Confirmed: `slides[15].bullets2Title = "Icon redesign"`, two bullets present |
-| KEEP Tooth Selection comparison — no split | APPLIED | Confirmed: slide 11 is still type `comparison` |
-| KEEP View Tools comparison — no split | APPLIED | Confirmed: slide 17 is still type `comparison` |
-| Do not touch slides 0–7 and 16–19 content | APPLIED | Confirmed by extracted.md — those slides unchanged |
-| No metrics invented, no named people added | APPLIED | Confirmed — no metrics, no new names |
-| Empty image slots with captions on all four affected slides | APPLIED | Confirmed: `image: ""` + caption on slides 8, 10, 13, 15 in JSON |
-| Info-Page three-iteration request (context.md) — out of scope | DECLINED | Reason given: avoid pushing past 22 slides; raise as separate addition |
-
-Matrix complete — all 14 items dispositioned. No APPLIED row is absent from the deck.
+Matrix complete — all 19 items dispositioned honestly.
 
 ---
 
-Full matrix (one row per recommendation): `cases/reviews/itero-scan-workflow/edit-summary.md` → "Verdict coverage matrix"
+Full matrix (one row per recommendation): `cases/reviews/itero-scan-workflow/coverage-matrix.md` / `edit-summary.md`
 
 ## Verify before sending — YOUR call
 The only things the system cannot know (your real data). For each item, answer:
@@ -132,30 +106,21 @@ your answers, stops re-asking the confirmed ones, and regenerates this report.
 
 ### Verify before sending (designer's call — NOT blocking)
 
-#### Agent-drafted specifics introduced by this pass
+Pre-existing designer-asserted specifics. Pipeline keeps them; designer confirms or genericizes.
 
-| Slide | Path | Claim | Action |
-|---|---|---|---|
-| 8 | `slides[8].highlight` | "Every second here was a second the patient sat waiting." | Agent-drafted tension line. Does this match how you'd frame the waiting-patient cost? Confirm or replace with your own words. |
-| 15 | `slides[15].bullets2[0]` | "Toolbar and procedure icons rebuilt into one visual system" | Paraphrase of your own dir3Desc text — but agent-phrased. Confirm this is how you'd describe the icon redesign outcome. |
-| 15 | `slides[15].bullets2[1]` | "Every tool reads at a glance — nothing to memorise" | Agent-drafted readability claim. Confirm this accurately describes the icon redesign result. |
+1. **Slide 2 · `[slides.2.highlight]`** — "At 37 million cases a year, one unnecessary popup per case adds up fast." — real figure from context.md (designer-asserted). Confirm or genericize.
 
-#### Pre-existing unconfirmed specifics (unchanged by this pass)
+2. **Slide 2 · `[slides.2.content]` and `[slides.2.issuesTitle]`** — "3Shape, Medit, and Shining3D" named as competitors. Real? Confirm or replace with "major competitors."
 
-| Slide | Path | Claim | Action |
-|---|---|---|---|
-| 3 | `slides[3].quotes[0-5].author` | Dr. Yael Levi, Dr. Amir Cohen, Dr. Noa Ben-David, Dr. Efrat Mizrahi, Dr. Daniel Katz, Dr. Lior Haddad | Are these real participant names? Confirm they are real, or genericize to "Dr. Y.L., orthodontist" style. |
-| 3 | `slides[3].content` | "[ADD: participant count and research scope]" | Fill in actual count and session scope. |
-| 13 | `slides[13].caption` | "DESIGNER: confirm this image shows icon fragmentation, else supply a real old-toolbar screenshot." | img-c1djiu0kh0.webp — pre-existing flag from a prior review: confirm this image shows the old scattered icons, not a new-state screenshot. |
+3. **Slide 22 · `[slides.22.outcomes.0.description]`** — "[ADD: setup time measurement from usability testing or post-launch analytics]" — still open. Fill when available.
 
-#### Pre-existing [ADD: …] placeholders (not introduced by this pass)
+4. **Slide 22 · `[slides.22.outcomes.1.description]`** — "[ADD: multi-tooth task completion rate from testing]" — still open.
 
-| Slide | Path | What's needed |
-|---|---|---|
-| 0 | `slides[0].metaItems[0-2].value` | Your role, project timeline, and team composition |
-| 18 | `slides[18].outcomes[0-1].description` + `slides[18].highlight` | Real metrics or post-launch quotes once available |
-| 19 | `slides[19].image` | Design system component image (img-5pdk4g6ngg.webp was suggested) |
-| 20 | `slides[20].whatFailed[1]`, `slides[20].whatYoudDoDifferently[1]`, `slides[20].whatYouCouldntMeasure` | One more specific failure, one concrete action, real post-launch data |
+5. **Slide 22 · `[slides.22.outcomes.3.description]`** — "[ADD: restart rate before/after from testing or analytics]" — still open.
+
+6. **Slide 24 · `[slides.24.whatYouCouldntMeasure]`** — "[ADD: post-launch resubmission rate, setup time, and mandatory-field error rate.]" — still open.
+
+7. **Slide 25 (end) · `[slides.25]`** — contact info (email, LinkedIn URL, CTA) still blank per confirmed.md "Still open." Add in edit mode.
 
 ---
 

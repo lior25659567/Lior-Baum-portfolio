@@ -1,5 +1,5 @@
 {
-  "profileImage": "/about/profile.webp",
+  "profileImage": "",
   "about": {
     "label": "About Me",
     "title1": "Designing",
@@ -116,6 +116,28 @@
         "description": "Reimagined clinician dashboard to reduce friction in digital physical therapy sessions. Conducted interviews with stakeholders and therapists to identify pain points and deliver improved task flows. Created onboarding flows and visual guidance assets to support product adoption."
       }
     ],
-    "bioAlign": "start"
+    "bioAlign": "start",
+    "valueWords": [
+      "Good Energy",
+      "Kindness",
+      "Humor",
+      "Teamwork",
+      "Curiosity",
+      "Trust",
+      "Honesty",
+      "Empathy",
+      "Active Listening",
+      "Playfulness",
+      "Open Feedback",
+      "Belonging",
+      "Growth Mindset",
+      "Generosity",
+      "Patience",
+      "Optimism",
+      "Shared Wins",
+      "Mentorship",
+      "Calmness",
+      "Good Coffee"
+    ]
   }
 }

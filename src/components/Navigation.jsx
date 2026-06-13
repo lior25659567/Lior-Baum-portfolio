@@ -222,8 +222,6 @@ const Navigation = () => {
                 
                 <div className="mobile-social-links">
                   <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                  <a href="https://dribbble.com" target="_blank" rel="noopener noreferrer">Dribbble</a>
-                  <a href="https://behance.net" target="_blank" rel="noopener noreferrer">Behance</a>
                 </div>
               </motion.div>
             </motion.div>

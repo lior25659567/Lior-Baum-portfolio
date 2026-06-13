@@ -1,6 +1,6 @@
 .about-page {
   padding-top: calc(var(--nav-height) + var(--spacing-md));
-  padding-bottom: var(--spacing-xl);
+  padding-bottom: 0;
   min-height: 100vh;
 }
 
@@ -36,7 +36,14 @@
   padding-bottom: 0.1em;
 }
 
+/* Hug the text (no full-width block box / no max-height clip) while still
+   honouring the hero's centered text-align via inline-level layout. Uses
+   inline-block, NOT flex: a flex container drops whitespace-only text nodes,
+   which would delete the space between "Designing" and "experiences".
+   Kept identical to the Playground hero. */
 .title-line {
+  display: inline-block;
+  vertical-align: top;
   will-change: transform;
 }
 

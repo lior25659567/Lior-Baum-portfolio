@@ -206,3 +206,26 @@ How complete the deck is, and the biggest gap the brief left.
   as its content genuinely needs from the brief: don't cram several distinct decisions into one
   frame so the reasoning is lost, and don't pad one thin point across several slides. Decide per
   beat, with no default preference for splitting or merging.
+
+## Writing voice — product detail first (shared)
+
+**Read `cases/reviews/_writing-voice.md` and author every text field to it.** It outranks
+the lexicon. The essentials:
+- **Concrete product detail first, UX language second.** Open with what happened in the
+  product, not an abstract UX word. Each slide should explain *why* the decision mattered,
+  not just describe the UI. Sound like a designer explaining their work in an interview.
+- **No portfolio taglines / dramatic one-liners.** Say the plain version. Body copy is 1–3
+  short sentences; bullets are concrete and observable, not abstract.
+- **Earn every UX term; use it rarely.** `_ux-lexicon.md` is only for picking the *correct
+  name* when you do name a method — not a list to sprinkle, and never the same term across
+  slides.
+- **Never invent** research counts, names, quotes, or metrics — those stay as captioned
+  `[ADD: …]` placeholders for the designer to fill. Don't fake impact.
+
+## Media safety — never remove media (shared)
+
+You author with `insert` ops on an empty deck, so you don't delete existing media — but the
+rule still binds you: leave **captioned empty image slots** for each inventory asset (never
+invent or hardcode a media path), and never write an image/video field (`image`, `images`,
+`beforeImage`, `afterImage`, `src`, …) as text — those are refused by `apply`. The designer
+drops the real videos/images into those slots later in edit mode.

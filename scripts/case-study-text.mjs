@@ -38,6 +38,25 @@ const HARD_DENY = new Set([
   'gridCols', 'gridColumns', 'splitRatio', 'introHeaderMode', 'isVideo',
   'wrapperBg', 'visual_note',
 ]);
+// Keys whose value is a media asset (image / video). NEVER prose, and NEVER dropped.
+// `src` is already in HARD_DENY above; these are the other media-bearing keys so a
+// stray text/setField edit can't overwrite a media path with prose.
+const MEDIA_KEYS = new Set([
+  'image', 'images', 'beforeImage', 'afterImage', 'poster', 'media', 'mediaItems',
+  'backgroundImage', 'imageUrl', 'videoUrl', 'videoSrc', 'carouselImages',
+  'mosaicImages', 'thumbnail', 'gif',
+]);
+// A string value that points at a real on-disk asset or an inlined data-URI. Used to
+// detect media ANYWHERE in a slide regardless of key name, so slide-level ops
+// (remove / retype) can never silently lose a video or image.
+const MEDIA_VALUE_RX = /^\/case-studies\/|^data:(image|video)\/|\.(png|jpe?g|webp|gif|svg|avif|mp4|mov|webm|m4v)(\?.*)?$/i;
+const collectMediaStrings = (node, out = []) => {
+  if (typeof node === 'string') { if (node && MEDIA_VALUE_RX.test(node)) out.push(node); return out; }
+  if (Array.isArray(node)) { node.forEach((n) => collectMediaStrings(n, out)); return out; }
+  if (node && typeof node === 'object') { for (const v of Object.values(node)) collectMediaStrings(v, out); }
+  return out;
+};
+
 // Factual data the editor must not fabricate — shown for context, refused in apply.
 const PROTECT = new Set(['metric', 'number', 'year']);
 
@@ -211,6 +230,7 @@ function setByPath(obj, pathStr, value) {
   if (cur == null || !(last in cur)) return { ok: false, reason: 'path not found' };
   if (typeof cur[last] !== 'string') return { ok: false, reason: 'target is not a string' };
   if (HARD_DENY.has(last)) return { ok: false, reason: `key "${last}" is image/layout/config — refused` };
+  if (MEDIA_KEYS.has(last)) return { ok: false, reason: `key "${last}" is media (image/video) — refused` };
   if (PROTECT.has(last)) return { ok: false, reason: `key "${last}" is factual data — refused` };
   cur[last] = value;
   return { ok: true };
@@ -349,6 +369,7 @@ function apply(slug, editsPath) {
     const parts = p.split('.');
     const leaf = parts[parts.length - 1];
     if (HARD_DENY.has(leaf)) { refused.push(`setField ${p} — key "${leaf}" is image/layout/config — refused`); continue; }
+    if (MEDIA_KEYS.has(leaf)) { refused.push(`setField ${p} — key "${leaf}" is media (image/video) — refused`); continue; }
     if (PROTECT.has(leaf)) { refused.push(`setField ${p} — key "${leaf}" is factual data — refused`); continue; }
     let cur = data;
     let bad = false;
@@ -371,19 +392,40 @@ function apply(slug, editsPath) {
 
     const validSlide = (s) => s && typeof s === 'object' && typeof s.type === 'string' && s.type.length > 0;
 
-    // retype: replace the whole slide object, keep its original-index tag
+    // retype: replace the whole slide object, keep its original-index tag.
+    // MEDIA SAFETY: a text-focused retype will omit the slide's image/video fields,
+    // which would silently drop the asset. So we carry over every media-bearing field
+    // the replacement doesn't already provide — retype can change type + text, never
+    // delete a video or image.
     for (const op of ops.filter((o) => o.op === 'retype')) {
       const idx = slides.findIndex((s) => s.__oi === op.index);
       if (idx < 0) { refused.push(`retype @${op.index} — index not found`); continue; }
       if (!validSlide(op.slide)) { refused.push(`retype @${op.index} — replacement slide missing valid "type"`); continue; }
-      slides[idx] = { ...op.slide, __oi: op.index };
-      applied.push(`retype @${op.index} -> ${op.slide.type}${op.reason ? ` (${op.reason})` : ''}`);
+      const orig = slides[idx];
+      const next = { ...op.slide, __oi: op.index };
+      const preserved = [];
+      for (const [k, v] of Object.entries(orig)) {
+        if (k === '__oi') continue;
+        if (!collectMediaStrings(v).length) continue;            // not a media field
+        if (collectMediaStrings(next[k]).length) continue;       // replacement already carries media here
+        next[k] = v; preserved.push(k);                          // keep the original asset
+      }
+      slides[idx] = next;
+      applied.push(`retype @${op.index} -> ${op.slide.type}${preserved.length ? ` [media preserved: ${preserved.join(', ')}]` : ''}${op.reason ? ` (${op.reason})` : ''}`);
     }
 
-    // remove
+    // remove — MEDIA SAFETY: never let an agent delete a slide that carries media.
+    // A slide with a video/image can be reworded (text edits) or repositioned (move),
+    // but removing it would lose the asset; the designer can still delete it in edit mode.
     const removeSet = new Set();
     for (const op of ops.filter((o) => o.op === 'remove')) {
-      if (!slides.some((s) => s.__oi === op.index)) { refused.push(`remove @${op.index} — index not found`); continue; }
+      const orig = slides.find((s) => s.__oi === op.index);
+      if (!orig) { refused.push(`remove @${op.index} — index not found`); continue; }
+      const media = collectMediaStrings(orig);
+      if (media.length) {
+        refused.push(`remove @${op.index} — slide carries ${media.length} media asset(s) (image/video); agents may not delete media. Reword or move it, or remove it yourself in edit mode.`);
+        continue;
+      }
       removeSet.add(op.index);
       applied.push(`remove @${op.index}${op.reason ? ` (${op.reason})` : ''}`);
     }

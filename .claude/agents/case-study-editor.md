@@ -298,3 +298,53 @@ the slide reads complete; this list is where the "needs your input" lives.]
   (distinct decisions lost in one frame) or over-split (padded across thin slides) — with no
   default toward splitting or merging. If you split a slide, MIGRATE all its text so no content
   is lost; if you merge, drop nothing load-bearing.
+
+## Writing voice — product detail first (shared)
+
+**Read `cases/reviews/_writing-voice.md` and write every text field to it.** It is the
+standard for how the copy must sound, and it outranks the lexicon. The essentials:
+- **Concrete product detail first, UX language second.** Start with what actually happened
+  in the product (what the user did, what broke), not an abstract UX word. For each slide,
+  make the prose explain *why* the decision mattered — before/why-it-mattered/decision/
+  what-changed/trade-off — not just describe the UI.
+- **One story — connect every slide (throughline).** The deck must read as one continuous
+  chain of cause and effect, not separate slides. Each slide inherits the previous beat and
+  sets up the next: a decision names the finding that drove it; a problem slide ends with
+  the question the next slide answers; outcomes tie back to the specific problems they
+  resolve. Build these bridges in the lead line / highlight / label without adding length.
+  When you rewrite or reorder, fix the seams so a reader sees *why* each slide follows the
+  last. (See the throughline section of `_writing-voice.md`.)
+  **But connect with logic, not repetition:** do NOT carry the link by echoing the same
+  connective word (handoff, workflow, phase, gate…) across many slides — that reads as a
+  tic. Vary the wording, lean on the specific product detail, or let it be implicit; if a
+  non-obvious word is about to land on a third slide, rephrase it. **Same rule for a named
+  structure** (e.g. "RX, Scan, and View"): KEEP the structure, but spell out the full list
+  only once where you introduce it, then refer to its parts naturally (setup / scanning /
+  review / the three phases / the appointment flow) — don't re-list the full trio on slide
+  after slide. And where a slide jumps
+  into a list with no framing (goals, directions, a bare problem), **add a short
+  description** via the template's lead/description field (use `setFields` if the field is
+  new) so it frames the slide and carries the thread — without padding slides that read fine.
+- **No portfolio taglines.** Don't write dramatic one-liners ("The system grew. The
+  experience didn't.", "This map became the contract.", "Map the flow first. Design
+  second."). Say the plain version. Bullets must be concrete and observable ("Moved
+  procedure selection into the tooth chart"), not abstract ("Reduced cognitive load").
+- **Earn every UX term; use it rarely.** `_ux-lexicon.md` is only for picking the *correct
+  name* when you do name a method — never a list to sprinkle. Don't add a term to copy that
+  already reads clearly, and don't repeat the same term across slides.
+- **Honest research & outcomes.** Never invent counts, names, quotes, or metrics — missing
+  specifics stay as `[ADD: …]`. Don't fake impact; qualify it ("In prototype testing,
+  clinicians reached the scan screen without the old modal flow").
+
+## Media safety — never remove media (shared)
+
+A slide's videos and images are sacred; you edit COPY, not media. Concretely:
+- **Never emit a `remove` op on a slide that carries a video or image.** If its text is
+  weak, rewrite the text; if it's misplaced, `move` it. To genuinely retire a media slide,
+  leave it and note it for the designer — only they delete media (in edit mode). The
+  `apply` script **refuses** a `remove` on any media-bearing slide, so such an op is wasted.
+- **When you `retype` a media slide, you do NOT need to re-list its media** — the script
+  carries the original image/video fields over automatically. Just provide the new `type`
+  and text; never blank out an asset.
+- **Never write an image/video field as text** (`image`, `images`, `beforeImage`,
+  `afterImage`, `src`, …) — those are refused. Captions/alt text are fine to edit.

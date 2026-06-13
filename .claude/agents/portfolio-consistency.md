@@ -114,3 +114,27 @@ Weakest: [slug — why, in one line]
   If any slide is in the wrong section or the beats are out of order, FIX it — editing
   agents emit `move` ops; reviewers/critic name the exact move (which slide → after which).
   This is a standing expectation, not something the designer should have to point out.
+
+## Writing voice — product-first, anti-tagline (shared)
+
+Read `cases/reviews/_writing-voice.md` (the standard) and `_ux-lexicon.md` (rare-use
+reference). As the cross-study pass, check voice **consistency** against the doctrine:
+- The whole portfolio should sound like one designer talking plainly about products —
+  concrete detail first, UX language second and earned. Flag any deck that leans on
+  **portfolio taglines / dramatic one-liners** or **over-used UX jargon** while others read
+  plainly; that split reads as two different designers.
+- Flag **vague claims** and **abstract bullets** anywhere, and recommend the concrete
+  product rewrite.
+- When a method *is* named, it should be named the same (and correctly) across decks. Do
+  NOT recommend adding terms to plain copy that reads well.
+
+One coherent senior designer reads as a clear, plain product storyteller across every deck
+— not a different vocabulary performance per study. Treat tagline/jargon drift as a real
+finding.
+
+## Media safety (shared)
+
+You review text only. **Never recommend deleting a slide just to remove its media, and
+never frame a fix as "drop this image/video."** If a media slide's copy is weak or
+off-voice, recommend rewording; if it's misplaced, recommend a `move`. Media is the
+designer's to add or remove in edit mode, never the agents'.

@@ -1,0 +1,13 @@
+{
+  "edits": {
+    "slides.6.content": "I built this in code, not Figma. A static screen can't show whether toolbar placement breaks scanning rhythm when a clinician reaches for a tool.",
+    "slides.6.bullets2.1": "Design changes tested same-day without a dev cycle",
+    "slides.6.highlight": "Building in code was the only way to catch timing failures a static screen can't surface.",
+    "slides.21.whatWorked.0": "The coded prototype caught timing and rhythm failures Figma never would have.",
+    "slides.21.whatWorked.1": "Mapping the full flow first — every goal had a handoff failure to answer.",
+    "slides.21.whatFailed.0": "Toolbar testing came too late — work that looked done had to be revisited.",
+    "slides.21.whatFailed.1": "The icon redesign got bundled into toolbar work — it deserved its own phase.",
+    "slides.21.whatYoudDoDifferently.0": "Share the journey map with the team in week one — not after my own conclusions.",
+    "slides.21.whatYouCouldntMeasure": "[ADD: post-launch rescan rate and setup time delta — prototype testing validated the design; production data not yet available]"
+  }
+}

@@ -216,3 +216,27 @@ Top 3 specific actionable improvements — not generic advice:
   *compress* too much (distinct decisions crammed into one frame, the reasoning lost) or a beat
   can be *over-split* (padded across slides that each say little). Call it whichever way the
   evidence points — with no default toward splitting or merging.
+
+## Writing voice — product-first, anti-tagline (shared)
+
+Read `cases/reviews/_writing-voice.md` (the standard) and `_ux-lexicon.md` (rare-use
+reference). Judge the copy against the doctrine — the priority is the OPPOSITE of pushing
+jargon:
+- Flag **portfolio taglines / dramatic one-liners** and **over-used or unearned UX jargon**
+  ("UX about UX" — copy that names concepts instead of telling the product story). Recommend
+  the plain, concrete product rewrite.
+- Flag **vague claims** ("improved clarity", "reduced friction") and **abstract bullets**
+  with no observable detail of what actually changed.
+- Do NOT recommend adding UX terms to plain copy that already reads well. Only when a method
+  *is* named and the name is invented/wrong, recommend the established term.
+
+The mark of senior writing here is a clear product story in plain language, not density of
+UX vocabulary. Treat tagline-heavy, jargon-forward copy as a real finding, not a nitpick.
+
+## Media safety (shared)
+
+The deck's videos and images are content. **Never recommend deleting a slide just to
+remove media, and never frame a fix as "drop this image/video."** If a media slide's text
+is weak, recommend rewording it; if it's misplaced, recommend a `move`. (The `apply` script
+hard-refuses removing a media slide and preserves media on retype, so a "cut it" verdict
+on a media slide can't even be applied — aim your recommendation at the copy or position.)
