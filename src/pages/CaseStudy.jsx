@@ -5279,7 +5279,7 @@ My instructions: `;
                           <input
                             type="text"
                             className="editable-field figma-url-input"
-                            placeholder={embedInputType === 'figma' ? "Paste Figma URL or <iframe> embed code..." : embedInputType === 'youtube' ? "Paste YouTube URL or <iframe> embed code..." : embedInputType === 'iframe' ? 'Paste iframe tag, URL, or filename' : "Paste website URL to embed..."}
+                            placeholder={embedInputType === 'figma' ? "Paste Figma URL or <iframe> embed code..." : embedInputType === 'youtube' ? "Paste YouTube URL or <iframe> embed code..." : embedInputType === 'iframe' ? 'Paste iframe tag, URL, or filename' : embedInputType === 'url' ? "Paste an image/video URL (Cloudinary, etc.)..." : "Paste website URL to embed..."}
                             value={embedDraft}
                             onChange={(e) => setEmbedDraft(e.target.value)}
                             onKeyDown={(e) => {
@@ -5310,6 +5310,17 @@ My instructions: `;
                                     setEmbedInputIndex(null);
                                   } else {
                                     alert('Please paste an <iframe> tag or a path/URL');
+                                  }
+                                } else if (embedInputType === 'url') {
+                                  const url = embedDraft.trim();
+                                  if (url && /^(https?:\/\/|data:)/i.test(url)) {
+                                    const isVid = /\.(mp4|webm|mov|m4v|ogv|ogg)(\?|#|$)/i.test(url) || /\/video\/upload\//i.test(url);
+                                    const isGifUrl = /\.gif(\?|#|$)/i.test(url);
+                                    updateImage(imgIndex, { src: url, isVideo: isVid, isGif: isGifUrl });
+                                    setEmbedDraft('');
+                                    setEmbedInputIndex(null);
+                                  } else {
+                                    alert('Please paste a direct image or video URL (http://, https:// or data:)');
                                   }
                                 } else {
                                   const url = embedDraft.trim();
@@ -5353,6 +5364,17 @@ My instructions: `;
                               } else {
                                 alert('Please paste an <iframe> tag or a path/URL');
                               }
+                            } else if (embedInputType === 'url') {
+                              const url = embedDraft.trim();
+                              if (url && /^(https?:\/\/|data:)/i.test(url)) {
+                                const isVid = /\.(mp4|webm|mov|m4v|ogv|ogg)(\?|#|$)/i.test(url) || /\/video\/upload\//i.test(url);
+                                const isGifUrl = /\.gif(\?|#|$)/i.test(url);
+                                updateImage(imgIndex, { src: url, isVideo: isVid, isGif: isGifUrl });
+                                setEmbedDraft('');
+                                setEmbedInputIndex(null);
+                              } else {
+                                alert('Please paste a direct image or video URL (http://, https:// or data:)');
+                              }
                             } else {
                               const url = embedDraft.trim();
                               if (url && /^https?:\/\/.+/i.test(url)) {
@@ -5387,6 +5409,10 @@ My instructions: `;
                           <button type="button" className="media-type-btn media-type-iframe" onClick={(e) => { e.stopPropagation(); setEmbedInputType('iframe'); setEmbedInputIndex(imgIndex); setEmbedDraft(''); }}>
                             <span className="media-type-icon">⟨⟩</span>
                             <span>Embed iframe</span>
+                          </button>
+                          <button type="button" className="media-type-btn media-type-url" onClick={(e) => { e.stopPropagation(); setEmbedInputType('url'); setEmbedInputIndex(imgIndex); setEmbedDraft(''); }}>
+                            <span className="media-type-icon">🔗</span>
+                            <span>Image/Video URL</span>
                           </button>
                         </div>
                       )}

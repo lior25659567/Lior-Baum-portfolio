@@ -15990,6 +15990,10 @@ textarea.editable-field {
   letter-spacing: -0.05em;
 }
 
+.media-type-url .media-type-icon {
+  font-size: 1.1rem;
+}
+
 /* Figma embed URL input row */
 .figma-embed-input {
   display: flex;

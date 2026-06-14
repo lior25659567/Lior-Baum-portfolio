@@ -20,6 +20,10 @@ try {
 
 const isPersistableImage = (v) => !!v && !v.startsWith('data:');
 
+// A pasted media URL can point at a video as well as an image.
+const isVideoSrc = (v) =>
+  !!v && (/\.(mp4|webm|mov|m4v|ogv|ogg)(\?|#|$)/i.test(v) || /\/video\/upload\//i.test(v) || v.startsWith('data:video'));
+
 // Append a timestamp so the browser won't reuse a cached 404 for the same
 // path the API just wrote (common cause of the "upload → broken icon" flash
 // when the <img> had tried the URL before the file existed).
@@ -239,6 +243,22 @@ const About = () => {
     reader.readAsDataURL(file);
   };
 
+  // Paste a hosted image or video URL (Cloudinary, etc.) instead of uploading
+  // a file. A remote URL is persistable as-is (it's not a data: URL), so we
+  // skip the filesystem save and store the link straight into state + localStorage.
+  const handleImageUrl = () => {
+    const url = window.prompt('Paste an image or video URL (Cloudinary, Imgur, any host):');
+    if (url === null) return;
+    const trimmed = url.trim();
+    if (!trimmed) return;
+    if (!/^https?:\/\/.+/i.test(trimmed)) {
+      alert('Please paste a URL starting with http:// or https://');
+      return;
+    }
+    setProfileImage(trimmed);
+    localStorage.setItem('aboutProfileImage', trimmed);
+  };
+
   const saveAboutToCode = async () => {
     // `profileImage` state is a data URL in-session, so read the persisted
     // disk path (set after a successful upload) from localStorage instead.
@@ -398,7 +418,11 @@ const About = () => {
               <label htmlFor="about-profile-image-input" className="about-image editable">
                 {profileImage ? (
                   <>
-                    <img src={profileImage} alt="Profile" />
+                    {isVideoSrc(profileImage) ? (
+                      <video src={profileImage} autoPlay muted loop playsInline />
+                    ) : (
+                      <img src={profileImage} alt="Profile" />
+                    )}
                     <div className="image-edit-overlay">Click to change</div>
                   </>
                 ) : (
@@ -410,7 +434,11 @@ const About = () => {
             ) : (
               <div className="about-image">
                 {profileImage ? (
-                  <img src={profileImage} alt="Profile" />
+                  isVideoSrc(profileImage) ? (
+                    <video src={profileImage} autoPlay muted loop playsInline />
+                  ) : (
+                    <img src={profileImage} alt="Profile" />
+                  )
                 ) : (
                   <div className="image-placeholder">
                     <span>Your Photo</span>
@@ -426,6 +454,11 @@ const About = () => {
               accept="image/*"
               className="about-image-file-input"
             />
+            {editMode && (
+              <button type="button" className="about-image-url-btn" onClick={handleImageUrl}>
+                🔗 Paste image URL
+              </button>
+            )}
             <div className="image-decoration" />
           </motion.div>
 
