@@ -293,6 +293,7 @@
   grid-template-columns: 1fr;
   gap: var(--spacing-md);
   align-items: start;
+  margin-bottom: var(--spacing-2xl);
 }
 
 @media (min-width: 640px) {
