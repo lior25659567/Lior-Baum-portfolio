@@ -1488,6 +1488,7 @@ const CaseStudy = () => {
     } catch { /* ignore */ }
     return 0;
   });
+  const [notesPanelOpen, setNotesPanelOpen] = useState(false);
   const [pdfExporting, setPdfExporting] = useState(false);
   const [pdfProgress, setPdfProgress] = useState(null);
   /* Bumped in `go()` when switching to a different project. Used as the
@@ -9196,6 +9197,29 @@ My instructions: `;
           </motion.div>
         )}
       </AnimatePresence>
+
+      {editMode && (
+        <div className={`presenter-notes-editor ${notesPanelOpen ? 'open' : ''}`}>
+          <button
+            type="button"
+            className="presenter-notes-toggle"
+            onClick={() => setNotesPanelOpen((o) => !o)}
+          >
+            <span>{notesPanelOpen ? '▾' : '▸'} Presenter notes</span>
+            <span className="presenter-notes-slidenum">
+              Slide {currentSlide + 1}/{project.slides.length}
+            </span>
+          </button>
+          {notesPanelOpen && (
+            <textarea
+              className="presenter-notes-textarea"
+              placeholder="Private notes for this slide — shown only in presenter view (press P while presenting)."
+              value={project.slides[currentSlide]?.presenterNotes || ''}
+              onChange={(e) => updateSlide(currentSlide, { presenterNotes: e.target.value })}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 };

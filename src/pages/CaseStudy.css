@@ -17350,3 +17350,52 @@ textarea.editable-field {
   background: var(--color-accent);
   margin: 0.15rem 0;
 }
+
+/* ═══ Presenter notes editor (edit mode only) ═══ */
+.presenter-notes-editor {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 1200;
+  width: min(420px, 38vw);
+  background: rgba(20, 20, 22, 0.96);
+  color: #f4f4f5;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  font-family: inherit;
+}
+.presenter-notes-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.presenter-notes-slidenum {
+  font-weight: 400;
+  opacity: 0.6;
+  font-size: 0.78rem;
+}
+.presenter-notes-textarea {
+  width: 100%;
+  min-height: 160px;
+  resize: vertical;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.35);
+  color: #f4f4f5;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0 0 10px 10px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  font-family: inherit;
+  outline: none;
+}
