@@ -1489,6 +1489,9 @@ const CaseStudy = () => {
     return 0;
   });
   const [notesPanelOpen, setNotesPanelOpen] = useState(false);
+  const presenterChannelRef = useRef(null);
+  const presenterWindowRef = useRef(null);
+  const [presenterHint, setPresenterHint] = useState('');
   const [pdfExporting, setPdfExporting] = useState(false);
   const [pdfProgress, setPdfProgress] = useState(null);
   /* Bumped in `go()` when switching to a different project. Used as the
@@ -1506,6 +1509,27 @@ const CaseStudy = () => {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('case-study:slide-change', { detail: { slide: currentSlide } }));
     }
+  }, [currentSlide]);
+
+  // Presenter sync: one BroadcastChannel per case study, kept for the page's life.
+  useEffect(() => {
+    if (typeof BroadcastChannel === 'undefined') return;
+    const ch = new BroadcastChannel(`cs-presenter:${projectId}`);
+    presenterChannelRef.current = ch;
+    ch.onmessage = (e) => {
+      if (e.data?.type === 'ready') {
+        ch.postMessage({ type: 'index', index: currentSlideRef.current ?? 0 });
+      }
+    };
+    return () => {
+      ch.close();
+      presenterChannelRef.current = null;
+    };
+  }, [projectId]);
+
+  // Mirror the active slide to the presenter window whenever it changes.
+  useEffect(() => {
+    presenterChannelRef.current?.postMessage({ type: 'index', index: currentSlide });
   }, [currentSlide]);
 
   // Force scrollbar reflow when entering edit mode or switching slides while in
@@ -2197,6 +2221,21 @@ const CaseStudy = () => {
     };
   }, [totalSlides, editMode, isMobileSlide, isSiteMode]);
 
+  // View-mode "P" opens the presenter window.
+  useEffect(() => {
+    if (editMode) return;
+    const onKey = (e) => {
+      const t = e.target;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+      if (e.key === 'p' || e.key === 'P') {
+        e.preventDefault();
+        openPresenterWindow();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [editMode, openPresenterWindow]);
+
   const goToSlide = useCallback((direction) => {
     if (isScrollingRef.current) return;
     isScrollingRef.current = true;
@@ -2211,6 +2250,22 @@ const CaseStudy = () => {
       isScrollingRef.current = false;
     }, 400);
   }, [totalSlides]);
+
+  const openPresenterWindow = useCallback(() => {
+    const existing = presenterWindowRef.current;
+    if (existing && !existing.closed) {
+      existing.focus();
+      return;
+    }
+    const features = 'popup=yes,width=520,height=720,menubar=no,toolbar=no,location=no,status=no';
+    const win = window.open(`/present/${projectId}`, `cs-presenter-${projectId}`, features);
+    if (!win) {
+      setPresenterHint('Allow pop-ups for this site, then press P again.');
+      setTimeout(() => setPresenterHint(''), 4000);
+      return;
+    }
+    presenterWindowRef.current = win;
+  }, [projectId]);
 
   const showSlideNav = useCallback(() => {
     if (slideNavHideTimeoutRef.current) {
@@ -9197,6 +9252,8 @@ My instructions: `;
           </motion.div>
         )}
       </AnimatePresence>
+
+      {presenterHint && <div className="presenter-hint">{presenterHint}</div>}
 
       {editMode && (
         <div className={`presenter-notes-editor ${notesPanelOpen ? 'open' : ''}`}>

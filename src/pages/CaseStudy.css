@@ -17399,3 +17399,18 @@ textarea.editable-field {
   font-family: inherit;
   outline: none;
 }
+
+.presenter-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 90px;
+  transform: translateX(-50%);
+  z-index: 1300;
+  padding: 10px 16px;
+  background: rgba(20, 20, 22, 0.96);
+  color: #f4f4f5;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
