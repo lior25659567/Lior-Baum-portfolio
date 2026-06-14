@@ -191,25 +191,34 @@
     },
     {
       "type": "quotes",
-      "label": "Research",
-      "title": "Six clinicians. The same three problems, every session.",
-      "content": "Chairside observation, then six interviews. I asked clinicians to walk through a real case — where they hesitated, what they'd change. Six interviews is a small sample; these themes held across every session.",
+      "label": "Research & Discovery",
+      "title": "What I heard in the room",
+      "content": "I interviewed doctors across procedure types — restorative specialists, general dentists, orthodontists. I asked each one to walk me through a real case: where they slowed down, what they wished worked differently. Five themes came back in every session.",
       "quotes": [
         {
           "text": "It feels like a long boring form — and I'm doing it with a patient in the chair.",
-          "author": "Restorative specialist"
+          "author": "Restorative Specialist",
+          "hideAuthor": false
         },
         {
           "text": "I change the procedure multiple times before I even begin scanning.",
-          "author": "General dentist"
+          "author": "General Dentist",
+          "hideAuthor": false
+        },
+        {
+          "text": "There's always another popup. I just want to get to the scan.",
+          "author": "Orthodontist",
+          "hideAuthor": false
+        },
+        {
+          "text": "Every time I select a tooth, something opens. I can't see what I've already done.",
+          "author": "Restorative Specialist",
+          "hideAuthor": false
         },
         {
           "text": "The moment I go looking for a tool, I lose my rhythm completely.",
-          "author": "Orthodontist"
-        },
-        {
-          "text": "I never fully trust the result the first time I see it.",
-          "author": "Restorative specialist"
+          "author": "General Dentist",
+          "hideAuthor": false
         }
       ],
       "bullets": [],
@@ -272,6 +281,42 @@
       "splitRatio": 40
     },
     {
+      "type": "issuesBreakdown",
+      "label": "Constraints",
+      "title": "What the design had to work across",
+      "issues": [
+        {
+          "number": "1",
+          "title": "Three surfaces",
+          "description": "Scanner, MIDC desktop, and web — gloved hands, no hover."
+        },
+        {
+          "number": "2",
+          "title": "Backward compatibility",
+          "description": "Old Rx stayed live for in-progress cases."
+        },
+        {
+          "number": "3",
+          "title": "Feature-flagged",
+          "description": "On or off per company — learnable on first contact, every time."
+        },
+        {
+          "number": "4",
+          "title": "Read and demo states",
+          "description": "Three states designed in from day one — not retrofitted."
+        },
+        {
+          "number": "5",
+          "title": "Labs out of scope",
+          "description": "Not in MVP — architecture built to absorb them later."
+        }
+      ],
+      "subtitle": null,
+      "description": [
+        "These weren't background conditions — each one directly shaped a design decision. Ignoring any of them would have meant shipping something that worked in a prototype and broke in the clinic."
+      ]
+    },
+    {
       "type": "problem",
       "label": "User Flow Mapping",
       "title": "Mapping the flow before touching the design",
@@ -283,26 +328,27 @@
       ],
       "issuesTitle": "What the flow revealed",
       "highlight": "The friction wasn't random — it lived at every phase handoff.",
-      "image": "/case-studies/itero-scan-workflow/img-t2to0gdcf0.png",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-t2to0gdcf0.png",
+          "caption": "",
+          "isVideo": false,
+          "isGif": false,
+          "embedType": ""
+        }
+      ],
       "splitRatio": 40,
       "imageIsVideo": false,
       "imageEmbedUrl": "",
       "imageWrapperBg": false,
-      "imageFit": "contain"
-    },
-    {
-      "type": "problem",
-      "label": "Constraints",
-      "title": "What the design had to work across",
-      "content": "Tap targets sized for gloved hands. Nothing essential could depend on hover.",
-      "issues": [
-        "Three surfaces: scanner hardware (Element, Lumina), MIDC desktop, and myitero.com",
-        "Compatible with in-progress cases on the old Rx",
-        "Feature-flagged — no persistent onboarding; learnable on first contact",
-        "Read and demo states designed in from day one",
-        "M&I and Labs out of scope — IA built to absorb them"
-      ],
-      "issuesTitle": "What each constraint demanded"
+      "imageFit": "contain",
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
     },
     {
       "type": "problem",
@@ -665,16 +711,8 @@
       ],
       "beforeDescription": "Unlabelled icon clusters with no hierarchy — every meaning memorised, nothing self-explanatory.",
       "afterDescription": "Named panels with one clear primary action — the same structure across every tool, nothing to memorise.",
-      "beforeBullets": [
-        "Unlabelled icons — meaning memorised",
-        "No hierarchy — all actions equal weight",
-        "Destructive actions mixed with primary"
-      ],
-      "afterBullets": [
-        "Named panels with one primary CTA per tool",
-        "AI detect is the default — review, not draw",
-        "Destructive actions clearly separated"
-      ],
+      "beforeBullets": [],
+      "afterBullets": [],
       "gridCols": 1,
       "imageDisplayMode": "grid",
       "splitRatio": 40,
