@@ -36,7 +36,7 @@ const HARD_DENY = new Set([
   'slideMode', 'cardVariant', 'cardHeight', 'goalsCardVariant',
   'kpisCardVariant', 'color', 'logo', 'url', 'email', 'phone', 'linkedinUrl',
   'gridCols', 'gridColumns', 'splitRatio', 'introHeaderMode', 'isVideo',
-  'wrapperBg', 'visual_note',
+  'wrapperBg', 'visual_note', 'presenterNotes',
 ]);
 // Keys whose value is a media asset (image / video). NEVER prose, and NEVER dropped.
 // `src` is already in HARD_DENY above; these are the other media-bearing keys so a
