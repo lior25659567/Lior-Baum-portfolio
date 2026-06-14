@@ -1,5 +1,5 @@
 {
-  "dataVersion": 61,
+  "dataVersion": 63,
   "title": "Clinical Scanning\nWorkflow",
   "subtitle": "Redesigning the clinical scanning workflow for speed, clarity, and decision-making in real treatment conditions.",
   "category": "Clinical Workflow Redesign",
@@ -171,7 +171,23 @@
         "The codebase couldn't absorb another patch — only a rebuild would hold"
       ],
       "issuesTitle": "The case for a rebuild",
-      "highlight": "At 37 million cases a year, one unnecessary popup per case adds up fast."
+      "highlight": "At 37 million cases a year, one unnecessary popup per case adds up fast.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "/iframes/signals-iframe.html",
+          "src": "",
+          "caption": "",
+          "embedType": "iframe",
+          "isVideo": false,
+          "isGif": false
+        }
+      ],
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
     },
     {
       "type": "quotes",
@@ -618,20 +634,6 @@
       "imageCarouselInterval": 2000
     },
     {
-      "type": "chapter",
-      "number": "03",
-      "title": "View",
-      "subtitle": "Validating the 3D model before lab submission — and giving clinicians a clear sense of done.",
-      "splitRatio": 40
-    },
-    {
-      "type": "problem",
-      "label": "View — Before",
-      "title": "No signal that the work was done",
-      "content": "Unlabelled icons. No hierarchy between primary and destructive actions. No completion signal. Clinicians re-checked every scan by habit — not because anything was wrong, but because nothing told them they were done.",
-      "highlight": "Re-checking is a trust symptom, not a workflow preference."
-    },
-    {
       "type": "comparison",
       "label": "View Tools",
       "title": "From icon bars to clinical decision panels",
@@ -732,28 +734,6 @@
       "gridColumns": 4,
       "splitRatio": 40,
       "highlight": null
-    },
-    {
-      "type": "process",
-      "label": "Next Steps",
-      "title": "What comes next — sequenced with the PM",
-      "steps": [
-        {
-          "number": "Now",
-          "title": "Smart defaults",
-          "description": "Last-used materials, common shade selections, saved configurations — the interaction model is in place; the intelligence layer isn't yet."
-        },
-        {
-          "number": "Next",
-          "title": "Rx Summary & Send",
-          "description": "The final phase — showing missing fields, allowing last edits, sending the case — was out of scope. It inherits every problem the new Rx flow was designed to solve."
-        },
-        {
-          "number": "Later",
-          "title": "Lab-side connection",
-          "description": "The tooth chart, grouped definitions, and materials summary were designed to be extensible. When lab workflows connect to the same surface, the architecture is ready."
-        }
-      ]
     },
     {
       "type": "reflection",
