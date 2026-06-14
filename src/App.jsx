@@ -16,6 +16,7 @@ const SlideDocumentation = lazy(() => import('./pages/SlideDocumentation'));
 const CVBuilder = lazy(() => import('./pages/CVBuilder'));
 const DesignSystem = lazy(() => import('./pages/DesignSystem'));
 const AgentsHub = lazy(() => import('./pages/AgentsHub'));
+const PresenterView = lazy(() => import('./pages/PresenterView'));
 
 function AppLayout() {
   const location = useLocation();
@@ -36,6 +37,7 @@ function AppLayout() {
               <Route path="/about" element={<About />} />
               <Route path="/playground" element={<Playground />} />
               <Route path="/project/:projectId" element={<CaseStudy />} />
+              <Route path="/present/:projectId" element={<PresenterView />} />
               <Route path="/docs/slides" element={<SlideDocumentation />} />
               <Route path="/cv" element={<CVBuilder />} />
               <Route path="/design-system" element={<DesignSystem />} />
