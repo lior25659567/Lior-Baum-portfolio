@@ -2082,6 +2082,65 @@ body.case-study-active .footer {
 .case-study:not(.edit-mode) .slide-reflection .reflection-col > .optional-field-wrapper {
   margin: 0 0 16px;
 }
+/* List display modes (view) — strip card chrome; neutral headings + dividers
+   for sections, one continuous list (no headings) for merged. */
+.case-study:not(.edit-mode) .slide-reflection .reflection-grid--list-sections .reflection-col,
+.case-study:not(.edit-mode) .slide-reflection .reflection-grid--list-merged .reflection-col {
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+.case-study:not(.edit-mode) .slide-reflection .reflection-grid--list-sections {
+  gap: 40px;
+}
+.case-study:not(.edit-mode) .slide-reflection .reflection-grid--list-sections .reflection-col {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 40px;
+}
+.case-study:not(.edit-mode) .slide-reflection .reflection-grid--list-sections .reflection-col:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.case-study:not(.edit-mode) .slide-reflection .reflection-grid--list-sections .reflection-col h3 {
+  color: var(--color-text);
+  margin: 0 0 20px;
+}
+.case-study:not(.edit-mode) .slide-reflection .reflection-grid--list-merged {
+  gap: 16px;
+}
+.case-study:not(.edit-mode) .slide-reflection .reflection-grid--list-merged .reflection-col h3 {
+  display: none;
+}
+
+/* Question slide (view) — center in the canvas; map text to the type scale. */
+.case-study:not(.edit-mode) .slide-question .question-content {
+  max-width: 1400px;
+  gap: 32px;
+}
+.case-study:not(.edit-mode) .slide-question .question-eyebrow {
+  font-size: var(--slide-font-label);
+  line-height: var(--slide-leading-label);
+  letter-spacing: var(--slide-tracking-label);
+  font-weight: var(--slide-weight-medium);
+}
+.case-study:not(.edit-mode) .slide-question .question-text {
+  font-size: var(--slide-font-title);
+  line-height: var(--slide-leading-title);
+  letter-spacing: var(--slide-tracking-title);
+  font-weight: var(--slide-weight-medium);
+  color: var(--color-text);
+  margin: 0;
+}
+.case-study:not(.edit-mode) .slide-question .question-support {
+  font-size: var(--slide-font-body-lg);
+  line-height: var(--slide-leading-body-lg);
+  letter-spacing: var(--slide-tracking-body);
+  font-weight: var(--slide-weight-regular);
+  color: var(--color-text-muted);
+  max-width: 1100px;
+  margin: 0;
+}
 
 /* ═══ Before / After slide — Figma 1126:3526 ═══
    Static two-column layout: title spans the top, then Before + After columns
@@ -16929,6 +16988,66 @@ textarea.editable-field {
 .reflection-grid--vertical {
   grid-template-columns: 1fr;
 }
+/* List display modes — stacked, no card chrome, neutral headings. */
+.reflection-grid--list-sections,
+.reflection-grid--list-merged {
+  grid-template-columns: 1fr;
+}
+.reflection-grid--list-sections .reflection-col,
+.reflection-grid--list-merged .reflection-col {
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  background: none;
+}
+/* Sections: divider between each block; merged: continuous, no dividers. */
+.reflection-grid--list-sections .reflection-col {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 1rem;
+}
+.reflection-grid--list-sections .reflection-col:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.reflection-grid--list-sections .reflection-col h3 {
+  color: var(--color-text);
+  border-bottom: none;
+}
+.reflection-grid--list-merged .reflection-col h3 { display: none; }
+.reflection-title-toggle { margin-bottom: 0.5rem; }
+
+/* ═══ Question slide — single centered hero question ═══ */
+.slide-question .question-content {
+  margin: auto;
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.25rem;
+}
+.question-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+}
+.question-text {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1.1;
+  margin: 0;
+}
+.question-support {
+  font-size: var(--text-body);
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  max-width: 760px;
+  margin: 0;
+}
 /* Layout toggle (edit mode only) */
 .reflection-layout-toggle {
   display: flex;
@@ -17413,4 +17532,13 @@ textarea.editable-field {
   border-radius: 8px;
   font-size: 0.85rem;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* ═══ Presenter follow-mode (deck embedded in the presenter window) ═══
+   Strip the nav chrome so the embed reads as a clean slide preview. The
+   presenter window drives navigation, so the deck here is display-only. */
+.case-study.present-follow .case-nav,
+.case-study.present-follow .slide-nav-pill,
+.case-study.present-follow .slide-nav-pill-hint {
+  display: none !important;
 }

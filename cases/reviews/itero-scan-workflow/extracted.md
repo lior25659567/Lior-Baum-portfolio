@@ -1,7 +1,7 @@
 # Clinical Scanning
 Workflow — extracted text
 
-Source: `src/data/case-studies/itero-scan-workflow.json` — 28 slides.
+Source: `src/data/case-studies/itero-scan-workflow.json` — 30 slides.
 Each field shows its JSON path id in [brackets]. Reviewers: judge the prose,
 and judge whether each slide uses the RIGHT template (see `_slide-templates.md`).
 Fields marked (read-only) are factual data and cannot be auto-edited.
@@ -16,9 +16,9 @@ These prose fragments appear on more than one slide (high overlap). The same
 content should not live on two slides — merge or cut. (Image-vs-text repeats are
 NOT caught here — read the images to find those.)
 
-- **78% overlap** — `[slides.7.image]` (slide 7) ↔ `[slides.23.image]` (slide 23)
+- **78% overlap** — `[slides.7.image]` (slide 7) ↔ `[slides.25.image]` (slide 25)
   - slide 7: "/case-studies/itero-scan-workflow/img-t2to0gdcf0.png"
-  - slide 23: "/case-studies/itero-scan-workflow/img-5ljyfdsz90.png"
+  - slide 25: "/case-studies/itero-scan-workflow/img-5ljyfdsz90.png"
 - **58% overlap** — `[slides.2.highlight]` (slide 2) ↔ `[slides.4.highlight]` (slide 4)
   - slide 2: "At 37 million cases a year, even one unnecessary popup per case is not a small problem."
   - slide 4: "At 37 million cases a year, one unnecessary popup per case adds up fast."
@@ -384,7 +384,7 @@ _Available unused fields (`textAndImage` template): bullets2, bullets2Title, con
 
 ---
 ## Slide 8 — type: problem
-_Words on screen: **126** · budget ~75 · ⚠ OVER — trim to fit the canvas_
+_Words on screen: **72** · budget ~75_
 
 - **label**  `[slides.8.label]`
   Constraints
@@ -393,22 +393,22 @@ _Words on screen: **126** · budget ~75 · ⚠ OVER — trim to fit the canvas_
   What the design had to work across
 
 - **content**  `[slides.8.content]`
-  The touch context set the floor for every interaction pattern. Hover states, right-click menus, and precise pointer interactions were ruled out — tap targets had to work for gloved hands, and every interaction had to be achievable by tap alone as a baseline.
+  Tap targets sized for gloved hands. Nothing essential could depend on hover.
 
 - **issues**  `[slides.8.issues.0]`
-  Three surfaces — scanner hardware (Element and Lumina), MIDC desktop, and myitero.com — one design across all three
+  Three surfaces: scanner hardware (Element, Lumina), MIDC desktop, and myitero.com
 
 - **issues**  `[slides.8.issues.1]`
-  Backward-compatible with in-progress cases still on the old Rx
+  Compatible with in-progress cases on the old Rx
 
 - **issues**  `[slides.8.issues.2]`
-  Feature flag (SWO NewFlowRx) — no persistent onboarding; learnable on first contact, every time
+  Feature-flagged — no persistent onboarding; learnable on first contact
 
 - **issues**  `[slides.8.issues.3]`
-  Read mode and demo mode designed in from the start, not retrofitted
+  Read and demo states designed in from day one
 
 - **issues**  `[slides.8.issues.4]`
-  M&I, Labs, and iTero Labs out of MVP scope — but the IA was built to absorb them
+  M&I and Labs out of scope — IA built to absorb them
 
 - **issuesTitle**  `[slides.8.issuesTitle]`
   What each constraint demanded
@@ -670,39 +670,90 @@ _Images (READ these — content may live here):_ `public/case-studies/itero-scan
 
 ---
 ## Slide 18 — type: problem
-_Words on screen: **89** · budget ~75_
+_Words on screen: **72** · budget ~75_
 
 - **label**  `[slides.18.label]`
-  Scan Toolbar — After
+  Icon System — Problem
 
 - **title**  `[slides.18.title]`
-  One toolbar, one visual language
+  Placement wasn't the only thing broken
 
 - **content**  `[slides.18.content]`
-  A collapsible toolbar anchored to the top-right, rebuilt with a unified icon system — consistent line weight, consistent style, labeled.
-
-- **issues**  `[slides.18.issues.0]`
-  Toolbar fixed to one corner — always findable, never in the way
-
-- **issues**  `[slides.18.issues.1]`
-  Unified icon set — each tool reads at a glance
-
-- **issues**  `[slides.18.issues.2]`
-  New tools slot in without requiring new conventions
+  Once the toolbar had a home, the next problem was plain: the icons inside it were built at different times, by different teams, with no shared style or logic.
 
 - **issuesTitle**  `[slides.18.issuesTitle]`
+  What the icons lacked
+
+- **issues**  `[slides.18.issues.0]`
+  No consistent line weight or stroke style across tools
+
+- **issues**  `[slides.18.issues.1]`
+  No shared visual logic between toolbar icons and procedure icons
+
+- **issues**  `[slides.18.issues.2]`
+  Clinicians had to memorise each icon — nothing was self-explanatory
+
+_Available unused fields (`textAndImage` template): bullets2, bullets2Title, conclusion, highlight, image, splitRatio_
+
+---
+## Slide 19 — type: media
+_Words on screen: **90** · budget ~35 · ⚠ OVER — trim to fit the canvas_
+
+- **label**  `[slides.19.label]`
+  Icon System — References
+
+- **title**  `[slides.19.title]`
+  What a consistent icon system looks like in practice
+
+- **description**  `[slides.19.description]`
+  Before drawing anything, I looked at products where icon systems work — many tools in one surface, nothing requiring memorisation.
+
+- **caption**  `[slides.19.image.0.caption]`
+  [ADD: product name — the specific visual principle this product demonstrated, e.g. consistent 1.5px line weight across 30+ tools]
+
+- **caption**  `[slides.19.image.1.caption]`
+  [ADD: product name — the specific visual principle, e.g. labeled icons as default so the tool name is never hidden]
+
+- **caption**  `[slides.19.image.2.caption]`
+  [ADD: product name — the specific visual principle, e.g. tools grouped by function with one shared stroke convention]
+
+_Available unused fields (`media` template): caption, bullets, bulletsTitle, highlight_
+
+---
+## Slide 20 — type: problem
+_Words on screen: **89** · budget ~75_
+
+- **label**  `[slides.20.label]`
+  Scan Toolbar — After
+
+- **title**  `[slides.20.title]`
+  One toolbar, one visual language
+
+- **content**  `[slides.20.content]`
+  A collapsible toolbar anchored to the top-right, rebuilt with a unified icon system — consistent line weight, consistent style, labeled.
+
+- **issues**  `[slides.20.issues.0]`
+  Toolbar fixed to one corner — always findable, never in the way
+
+- **issues**  `[slides.20.issues.1]`
+  Unified icon set — each tool reads at a glance
+
+- **issues**  `[slides.20.issues.2]`
+  New tools slot in without requiring new conventions
+
+- **issuesTitle**  `[slides.20.issuesTitle]`
   What changed
 
-- **bullets2Title**  `[slides.18.bullets2Title]`
+- **bullets2Title**  `[slides.20.bullets2Title]`
   Icon redesign
 
-- **bullets2**  `[slides.18.bullets2.0]`
+- **bullets2**  `[slides.20.bullets2.0]`
   Toolbar and procedure icons rebuilt as one visual system
 
-- **bullets2**  `[slides.18.bullets2.1]`
+- **bullets2**  `[slides.20.bullets2.1]`
   Consistent line weight and style across every tool
 
-- **caption**  `[slides.18.caption]`
+- **caption**  `[slides.20.caption]`
   New collapsible toolbar + unified icon set. (Add vid-g2r58c0dp9s.mp4)
 
 _Images (READ these — content may live here):_ `public/case-studies/itero-scan-workflow/vid-bfheykewnxs.mp4`
@@ -710,31 +761,31 @@ _Images (READ these — content may live here):_ `public/case-studies/itero-scan
 _Available unused fields (`textAndImage` template): conclusion_
 
 ---
-## Slide 19 — type: problem
-_Words on screen: **64** · budget ~75_
+## Slide 21 — type: problem
+_Words on screen: **75** · budget ~75_
 
-- **label**  `[slides.19.label]`
+- **label**  `[slides.21.label]`
   Multi-scan & Compare
 
-- **title**  `[slides.19.title]`
+- **title**  `[slides.21.title]`
   Managing multiple scans and comparing them
 
-- **content**  `[slides.19.content]`
-  Pre-treatment and post-treatment scans, organised by tab, with real-time overlay and adjustable opacity.
+- **content**  `[slides.21.content]`
+  Multi-visit cases need more than one scan. Clinicians had to track changes between appointments. Pre- and post-treatment scans sit in tabs, with overlay and adjustable opacity.
 
-- **bullets2Title**  `[slides.19.bullets2Title]`
+- **bullets2Title**  `[slides.21.bullets2Title]`
   How it works
 
-- **bullets2**  `[slides.19.bullets2.0]`
+- **bullets2**  `[slides.21.bullets2.0]`
   Add scans within one session — tabs keep them organised
 
-- **bullets2**  `[slides.19.bullets2.1]`
+- **bullets2**  `[slides.21.bullets2.1]`
   Overlay scans with adjustable opacity — compare in real time
 
-- **bullets2**  `[slides.19.bullets2.2]`
-  What clinicians held in their head, they could now see directly
+- **bullets2**  `[slides.21.bullets2.2]`
+  What clinicians held in memory, now visible on screen
 
-- **highlight**  `[slides.19.highlight]`
+- **highlight**  `[slides.21.highlight]`
   Comparing two scans became visual instead of mental.
 
 _Images (READ these — content may live here):_ `public/case-studies/itero-scan-workflow/vid-7n89uy3l420.mp4`
@@ -742,71 +793,71 @@ _Images (READ these — content may live here):_ `public/case-studies/itero-scan
 _Available unused fields (`textAndImage` template): issues, issuesTitle, conclusion_
 
 ---
-## Slide 20 — type: chapter
+## Slide 22 — type: chapter
 _Words on screen: **17** · budget ~18_
 
-- **number** (read-only)  `[slides.20.number]`
+- **number** (read-only)  `[slides.22.number]`
   03
 
-- **title**  `[slides.20.title]`
+- **title**  `[slides.22.title]`
   View
 
-- **subtitle**  `[slides.20.subtitle]`
+- **subtitle**  `[slides.22.subtitle]`
   Validating the 3D model before lab submission — and giving clinicians a clear sense of done.
 
 ---
-## Slide 21 — type: problem
+## Slide 23 — type: problem
 _Words on screen: **51** · budget ~75_
 
-- **label**  `[slides.21.label]`
+- **label**  `[slides.23.label]`
   View — Before
 
-- **title**  `[slides.21.title]`
+- **title**  `[slides.23.title]`
   No signal that the work was done
 
-- **content**  `[slides.21.content]`
+- **content**  `[slides.23.content]`
   Unlabelled icons. No hierarchy between primary and destructive actions. No completion signal. Clinicians re-checked every scan by habit — not because anything was wrong, but because nothing told them they were done.
 
-- **highlight**  `[slides.21.highlight]`
+- **highlight**  `[slides.23.highlight]`
   Re-checking is a trust symptom, not a workflow preference.
 
 _Available unused fields (`textAndImage` template): issues, issuesTitle, bullets2, bullets2Title, conclusion, image, splitRatio_
 
 ---
-## Slide 22 — type: comparison
+## Slide 24 — type: comparison
 _Words on screen: **92** · budget ~110_
 
-- **label**  `[slides.22.label]`
+- **label**  `[slides.24.label]`
   View Tools
 
-- **title**  `[slides.22.title]`
+- **title**  `[slides.24.title]`
   From icon bars to clinical decision panels
 
-- **beforeDescription**  `[slides.22.beforeDescription]`
+- **beforeDescription**  `[slides.24.beforeDescription]`
   Unlabelled icon clusters with no hierarchy — every meaning memorised, nothing self-explanatory.
 
-- **afterDescription**  `[slides.22.afterDescription]`
+- **afterDescription**  `[slides.24.afterDescription]`
   Named panels with one clear primary action — the same structure across every tool, nothing to memorise.
 
-- **beforeBullets**  `[slides.22.beforeBullets.0]`
+- **beforeBullets**  `[slides.24.beforeBullets.0]`
   Unlabelled icons — meaning memorised
 
-- **beforeBullets**  `[slides.22.beforeBullets.1]`
+- **beforeBullets**  `[slides.24.beforeBullets.1]`
   No hierarchy — all actions equal weight
 
-- **beforeBullets**  `[slides.22.beforeBullets.2]`
+- **beforeBullets**  `[slides.24.beforeBullets.2]`
   Destructive actions mixed with primary
 
-- **afterBullets**  `[slides.22.afterBullets.0]`
+- **afterBullets**  `[slides.24.afterBullets.0]`
   Named panels with one primary CTA per tool
 
-- **afterBullets**  `[slides.22.afterBullets.1]`
+- **afterBullets**  `[slides.24.afterBullets.1]`
   AI detect is the default — review, not draw
 
-- **afterBullets**  `[slides.22.afterBullets.2]`
+- **afterBullets**  `[slides.24.afterBullets.2]`
   Destructive actions clearly separated
 
-- **highlight**  `[slides.22.highlight]`
+- **highlight**  `[slides.24.highlight]`
   Before the redesign, clinicians paused to recall what each icon meant. Named panels removed that step.
 
 _Images (READ these — content may live here):_ `public/case-studies/itero-scan-workflow/img-aeiguj0sno.webp`, `public/case-studies/itero-scan-workflow/img-2x1frtk9p0.webp`
@@ -814,176 +865,176 @@ _Images (READ these — content may live here):_ `public/case-studies/itero-scan
 _Available unused fields (`comparison` template): description, beforeLabel, afterLabel, beforeBulletsTitle, afterBulletsTitle, bullets, bulletsTitle_
 
 ---
-## Slide 23 — type: problem
+## Slide 25 — type: problem
 _Words on screen: **103** · budget ~75 · ⚠ OVER — trim to fit the canvas_
 
-- **label**  `[slides.23.label]`
+- **label**  `[slides.25.label]`
   Design System
 
-- **title**  `[slides.23.title]`
+- **title**  `[slides.25.title]`
   Every component built in three states from the start
 
-- **content**  `[slides.23.content]`
+- **content**  `[slides.25.content]`
   Every pattern from the redesign became a reusable component, built in three states from the start: editable, read-only, and demo. Retrofitting read mode after the fact produces visual inconsistency — in a clinical context, that inconsistency erodes trust.
 
-- **issuesTitle**  `[slides.23.issuesTitle]`
+- **issuesTitle**  `[slides.25.issuesTitle]`
   What got formalised
 
-- **issues**  `[slides.23.issues.0]`
+- **issues**  `[slides.25.issues.0]`
   Input states — default, filled, disabled, error
 
-- **issues**  `[slides.23.issues.1]`
+- **issues**  `[slides.25.issues.1]`
   Button states — default, hover, pressed, disabled
 
-- **issues**  `[slides.23.issues.2]`
+- **issues**  `[slides.25.issues.2]`
   Selection controls — checkbox, indeterminate, disabled
 
-- **issues**  `[slides.23.issues.3]`
+- **issues**  `[slides.25.issues.3]`
   Progress states — uploading, processing, complete, failed
 
-- **highlight**  `[slides.23.highlight]`
+- **highlight**  `[slides.25.highlight]`
   The three-state architecture became the shared language the rest of the product was built on.
 
-- **image**  `[slides.23.image]`
+- **image**  `[slides.25.image]`
   /case-studies/itero-scan-workflow/img-5ljyfdsz90.png
 
-- **caption**  `[slides.23.caption]`
+- **caption**  `[slides.25.caption]`
   Design system components formalised from the redesign
 
-- **imageFit**  `[slides.23.imageFit]`
+- **imageFit**  `[slides.25.imageFit]`
   contain
 
 _Available unused fields (`textAndImage` template): bullets2, bullets2Title, conclusion_
 
 ---
-## Slide 24 — type: outcomes
+## Slide 26 — type: outcomes
 _Words on screen: **91** · budget ~95_
 
-- **label**  `[slides.24.label]`
+- **label**  `[slides.26.label]`
   Outcomes
 
-- **title**  `[slides.24.title]`
+- **title**  `[slides.26.title]`
   What changed
 
-- **metric** (read-only)  `[slides.24.outcomes.0.metric]`
+- **metric** (read-only)  `[slides.26.outcomes.0.metric]`
   Faster
 
-- **title**  `[slides.24.outcomes.0.title]`
+- **title**  `[slides.26.outcomes.0.title]`
   No blocking gate to the scan
 
-- **description**  `[slides.24.outcomes.0.description]`
+- **description**  `[slides.26.outcomes.0.description]`
   Case open → first scan with no mandatory setup step. [ADD: setup time measurement from usability testing or post-launch analytics]
 
-- **metric** (read-only)  `[slides.24.outcomes.1.metric]`
+- **metric** (read-only)  `[slides.26.outcomes.1.metric]`
   Fewer
 
-- **title**  `[slides.24.outcomes.1.title]`
+- **title**  `[slides.26.outcomes.1.title]`
   Multi-tooth selection in one step
 
-- **description**  `[slides.24.outcomes.1.description]`
+- **description**  `[slides.26.outcomes.1.description]`
   Select a range, apply material and spec in one interaction — no tooth-by-tooth modals. [ADD: multi-tooth task completion rate from testing]
 
-- **metric** (read-only)  `[slides.24.outcomes.2.metric]`
+- **metric** (read-only)  `[slides.26.outcomes.2.metric]`
   Clearer
 
-- **title**  `[slides.24.outcomes.2.title]`
+- **title**  `[slides.26.outcomes.2.title]`
   Zero blocking modals on the critical path
 
-- **description**  `[slides.24.outcomes.2.description]`
+- **description**  `[slides.26.outcomes.2.description]`
   Between case open and scan start, no popup blocks progress.
 
-- **metric** (read-only)  `[slides.24.outcomes.3.metric]`
+- **metric** (read-only)  `[slides.26.outcomes.3.metric]`
   Higher
 
-- **title**  `[slides.24.outcomes.3.title]`
+- **title**  `[slides.26.outcomes.3.title]`
   Mid-workflow changes without restarts
 
-- **description**  `[slides.24.outcomes.3.description]`
+- **description**  `[slides.26.outcomes.3.description]`
   Procedure and materials changeable at any point. [ADD: restart rate before/after from testing or analytics]
 
 ---
-## Slide 25 — type: process
+## Slide 27 — type: process
 _Words on screen: **92** · budget ~85_
 
-- **label**  `[slides.25.label]`
+- **label**  `[slides.27.label]`
   Next Steps
 
-- **title**  `[slides.25.title]`
+- **title**  `[slides.27.title]`
   What comes next — sequenced with the PM
 
-- **number** (read-only)  `[slides.25.steps.0.number]`
+- **number** (read-only)  `[slides.27.steps.0.number]`
   Now
 
-- **title**  `[slides.25.steps.0.title]`
+- **title**  `[slides.27.steps.0.title]`
   Smart defaults
 
-- **description**  `[slides.25.steps.0.description]`
+- **description**  `[slides.27.steps.0.description]`
   Last-used materials, common shade selections, saved configurations — the interaction model is in place; the intelligence layer isn't yet.
 
-- **number** (read-only)  `[slides.25.steps.1.number]`
+- **number** (read-only)  `[slides.27.steps.1.number]`
   Next
 
-- **title**  `[slides.25.steps.1.title]`
+- **title**  `[slides.27.steps.1.title]`
   Rx Summary & Send
 
-- **description**  `[slides.25.steps.1.description]`
+- **description**  `[slides.27.steps.1.description]`
   The final phase — showing missing fields, allowing last edits, sending the case — was out of scope. It inherits every problem the new Rx flow was designed to solve.
 
-- **number** (read-only)  `[slides.25.steps.2.number]`
+- **number** (read-only)  `[slides.27.steps.2.number]`
   Later
 
-- **title**  `[slides.25.steps.2.title]`
+- **title**  `[slides.27.steps.2.title]`
   Lab-side connection
 
-- **description**  `[slides.25.steps.2.description]`
+- **description**  `[slides.27.steps.2.description]`
   The tooth chart, grouped definitions, and materials summary were designed to be extensible. When lab workflows connect to the same surface, the architecture is ready.
 
 _Available unused fields (`process` template): highlight, cardVariant, showNumbers_
 
 ---
-## Slide 26 — type: reflection
+## Slide 28 — type: reflection
 _Words on screen: **131** · budget ~100 · ⚠ OVER — trim to fit the canvas_
 
-- **label**  `[slides.26.label]`
+- **label**  `[slides.28.label]`
   Reflection
 
-- **title**  `[slides.26.title]`
+- **title**  `[slides.28.title]`
   What I'd do differently
 
-- **whatWorked**  `[slides.26.whatWorked.0]`
+- **whatWorked**  `[slides.28.whatWorked.0]`
   A coded prototype surfaced timing failures static screens miss — the toolbar decision depended on it.
 
-- **whatWorked**  `[slides.26.whatWorked.1]`
+- **whatWorked**  `[slides.28.whatWorked.1]`
   Mapping the flow first made the three-phase structure obvious before any design began.
 
-- **whatFailed**  `[slides.26.whatFailed.0]`
+- **whatFailed**  `[slides.28.whatFailed.0]`
   Toolbar exploration ran sequentially, not constraints-first — the rejections were obvious from sketch one.
 
-- **whatFailed**  `[slides.26.whatFailed.1]`
+- **whatFailed**  `[slides.28.whatFailed.1]`
   Grouped materials definition came in late, compressing testing time for edge cases.
 
-- **whatYoudDoDifferently**  `[slides.26.whatYoudDoDifferently.0]`
+- **whatYoudDoDifferently**  `[slides.28.whatYoudDoDifferently.0]`
   Define toolbar placement constraints before generating options.
 
-- **whatYoudDoDifferently**  `[slides.26.whatYoudDoDifferently.1]`
+- **whatYoudDoDifferently**  `[slides.28.whatYoudDoDifferently.1]`
   Bring grouped materials into scope in week one — the highest-leverage feature, found too late.
 
-- **whatYouCouldntMeasure**  `[slides.26.whatYouCouldntMeasure]`
+- **whatYouCouldntMeasure**  `[slides.28.whatYouCouldntMeasure]`
   Outcomes were validated in prototype testing, not the field. [ADD: post-launch resubmission rate, setup time, and mandatory-field error rate.]
 
-- **whatYouLearned**  `[slides.26.whatYouLearned]`
+- **whatYouLearned**  `[slides.28.whatYouLearned]`
   The Rx looked like a form problem. It was an architecture problem — setup gated the scan instead of running alongside it. Getting that diagnosis right before Figma shaped everything.
 
 _Available unused fields (`reflection` template): nextIteration_
 
 ---
-## Slide 27 — type: end
+## Slide 29 — type: end
 _Words on screen: **13** · budget ~18_
 
-- **title**  `[slides.27.title]`
+- **title**  `[slides.29.title]`
   Thank You
 
-- **subtitle**  `[slides.27.subtitle]`
+- **subtitle**  `[slides.29.subtitle]`
   Three phases that were built separately now work as one appointment.
 
 _Available unused fields (`end` template): cta, buttons_

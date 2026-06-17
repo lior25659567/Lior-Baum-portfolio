@@ -1,13 +1,69 @@
 {
-  "edits": {
-    "slides.8.content": "Tap targets sized for gloved hands. Nothing essential could depend on hover.",
-    "slides.8.issuesTitle": "What each constraint demanded",
-    "slides.8.issues.0": "Three surfaces: scanner hardware (Element, Lumina), MIDC desktop, and myitero.com",
-    "slides.8.issues.1": "Compatible with in-progress cases on the old Rx",
-    "slides.8.issues.2": "Feature-flagged — no persistent onboarding; learnable on first contact",
-    "slides.8.issues.3": "Read and demo states designed in from day one",
-    "slides.8.issues.4": "M&I and Labs out of scope — IA built to absorb them",
-    "slides.19.content": "Multi-visit cases need more than one scan. Clinicians had to track changes between appointments. Pre- and post-treatment scans sit in tabs, with overlay and adjustable opacity.",
-    "slides.19.bullets2.2": "What clinicians held in memory, now visible on screen"
-  }
+  "edits": {},
+  "setFields": {},
+  "ops": [
+    {
+      "op": "insert",
+      "after": 17,
+      "reason": "Bridges the gap between the placement decision (Slide 17) and the unified icon outcome (Slide 18) — names the icon-unification problem as a distinct design question so the solution on Slide 18 lands as earned, not arbitrary.",
+      "slide": {
+        "type": "problem",
+        "label": "Icon System — Problem",
+        "title": "Placement wasn't the only thing broken",
+        "content": "Once the toolbar had a home, the next problem was plain: the icons inside it were built at different times, by different teams, with no shared style or logic.",
+        "issuesTitle": "What the icons lacked",
+        "issues": [
+          "No consistent line weight or stroke style across tools",
+          "No shared visual logic between toolbar icons and procedure icons",
+          "Clinicians had to memorise each icon — nothing was self-explanatory"
+        ]
+      }
+    },
+    {
+      "op": "insert",
+      "after": 17,
+      "reason": "References slide. Inserted after original slide 17 (right after the icon-question slide above it, before the unified-icon 'After' slide 18) so the icon thread reads question -> inspiration -> resolution. Shows the external benchmarking that informed the icon-system direction; 3 empty image slots the designer fills with real product screenshots and named principles.",
+      "slide": {
+        "type": "media",
+        "label": "Icon System — References",
+        "title": "What a consistent icon system looks like in practice",
+        "description": "Before drawing anything, I looked at products where icon systems work — many tools in one surface, nothing requiring memorisation.",
+        "image": [
+          {
+            "src": "",
+            "caption": "[ADD: product name — the specific visual principle this product demonstrated, e.g. consistent 1.5px line weight across 30+ tools]",
+            "isVideo": false,
+            "isGif": false,
+            "embedUrl": "",
+            "fit": "contain",
+            "position": "center center",
+            "size": "large",
+            "wrapperBg": true
+          },
+          {
+            "src": "",
+            "caption": "[ADD: product name — the specific visual principle, e.g. labeled icons as default so the tool name is never hidden]",
+            "isVideo": false,
+            "isGif": false,
+            "embedUrl": "",
+            "fit": "contain",
+            "position": "center center",
+            "size": "large",
+            "wrapperBg": true
+          },
+          {
+            "src": "",
+            "caption": "[ADD: product name — the specific visual principle, e.g. tools grouped by function with one shared stroke convention]",
+            "isVideo": false,
+            "isGif": false,
+            "embedUrl": "",
+            "fit": "contain",
+            "position": "center center",
+            "size": "large",
+            "wrapperBg": true
+          }
+        ]
+      }
+    }
+  ]
 }

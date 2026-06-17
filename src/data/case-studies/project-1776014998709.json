@@ -1,5 +1,5 @@
 {
-  "dataVersion": 32,
+  "dataVersion": 33,
   "title": "Patient Report\nRedesign",
   "subtitle": "From a blank page into a structured, shareable communication tool.",
   "category": "Clinical UX",
@@ -9,7 +9,7 @@
     {
       "type": "intro",
       "title": "Patient Report\nRedesign",
-      "description": "Doctors were using the patient report — the tool just couldn't keep up. Too little functionality, unclear output, a layout that pulled attention from what mattered. I had to add everything they needed without making the report harder to use.",
+      "description": "Doctors were using the patient report — the tool just couldn't keep up. I had to add everything they needed without making it harder to use.",
       "clientLabel": "Client",
       "client": "Align Technology",
       "focusLabel": "Focus",
@@ -83,7 +83,7 @@
         "No modular blocks — no cost breakdown, before/after, or treatment plan",
         "PDF output not readable by patients"
       ],
-      "highlight": "Built around the software — not the doctor.",
+      "highlight": "The report was built to be filled in — not to be useful.",
       "image": [
         {
           "position": "center center",
@@ -173,16 +173,55 @@
     },
     {
       "type": "problem",
+      "label": "Constraints",
+      "title": "What I couldn't change",
+      "content": "Every design decision had to fit inside three fixed boundaries. Naming them upfront kept the scope honest — and made the work that did ship realistic.",
+      "issuesTitle": "Boundaries",
+      "issues": [
+        "The PDF engine couldn't be replaced — output had to work with the existing renderer",
+        "Annotation had to ship without ML — no AI-assisted findings in v1",
+        "Sharing had to pass the existing privacy and consent flow — no shortcuts"
+      ],
+      "highlight": "Constraints kept the scope honest — and the work shippable.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "",
+          "caption": "Constraints map — what's in, what's out of scope",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "problem",
       "label": "Structure",
       "title": "Mapping the flow before designing the features",
-      "content": "Templates, modular blocks, annotation, sharing — four features that all live inside one workflow. I mapped the full report flow before designing any of them. I needed to understand how they connect before designing or testing each piece individually. Get the structure wrong and everything built on top of it is wrong too.",
+      "content": "Templates, modular blocks, annotation, sharing — four features that all live inside one workflow. I mapped the full report flow before designing any of them, so the structure could carry every piece I'd build on top of it.",
       "highlight": "Structure first. Features second.",
       "image": [
         {
-          "src": "",
-          "caption": "[ASSET: user-flow map — add in edit mode]"
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "Report workflow map — scan → template → edit → share → patient view",
+          "isVideo": false,
+          "embedType": ""
         }
-      ]
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
     },
     {
       "type": "directions",
@@ -190,12 +229,12 @@
       "title": "Two ways to edit",
       "directionCount": 2,
       "dir1Status": "rejected",
-      "dir1Desc": "Edit from the sidebar. The controls sit in a side panel and the canvas is just a preview — you change one place and check another.",
+      "dir1Desc": "Edit from the sidebar. Controls sit in a side panel, the canvas is just a preview — you change one place and check another.",
       "dir2Status": "accepted",
-      "dir2Desc": "Edit on the content. Annotate, tag teeth, title and note each image right where it sits. The control lives on the thing it changes — no context switch.",
+      "dir2Desc": "Edit on the content. Annotate, tag teeth, title and note each image right where it sits. The control lives on the thing it changes.",
       "dir3Status": "",
       "dir3Desc": "",
-      "description": "After the goals, I built both directions and user-tested them on the same task — same content, different model. Doctors preferred editing in place.",
+      "description": "I built both directions and user-tested them on the same task — same content, different model. Every doctor preferred editing in place: less context switching, faster to finish.",
       "dir1Image": [
         {
           "position": "center center",
@@ -255,7 +294,7 @@
       "type": "problem",
       "label": "Annotation & Tooth Chart",
       "title": "From plain scans to annotated findings",
-      "content": "Doctors were describing findings in text next to images that showed them clearly. I added two tools to close that gap — so findings are marked, not explained.",
+      "content": "Doctors were describing findings in text next to images that showed them clearly. I added two tools to close that gap — findings get marked, not explained.",
       "issuesTitle": "How it works",
       "issues": [
         "Pen, text, color — annotate at full size",
@@ -326,7 +365,7 @@
         "Multi-channel delivery — WhatsApp, WeChat, QR, copy link",
         "Privacy warning built in"
       ],
-      "highlight": null,
+      "highlight": "Sharing went from an afterthought to part of the report.",
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "splitRatio": 40,
@@ -336,12 +375,35 @@
       "gridCols": 1,
       "beforeLabel": "Before",
       "afterLabel": "After",
-      "description": "I replaced the three isolated buttons with a deliberate flow — delivery as part of the report, not a step after it."
+      "description": "Three isolated buttons became one deliberate flow — delivery as part of the report, not a step after it."
+    },
+    {
+      "type": "problem",
+      "label": "End-to-end",
+      "title": "From scan to patient — the full journey",
+      "content": "Every feature designed individually had to land as one continuous flow. I walked the report end-to-end one last time — scan finishes, template loads, doctor edits and annotates, patient receives a clean PDF on their channel. If any seam showed, the redesign hadn't shipped.",
+      "highlight": "The report doesn't end when the doctor saves it. It ends when the patient understands it.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "[[MEDIA]]",
+          "caption": "End-to-end flow — scan → template → edit → annotate → share → patient view",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
     },
     {
       "type": "testimonial",
       "label": "Doctor Feedback",
-      "quote": "The templates actually match what I do, and everything I need is right there in front of me. ",
+      "quote": "The templates actually match what I do, and everything I need is right there in front of me.",
       "author": "Dr. N. Haddad",
       "role": "Orthodontist, iTero early access program",
       "splitRatio": 40,
@@ -355,17 +417,17 @@
         {
           "metric": "Faster",
           "title": "Report creation",
-          "description": "Templates removed the blank-page barrier — doctors started from structure, not nothing, and reached a finished report faster."
+          "description": "Templates removed the blank-page barrier — doctors started from structure, not nothing."
         },
         {
           "metric": "Clearer",
           "title": "Clinical communication",
-          "description": "Doctors marked findings on the image — clearer for patients, faster for the doctor."
+          "description": "Findings marked on the image — clearer for patients, faster for the doctor."
         },
         {
           "metric": "Higher",
           "title": "Completion rate",
-          "description": "The templates gave doctors a starting point. Reports came back more complete — and more detailed than the old tool allowed."
+          "description": "Reports came back more complete — and more detailed than the old tool allowed."
         },
         {
           "metric": "Wider",
@@ -377,7 +439,7 @@
       "cardVariant": "default",
       "gridColumns": 4,
       "splitRatio": 40,
-      "highlight": "These are early-access signals, not final measurements. Quantitative targets are defined and tracked post-rollout."
+      "highlight": "Early-access signals — directional, not final. Quantitative targets tracked post-rollout."
     },
     {
       "type": "reflection",
@@ -385,7 +447,8 @@
       "title": "What I'd do differently",
       "whatWorked": [
         "Defining KPIs before design kept every decision tied to an outcome.",
-        "Modular blocks — customizable structure was the right balance."
+        "Modular blocks — customizable structure was the right balance.",
+        "Mapping the flow before features kept the system coherent end-to-end."
       ],
       "whatFailed": [
         "I scoped annotation too late, triggering a full rework after the first feedback round."
@@ -394,14 +457,14 @@
         "Test with actual doctors before locking — internal reviews weren't enough.",
         "Define sharing permissions with engineering earlier — edge cases made the handoff harder."
       ],
-      "whatYouLearned": "Friction isn't bad UI — it's software that makes professionals manage it. Fix the default.",
+      "whatYouLearned": "I fix the defaults professionals shouldn't have to manage.",
       "whatYouCouldntMeasure": "Long-term adoption and variability — needs 6+ months of data.",
       "subtitle": "The decisions I'd change weren't mistakes. They were sequencing problems."
     },
     {
       "type": "end",
       "title": "Thank You",
-      "subtitle": "I fix the defaults professionals shouldn't have to manage.",
+      "subtitle": "Designing clinical tools that work at the speed of care.",
       "cta": "Get in touch",
       "splitRatio": 40
     }

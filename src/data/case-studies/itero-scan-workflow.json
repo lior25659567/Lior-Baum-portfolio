@@ -18,21 +18,10 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "contain",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-6s57kfmq7o.png",
-          "caption": "",
-          "isVideo": false,
-          "isGif": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-morqwmjyo.png",
+          "src": "/case-studies/itero-scan-workflow/img-8myvnhq20w.png",
           "caption": "",
           "embedType": "",
           "isVideo": false,
@@ -44,7 +33,27 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-4gnykp544g.png",
+          "src": "/case-studies/itero-scan-workflow/img-gex5fzttfs.png",
+          "isVideo": false,
+          "embedType": "",
+          "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-lel5s285kg.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-26h3mjasne8.png",
           "isVideo": false
         }
       ],
@@ -75,7 +84,8 @@
           "value": "Figma · Claude Code"
         }
       ],
-      "headlineMetric": null
+      "headlineMetric": null,
+      "presenterNotes": "kmsmsmospfpsfmdofmdfodfp"
     },
     {
       "type": "problem",
@@ -104,7 +114,8 @@
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "presenterNotes": "sdsdsdsdssdds"
     },
     {
       "type": "problem",
@@ -158,7 +169,8 @@
           "title": "Labs",
           "description": "Received Rx data that was incomplete or unstructured for complex procedures like All-on-X and multi-phase treatments."
         }
-      ]
+      ],
+      "presenterNotes": "sdsdssdsdmksdsomodsd"
     },
     {
       "type": "problem",
@@ -278,7 +290,8 @@
       "cardVariant": "default",
       "kpisCardVariant": "soft",
       "goalsCardVariant": "minimal",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "presenterNotes": "lmsldmsldsmdsmldmsldlsml"
     },
     {
       "type": "issuesBreakdown",
@@ -406,9 +419,10 @@
           "fit": "contain",
           "wrapperBg": false,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/img-14ptax4ol0.png",
+          "src": "https://ik.imagekit.io/mhrb6d3un/Scan%20and%20view%20folder/old%20comletlty.png?updatedAt=1781440443155",
           "isVideo": false,
-          "embedType": ""
+          "embedType": "",
+          "isGif": false
         }
       ],
       "caption": "Old RX setup — the blocking multi-step form. (Add img-uykask3eo.webp)"
@@ -460,7 +474,8 @@
           "embedType": ""
         }
       ],
-      "highlight": null
+      "highlight": null,
+      "presenterNotes": "sdsdsdsdsdsdsdsds"
     },
     {
       "type": "problem",
@@ -480,13 +495,16 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/vid-oj0333hv40.mp4",
+          "src": "https://ik.imagekit.io/mhrb6d3un/Scan%20and%20view%20folder/dentures%20video.webm",
           "isVideo": true,
-          "isGif": false
+          "isGif": false,
+          "embedType": ""
         }
       ],
       "caption": "New RX setup — single-view, no blocking form. (Add vid-aouv40ns6o0.mp4)",
-      "splitRatio": 30
+      "splitRatio": 30,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
     },
     {
       "type": "comparison",
@@ -739,12 +757,13 @@
       "imageEmbedUrl": "",
       "imageWrapperBg": false,
       "imageFit": "contain",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "presenterNotes": "sdsdssmldsmdlsldmslmdslmdmlsd"
     },
     {
       "type": "outcomes",
       "label": "Outcomes",
-      "title": "What changed",
+      "title": "",
       "outcomes": [
         {
           "metric": "Faster",
@@ -776,7 +795,7 @@
     {
       "type": "reflection",
       "label": "Reflection",
-      "title": "What I'd do differently",
+      "title": "",
       "whatWorked": [
         "A coded prototype surfaced timing failures static screens miss — the toolbar decision depended on it.",
         "Mapping the flow first made the three-phase structure obvious before any design began."
@@ -790,7 +809,8 @@
         "Bring grouped materials into scope in week one — the highest-leverage feature, found too late."
       ],
       "whatYouCouldntMeasure": "Outcomes were validated in prototype testing, not the field. [ADD: post-launch resubmission rate, setup time, and mandatory-field error rate.]",
-      "whatYouLearned": "The Rx looked like a form problem. It was an architecture problem — setup gated the scan instead of running alongside it. Getting that diagnosis right before Figma shaped everything."
+      "whatYouLearned": "The Rx looked like a form problem. It was an architecture problem — setup gated the scan instead of running alongside it. Getting that diagnosis right before Figma shaped everything.",
+      "reflectionDisplay": "list-sections"
     },
     {
       "type": "end",

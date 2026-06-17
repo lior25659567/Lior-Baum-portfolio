@@ -1,0 +1,7 @@
+{
+  "edits": {
+    "slides.25.subtitle": "Three phases that were built separately now work as one appointment.",
+    "slides.2.content": "3Shape, Medit, and Shining3D had already modernised their Rx flows. The iTero architecture had been patched too many times to patch again — the only path forward was a rebuild.",
+    "slides.2.issues.1": "At this scale, every extra popup per case was expensive"
+  }
+}

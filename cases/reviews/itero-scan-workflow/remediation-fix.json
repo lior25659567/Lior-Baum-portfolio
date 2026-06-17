@@ -1,0 +1,26 @@
+{
+  "edits": {
+    "slides.19.highlight": "Stacking pre- and post-treatment scans at adjustable opacity made the change visible at a glance — clinicians could see it instead of holding it in memory."
+  },
+  "setFields": {
+    "slides.20.highlight": "Before the redesign, clinicians paused to recall what each icon meant. Named panels removed that step.",
+    "slides.5.quotes": [
+      {
+        "text": "It feels like a long boring form — and I'm doing it with a patient in the chair.",
+        "author": "Restorative specialist"
+      },
+      {
+        "text": "I change the procedure multiple times before I even begin scanning.",
+        "author": "General dentist"
+      },
+      {
+        "text": "The moment I go looking for a tool, I lose my rhythm completely.",
+        "author": "Orthodontist"
+      },
+      {
+        "text": "I never fully trust the result the first time I see it.",
+        "author": "Restorative specialist"
+      }
+    ]
+  }
+}

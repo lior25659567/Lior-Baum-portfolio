@@ -1,8 +1,8 @@
-# Edit summary — itero-scan-workflow, slides 8 and 19
+# Edit summary — itero-scan-workflow, Toolbar Arc Slides A + B (additive pass)
 
 ## Scope
 
-Two-slide pass. Slide 8 (`problem`, label "Constraints") — over-budget trim. Slide 19 (`problem`, label "Multi-scan & Compare") — WHY added from context.md. No other slides touched. No ops (no insert/remove/retype/move).
+Additive pass only. Two new slides inserted into the Scan toolbar arc after original Slide 17 ("Toolbar — Exploration") and before original Slide 18 ("Scan Toolbar — After"). No existing slide text changed. The existing `edits` block from the prior pass (Slides 8 and 19) is preserved unchanged.
 
 ---
 
@@ -10,108 +10,107 @@ Two-slide pass. Slide 8 (`problem`, label "Constraints") — over-budget trim. S
 
 | Recommendation | Source(s) | Disposition | Where / Why |
 |---|---|---|---|
-| Trim slide 8 to within budget (~75 words) | User brief | APPLIED | `slides.8.content`, `slides.8.issues.0–4` — content rewritten from 38→12 words; each bullet shortened; total ~70 words |
-| Keep all five constraints (touch/hover, three surfaces, backward-compat, feature flag, read/demo, M&I out of scope) | User brief | APPLIED | All five issues retained, tightened |
-| Add WHY to slide 19 (multi-visit cases, toggling layers, scaling) | User brief + context.md | APPLIED | `slides.19.content` — WHY prepended; `slides.19.bullets2.2` trimmed by 2 words to stay under budget |
-| Invent nothing not in context.md | User brief | APPLIED | Every word sourced from context.md "Phase 02 — Scan" and "Constraints" sections |
+| Add Slide A (icon-question framing) after Slide 17, before Slide 18 | toolbar-proposal-director.md + toolbar-proposal-ux.md | APPLIED | `ops[0]` — insert `problem`/`textAndImage` after original index 17 |
+| Add Slide B (references/inspiration) after Slide A, before Slide 18 | toolbar-proposal-director.md + toolbar-proposal-ux.md | APPLIED | `ops[1]` — insert `media` (3-image) after original index 18 (i.e. after the new Slide A) |
+| Template for Slide A: `textAndImage` (type `problem`), not `directions` | Both memos | APPLIED | op[0] slide uses `"type": "problem"` |
+| Template for Slide B: `media` with DynamicImages (3 slots), not `directions` | Both memos | APPLIED | op[1] slide uses `"type": "media"` with 3-item `image` array |
+| Placement AFTER Slide 17, not before it | Decided spec (overrides UX memo which placed them before 17) | APPLIED | `"after": 17` for Slide A; `"after": 18` for Slide B (original index, so Slide B follows Slide A in final deck) |
+| Slide A must NOT repeat the "unmemorable icons was still broken" line already in Slide 17 | toolbar-proposal-ux.md | APPLIED | Slide A's content picks up from that diagnosis without repeating its wording: "the next problem was plain" rather than re-stating "unmemorable icons was still broken" |
+| Slide B captions must be `[ADD: real product name + specific principle]` — never invent | Both memos | APPLIED | All three captions are `[ADD: …]` placeholders; no product names invented |
+| Slide B captions must name the specific principle each reference illustrated, not just the product | toolbar-proposal-director.md | APPLIED | Each caption placeholder spells out exactly what the designer must supply: product name AND the specific visual principle |
+| Keep both slides within their template word budgets (Slide A ~75w, Slide B ~35w) | Both memos + word-budget rule | APPLIED | Slide A ~65 words; Slide B ~32 words — see Word-budget trims below |
+| Voice: product detail first, no taglines, first person, no invented metrics | _writing-voice.md + _designer-profile.md | APPLIED | "Placement wasn't the only thing broken" is a plain statement, not a dramatic fragment; bullets are concrete and observable |
+| Do NOT invent reference product names for Slide B | _designer-profile.md non-negotiables + Both memos | APPLIED | All three image slots have empty `src: ""` and `[ADD: …]` captions |
 
 ---
 
-## Fields changed
+## Slides added
 
-### Slide 8 — `slides.8.content`
+### NEW-A — "Icon System — Problem" (original index 17 + 1 = new slide 18)
 
-**Before:** "The touch context set the floor for every interaction pattern. Hover states, right-click menus, and precise pointer interactions were ruled out — tap targets had to work for gloved hands, and every interaction had to be achievable by tap alone as a baseline." (44 words)
+**Template:** `textAndImage` (type `problem`)
+**Placement:** after original Slide 17, before original Slide 18
+**Purpose:** Frames the icon-unification problem as a second, distinct toolbar design question — separate from placement — so the unified icon system on (now-shifted) Slide 19 reads as the resolution to a named problem, not a byproduct.
 
-**After:** "Tap targets sized for gloved hands. Nothing essential could depend on hover." (12 words)
+**Copy as written:**
 
-**Why:** The original spread one idea across three redundant clauses. The rewrite states the same constraint in two short sentences — the touch baseline (gloves), and the hover rule — without repetition.
+- **label:** Icon System — Problem
+- **title:** Placement wasn't the only thing broken
+- **content:** Once the toolbar had a home, the next problem was plain: the icons inside it were built at different times, by different teams, with no shared style or logic.
+- **issuesTitle:** What the icons lacked
+- **issues:**
+  - No consistent line weight or stroke style across tools
+  - No shared visual logic between toolbar icons and procedure icons
+  - Clinicians had to memorise each icon — nothing was self-explanatory
 
-### Slide 8 — `slides.8.issues.0`
+No image slot on this slide. The three bullets carry the design criteria; Slide B provides the visual reference immediately after.
 
-**Before:** "Three surfaces — scanner hardware (Element and Lumina), MIDC desktop, and myitero.com — one design across all three" (18 words)
+### NEW-B — "Icon System — References" (new slide 19 in final deck)
 
-**After:** "Three surfaces: scanner hardware (Element, Lumina), MIDC desktop, and myitero.com" (10 words)
+**Template:** `media` (DynamicImages, 3 slots)
+**Placement:** after NEW-A, before original Slide 18 (now final slide 20)
+**Purpose:** Shows the external benchmarking that informed the icon-system direction, turning the unified icon set on the following slide from a visual preference into a researched decision.
 
-**Why:** The closing clause "one design across all three" restates what "three surfaces" already implies. Dropped it. Comma inside parentheses replaces "and" to save a word.
+**Copy as written:**
 
-### Slide 8 — `slides.8.issues.1`
+- **label:** Icon System — References
+- **title:** What a consistent icon system looks like in practice
+- **description:** Before drawing anything, I looked at products where icon systems work — many tools in one surface, nothing requiring memorisation.
+- **image[0].caption:** [ADD: product name — the specific visual principle this product demonstrated, e.g. consistent 1.5px line weight across 30+ tools]
+- **image[1].caption:** [ADD: product name — the specific visual principle, e.g. labeled icons as default so the tool name is never hidden]
+- **image[2].caption:** [ADD: product name — the specific visual principle, e.g. tools grouped by function with one shared stroke convention]
 
-**Before:** "Backward-compatible with in-progress cases still on the old Rx" (9 words)
-
-**After:** "Compatible with in-progress cases on the old Rx" (8 words)
-
-**Why:** "Backward-" is implied by the constraint; "still" is filler. One word saved.
-
-### Slide 8 — `slides.8.issues.2`
-
-**Before:** "Feature flag (SWO NewFlowRx) — no persistent onboarding; learnable on first contact, every time" (14 words)
-
-**After:** "Feature-flagged — no persistent onboarding; learnable on first contact" (8 words)
-
-**Why:** Flag name (SWO NewFlowRx) is internal jargon a portfolio reader doesn't need. "Every time" is covered by "every first contact." Six words cut without losing the constraint.
-
-### Slide 8 — `slides.8.issues.3`
-
-**Before:** "Read mode and demo mode designed in from the start, not retrofitted" (12 words)
-
-**After:** "Read and demo states designed in from day one" (9 words)
-
-**Why:** "mode and…mode" → "states"; "from the start, not retrofitted" → "from day one." Same meaning, three words shorter.
-
-### Slide 8 — `slides.8.issues.4`
-
-**Before:** "M&I, Labs, and iTero Labs out of MVP scope — but the IA was built to absorb them" (18 words)
-
-**After:** "M&I and Labs out of scope — IA built to absorb them" (11 words)
-
-**Why:** "iTero Labs" is redundant with "Labs." "MVP" qualifier is implied. "the IA was" → "IA" (article dropped, verb compressed). Same meaning, seven words cut.
-
-### Slide 8 — `slides.8.issuesTitle`
-
-Unchanged ("What each constraint demanded") — already concise, 4 words.
-
-### Slide 19 — `slides.19.content`
-
-**Before:** "Pre-treatment and post-treatment scans, organised by tab, with real-time overlay and adjustable opacity." (14 words)
-
-**After:** "Multi-visit cases need more than one scan. Clinicians had to track changes between appointments. Pre- and post-treatment scans sit in tabs, with overlay and adjustable opacity." (27 words)
-
-**Why:** The original described the mechanics (tabs, overlay, opacity) but gave no reason the feature exists. The two opening sentences, sourced directly from context.md ("We added this because complex, multi-visit cases need more than one scan: clinicians had to add and toggle layers to see what changed between visits"), supply the WHY. The existing mechanics line is preserved in compressed form. "real-time" dropped from content (it's stated in bullet 1 below).
-
-### Slide 19 — `slides.19.bullets2.2`
-
-**Before:** "What clinicians held in their head, they could now see directly" (11 words)
-
-**After:** "What clinicians held in memory, now visible on screen" (9 words)
-
-**Why:** Trimmed by 2 words to keep the slide within the 75-word budget after the content expansion. "In their head" → "in memory"; "they could now see directly" → "now visible on screen." Same meaning.
+All three `src` fields are empty strings — the designer adds screenshots in edit mode.
 
 ---
 
-## Slides added / removed / retyped
+## [ADD: …] placeholders the designer must fill
 
-No structural changes.
+These are NOT optional. The slide ships incomplete until each is replaced:
+
+1. **NEW-B, image[0].src** — screenshot of reference product 1. Drop in via edit mode.
+2. **NEW-B, image[0].caption** — Replace `[ADD: …]` with the real product name and the specific visual principle it demonstrated (e.g. "Figma — consistent 1.5px stroke across all toolbar icons, readable at 16px").
+3. **NEW-B, image[1].src** — screenshot of reference product 2.
+4. **NEW-B, image[1].caption** — Replace with real product name + specific principle.
+5. **NEW-B, image[2].src** — screenshot of reference product 3.
+6. **NEW-B, image[2].caption** — Replace with real product name + specific principle.
+
+If the designer cannot supply real, named references with specific principles for all three slots, cut Slide B — a generic mood board of "good toolbars" is a junior signal, not a senior one.
 
 ---
 
 ## Word-budget trims
 
-- **Slide 8** — was 126 words (⚠ OVER), now ~70 words (budget ~75). All five constraints kept.
-- **Slide 19** — was ~64 words, now ~74 words (budget ~75). Added WHY; trimmed bullet2.2 to compensate.
+- **NEW-A (textAndImage, budget ~75w):** label (3) + title (7) + content (30) + issuesTitle (4) + 3 issues (21) = ~65 words. Within budget.
+- **NEW-B (media, budget ~35w):** label (3) + title (9) + description (20) = ~32 words. Within budget. Captions are `[ADD: …]` placeholders.
 
 ---
 
 ## Drafted values to verify
 
-None. Every word in both edits comes directly from context.md (Facts to use):
-- Slide 8 content sourced from "Constraints — and What They Cost the Design" section.
-- Slide 19 WHY sourced verbatim from "Phase 02 — Scan: Fixing the Toolbar / After" section ("We added this because complex, multi-visit cases need more than one scan...").
+All invented by the agent in this pass (none are from context.md or any confirmed source):
 
-No values invented or assumed.
+- **NEW-A title:** "Placement wasn't the only thing broken" — agent-draft, synthesised from UX memo. Confirm this is how Lior wants to frame the transition.
+- **NEW-A content:** "the icons inside it were built at different times, by different teams, with no shared style or logic" — sourced from context.md ("icons from different eras, different styles, no shared visual language") and both proposal memos. Confirm phrasing.
+- **NEW-A issues:** all three bullets — synthesised from UX memo's drafted bullets. Confirm these reflect the actual icon problems observed.
+- **NEW-B title:** "What a consistent icon system looks like in practice" — agent-draft from UX memo. Confirm.
+- **NEW-B description:** "Before drawing anything, I looked at products where icon systems work — many tools in one surface, nothing requiring memorisation." — synthesised from UX memo. Confirm this is how Lior would describe the benchmarking step.
+- **NEW-B image captions:** All three are `[ADD: …]` — the designer must supply real product names and real principles. NOTHING invented here.
+
+---
+
+## Agent conflicts noted
+
+**Memo conflict — placement of Slides A + B:**
+
+- **UX memo** (toolbar-proposal-ux.md, Section 3): recommends inserting A and B BEFORE Slide 17 (after Slide 16), arguing that references inform the icon direction before placement exploration begins, and that placing them after Slide 17 reverses causality.
+- **Director memo** (toolbar-proposal-director.md, Section 2): recommends inserting A and B AFTER Slide 17 (before Slide 18), arguing that the icon problem is only "formally named" in Slide 17's final accepted-direction line, so A and B must follow it.
+- **Decided spec (task brief):** explicitly calls for placement AFTER Slide 17. This overrides both memos. Applied as directed.
+
+The UX memo's causality concern is noted: if the designer finds the arc reads as "placement decided → then I did more research → icons", they should consider whether Slide B works better before Slide 17. The current placement follows the decided spec.
 
 ---
 
 ## What was NOT changed
 
-All other slides (0–7, 9–18, 20–27). All image/media fields. `slides.8.label`, `slides.8.title`, `slides.19.label`, `slides.19.title`, `slides.19.bullets2Title`, `slides.19.bullets2.0`, `slides.19.bullets2.1`, `slides.19.highlight`.
+All existing slides (0–27) — text, structure, media, order. The `edits` block from the prior pass (Slides 8 and 19) is preserved exactly. No ops on existing slides.

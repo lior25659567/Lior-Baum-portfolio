@@ -1,0 +1,33 @@
+{
+  "edits": {
+    "slides.7.content": "The touch context set the floor for every interaction pattern. Hover states, right-click menus, and precise pointer interactions were ruled out — tap targets had to work for gloved hands, and every interaction had to be achievable by tap alone as a baseline.",
+    "slides.7.issuesTitle": "What each constraint demanded",
+    "slides.15.title": "Scan",
+    "slides.15.subtitle": "Capturing a 3D model before lab submission — starting with where the tools should live.",
+    "slides.17.title": "Where should the tools live?",
+    "slides.17.dir1Desc": "Bottom center — sat across the occlusal area, obscuring the scan detail that needed the most visual attention during capture.",
+    "slides.17.dir2Desc": "Vertical right rail — consistent location, but always-visible consumed viewport space even when no tool was needed.",
+    "slides.17.dir3Desc": "Top-right corner, collapsible — outside the active scan area, reachable without disrupting capture. Fixing placement exposed the icon problem: a toolbar in the right place with unmemorable icons was still a broken toolbar.",
+    "slides.19.title": "Managing multiple scans and comparing them",
+    "slides.19.content": "Pre-treatment and post-treatment scans, organised by tab, with real-time overlay and adjustable opacity.",
+    "slides.19.highlight": "Comparing two scans became visual instead of mental."
+  },
+  "setFields": {
+    "slides.7.issues": [
+      "Three surfaces — scanner hardware (Element and Lumina), MIDC desktop, and myitero.com — one design across all three",
+      "Backward-compatible with in-progress cases still on the old Rx",
+      "Feature flag (SWO NewFlowRx) — no persistent onboarding; learnable on first contact, every time",
+      "Read mode and demo mode designed in from the start, not retrofitted",
+      "M&I, Labs, and iTero Labs out of MVP scope — but the IA was built to absorb them"
+    ],
+    "slides.19.bullets2": [
+      "Add scans within one session — tabs keep them organised",
+      "Overlay scans with adjustable opacity — compare in real time",
+      "What clinicians held in their head, they could now see directly"
+    ]
+  },
+  "ops": [
+    { "op": "insert", "after": 19, "slide": { "type": "chapter", "number": "03", "title": "View", "subtitle": "Validating the 3D model before lab submission — and giving clinicians a clear sense of done.", "splitRatio": 40 }, "reason": "Restore View chapter — designer wants the View arc back" },
+    { "op": "insert", "after": 19, "slide": { "type": "problem", "label": "View — Before", "title": "No signal that the work was done", "content": "Unlabelled icons. No hierarchy between primary and destructive actions. No completion signal. Clinicians re-checked every scan by habit — not because anything was wrong, but because nothing told them they were done.", "highlight": "Re-checking is a trust symptom, not a workflow preference." }, "reason": "Restore View Before slide" }
+  ]
+}

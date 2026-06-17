@@ -1,0 +1,12 @@
+{
+  "edits": {
+    "slides.24.whatWorked.0": "A coded prototype surfaced timing failures static screens miss — the toolbar decision depended on it.",
+    "slides.24.whatWorked.1": "Mapping the flow first made the three-phase structure obvious before any design began.",
+    "slides.24.whatFailed.0": "Toolbar exploration ran sequentially, not constraints-first — the rejections were obvious from sketch one.",
+    "slides.24.whatFailed.1": "Grouped materials definition came in late, compressing testing time for edge cases.",
+    "slides.24.whatYoudDoDifferently.0": "Define toolbar placement constraints before generating options.",
+    "slides.24.whatYoudDoDifferently.1": "Bring grouped materials into scope in week one — the highest-leverage feature, found too late.",
+    "slides.24.whatYouCouldntMeasure": "Outcomes were validated in prototype testing, not the field. [ADD: post-launch resubmission rate, setup time, and mandatory-field error rate.]",
+    "slides.24.whatYouLearned": "The Rx looked like a form problem. It was an architecture problem — setup gated the scan instead of running alongside it. Getting that diagnosis right before Figma shaped everything."
+  }
+}

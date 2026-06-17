@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Competitive Pressure</title>
+<style>
+  :root {
+    --bg:#f7f9f4; --text:#0a0a0a; --muted:#595959;
+    --accent:#ff584a; --accent-strong:#cc3520; --border:#e0e0e0;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body {
+    width:100%; height:100%; min-height:100vh; min-height:100dvh;
+    overflow:hidden; background:var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  .stage { width:100%; height:100%; }
+  .canvas { width:100%; height:100%; display:block; }
+
+  /* logos enter from corners */
+  .lg1 { animation: lg1 8s infinite; }
+  .lg2 { animation: lg2 8s infinite; }
+  .lg3 { animation: lg3 8s infinite; }
+  @keyframes lg1 { 0%,2%{opacity:0;transform:translate(-16px,-16px)} 12%,93%{opacity:1;transform:translate(0,0)} 99%,100%{opacity:0} }
+  @keyframes lg2 { 0%,5%{opacity:0;transform:translate(16px,-16px)} 15%,93%{opacity:1;transform:translate(0,0)} 99%,100%{opacity:0} }
+  @keyframes lg3 { 0%,8%{opacity:0;transform:translate(0,16px)} 18%,93%{opacity:1;transform:translate(0,0)} 99%,100%{opacity:0} }
+
+  /* connecting lines draw from logo to center */
+  .link { stroke-dasharray:170; stroke-dashoffset:170; animation: draw 8s infinite; }
+  @keyframes draw { 0%,20%{stroke-dashoffset:170} 32%,93%{stroke-dashoffset:0} 98%,100%{stroke-dashoffset:170} }
+
+  /* particles flow along lines toward center Rx */
+  .pa { opacity:0; }
+  /* line1: (130,116)->(218,210) vector (88,94) */
+  .p1a { animation: flow1 8s ease-in infinite; }
+  .p1b { animation: flow1 8s ease-in infinite; animation-delay:-1s; }
+  @keyframes flow1 { 0%,33%{opacity:0;transform:translate(0,0)} 36%{opacity:1} 50%{opacity:1;transform:translate(88px,94px)} 52%,100%{opacity:0;transform:translate(88px,94px)} }
+  /* line2: (350,116)->(262,210) vector (-88,94) */
+  .p2a { animation: flow2 8s ease-in infinite; animation-delay:-.4s; }
+  .p2b { animation: flow2 8s ease-in infinite; animation-delay:-1.4s; }
+  @keyframes flow2 { 0%,33%{opacity:0;transform:translate(0,0)} 36%{opacity:1} 50%{opacity:1;transform:translate(-88px,94px)} 52%,100%{opacity:0;transform:translate(-88px,94px)} }
+  /* line3: (240,372)->(240,284) vector (0,-88) */
+  .p3a { animation: flow3 8s ease-in infinite; animation-delay:-.8s; }
+  .p3b { animation: flow3 8s ease-in infinite; animation-delay:-1.8s; }
+  @keyframes flow3 { 0%,33%{opacity:0;transform:translate(0,0)} 36%{opacity:1} 50%{opacity:1;transform:translate(0,-88px)} 52%,100%{opacity:0;transform:translate(0,-88px)} }
+
+  /* center Rx squeezed each time a wave of signals lands */
+  .squeeze { animation: squeeze 8s infinite; }
+  @keyframes squeeze {
+    0%,33%{transform:scale(1)}
+    50%{transform:scale(.9)}
+    66%{transform:scale(.84)}
+    93%,100%{transform:scale(.84)}
+  }
+  /* center glow pulse on arrival */
+  .rx-pulse { animation: rxPulse 8s infinite; }
+  @keyframes rxPulse { 0%,46%{opacity:0;transform:scale(.8)} 52%{opacity:.5;transform:scale(1)} 64%,100%{opacity:0;transform:scale(1.4)} }
+
+  @media (prefers-reduced-motion: reduce) { * { animation:none!important } }
+</style>
+</head>
+<body>
+<div class="stage">
+<svg class="canvas" viewBox="0 0 480 480" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="sh"><feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#0000000D"/></filter>
+  </defs>
+
+  <!-- connecting lines (logo → center Rx) -->
+  <line class="link" x1="130" y1="116" x2="218" y2="210" stroke="#e0e0e0" stroke-width="2"/>
+  <line class="link" x1="350" y1="116" x2="262" y2="210" stroke="#e0e0e0" stroke-width="2" style="animation-delay:.1s"/>
+  <line class="link" x1="240" y1="372" x2="240" y2="284" stroke="#e0e0e0" stroke-width="2" style="animation-delay:.2s"/>
+
+  <!-- particles (coral) flowing toward Rx -->
+  <g fill="#ff584a">
+    <circle class="pa p1a" cx="130" cy="116" r="4"/>
+    <circle class="pa p1b" cx="130" cy="116" r="3"/>
+    <circle class="pa p2a" cx="350" cy="116" r="4"/>
+    <circle class="pa p2b" cx="350" cy="116" r="3"/>
+    <circle class="pa p3a" cx="240" cy="372" r="4"/>
+    <circle class="pa p3b" cx="240" cy="372" r="3"/>
+  </g>
+
+  <!-- center pulse halo -->
+  <circle class="rx-pulse" cx="240" cy="240" r="58" fill="none" stroke="#ff584a" stroke-width="2" style="transform-box:fill-box;transform-origin:center"/>
+
+  <!-- center Rx product (squeezed under pressure) -->
+  <g class="squeeze" style="transform-box:fill-box;transform-origin:center">
+    <rect x="196" y="196" width="88" height="88" rx="16" fill="white" stroke="#e0e0e0" stroke-width="2" filter="url(#sh)"/>
+    <rect x="216" y="222" width="48" height="6" rx="3" fill="#e0e0e0"/>
+    <rect x="216" y="236" width="48" height="6" rx="3" fill="#e0e0e0"/>
+    <rect x="216" y="250" width="30" height="6" rx="3" fill="#e0e0e0"/>
+  </g>
+
+  <!-- competitor logos -->
+  <g class="lg1" style="transform-box:fill-box;transform-origin:center">
+    <rect x="40" y="64" width="132" height="56" rx="14" fill="white" stroke="#e0e0e0" stroke-width="1"/>
+    <text x="106" y="99" text-anchor="middle" font-size="20" font-weight="800" fill="#1B2A4A">3<tspan font-weight="600" fill="#2C3E5D">Shape</tspan></text>
+  </g>
+  <g class="lg2" style="transform-box:fill-box;transform-origin:center">
+    <rect x="308" y="64" width="132" height="56" rx="14" fill="white" stroke="#e0e0e0" stroke-width="1"/>
+    <text x="368" y="99" text-anchor="middle" font-size="20" font-weight="700" fill="#1A1A1A">medit</text>
+    <circle cx="408" cy="96" r="3.5" fill="#00B4D8"/>
+  </g>
+  <g class="lg3" style="transform-box:fill-box;transform-origin:center">
+    <rect x="174" y="372" width="132" height="56" rx="14" fill="white" stroke="#e0e0e0" stroke-width="1"/>
+    <text x="240" y="406" text-anchor="middle" font-size="16" font-weight="700" fill="#0066B3">SHINING<tspan fill="#00A0E0" font-weight="800">3D</tspan></text>
+  </g>
+
+</svg>
+</div>
+</body>
+</html>

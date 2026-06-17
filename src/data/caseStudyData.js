@@ -309,6 +309,15 @@ export const slideTemplates = {
     nextIteration: 'A/B test the simpler reduced-density version against the current production version.',
   },
 
+  // Question — a single big design/research question, centered hero. Frames
+  // the challenge that drove the project. Label and support are removable.
+  question: {
+    type: 'question',
+    label: 'The Design Question',
+    question: 'How might we make intraoral scanning fast enough for a first-time user?',
+    support: 'The question that framed every decision that followed.',
+  },
+
 };
 
 // Template categories for easier navigation
@@ -317,7 +326,7 @@ export const templateCategories = {
   'Visual': ['media', 'imageMosaic'],
   'Layout': ['splitList', 'testimonial'],
   'Research': ['textAndImage', 'issuesBreakdown', 'quotes'],
-  'Define': ['directions'],
+  'Define': ['question', 'directions'],
   'Process': ['goals', 'achieveGoals', 'process', 'timeline'],
   'Features': ['comparison', 'tools'],
   'Results': ['stats', 'outcomes', 'reflection', 'end'],

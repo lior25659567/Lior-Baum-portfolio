@@ -813,6 +813,36 @@ export const slideTemplateDocs = {
     },
   },
 
+  question: {
+    category: 'Define',
+    shortDescription: 'A single big design/research question, centered as a hero. Frames the challenge that drove the project.',
+    purpose: 'Sharpens the narrative — states the one question the whole project set out to answer. Reads like a chapter break and gives the deck a clear spine.',
+    whenToUse: 'Right after the problem/research beats, as the pivot into design. Also works as a section divider.',
+    layoutDescription: 'Vertically and horizontally centered: a small eyebrow label on top, one large display-size question, and an optional supporting sentence below. Label and supporting text are both removable.',
+    mediaFields: [],
+    requiredFields: ['question'],
+    optionalFields: ['label', 'support'],
+    contentLimits: {
+      question: { recommended: 'One sharp question — ideally a "How might we…". Keep it to one or two lines.' },
+      support: { recommended: 'One sentence of context. Optional — omit if the question stands alone.' },
+    },
+    aiSelectionHints: {
+      signals: ['how might we', 'the question', 'design question', 'research question', 'the challenge', 'core question'],
+      priority: 6,
+      required: false,
+    },
+    specialBehaviors: [
+      'Centered hero layout in view mode; question maps to the display type size',
+      'label and support fields are removable in edit mode (× Remove / + Add)',
+    ],
+    exampleUsage: {
+      type: 'question',
+      label: 'The Design Question',
+      question: 'How might we make intraoral scanning fast enough for a first-time user?',
+      support: 'The question that framed every decision that followed.',
+    },
+  },
+
   // ─── CUSTOM ─────────────────────────────────────────────────────
 
 };
