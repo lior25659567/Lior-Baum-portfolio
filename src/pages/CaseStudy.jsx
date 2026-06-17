@@ -1551,6 +1551,11 @@ const CaseStudy = () => {
         ch.postMessage({ type: 'index', index: idx, notes, src: presenterPeerId.current });
       } else if (msg.type === 'index' && typeof msg.index === 'number') {
         setCurrentSlide((prev) => (prev === msg.index ? prev : msg.index));
+      } else if (msg.type === 'goto-study' && typeof msg.slug === 'string') {
+        // Presenter jumped to another case study — the shared deck follows.
+        // The follower iframe ignores this; the presenter remount repoints it.
+        if (followMode) return;
+        if (msg.slug !== projectId) navigate(`/project/${msg.slug}`);
       } else if (msg.type === 'lightbox') {
         // Mirror a lightbox open/close from any peer. Mark it remote so our own
         // broadcast effect skips re-sending it (and start no loop).

@@ -11,6 +11,50 @@
   font-family: system-ui, -apple-system, sans-serif;
 }
 
+/* Case-study switcher — walks to the previous/next deck (the shared deck
+   follows). Sits above the slide preview, full window width. */
+.presenter-deckbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.presenter-deck-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.presenter-deck-pos {
+  margin-left: 8px;
+  opacity: 0.5;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.presenter-deck-btn {
+  flex: 0 0 auto;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f4f4f5;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 7px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.presenter-deck-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+}
+.presenter-deck-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
 /* Live preview of the current slide (the real deck in follow-mode).
    Capped to a 16:9 box no taller than 45vh and centred, so the notes below
    always keep room — without this the width:100% + 16:9 frame fills tall/wide

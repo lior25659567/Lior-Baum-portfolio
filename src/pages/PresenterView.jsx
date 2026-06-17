@@ -1,10 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getCaseStudyDataAsync } from '../data/caseStudyData';
+import { savedCaseStudies } from '../data/case-studies/index.js';
 import './PresenterView.css';
+
+// Ordered list of case-study slugs (portfolio / data-file order). Used to walk
+// to the previous/next deck from the presenter.
+const STUDY_SLUGS = Object.keys(savedCaseStudies);
 
 const PresenterView = () => {
   const { projectId } = useParams();
+  const navigate = useNavigate();
   const [project, setProject] = useState(null);
   const [index, setIndex] = useState(0);
   // Live notes pushed from the shared deck — shown instead of the loaded copy
@@ -28,6 +34,29 @@ const PresenterView = () => {
   }, []);
 
   useEffect(() => { indexRef.current = index; }, [index]);
+
+  // Switching case studies remounts on the same component (only the param
+  // changes), so reset per-deck state to the new study's start.
+  useEffect(() => {
+    setIndex(0);
+    setLiveNotes(null);
+    setLightboxOpen(false);
+  }, [projectId]);
+
+  const deckIdx = STUDY_SLUGS.indexOf(projectId);
+
+  // Walk to the previous/next case study. Tell the shared deck to follow via the
+  // current channel, then navigate ourselves; both land on slide 0 of the new
+  // deck and re-sync over the new channel.
+  const goStudy = useCallback((delta) => {
+    if (lightboxOpenRef.current) return; // frozen while a lightbox is zoomed
+    const i = STUDY_SLUGS.indexOf(projectId);
+    const ni = i + delta;
+    if (i < 0 || ni < 0 || ni >= STUDY_SLUGS.length) return;
+    const nextSlug = STUDY_SLUGS[ni];
+    channelRef.current?.postMessage({ type: 'goto-study', slug: nextSlug, src: peerId.current });
+    navigate(`/present/${nextSlug}`);
+  }, [projectId, navigate]);
 
   // Load the deck for notes + slide count (same accessor the case study uses).
   useEffect(() => {
@@ -109,6 +138,12 @@ const PresenterView = () => {
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
         e.preventDefault();
         go(-1);
+      } else if (e.key === ']') {
+        e.preventDefault();
+        goStudy(1); // next case study
+      } else if (e.key === '[') {
+        e.preventDefault();
+        goStudy(-1); // previous case study
       }
     };
     keyHandlerRef.current = onKey;
@@ -123,10 +158,34 @@ const PresenterView = () => {
       try { cw?.removeEventListener('keydown', onKey); } catch { /* ignore */ }
       keyHandlerRef.current = null;
     };
-  }, [go]);
+  }, [go, goStudy]);
 
   return (
     <div className="presenter-view">
+      <div className="presenter-deckbar">
+        <button
+          type="button"
+          className="presenter-deck-btn"
+          onClick={() => goStudy(-1)}
+          disabled={deckIdx <= 0}
+        >
+          ‹ Deck
+        </button>
+        <span className="presenter-deck-title">
+          {project?.title || '…'}
+          {STUDY_SLUGS.length > 0 && (
+            <span className="presenter-deck-pos">{(deckIdx >= 0 ? deckIdx + 1 : '?')} / {STUDY_SLUGS.length}</span>
+          )}
+        </span>
+        <button
+          type="button"
+          className="presenter-deck-btn"
+          onClick={() => goStudy(1)}
+          disabled={deckIdx < 0 || deckIdx >= STUDY_SLUGS.length - 1}
+        >
+          Deck ›
+        </button>
+      </div>
       <div className="presenter-stage">
         {iframeSrc && (
           <iframe
@@ -160,7 +219,7 @@ const PresenterView = () => {
         <button type="button" className="presenter-nav-btn" onClick={() => go(-1)} disabled={index <= 0}>
           ‹ Prev
         </button>
-        <span className="presenter-controls-hint">← / → to navigate · Esc to close</span>
+        <span className="presenter-controls-hint">← / → slides · [ / ] case study · Esc to close</span>
         <button type="button" className="presenter-nav-btn" onClick={() => go(1)} disabled={total === 0 || index >= total - 1}>
           Next ›
         </button>
