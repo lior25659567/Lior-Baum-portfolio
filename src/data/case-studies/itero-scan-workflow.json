@@ -317,11 +317,6 @@
           "number": "4",
           "title": "Read and demo states",
           "description": "Three states designed in from day one — not retrofitted."
-        },
-        {
-          "number": "5",
-          "title": "Labs out of scope",
-          "description": "Not in MVP — architecture built to absorb them later."
         }
       ],
       "subtitle": null,
@@ -495,7 +490,7 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "https://ik.imagekit.io/mhrb6d3un/Scan%20and%20view%20folder/dentures%20video.webm",
+          "src": "https://ik.imagekit.io/mhrb6d3un/dentures%201422.webm",
           "isVideo": true,
           "isGif": false,
           "embedType": ""
@@ -530,7 +525,7 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/vid-6slnlvn2tb4.mp4",
+          "src": "/case-studies/itero-scan-workflow/vid-bdaizkee5y8.webm",
           "isVideo": true,
           "isGif": false,
           "embedType": ""

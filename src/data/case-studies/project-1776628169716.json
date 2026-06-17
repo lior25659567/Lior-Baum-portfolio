@@ -107,7 +107,8 @@
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "presenterNotes": "sdsdsdssd"
     },
     {
       "type": "problem",
