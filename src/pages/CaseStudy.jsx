@@ -7238,6 +7238,16 @@ My instructions: `;
                   const go = (to) => (e) => {
                     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
                     e.preventDefault();
+                    // Keep an open presenter session in sync: switching to the
+                    // next project drives both the presenter and the shared deck.
+                    // In the presenter's own follow-mode embed, this is the ONLY
+                    // action — never navigate the embed itself (the presenter
+                    // remount repoints it; navigating would drop ?follow=1).
+                    if (to.startsWith('/project/')) {
+                      const nextId = to.slice('/project/'.length);
+                      presenterChannelRef.current?.postMessage({ type: 'goto-study', slug: nextId, src: presenterPeerId.current });
+                    }
+                    if (followMode) return;
                     if (to.startsWith('/project/')) {
                       const nextId = to.slice('/project/'.length);
                       const data = getCaseStudyData(nextId);

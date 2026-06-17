@@ -97,6 +97,10 @@ const PresenterView = () => {
       if (msg.type === 'index' && typeof msg.index === 'number') {
         setIndex(msg.index);
         if (typeof msg.notes === 'string') setLiveNotes(msg.notes);
+      } else if (msg.type === 'goto-study' && typeof msg.slug === 'string') {
+        // A deck switched studies (e.g. the in-deck "Next project" link clicked
+        // in the preview) — follow it so notes stay in step with the deck.
+        if (msg.slug !== projectId) navigate(`/present/${msg.slug}`);
       } else if (msg.type === 'lightbox') {
         setLightboxOpen(!!msg.url);
       } else if (msg.type === 'ready') {
