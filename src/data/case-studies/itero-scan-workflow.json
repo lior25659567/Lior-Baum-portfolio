@@ -304,7 +304,6 @@
         "Time to first scan action",
         "Avg teeth per interaction",
         "Scroll depth in RX setup",
-        "Tool searches mid-scan",
         "Time to find the right tool"
       ],
       "goalsCardsTitle": "Goals",
@@ -352,12 +351,12 @@
       "type": "problem",
       "label": "Interactive Prototype",
       "title": "A coded prototype to test decisions before development",
-      "content": "Figma shows what a screen looks like. It can't show how the workflow actually feels — the rhythm, the motion, the real environment. I built the prototype in code so timing and flow problems surfaced before any screen was locked.",
+      "content": "Figma shows what a screen looks like — it can't show how the workflow feels. I built the prototype in code so flow and timing problems surfaced before any screen was locked.",
       "bullets2Title": "What this enabled",
       "bullets2": [
         "Flow problems caught before any screen was locked",
-        "Timing and motion testable, not just static frames",
-        "A decision made in the morning, tested the same afternoon"
+        "Test and adjust options live — no waiting on a new Figma file",
+        "Faster iteration — change something, see it work, decide"
       ],
       "highlight": "Some design decisions can only be made in motion.",
       "image": [
@@ -495,7 +494,7 @@
     {
       "type": "comparison",
       "label": "RX Tooth Selection",
-      "title": "Selecting teeth should be as fast as pointing at them",
+      "title": "Multi-select replaced one at a time",
       "beforeImage": [
         {
           "position": "center center",
@@ -516,13 +515,21 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "[[MEDIA]]",
+          "src": "/case-studies/itero-scan-workflow/vid-59beoz3v2zo.webm",
           "isVideo": true,
-          "isGif": false,
-          "embedType": ""
+          "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "",
+          "caption": ""
         }
       ],
-      "beforeDescription": "Every tooth needed its own modal — click, confirm, close, repeat. No overview of what you'd already done.",
+      "beforeDescription": "Every tooth needed its own modal — click, confirm, close, repeat. ",
       "afterDescription": "Teeth selected directly on the chart — one or many at once — with procedures assigned inline.",
       "beforeBullets": [],
       "afterBullets": [],
