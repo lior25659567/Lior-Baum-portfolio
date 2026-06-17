@@ -1,16 +1,35 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getCaseStudyDataAsync } from '../data/caseStudyData';
 import './PresenterView.css';
-
-const slideTitle = (s) => s?.title || s?.label || 'Slide';
 
 const PresenterView = () => {
   const { projectId } = useParams();
   const [project, setProject] = useState(null);
   const [index, setIndex] = useState(0);
+  // Live notes pushed from the shared deck — shown instead of the loaded copy
+  // so freshly-typed (unsaved) notes appear immediately. null ⇒ fall back to
+  // the loaded deck's notes for the current slide.
+  const [liveNotes, setLiveNotes] = useState(null);
+  // Whether a lightbox is currently open anywhere (tracked off the channel).
+  // While open, navigation is frozen and Esc closes the lightbox, not the window.
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const lightboxOpenRef = useRef(false);
+  useEffect(() => { lightboxOpenRef.current = lightboxOpen; }, [lightboxOpen]);
+  const channelRef = useRef(null);
+  const frameRef = useRef(null);
+  const keyHandlerRef = useRef(null);
+  const indexRef = useRef(0);
+  // Stable id so this window ignores the slide messages it broadcasts itself.
+  // Generated on mount (kept out of render to satisfy hook purity).
+  const peerId = useRef('');
+  useEffect(() => {
+    peerId.current = `presenter-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  }, []);
 
-  // Load the deck (same accessor the case study page uses).
+  useEffect(() => { indexRef.current = index; }, [index]);
+
+  // Load the deck for notes + slide count (same accessor the case study uses).
   useEffect(() => {
     let alive = true;
     getCaseStudyDataAsync(projectId).then((data) => {
@@ -19,39 +38,133 @@ const PresenterView = () => {
     return () => { alive = false; };
   }, [projectId]);
 
-  // Listen for slide changes from the main window; announce readiness on mount.
+  // Embed the real deck in follow-mode. The src is stable (derived from
+  // projectId) so the iframe never reloads per slide — it mirrors the channel
+  // on its own and just follows along.
+  const iframeSrc = projectId ? `/project/${projectId}?follow=1` : null;
+
+  // Bidirectional channel: receive index changes from the shared deck, and
+  // (in `go`) broadcast our own navigation so the shared deck follows us.
   useEffect(() => {
     if (typeof BroadcastChannel === 'undefined') return;
     const ch = new BroadcastChannel(`cs-presenter:${projectId}`);
+    channelRef.current = ch;
     ch.onmessage = (e) => {
-      if (e.data?.type === 'index' && typeof e.data.index === 'number') {
-        setIndex(e.data.index);
+      const msg = e.data;
+      if (!msg || msg.src === peerId.current) return;
+      if (msg.type === 'index' && typeof msg.index === 'number') {
+        setIndex(msg.index);
+        if (typeof msg.notes === 'string') setLiveNotes(msg.notes);
+      } else if (msg.type === 'lightbox') {
+        setLightboxOpen(!!msg.url);
+      } else if (msg.type === 'ready') {
+        // Answer a follower preview that just mounted.
+        ch.postMessage({ type: 'index', index: indexRef.current, src: peerId.current });
       }
     };
-    ch.postMessage({ type: 'ready' });
-    const onKey = (e) => { if (e.key === 'Escape') window.close(); };
-    window.addEventListener('keydown', onKey);
+    // Ask the shared deck for the current index on mount.
+    ch.postMessage({ type: 'ready', src: peerId.current });
     return () => {
       ch.close();
-      window.removeEventListener('keydown', onKey);
+      channelRef.current = null;
     };
   }, [projectId]);
 
   const slides = project?.slides || [];
+  const total = slides.length;
   const current = slides[index];
-  const next = slides[index + 1];
+
+  // Navigate from the presenter window; drives the shared deck via the channel.
+  const go = useCallback((delta) => {
+    if (lightboxOpenRef.current) return; // frozen while a lightbox is zoomed
+    const max = Math.max(total - 1, 0);
+    const nextIdx = Math.min(Math.max(indexRef.current + delta, 0), max);
+    if (nextIdx === indexRef.current) return;
+    setIndex(nextIdx);
+    // Fall back to loaded notes for the new slide until the shared deck
+    // answers with its live notes (avoids briefly showing the old slide's).
+    setLiveNotes(null);
+    channelRef.current?.postMessage({ type: 'index', index: nextIdx, src: peerId.current });
+  }, [total]);
+
+  // Keyboard: arrows / space / page keys navigate; Escape closes the lightbox if
+  // one is open, otherwise the window. The handler is also attached to the embed
+  // iframe (via onLoad) so keys keep working after you click into the preview.
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        if (lightboxOpenRef.current) {
+          // Close the synced lightbox everywhere instead of the window.
+          channelRef.current?.postMessage({ type: 'lightbox', url: null, src: peerId.current });
+          setLightboxOpen(false);
+          return;
+        }
+        window.close();
+        return;
+      }
+      if (lightboxOpenRef.current) return; // navigation frozen while zoomed
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+        e.preventDefault();
+        go(1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        go(-1);
+      }
+    };
+    keyHandlerRef.current = onKey;
+    window.addEventListener('keydown', onKey);
+    // Same-origin embed: attach to its window too if it's already loaded, so
+    // focus inside the preview doesn't swallow navigation keys.
+    let cw = null;
+    try { cw = frameRef.current?.contentWindow; } catch { cw = null; }
+    if (cw) { try { cw.addEventListener('keydown', onKey); } catch { /* ignore */ } }
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      try { cw?.removeEventListener('keydown', onKey); } catch { /* ignore */ }
+      keyHandlerRef.current = null;
+    };
+  }, [go]);
 
   return (
     <div className="presenter-view">
-      <div className="presenter-position">
-        {project ? `${index + 1} / ${slides.length}` : '…'}
+      <div className="presenter-stage">
+        {iframeSrc && (
+          <iframe
+            ref={frameRef}
+            className="presenter-slide-frame"
+            src={iframeSrc}
+            title="Current slide"
+            onLoad={() => {
+              try {
+                const cw = frameRef.current?.contentWindow;
+                if (cw && keyHandlerRef.current) cw.addEventListener('keydown', keyHandlerRef.current);
+              } catch { /* cross-doc access can throw; ignore */ }
+            }}
+          />
+        )}
+        <div className="presenter-position">
+          {project ? `${index + 1} / ${total}` : '…'}
+        </div>
       </div>
+
       <div className="presenter-notes-body">
-        {current?.presenterNotes
-          ? current.presenterNotes.split('\n').map((line, i) => <p key={i}>{line || ' '}</p>)
-          : <p className="presenter-empty">(no notes for this slide)</p>}
+        {(() => {
+          const notesText = liveNotes != null ? liveNotes : current?.presenterNotes;
+          return notesText
+            ? notesText.split('\n').map((line, i) => <p key={i}>{line || ' '}</p>)
+            : <p className="presenter-empty">(no notes for this slide)</p>;
+        })()}
       </div>
-      {next && <div className="presenter-next">Next: {slideTitle(next)}</div>}
+
+      <div className="presenter-controls">
+        <button type="button" className="presenter-nav-btn" onClick={() => go(-1)} disabled={index <= 0}>
+          ‹ Prev
+        </button>
+        <span className="presenter-controls-hint">← / → to navigate · Esc to close</span>
+        <button type="button" className="presenter-nav-btn" onClick={() => go(1)} disabled={total === 0 || index >= total - 1}>
+          Next ›
+        </button>
+      </div>
     </div>
   );
 };

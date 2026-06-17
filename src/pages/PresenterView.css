@@ -5,30 +5,84 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 28px 32px;
+  padding: 20px 24px;
   background: #0d0d0f;
   color: #f4f4f5;
   font-family: system-ui, -apple-system, sans-serif;
 }
-.presenter-position {
+
+/* Live preview of the current slide (the real deck in follow-mode).
+   Capped to a 16:9 box no taller than 45vh and centred, so the notes below
+   always keep room — without this the width:100% + 16:9 frame fills tall/wide
+   windows and pushes the notes off-screen. */
+.presenter-stage {
+  position: relative;
   flex: 0 0 auto;
-  font-size: 1.1rem;
+  width: 100%;
+  max-width: calc(45vh * 16 / 9);
+  margin: 0 auto;
+}
+.presenter-slide-frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 10px;
+  background: #000;
+  /* Interactive: clicking an image in the preview opens the lightbox, which
+     syncs to the shared deck. Navigation stays in sync because the embed runs
+     in follow-mode (it ignores its own wheel/touch/key nav). */
+  pointer-events: auto;
+}
+.presenter-position {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.6);
+  font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.02em;
-  opacity: 0.7;
 }
+
 .presenter-notes-body {
   flex: 1 1 auto;
+  min-height: 0; /* allow the flex child to shrink so overflow-y can scroll */
   overflow-y: auto;
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   line-height: 1.5;
 }
 .presenter-notes-body p { margin: 0 0 0.6em; }
 .presenter-empty { opacity: 0.45; font-style: italic; }
-.presenter-next {
+
+.presenter-controls {
   flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   padding-top: 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+.presenter-controls-hint {
+  font-size: 0.8rem;
+  opacity: 0.5;
+}
+.presenter-nav-btn {
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #f4f4f5;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
   font-size: 1rem;
-  opacity: 0.7;
+  font-weight: 600;
+  cursor: pointer;
+}
+.presenter-nav-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.18);
+}
+.presenter-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
 }

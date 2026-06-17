@@ -429,6 +429,7 @@ const TemplatePreview = ({ type }) => {
     imageMosaic: 'Tiled image grid background with a centered title overlay. Perfect for showing old versions, screen collections, or visual overviews.',
     chapter: 'Section divider with a large accent index number, title, and optional subtitle.',
     reflection: 'Three columns — what worked, what to change, what\'s next — as accent-dot bullet lists.',
+    question: 'A single big design/research question, centered hero. Optional eyebrow label above and a supporting sentence below — both removable.',
   };
 
   return (
@@ -1489,8 +1490,26 @@ const CaseStudy = () => {
     return 0;
   });
   const [notesPanelOpen, setNotesPanelOpen] = useState(false);
+  /* Presenter follow-mode: when this deck is embedded inside the presenter
+     window (`?follow=1`) it mirrors the shared channel but never drives it,
+     and hides its own nav chrome so it reads as a clean slide preview. */
+  const [followMode] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    try { return new URLSearchParams(window.location.search).get('follow') === '1'; } catch { return false; }
+  });
   const presenterChannelRef = useRef(null);
   const presenterWindowRef = useRef(null);
+  // Stable id so a tab ignores the slide messages it broadcast itself.
+  const presenterPeerId = useRef(`deck-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  // True for one tick after a remote lightbox message set our state, so the
+  // broadcast effect doesn't echo it back and start a loop.
+  const lightboxRemoteRef = useRef(false);
+  // Mirrors lightboxImage so the channel handler can compare without a stale
+  // closure (and without an impure state updater).
+  const lightboxImageRef = useRef(null);
+  // Skip the lightbox broadcast on first mount so a freshly-loaded peer doesn't
+  // blast url:null and close a lightbox another peer has open.
+  const lightboxBroadcastReadyRef = useRef(false);
   const [presenterHint, setPresenterHint] = useState('');
   const [pdfExporting, setPdfExporting] = useState(false);
   const [pdfProgress, setPdfProgress] = useState(null);
@@ -1512,25 +1531,52 @@ const CaseStudy = () => {
   }, [currentSlide]);
 
   // Presenter sync: one BroadcastChannel per case study, kept for the page's life.
+  // Bidirectional — the shared deck and the presenter window can each drive the
+  // other. A peer ignores its own echoes; we only re-broadcast on real changes,
+  // so a remote-applied index settles after one bounce instead of looping.
   useEffect(() => {
     if (typeof BroadcastChannel === 'undefined') return;
     const ch = new BroadcastChannel(`cs-presenter:${projectId}`);
     presenterChannelRef.current = ch;
     ch.onmessage = (e) => {
-      if (e.data?.type === 'ready') {
-        ch.postMessage({ type: 'index', index: currentSlideRef.current ?? 0 });
+      const msg = e.data;
+      if (!msg || msg.src === presenterPeerId.current) return;
+      if (msg.type === 'ready') {
+        // Only the authoritative source answers the handshake. A follower
+        // (e.g. the presenter's embedded /project?follow=1 iframe) holds a
+        // stale/empty copy and would race the source, blanking live notes.
+        if (followMode) return;
+        const idx = currentSlideRef.current ?? 0;
+        const notes = projectRef.current?.slides?.[idx]?.presenterNotes ?? '';
+        ch.postMessage({ type: 'index', index: idx, notes, src: presenterPeerId.current });
+      } else if (msg.type === 'index' && typeof msg.index === 'number') {
+        setCurrentSlide((prev) => (prev === msg.index ? prev : msg.index));
+      } else if (msg.type === 'lightbox') {
+        // Mirror a lightbox open/close from any peer. Mark it remote so our own
+        // broadcast effect skips re-sending it (and start no loop).
+        const next = msg.url ?? null;
+        if (lightboxImageRef.current === next) return;
+        lightboxRemoteRef.current = true;
+        setLightboxImage(next);
       }
     };
+    // A follower preview asks the source for the current index on mount.
+    if (followMode) ch.postMessage({ type: 'ready', src: presenterPeerId.current });
     return () => {
       ch.close();
       presenterChannelRef.current = null;
     };
-  }, [projectId]);
+  }, [projectId, followMode]);
 
-  // Mirror the active slide to the presenter window whenever it changes.
+  // Mirror the active slide AND its live presenter notes onto the channel
+  // whenever either changes — a follower preview never drives the deck.
+  // Broadcasting notes live means the presenter window shows freshly-typed
+  // notes immediately, without waiting for an IndexedDB save.
+  const currentPresenterNotes = project?.slides?.[currentSlide]?.presenterNotes ?? '';
   useEffect(() => {
-    presenterChannelRef.current?.postMessage({ type: 'index', index: currentSlide });
-  }, [currentSlide]);
+    if (followMode) return;
+    presenterChannelRef.current?.postMessage({ type: 'index', index: currentSlide, notes: currentPresenterNotes, src: presenterPeerId.current });
+  }, [currentSlide, currentPresenterNotes, followMode]);
 
   // Force scrollbar reflow when entering edit mode or switching slides while in
   // edit mode. Without this, Chrome leaves the slide's overflow:scroll rail
@@ -1553,6 +1599,30 @@ const CaseStudy = () => {
   const [pasteText, setPasteText] = useState('');
   const [parsedPreview, setParsedPreview] = useState(null); // { slides, preview }
   const [lightboxImage, setLightboxImage] = useState(null);
+  // When this tab is hidden (e.g. the deck is a background tab while the
+  // presenter drives it), the browser throttles requestAnimationFrame, so a
+  // framer-motion exit animation never completes and the lightbox overlay would
+  // stay stuck in the DOM after a remote close. Track visibility and skip the
+  // exit animation while hidden so removal is immediate.
+  const [docHidden, setDocHidden] = useState(typeof document !== 'undefined' && document.hidden);
+  useEffect(() => {
+    const onVis = () => setDocHidden(document.hidden);
+    document.addEventListener('visibilitychange', onVis);
+    return () => document.removeEventListener('visibilitychange', onVis);
+  }, []);
+  // Mirror the lightbox (open/close + which image) onto the presenter channel so
+  // the shared deck and the presenter preview zoom the same image together.
+  // Skips the echo when the change itself arrived from a remote peer.
+  useEffect(() => {
+    lightboxImageRef.current = lightboxImage;
+    if (!lightboxBroadcastReadyRef.current) { lightboxBroadcastReadyRef.current = true; return; }
+    if (lightboxRemoteRef.current) { lightboxRemoteRef.current = false; return; }
+    presenterChannelRef.current?.postMessage({
+      type: 'lightbox',
+      url: lightboxImage ?? null,
+      src: presenterPeerId.current,
+    });
+  }, [lightboxImage]);
   const [activeTwiImageControl, setActiveTwiImageControl] = useState(null);
   const [savedCaseStudiesList, setSavedCaseStudiesList] = useState([]);
   const [showSavedList, setShowSavedList] = useState(false);
@@ -2116,6 +2186,10 @@ const CaseStudy = () => {
     };
 
     const handleWheel = (e) => {
+      // A follower preview (presenter window's embed) never drives itself — it
+      // only mirrors the channel. Without this, wheeling over the now-clickable
+      // preview would navigate the embed locally and desync it from the deck.
+      if (followMode) return;
       // Edit mode: the outer .case-study container is the scroll surface,
       // so let the browser route wheel events natively. We only
       // intercept in view mode to drive horizontal slide navigation.
@@ -2131,6 +2205,9 @@ const CaseStudy = () => {
     };
 
     const handleKeyDown = (e) => {
+      // A follower never self-navigates (see handleWheel) — the presenter
+      // window owns navigation and broadcasts it.
+      if (followMode) return;
       // Don't intercept if user is typing in an input/textarea
       const target = e.target;
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return;
@@ -2168,6 +2245,7 @@ const CaseStudy = () => {
     };
 
     const handleTouchEnd = (e) => {
+      if (followMode) return; // follower mirrors the channel; never swipe-navigates
       if (isScrollingRef.current) return;
 
       // Mobile scaled viewer: arrows only. All touch gestures (single-finger
@@ -2221,6 +2299,22 @@ const CaseStudy = () => {
     };
   }, [totalSlides, editMode, isMobileSlide, isSiteMode]);
 
+  const openPresenterWindow = useCallback(() => {
+    const existing = presenterWindowRef.current;
+    if (existing && !existing.closed) {
+      existing.focus();
+      return;
+    }
+    const features = 'popup=yes,width=520,height=720,menubar=no,toolbar=no,location=no,status=no';
+    const win = window.open(`/present/${projectId}`, `cs-presenter-${projectId}`, features);
+    if (!win) {
+      setPresenterHint('Allow pop-ups for this site, then press P again.');
+      setTimeout(() => setPresenterHint(''), 4000);
+      return;
+    }
+    presenterWindowRef.current = win;
+  }, [projectId]);
+
   // View-mode "P" opens the presenter window.
   useEffect(() => {
     if (editMode) return;
@@ -2250,22 +2344,6 @@ const CaseStudy = () => {
       isScrollingRef.current = false;
     }, 400);
   }, [totalSlides]);
-
-  const openPresenterWindow = useCallback(() => {
-    const existing = presenterWindowRef.current;
-    if (existing && !existing.closed) {
-      existing.focus();
-      return;
-    }
-    const features = 'popup=yes,width=520,height=720,menubar=no,toolbar=no,location=no,status=no';
-    const win = window.open(`/present/${projectId}`, `cs-presenter-${projectId}`, features);
-    if (!win) {
-      setPresenterHint('Allow pop-ups for this site, then press P again.');
-      setTimeout(() => setPresenterHint(''), 4000);
-      return;
-    }
-    presenterWindowRef.current = win;
-  }, [projectId]);
 
   const showSlideNav = useCallback(() => {
     if (slideNavHideTimeoutRef.current) {
@@ -7005,13 +7083,23 @@ My instructions: `;
                   onChange={(v) => updateSlide(index, { label: v })}
                 />
               </span>
-              <h2 className="outcomes-title">
-                <EditableField
-                  value={slide.title}
-                  onChange={(v) => updateSlide(index, { title: v })}
-                  allowLineBreaks
-                />
-              </h2>
+              {(editMode ? slide.title !== null : (slide.title != null && slide.title !== '')) && (
+                <>
+                  <h2 className="outcomes-title">
+                    <EditableField
+                      value={slide.title}
+                      onChange={(v) => updateSlide(index, { title: v })}
+                      allowLineBreaks
+                    />
+                  </h2>
+                  {editMode && (
+                    <button type="button" className="remove-field-btn issues-breakdown-remove" onClick={() => updateSlide(index, { title: null })} title="Remove title">× Remove title</button>
+                  )}
+                </>
+              )}
+              {editMode && slide.title === null && (
+                <button className="add-field-btn" onClick={() => updateSlide(index, { title: 'Title' })}>+ Add title</button>
+              )}
               {editMode && (
                 <div className="grid-layout-control">
                   <span className="grid-control-label">Grid Columns:</span>
@@ -7981,9 +8069,14 @@ My instructions: `;
         const visibleCols = reflectionCols.filter(c => !hiddenCols.includes(c.key));
         const hiddenColDefs = reflectionCols.filter(c => hiddenCols.includes(c.key));
         const visibleCount = Math.max(visibleCols.length, 1);
+        // Display: 'cards' (default) | 'list-sections' (stacked, no card chrome,
+        // per-list title toggle) | 'list-merged' (one flat bullet list, no titles).
+        const reflectionDisplay = ['list-sections', 'list-merged'].includes(slide.reflectionDisplay) ? slide.reflectionDisplay : 'cards';
+        const hiddenTitles = slide.hiddenTitles || [];
         // Layout: 'horizontal' (cards side by side, default) or 'vertical' (stacked).
+        // Only applies in cards display.
         const reflectionLayout = slide.reflectionLayout === 'vertical' ? 'vertical' : 'horizontal';
-        const reflectionGridCols = reflectionLayout === 'vertical' ? 1 : visibleCount;
+        const reflectionGridCols = reflectionDisplay !== 'cards' ? 1 : (reflectionLayout === 'vertical' ? 1 : visibleCount);
         return (
           <div className="slide slide-reflection" key={index} style={spacingStyle}>
             {slideControls}
@@ -7992,9 +8085,19 @@ My instructions: `;
               <span className="slide-label">
                 <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
               </span>
-              <h2 className="reflection-title">
-                <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
-              </h2>
+              {(editMode ? slide.title !== null : (slide.title != null && slide.title !== '')) && (
+                <>
+                  <h2 className="reflection-title">
+                    <EditableField value={slide.title} onChange={(v) => updateSlide(index, { title: v })} allowLineBreaks />
+                  </h2>
+                  {editMode && (
+                    <button type="button" className="remove-field-btn issues-breakdown-remove" onClick={() => updateSlide(index, { title: null })} title="Remove title">× Remove title</button>
+                  )}
+                </>
+              )}
+              {editMode && slide.title === null && (
+                <button className="add-field-btn" onClick={() => updateSlide(index, { title: 'Title' })}>+ Add title</button>
+              )}
               {/* Optional subtitle */}
               {((slide.subtitle != null && slide.subtitle !== '') || editMode) && (
                 <div className="reflection-subtitle-wrapper">
@@ -8011,20 +8114,41 @@ My instructions: `;
               )}
               {editMode && (
                 <div className="reflection-layout-toggle">
+                  <span className="reflection-layout-label">Display</span>
+                  <button type="button" className={`add-field-btn${reflectionDisplay === 'cards' ? ' is-active' : ''}`} onClick={() => updateSlide(index, { reflectionDisplay: 'cards' })}>Cards</button>
+                  <button type="button" className={`add-field-btn${reflectionDisplay === 'list-sections' ? ' is-active' : ''}`} onClick={() => updateSlide(index, { reflectionDisplay: 'list-sections' })}>List</button>
+                  <button type="button" className={`add-field-btn${reflectionDisplay === 'list-merged' ? ' is-active' : ''}`} onClick={() => updateSlide(index, { reflectionDisplay: 'list-merged' })}>Merged list</button>
+                </div>
+              )}
+              {editMode && reflectionDisplay === 'cards' && (
+                <div className="reflection-layout-toggle">
                   <span className="reflection-layout-label">Layout</span>
                   <button type="button" className={`add-field-btn${reflectionLayout === 'horizontal' ? ' is-active' : ''}`} onClick={() => updateSlide(index, { reflectionLayout: 'horizontal' })}>Horizontal</button>
                   <button type="button" className={`add-field-btn${reflectionLayout === 'vertical' ? ' is-active' : ''}`} onClick={() => updateSlide(index, { reflectionLayout: 'vertical' })}>Vertical</button>
                 </div>
               )}
-              <div className={`reflection-grid reflection-grid--${reflectionLayout}`} style={{ '--reflection-cols': reflectionGridCols }}>
-                {visibleCols.map((col) => (
+              <div className={`reflection-grid reflection-grid--${reflectionDisplay}${reflectionDisplay === 'cards' ? ` reflection-grid--${reflectionLayout}` : ''}`} style={{ '--reflection-cols': reflectionGridCols }}>
+                {visibleCols.map((col) => {
+                  const titleVisible = reflectionDisplay === 'cards'
+                    ? true
+                    : reflectionDisplay === 'list-merged'
+                      ? false
+                      : !hiddenTitles.includes(col.key);
+                  return (
                   <div key={col.key} className={`reflection-col ${col.colClass}`}>
                     {editMode && visibleCols.length > 1 && (
                       <button type="button" className="remove-item-btn" title="Remove column" onClick={() => updateSlide(index, { hiddenCols: [...hiddenCols, col.key] })}>×</button>
                     )}
-                    <h3>
-                      <EditableField value={slide[col.titleField] ?? col.defaultTitle} onChange={(v) => updateSlide(index, { [col.titleField]: v })} />
-                    </h3>
+                    {editMode && reflectionDisplay === 'list-sections' && (
+                      <button type="button" className="add-field-btn reflection-title-toggle" onClick={() => updateSlide(index, { hiddenTitles: titleVisible ? [...hiddenTitles, col.key] : hiddenTitles.filter(k => k !== col.key) })}>
+                        {titleVisible ? 'Hide title' : 'Show title'}
+                      </button>
+                    )}
+                    {titleVisible && (
+                      <h3>
+                        <EditableField value={slide[col.titleField] ?? col.defaultTitle} onChange={(v) => updateSlide(index, { [col.titleField]: v })} />
+                      </h3>
+                    )}
                     <OptionalField slide={slide} index={index} field={col.descField} label="Description" defaultValue="Add a short description…" multiline>
                       <p className="reflection-col-desc">
                         <EditableField value={slide[col.descField]} onChange={(v) => updateSlide(index, { [col.descField]: v })} multiline />
@@ -8032,7 +8156,8 @@ My instructions: `;
                     </OptionalField>
                     <DynamicBullets slide={slide} slideIndex={index} field={col.bulletsField} className="reflection-bullets" label="Point" />
                   </div>
-                ))}
+                  );
+                })}
               </div>
               {editMode && hiddenColDefs.length > 0 && (
                 <div className="reflection-add-cols">
@@ -8043,6 +8168,50 @@ My instructions: `;
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        );
+      }
+
+      case 'question': {
+        const showQLabel = editMode ? slide.label !== null : (slide.label != null && slide.label !== '');
+        const showQSupport = editMode ? slide.support !== null : (slide.support != null && slide.support !== '');
+        return (
+          <div className="slide slide-question" key={index} style={spacingStyle}>
+            {slideControls}
+            {titleSpacingControl}
+            <div className="slide-inner">
+              <div className="question-content">
+                {showQLabel && (
+                  <>
+                    <span className="question-eyebrow">
+                      <EditableField value={slide.label} onChange={(v) => updateSlide(index, { label: v })} />
+                    </span>
+                    {editMode && (
+                      <button type="button" className="remove-field-btn issues-breakdown-remove" onClick={() => updateSlide(index, { label: null })} title="Remove label">× Remove label</button>
+                    )}
+                  </>
+                )}
+                {editMode && slide.label === null && (
+                  <button className="add-field-btn" onClick={() => updateSlide(index, { label: 'The Design Question' })}>+ Add label</button>
+                )}
+                <h2 className="question-text">
+                  <EditableField value={slide.question} onChange={(v) => updateSlide(index, { question: v })} allowLineBreaks />
+                </h2>
+                {showQSupport && (
+                  <>
+                    <p className="question-support">
+                      <EditableField value={slide.support} onChange={(v) => updateSlide(index, { support: v })} allowLineBreaks />
+                    </p>
+                    {editMode && (
+                      <button type="button" className="remove-field-btn issues-breakdown-remove" onClick={() => updateSlide(index, { support: null })} title="Remove supporting text">× Remove supporting text</button>
+                    )}
+                  </>
+                )}
+                {editMode && slide.support === null && (
+                  <button className="add-field-btn" onClick={() => updateSlide(index, { support: 'Optional supporting sentence.' })}>+ Add supporting text</button>
+                )}
+              </div>
             </div>
           </div>
         );
@@ -8062,7 +8231,7 @@ My instructions: `;
 
   return (
     <div
-      className={`case-study ${editMode ? 'edit-mode' : ''}`}
+      className={`case-study ${editMode ? 'edit-mode' : ''} ${followMode ? 'present-follow' : ''}`}
       ref={containerRef}
       data-card-style={cardStyle !== 'outlined' ? cardStyle : undefined}
       data-display-mode="slides"
@@ -9232,11 +9401,11 @@ My instructions: `;
       {/* Lightbox for viewing images in full size */}
       <AnimatePresence>
         {lightboxImage && (
-          <motion.div 
+          <motion.div
             className="lightbox-overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            exit={docHidden ? undefined : { opacity: 0 }}
             onClick={() => setLightboxImage(null)}
           >
             <button className="lightbox-close" onClick={() => setLightboxImage(null)}>×</button>
@@ -9246,7 +9415,7 @@ My instructions: `;
               className="lightbox-image"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              exit={docHidden ? undefined : { scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
             />
           </motion.div>
