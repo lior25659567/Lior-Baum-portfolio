@@ -134,7 +134,7 @@ function migrateCaseStudyImagePathsToWebp(node) {
   return node;
 }
 
-const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'lazy', playbackRate = 1 }) => {
+const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'lazy', playbackRate = 1, controls = false }) => {
   const ref = useRef(null);
   const { mobile, saveData, slow } = useLowBandwidthMedia();
   // iOS Safari allows autoplay only when the `muted` HTML *attribute* is
@@ -250,6 +250,8 @@ const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'la
       loop
       muted
       playsInline
+      controls={controls}
+      controlsList="nodownload"
       style={style}
       className={className}
       onClick={onClick}
@@ -4889,7 +4891,7 @@ My instructions: `;
                       {imgData.src ? (
                         <>
                           {imgData.isVideo ? (
-                            <LazyVideo src={imgData.src} poster={imgData.posterSrc} priority={videoPriority} playbackRate={imgData.playbackRate} style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }} />
+                            <LazyVideo src={imgData.src} poster={imgData.posterSrc} priority={videoPriority} playbackRate={imgData.playbackRate} controls={!editMode} style={{ objectFit: carouselFit, objectPosition: imgData.position || 'center center' }} />
                           ) : (
                             <img
                               src={imgData.src}
@@ -5251,6 +5253,7 @@ My instructions: `;
                             return d === 0 ? 'high' : d <= 1 ? 'nearby' : 'lazy';
                           })()}
                           playbackRate={imgData.playbackRate}
+                          controls={!editMode}
                           style={mediaContainStyle}
                         />
                       ) : (
