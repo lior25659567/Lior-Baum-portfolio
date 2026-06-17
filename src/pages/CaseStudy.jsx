@@ -2170,10 +2170,12 @@ const CaseStudy = () => {
     };
   }, []);
 
-  // Close lightbox with Escape key
+  // Close lightbox with Escape key — but if a video is fullscreen, let Escape
+  // just exit fullscreen and stay on the slide (don't also close the lightbox).
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && lightboxImage) {
+        if (document.fullscreenElement || document.webkitFullscreenElement) return;
         setLightboxImage(null);
       }
     };

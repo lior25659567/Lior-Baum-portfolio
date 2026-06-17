@@ -22,6 +22,22 @@ const PresenterView = () => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const lightboxOpenRef = useRef(false);
   useEffect(() => { lightboxOpenRef.current = lightboxOpen; }, [lightboxOpen]);
+  // Timestamp of the last time a fullscreen video was dismissed. Escape that
+  // exits video fullscreen must NOT also close the presenter window — we ignore
+  // keys while fullscreen is active or was just exited.
+  const fsExitedAtRef = useRef(0);
+  useEffect(() => {
+    const onFs = () => {
+      const fs = document.fullscreenElement || document.webkitFullscreenElement;
+      if (!fs) fsExitedAtRef.current = Date.now();
+    };
+    document.addEventListener('fullscreenchange', onFs);
+    document.addEventListener('webkitfullscreenchange', onFs);
+    return () => {
+      document.removeEventListener('fullscreenchange', onFs);
+      document.removeEventListener('webkitfullscreenchange', onFs);
+    };
+  }, []);
   const channelRef = useRef(null);
   const frameRef = useRef(null);
   const keyHandlerRef = useRef(null);
@@ -138,6 +154,12 @@ const PresenterView = () => {
   // iframe (via onLoad) so keys keep working after you click into the preview.
   useEffect(() => {
     const onKey = (e) => {
+      // While a video is fullscreen (or Esc just exited one), let the browser /
+      // video own the keys — don't close the window or navigate. Covers videos
+      // fullscreened inside the preview iframe too (the top doc's fullscreen
+      // element is then the iframe).
+      const inFs = document.fullscreenElement || document.webkitFullscreenElement;
+      if (inFs || Date.now() - fsExitedAtRef.current < 400) return;
       if (e.key === 'Escape') {
         if (lightboxOpenRef.current) {
           // Close the synced lightbox everywhere instead of the window.
@@ -216,6 +238,8 @@ const PresenterView = () => {
             className="presenter-slide-frame"
             src={iframeSrc}
             title="Current slide"
+            allowFullScreen
+            allow="fullscreen"
             onLoad={() => {
               try {
                 const cw = frameRef.current?.contentWindow;
