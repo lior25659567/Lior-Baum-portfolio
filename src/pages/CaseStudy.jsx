@@ -183,12 +183,25 @@ const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'la
   // becomes `visible`, and whenever it enters the viewport. Each attempt is
   // cheap (play() on a playing element is a no-op) and swallows the
   // NotAllowedError so the promise never logs.
+  // Only the current slide ('high') ever plays. Nearby slides preload their src
+  // but stay paused on the poster so a video never starts before you're on its
+  // slide (and stops when you leave).
   const tryPlay = useCallback((el) => {
-    if (!el || !el.paused) return;
+    if (!el || !el.paused || priority !== 'high') return;
     el.muted = true;
     const p = el.play();
     if (p && p.catch) p.catch(() => {});
-  }, []);
+  }, [priority]);
+  // Start when this slide becomes current; pause when it stops being current.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (priority === 'high') {
+      tryPlay(el);
+    } else {
+      try { if (!el.paused) el.pause(); } catch { /* ignore */ }
+    }
+  }, [priority, tryPlay, visible]);
   // Apply playbackRate. Browsers reset playbackRate to 1 on every src change
   // and on some loop wraps, so we re-apply on visibility flips, on `loadedmetadata`,
   // and whenever the prop changes.
@@ -246,7 +259,7 @@ const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'la
       src={visible ? playbackSrc : undefined}
       poster={effectivePoster}
       preload={preload}
-      autoPlay
+      autoPlay={priority === 'high'}
       loop
       muted
       playsInline
@@ -4915,7 +4928,7 @@ My instructions: `;
                         </>
                       ) : imgData.embedUrl ? (
                         <>
-                          <iframe src={imgData.embedUrl} title={imgData.embedType === 'youtube' ? 'YouTube Video' : `Embed ${imgIndex + 1}`} allowFullScreen allow={imgData.embedType === 'youtube' ? 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' : undefined} loading={imgData.embedType === 'youtube' ? 'lazy' : undefined} className={imgData.embedType === 'youtube' ? 'youtube-embed-iframe' : imgData.embedType === 'site' ? 'site-embed-iframe' : 'figma-embed-iframe'} />
+                          <iframe src={(() => { const d = Math.abs((slideIndex ?? 0) - (currentSlideRef.current ?? 0)); const active = editMode || (imgData.embedType === 'youtube' ? d === 0 : d <= 1); return active ? imgData.embedUrl : undefined; })()} title={imgData.embedType === 'youtube' ? 'YouTube Video' : `Embed ${imgIndex + 1}`} allowFullScreen allow={imgData.embedType === 'youtube' ? 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' : undefined} loading={imgData.embedType === 'youtube' ? 'lazy' : undefined} className={imgData.embedType === 'youtube' ? 'youtube-embed-iframe' : imgData.embedType === 'site' ? 'site-embed-iframe' : 'figma-embed-iframe'} />
                           {editMode && (
                             <div className="carousel-slide-edit-controls">
                               <button type="button" className="carousel-slide-remove" onClick={(e) => { e.stopPropagation(); updateImage(imgIndex, { embedUrl: '' }); }} title="Remove this embed"><span aria-hidden="true">✕</span> Remove</button>
@@ -5127,7 +5140,7 @@ My instructions: `;
                   {imgData.embedUrl ? (
                     <>
                       <iframe
-                        src={imgData.embedUrl}
+                        src={(() => { const d = Math.abs((slideIndex ?? 0) - (currentSlideRef.current ?? 0)); const active = editMode || (imgData.embedType === 'youtube' ? d === 0 : d <= 1); return active ? imgData.embedUrl : undefined; })()}
                         title={imgData.embedType === 'youtube' ? 'YouTube Video' : imgData.embedType === 'site' ? 'Site Embed' : imgData.embedType === 'iframe' ? 'Embedded iframe' : 'Figma Embed'}
                         allowFullScreen
                         allow={imgData.embedType === 'youtube' ? 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' : undefined}

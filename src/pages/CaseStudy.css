@@ -5599,6 +5599,13 @@ button.dir-chip:hover {
 }
 .dynamic-images::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
+/* View mode: inset slide media so the image/video panel isn't flush against
+   the slide edges. Tune the value to taste. (Edit mode keeps padding:0 so the
+   authoring controls line up.) */
+.case-study:not(.edit-mode) .dynamic-images {
+  padding: 40px;
+}
+
 .dynamic-grid-control {
   display: flex;
   align-items: center;
