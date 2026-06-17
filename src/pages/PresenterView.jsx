@@ -35,6 +35,19 @@ const PresenterView = () => {
 
   useEffect(() => { indexRef.current = index; }, [index]);
 
+  // Record the study being presented so the shared deck can follow even when it
+  // is a hidden background tab (where the live channel message is throttled).
+  // The deck reconciles to this on becoming visible. Cleared when the presenter
+  // window actually closes (SPA deck-switches don't fire pagehide).
+  useEffect(() => {
+    try { localStorage.setItem('cs-present-study', JSON.stringify({ slug: projectId, ts: Date.now() })); } catch { /* ignore */ }
+  }, [projectId]);
+  useEffect(() => {
+    const clear = () => { try { localStorage.removeItem('cs-present-study'); } catch { /* ignore */ } };
+    window.addEventListener('pagehide', clear);
+    return () => window.removeEventListener('pagehide', clear);
+  }, []);
+
   // Switching case studies remounts on the same component (only the param
   // changes), so reset per-deck state to the new study's start.
   useEffect(() => {

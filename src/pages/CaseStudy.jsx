@@ -1573,6 +1573,31 @@ const CaseStudy = () => {
     };
   }, [projectId, followMode]);
 
+  // Follow the presenter across case studies even when this deck is a hidden
+  // background tab (where the live goto-study message is throttled): when the
+  // tab becomes visible/focused, reconcile to the study the presenter recorded.
+  // The follower iframe is exempt — the presenter remount repoints it.
+  useEffect(() => {
+    if (followMode) return;
+    const reconcile = () => {
+      if (document.hidden) return;
+      try {
+        const raw = localStorage.getItem('cs-present-study');
+        if (!raw) return;
+        const { slug, ts } = JSON.parse(raw);
+        if (!slug || slug === projectId) return;
+        if (Date.now() - ts > 30 * 60 * 1000) return; // stale presenter session
+        navigate(`/project/${slug}`);
+      } catch { /* ignore */ }
+    };
+    document.addEventListener('visibilitychange', reconcile);
+    window.addEventListener('focus', reconcile);
+    return () => {
+      document.removeEventListener('visibilitychange', reconcile);
+      window.removeEventListener('focus', reconcile);
+    };
+  }, [projectId, followMode, navigate]);
+
   // Mirror the active slide AND its live presenter notes onto the channel
   // whenever either changes — a follower preview never drives the deck.
   // Broadcasting notes live means the presenter window shows freshly-typed
