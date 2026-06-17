@@ -160,6 +160,12 @@ const PresenterView = () => {
     };
   }, [go, goStudy]);
 
+  // On the last slide, the slide "Next" button rolls over to the next case
+  // study (if any) instead of dead-ending.
+  const onLastSlide = total === 0 || index >= total - 1;
+  const isLastDeck = deckIdx < 0 || deckIdx >= STUDY_SLUGS.length - 1;
+  const nextRollsToDeck = onLastSlide && !isLastDeck;
+
   return (
     <div className="presenter-view">
       <div className="presenter-deckbar">
@@ -220,8 +226,13 @@ const PresenterView = () => {
           ‹ Prev
         </button>
         <span className="presenter-controls-hint">← / → slides · [ / ] case study · Esc to close</span>
-        <button type="button" className="presenter-nav-btn" onClick={() => go(1)} disabled={total === 0 || index >= total - 1}>
-          Next ›
+        <button
+          type="button"
+          className="presenter-nav-btn"
+          onClick={() => (onLastSlide ? goStudy(1) : go(1))}
+          disabled={onLastSlide && isLastDeck}
+        >
+          {nextRollsToDeck ? 'Next deck ›' : 'Next ›'}
         </button>
       </div>
     </div>
