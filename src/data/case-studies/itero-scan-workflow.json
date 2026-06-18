@@ -1,5 +1,5 @@
 {
-  "dataVersion": 65,
+  "dataVersion": 66,
   "title": "Clinical Scanning\nWorkflow",
   "subtitle": "Redesigning the clinical scanning workflow for speed, clarity, and decision-making in real treatment conditions.",
   "category": "Clinical Workflow Redesign",
@@ -84,7 +84,8 @@
           "value": "Figma · Claude Code"
         }
       ],
-      "headlineMetric": null
+      "headlineMetric": null,
+      "presenterNotes": "אז הקייס הזה הוא על iTero — סורק תוך־פה דיגיטלי של אליין טכנולוגיס. הצוות שלי עיצב מחדש את כל זרימת העבודה — מההגדרה של המקרה ועד הוולידציה לפני המעבדה. כל זה תוך כדי שהמטופל יושב בכיסא. עבדתי על זה שלושה חודשים עם מנהל מוצר וארבעה מפתחים."
     },
     {
       "type": "problem",
@@ -113,7 +114,8 @@
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "presenterNotes": "לפני שאני נכנס לבעיה, חשוב להבין איך המערכת עובדת. יש שלושה שלבים — RX, סריקה, וצפייה — שכל אחד מזין את השני. הכל קורה צ'יירסייד, עם המטופל בחדר. כל החלטה היא תחת לחץ זמן, כי מישהו מחכה לך בכיסא."
     },
     {
       "type": "problem",
@@ -144,7 +146,8 @@
       "gridCols": 1,
       "imageDisplayMode": "grid",
       "imageCarouselInterval": 1500,
-      "highlight": "Every popup happened with a patient watching."
+      "highlight": "Every popup happened with a patient watching.",
+      "presenterNotes": "הבעיה הייתה שה־RX נבנה כמו טופס — שלב אחרי שלב, עם המון פופאפים, ובלי גמישות. כל שן וכל חומר פתחו חלון נפרד. ואם רצית לשנות פרוצדורה באמצע — היית צריך להתחיל מההתחלה. בעצם הטופס הזה הכריח את הרופא לקבל החלטות לפני שהיה לו את המידע."
     },
     {
       "type": "issuesBreakdown",
@@ -167,7 +170,8 @@
           "title": "Labs",
           "description": "Received Rx data that was incomplete or unstructured for complex procedures like All-on-X and multi-phase treatments."
         }
-      ]
+      ],
+      "presenterNotes": "הבעיה לא נעצרה אצל הרופא. כשהמילוי היה לא מלא, הצוות הקליני היה צריך להגיש מקרים מחדש. והמעבדות קיבלו מידע חסר על מקרים מורכבים כמו All-on-X. אז אם הרופא עיכב — כל השרשרת אחריו עיכבה."
     },
     {
       "type": "problem",
@@ -196,7 +200,8 @@
         }
       ],
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "presenterNotes": "שלושה דברים התכנסו באותו זמן. המתחרים — 3Shape, Medit, Shining3D — כבר עברו דורות של עדכון. הקוד של iTero כבר לא הצליח לסבול עוד טלאי. ובקנה המידה של אליין — 37 מיליון מקרים בשנה — אפילו פופאפ מיותר אחד למקרה זה כסף וזמן עצום. זה היה הרגע לבנות מחדש, לא לתקן."
     },
     {
       "type": "quotes",
@@ -233,7 +238,8 @@
       "bullets": [],
       "cardHeight": "100",
       "cardVariant": "soft",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "presenterNotes": "ראיינתי רופאים משלושה תחומים — שיקום, רפואת שיניים כללית, ואורתודנטיה. ביקשתי מכל אחד לקחת אותי דרך מקרה אמיתי. מה שמעניין זה שהם לא התלוננו — הם פשוט קיבלו את החיכוך הזה כחלק מהעבודה. חמישה מוטיבים חזרו אצל כולם."
     },
     {
       "type": "problem",
@@ -267,7 +273,8 @@
       "imageWrapperBg": false,
       "imageFit": "contain",
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "presenterNotes": "אחרי הראיונות, מיפיתי את הזרימה האמיתית שרופאים עוברים — לא איך המוצר חשב שהם עוברים. שלוש נקודות שבר צצו, וכולן באותו מקום — בין השלבים. בעצם החיכוך לא היה אקראי, הוא היה במעברים. זה היה הרגע שהבנתי שזו לא בעיה של טופס, זו בעיה של ארכיטקטורה."
     },
     {
       "type": "goals",
@@ -314,7 +321,8 @@
       "cardVariant": "default",
       "kpisCardVariant": "soft",
       "goalsCardVariant": "minimal",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "presenterNotes": "במקום רשימה ארוכה של מטרות, חילקתי אותן לפי שלב — שלוש מטרות ל־RX, שתיים ל־Scan & View. כל מטרה צמודה ל־KPI שאני יכול למדוד. הכל מתחבר ישירות לפרקים שאני אראה בהמשך."
     },
     {
       "type": "issuesBreakdown",
@@ -345,7 +353,8 @@
       "subtitle": null,
       "description": [
         "Not every constraint forced a specific decision\nbut each one stayed in the back of my mind while designing, \nshaping what felt safe to ship across all three surfaces."
-      ]
+      ],
+      "presenterNotes": "היו ארבעה דברים שלא יכולתי לשנות. צריך לעצב לשלושה משטחים שונים — הסורק עצמו שעובד רק במגע ועם כפפות, מחשב נייח, ו־web. ה־RX הישן היה צריך להמשיך לרוץ למקרים שכבר באמצע. הפיצ'ר היה ב־flag, יכול להיות פתוח או סגור לפי חברה. ומצב קריאה ודמו היו צריכים להיות מעוצבים מהיום הראשון, לא משהו שמוסיפים בסוף."
     },
     {
       "type": "problem",
@@ -375,14 +384,16 @@
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "presenterNotes": "פיגמה מראה איך מסך נראה — היא לא מראה איך זרימה מרגישה. אז בניתי אב־טיפוס בקוד עוד לפני שנעלתי משהו ב־Figma. ככה תפסתי בעיות תזמון לפני שהן יקרות לתקן, ויכולתי לעשות שינוי בבוקר ולבחון אותו אחרי הצהריים. יש החלטות עיצוב שאי אפשר לקבל מתוך מסך סטטי."
     },
     {
       "type": "chapter",
       "number": "01",
       "title": "RX",
       "subtitle": "Defining the patient, procedure, and case before scanning — and the setup gate I had to clear first.",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "presenterNotes": "נכנסים לפרק הראשון — RX. זה השלב שבו רופא מגדיר את המטופל ואת הפרוצדורה לפני הסריקה. זה היה השער שהייתי צריך לפתוח לפני כל השאר."
     },
     {
       "type": "problem",
@@ -410,7 +421,8 @@
           "isGif": false
         }
       ],
-      "caption": "Old RX setup — the blocking multi-step form."
+      "caption": "Old RX setup — the blocking multi-step form.",
+      "presenterNotes": "ככה זה נראה לפני. טופס דחוס, מודאל לבחירת מטופל, פופאפ חוסם בכל שינוי פרוצדורה, ודרופ־דאון שלא היה מחובר לתרשים השיניים. כל שנייה פה זאת שנייה שהמטופל ישב וחיכה."
     },
     {
       "type": "directions",
@@ -459,7 +471,8 @@
           "embedType": ""
         }
       ],
-      "highlight": null
+      "highlight": null,
+      "presenterNotes": "בחנתי שלושה כיוונים עם רופאים אמיתיים. הראשון, ויזרד בצעדים — מאורגן, אבל הרגיש שהוא מנהל אותם. השני, אקורדיון שנפתח ונסגר — בפועל פתחו וסגרו את אותו חלק שוב ושוב. הכיוון שעבר היה הכל גלוי במסך אחד — אותם שדות, אותו סדר, פשוט בלי קירות בין השלבים. רופאים הבינו אותו מיד כי התהליך נשאר מוכר."
     },
     {
       "type": "problem",
@@ -480,7 +493,8 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/vid-6wt8sipz4ek.webm",
+          "src": "/case-studies/itero-scan-workflow/vid-8bpjdevrklc.mp4",
+          "caption": "",
           "isVideo": true,
           "isGif": false,
           "embedType": ""
@@ -489,7 +503,8 @@
       "caption": "New RX setup — single-view, no blocking form, much less scrolling.",
       "splitRatio": 30,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "presenterNotes": "וזאת התוצאה. אותם שדות, אותו סדר — פשוט בלי הקירות. ההגדרה התקצרה, פחות גלילה, יצירת מטופל חדש עברה למקום ייעודי, ועכשיו אפשר לבחור הרבה שיניים בבחירה אחת. הרופאים לא צריכים ללמוד משהו חדש — הם פשוט הפסיקו להילחם בטופס."
     },
     {
       "type": "comparison",
@@ -541,14 +556,16 @@
       "afterImageCarouselFit": "contain",
       "afterImageCarouselInterval": 2000,
       "beforeImageCarouselBg": true,
-      "beforeImageCarouselFit": "contain"
+      "beforeImageCarouselFit": "contain",
+      "presenterNotes": "כאן הלפני־ואחרי של בחירת שיניים. לפני — מודאל לכל שן, אחת אחת. אחרי — בחירה ישירה על התרשים, עם הפרוצדורות בצבעים. בעצם תוכנית הטיפול גלויה לגמרי בלי לפתוח שום דבר."
     },
     {
       "type": "chapter",
       "number": "02",
       "title": "Scan & View",
       "subtitle": "Capture and validation treated as one continuous phase — the clinician never leaves the screen between them.",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "presenterNotes": "פרק שני. ויש פה החלטה עיצובית — במקור Scan ו־View היו שני שלבים נפרדים. אבל בפועל הרופא לא חווה אותם ככה — הוא לא יוצא מהמסך ביניהם. אז איחדתי אותם לפרק אחד."
     },
     {
       "type": "problem",
@@ -574,13 +591,15 @@
         }
       ],
       "caption": "Old toolbar — scattered, mixed-style icons.",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "presenterNotes": "תראו איך נראתה מערכת הכלים לפני. אייקונים נצברו לאורך השנים, סגנונות שונים, ובלי מקום ייעודי לכלים. רופא לא צריך לחפש כלי באמצע סריקה — הכלי צריך להיות שם איפה שהוא יודע למצוא אותו."
     },
     {
       "type": "question",
       "label": "",
       "question": "How can every tool live in one place — without ever getting in the doctor's way?",
-      "support": "A single home tools could scale into, predictable enough that clinicians never had to look for it — and never had to fight it mid-scan."
+      "support": "A single home tools could scale into, predictable enough that clinicians never had to look for it — and never had to fight it mid-scan.",
+      "presenterNotes": "השאלה שהובילה את הפרק הזה. הבעיה לא הייתה איפה אייקונים נראים יפה. היא הייתה איפה רופא יכול להגיע לכלי בלי לעזוב את הסריקה. יד אחת על ה־wand, עיניים נעולות על המודל. השאלה — איך כל כלי חי במקום אחד, בלי להפריע, עם מקום שהרופא יודע שהוא יהיה שם."
     },
     {
       "type": "problem",
@@ -638,7 +657,8 @@
       "gridCols": 1,
       "imageDisplayMode": "carousel",
       "imageCarouselInterval": 2000,
-      "imageCarouselFit": "contain"
+      "imageCarouselFit": "contain",
+      "presenterNotes": "במקום להמציא משהו חדש, הסתכלתי איך תוכנות אחרות פותרות את אותה בעיה. בכל פלטפורמה עם הרבה כלים — הפתרון היה אותו דבר, toolbar. אז זה לא ניחוש, זה דפוס מוכח. המשימה שלי הייתה ליישם אותו טוב להקשר קליני, לא להמציא מחדש."
     },
     {
       "type": "directions",
@@ -683,7 +703,8 @@
           "src": "/case-studies/itero-scan-workflow/img-59lf56vcn4.png",
           "isVideo": false
         }
-      ]
+      ],
+      "presenterNotes": "בחנתי שלושה מיקומים. למטה במרכז — ישב על האזור שדווקא היה צריך להיראות, וגם רחוק להגיע. ימין־אנכי — תמיד גלוי, אבל התנגש עם כלים שכבר היו במסך. ימין־עליון, קולאפסיבל — היה המיקום היחיד שרופאים יכלו להגיע אליו בלי להוריד עיניים מהמודל. כיוון שעבר."
     },
     {
       "type": "problem",
@@ -692,7 +713,6 @@
       "content": "A top-right toolbar — out of the scan area, always findable. Icons rebuilt as one system: consistent line weight, consistent style, labeled.",
       "issues": [
         "Toolbar fixed to one corner — always findable",
-        "Unified icon set — each tool reads at a glance",
         "New tools slot in without requiring new conventions"
       ],
       "issuesTitle": "What changed",
@@ -715,7 +735,8 @@
         }
       ],
       "caption": "New top-right toolbar + unified icon set.",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "presenterNotes": "אז ככה זה נראה בסוף. Toolbar ימין־עליון, מחוץ לאזור הסריקה, תמיד נמצא. ובנוסף, האייקונים נבנו מחדש כמערכת אחת — אותו עובי, אותו סגנון, עם תיוג. הנקודה החשובה — המיקום והשפה נפתרו ביחד. אם פותרים רק מיקום ואייקונים לא קריאים — עדיין יש בעיה."
     },
     {
       "type": "problem",
@@ -746,7 +767,8 @@
       "gridCols": 1,
       "imageDisplayMode": "grid",
       "imageCarouselFit": "contain",
-      "imageCarouselInterval": 2000
+      "imageCarouselInterval": 2000,
+      "presenterNotes": "מקרים מורכבים דורשים יותר מסריקה אחת — לפני, אחרי, וסריקות עזר. השתמשתי ב־tabs כי הם גדלים עם המקרה, וגם כי רופאים כבר מכירים את הדפוס. עכשיו אפשר להניח שני סריקות זו על זו עם opacity ולראות בדיוק מה השתנה — בלי להחזיק את ההשוואה בראש."
     },
     {
       "type": "comparison",
@@ -787,7 +809,8 @@
       "splitRatio": 40,
       "slideMode": "before-after",
       "switcherStyle": "pill",
-      "highlight": null
+      "highlight": null,
+      "presenterNotes": "כלי הצפייה לפני־ואחרי. לפני — אשכולות אייקונים בלי תיוג, רופאים היו צריכים לזכור מה כל אייקון עושה. אחרי — פאנלים עם שם וקריאה ראשית אחת לכל כלי, מבנה זהה בכל אחד. אין יותר עצירה ומחשבה מה זה."
     },
     {
       "type": "problem",
@@ -812,7 +835,8 @@
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "presenterNotes": "תוצר נוסף של הפרויקט. כל דפוס שיצא מהעיצוב הפך לקומפוננטה רב־פעמית — בנויה מההתחלה בשלושה מצבים: עריכה, קריאה, ודמו. אם הייתי מוסיף את מצב הקריאה אחר כך, היה לי אי־עקביות בכל המוצר — וזה לא מקובל בהקשר רפואי. הכל נדחף ל־Storybook כדי שלהנדסה תהיה אמת אחת."
     },
     {
       "type": "outcomes",
@@ -849,7 +873,8 @@
       "cardVariant": "default",
       "gridColumns": 5,
       "splitRatio": 40,
-      "highlight": null
+      "highlight": null,
+      "presenterNotes": "התוצאות מתחברות ישירות למטרות שהצבתי בהתחלה. חמש מטרות, חמש תוצאות. השער הוסר מהסריקה, אפשר לבחור הרבה שיניים בצעד אחד, אפס מודאלים חוסמים במסלול הקריטי, סריקה ממשיכה ברצף, ושפה חזותית אחת. חשוב לציין — אלה תוצאות מאומתות בבדיקות פרוטוטיפ. מטריקות מהשטח עוד מגיעות אחרי השקה מלאה."
     },
     {
       "type": "reflection",
@@ -873,7 +898,8 @@
       ],
       "whatYouCouldntMeasure": "Outcomes were validated in prototype testing, not the field. Post-launch metrics still pending.",
       "whatYouLearned": "Getting the diagnosis right before Figma shaped everything — and choosing familiar patterns made the rest of the work cheaper to ship.",
-      "reflectionDisplay": "cards"
+      "reflectionDisplay": "cards",
+      "presenterNotes": "מה עבד טוב — בנייה ב־Claude Code יחד עם המהנדסים כשעובדים על אותו ארטיפקט, פיתוח חלקים מה־UI לבד כדי לזרז QA, ושאילה של דפוסים מוכחים במקום להמציא. מה לא עבד — קפצתי לעיצוב לפני שלמדתי מספיק את העולם הקליני, והצגתי אייקונים בנפרד לפני שהראיתי את המערכת השלמה. בפעם הבאה — יותר זמן עם רופאים לפני שאני פותח Figma, ולאמת מערכות בהקשר, לא בבידוד. ויש כיוון אחד שאני אוסיף — עוזר AI ב־RX שיכתוב הערות והצעות פרוצדורה בזמן שהרופא עובד."
     },
     {
       "type": "end",
@@ -882,7 +908,8 @@
       "email": "lior2565967@gmail.com",
       "phone": "050-5550409",
       "linkedinUrl": "https://www.linkedin.com/in/lior-baum/",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "presenterNotes": "אז זאת השורה הכי חשובה של כל הפרויקט. ה־RX נראה כמו בעיה של טופס. אבל זאת הייתה בעיה של ארכיטקטורה. הסיבה היחידה שהצלחתי לפתור את זה הייתה שזיהיתי את האבחנה הנכונה לפני שהתחלתי לעצב."
     }
   ]
 }

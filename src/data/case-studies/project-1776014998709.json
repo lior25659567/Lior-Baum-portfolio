@@ -1,5 +1,5 @@
 {
-  "dataVersion": 33,
+  "dataVersion": 38,
   "title": "Patient Report\nRedesign",
   "subtitle": "From a blank page into a structured, shareable communication tool.",
   "category": "Clinical UX",
@@ -73,6 +73,36 @@
     },
     {
       "type": "problem",
+      "label": "Context",
+      "title": "Where the patient report lives in the workflow",
+      "content": "After every scan, doctors generate a report to communicate findings to the patient — what was found, what comes next, what it costs. It's the moment the clinical work translates into something the patient takes home.",
+      "issuesTitle": "When and why it matters",
+      "issues": [
+        "Generated after the scan — while the patient is still in the chair",
+        "Read by the patient at home — without the doctor to explain",
+        "Used to make decisions — accept treatment, schedule follow-ups, share with family",
+        "Often the only artifact the patient keeps from the visit"
+      ],
+      "highlight": "If the patient can't read it, the clinical work doesn't land.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-125zvm77a8g.png",
+          "caption": "The report sits between the appointment and the patient's decision",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "problem",
       "label": "The Problem",
       "title": "A blank page after every appointment",
       "content": "Doctors were using the report — the ceiling was the problem, not adoption.",
@@ -101,10 +131,41 @@
       "imageDisplayMode": "grid"
     },
     {
+      "type": "issuesBreakdown",
+      "label": "Who Uses It",
+      "title": "Four specialties, four different reports",
+      "description": [
+        "Four specialties, four reporting jobs. One report had to handle all of them — without becoming the lowest common denominator."
+      ],
+      "issues": [
+        {
+          "number": "1",
+          "title": "General dentists",
+          "description": "High volume, fast appointments — need a clean recap they can finish before the next patient."
+        },
+        {
+          "number": "2",
+          "title": "Restorative specialists",
+          "description": "Complex cases — need before/after, cost breakdowns, and visual context to justify treatment."
+        },
+        {
+          "number": "3",
+          "title": "Orthodontists",
+          "description": "Long-term treatment — need progress tracking and the ability to mark specific teeth."
+        },
+        {
+          "number": "4",
+          "title": "Implantologists",
+          "description": "High-stakes decisions — need detailed reports the patient can review before committing."
+        }
+      ],
+      "subtitle": null
+    },
+    {
       "type": "quotes",
       "label": "User Research",
       "title": "What doctors told me",
-      "content": "I interviewed doctors across four specialties. They weren't complaining about the report existing — they were working around everything it couldn't do.",
+      "content": "I interviewed doctors across four specialties. \nThey weren't complaining about the report existing — they were working around everything it couldn't do.",
       "quotes": [
         {
           "text": "I just skip the report most of the time. It takes too long.",
@@ -125,10 +186,42 @@
       ],
       "bullets": [],
       "cardHeight": "100",
-      "gridColumns": 1,
+      "gridColumns": 4,
       "cardVariant": "soft",
       "splitRatio": 40,
-      "highlight": "These problems had gone unreported — doctors assumed it was just how the tool worked."
+      "highlight": null
+    },
+    {
+      "type": "issuesBreakdown",
+      "label": "Pain Points",
+      "title": "Four pain points, four design moves",
+      "description": [
+        "Four problems, four answers. The case study from here on is how I built each one — and what I cut along the way."
+      ],
+      "issues": [
+        {
+          "number": "1",
+          "title": "Reports take too long to create",
+          "description": "Doctors skip the report between patients — there's no time and no starting point. Fix: procedure templates that load with the right structure."
+        },
+        {
+          "number": "2",
+          "title": "Reports describe — they don't show",
+          "description": "Doctors write long descriptions of findings the image already shows. Patients can't connect the text to the picture. Fix: in-image annotation and tooth tagging."
+        },
+        {
+          "number": "3",
+          "title": "No standard structure across reports",
+          "description": "Every doctor invents their own format. Reports look different even for the same procedure. Fix: procedure-based templates with consistent block ordering."
+        },
+        {
+          "number": "4",
+          "title": "Reports never reach patients in a usable form",
+          "description": "Reports went out as QR codes or printouts patients didn't read. Fix: multi-channel sharing with email, WhatsApp, and PIN-protected links."
+        }
+      ],
+      "subtitle": null,
+      "gridColumns": 4
     },
     {
       "type": "goals",
@@ -169,43 +262,72 @@
       "showKpisSection": true,
       "goalsCardVariant": "minimal",
       "splitRatio": 40,
-      "description": "Each goal answers the same question: how do I add more without overwhelming the doctor? Everything here came from doctors — nothing assumed."
+      "description": "Each goal answers the same question: how do I add more without overwhelming the doctor? \nEverything here came from doctors — nothing assumed."
     },
     {
-      "type": "problem",
+      "type": "issuesBreakdown",
       "label": "Constraints",
       "title": "What I couldn't change",
-      "content": "Every design decision had to fit inside three fixed boundaries. Naming them upfront kept the scope honest — and made the work that did ship realistic.",
-      "issuesTitle": "Boundaries",
-      "issues": [
-        "The PDF engine couldn't be replaced — output had to work with the existing renderer",
-        "Annotation had to ship without ML — no AI-assisted findings in v1",
-        "Sharing had to pass the existing privacy and consent flow — no shortcuts"
+      "description": [
+        "Every design decision had to fit inside three fixed boundaries. \nNaming them upfront kept the scope honest — and made the work that did ship realistic."
       ],
-      "highlight": "Constraints kept the scope honest — and the work shippable.",
-      "image": [
+      "issues": [
         {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "",
-          "caption": "Constraints map — what's in, what's out of scope",
-          "isVideo": false,
-          "embedType": ""
+          "number": "1",
+          "title": "The PDF engine couldn't be replaced",
+          "description": "Output had to work with the existing renderer — every design decision had to respect what the engine could produce."
+        },
+        {
+          "number": "2",
+          "title": "Annotation had to ship without ML",
+          "description": "No AI-assisted findings in v1 — the annotation tools had to give doctors full manual control."
+        },
+        {
+          "number": "3",
+          "title": "Sharing had to pass existing privacy flow",
+          "description": "The sharing modal had to inherit the existing privacy and consent system — no shortcuts, no parallel auth."
         }
       ],
-      "splitRatio": 40,
-      "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "subtitle": null
+    },
+    {
+      "type": "issuesBreakdown",
+      "label": "Features",
+      "title": "Four features, one workflow",
+      "description": [
+        "The redesign wasn't one feature — it was a coordinated rebuild from the canvas down. Each piece below was designed and tested to fit alongside the others, not as a standalone addition."
+      ],
+      "issues": [
+        {
+          "number": "1",
+          "title": "Templates",
+          "description": "Five procedure-based starting points so reports begin structured, not blank — General Scan, Implant, Crown Prep, Follow-up, Custom."
+        },
+        {
+          "number": "2",
+          "title": "Modular blocks",
+          "description": "Eight composable content blocks doctors can add, reorder, or remove — color-coded by function so they read at a glance."
+        },
+        {
+          "number": "3",
+          "title": "Annotation & tooth chart",
+          "description": "Pen, text, color, and FDI tooth tagging — findings get marked on the image instead of explained around it."
+        },
+        {
+          "number": "4",
+          "title": "Sharing modal",
+          "description": "Email invites, PIN protection, multi-channel delivery — WhatsApp, WeChat, QR, or copy link. Sharing as part of the report, not a step after it."
+        }
+      ],
+      "subtitle": null,
+      "gridColumns": 2
     },
     {
       "type": "problem",
       "label": "Structure",
-      "title": "Mapping the flow before designing the features",
-      "content": "Templates, modular blocks, annotation, sharing — four features that all live inside one workflow. I mapped the full report flow before designing any of them, so the structure could carry every piece I'd build on top of it.",
-      "highlight": "Structure first. Features second.",
+      "title": "Four features, one structure",
+      "content": "With the features named, I mapped how they live inside one workflow — scan finishes, template loads, doctor edits and annotates, patient receives the report. Every feature had to fit into that flow without becoming its own detour.",
+      "highlight": "The flow holds the features together.",
       "image": [
         {
           "position": "center center",
@@ -213,7 +335,7 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "[[MEDIA]]",
+          "src": "/case-studies/project-1776014998709/img-vd6t8dpj40.png",
           "caption": "Report workflow map — scan → template → edit → share → patient view",
           "isVideo": false,
           "embedType": ""
@@ -225,16 +347,16 @@
     },
     {
       "type": "directions",
-      "label": "Ideation",
-      "title": "Two ways to edit",
+      "label": "Low-Fidelity Wireframes",
+      "title": "Two structures, sketched fast",
       "directionCount": 2,
       "dir1Status": "rejected",
-      "dir1Desc": "Edit from the sidebar. Controls sit in a side panel, the canvas is just a preview — you change one place and check another.",
-      "dir2Status": "accepted",
-      "dir2Desc": "Edit on the content. Annotate, tag teeth, title and note each image right where it sits. The control lives on the thing it changes.",
+      "dir1Desc": "Sidebar editing. Controls live in a panel, canvas is preview-only. Familiar pattern, but every change requires looking in two places.",
+      "dir2Status": "neutral",
+      "dir2Desc": "In-place editing. Controls live on the content itself. Riskier — but every interaction stays in one place.",
       "dir3Status": "",
       "dir3Desc": "",
-      "description": "I built both directions and user-tested them on the same task — same content, different model. Every doctor preferred editing in place: less context switching, faster to finish.",
+      "description": "Before polish, I sketched both directions as wireframes — the cheapest way to ask the structural question without committing to either. Both got built. Both got tested.",
       "dir1Image": [
         {
           "position": "center center",
@@ -242,8 +364,49 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-1kpvq4sizhc.png",
-          "isVideo": false
+          "src": "/case-studies/project-1776014998709/img-onhducg7s.png",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "dir2Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-6rtq9b9u0.png",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "highlight": null,
+      "dir1HideChip": true,
+      "dir2HideChip": true
+    },
+    {
+      "type": "directions",
+      "label": "Ideation",
+      "title": "The same two directions — at full fidelity",
+      "directionCount": 2,
+      "dir1Status": "rejected",
+      "dir1Desc": "Edit from the sidebar. Controls sit in a side panel, the canvas is just a preview — you change one place and check another.",
+      "dir2Status": "accepted",
+      "dir2Desc": "Edit on the content. Annotate, tag teeth, title and note each image right where it sits. The control lives on the thing it changes.",
+      "dir3Status": "",
+      "dir3Desc": "",
+      "description": "After wireframe testing pointed to in-place editing, I built both directions out at full fidelity — same content, polished UI — and tested again. Every doctor preferred editing in place: less context switching, faster to finish.",
+      "dir1Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-7nltfqu4k.png",
+          "isVideo": false,
+          "embedType": ""
         }
       ],
       "dir2Image": [
@@ -260,14 +423,77 @@
     },
     {
       "type": "problem",
+      "label": "Block Composition",
+      "title": "Which blocks belong in which template",
+      "content": "With the editing model decided, I mapped each block to the templates that needed it — based on what each procedure actually requires the report to communicate.",
+      "issuesTitle": "Five templates, mapped to the blocks each one needs",
+      "issues": [
+        "General — general-purpose recap (Image + Notes)",
+        "Implant — surgical planning with cost and follow-up details",
+        "Crown — visual case first, with before/after and cost",
+        "Follow-up — progress tracking with comparison and next steps",
+        "From scratch — blank, just an image to start"
+      ],
+      "highlight": "Each cell in the matrix is a decision — not a default.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-3qwdyicll0.png",
+          "caption": "Template composition matrix — which blocks pre-load for which template",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "problem",
+      "label": "Block Categories",
+      "title": "Colors that doctors can scan, not memorise",
+      "content": "Once the blocks were assigned to templates, each block got a color tied to what it does. The color isn't decoration — it tells the doctor what kind of content they're looking at without reading the label.",
+      "issuesTitle": "Six families, six colors",
+      "issues": [
+        "Visual (blue) — Image, Image Gallery",
+        "Comparison (coral) — Before / After",
+        "Outcome (green) — Summary, Cost",
+        "Next step (teal) — Next Appointment",
+        "Free-form (purple) — Notes",
+        "Clinical instructions (pink) — Prescription, Patient Instructions"
+      ],
+      "highlight": null,
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-n5xp1ifl7c.png",
+          "caption": "Six color families — one per functional category",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "problem",
       "label": "Templates & Sections",
       "title": "A structured starting point",
-      "content": "Doctors were building every report from scratch — same procedure, blank page every time. Templates fix that default. The structure is ready before they open it.",
+      "content": "With the blocks defined and colored, the templates became a question of packaging — which blocks ship together for which procedure. The structure was ready before the doctor opened a report.",
       "issuesTitle": "How it works",
       "issues": [
         "Five templates — General Scan, Implant, Crown Prep, Follow-up, Custom",
         "Pre-loaded with sections for that procedure",
-        "Modular blocks: Image, Before/After, Clinical Details, Cost, Notes",
+        "Modular blocks composed from the library",
         "Drag to reorder, duplicate, or delete"
       ],
       "highlight": "Templates give a running start. Blocks give control.",
@@ -278,7 +504,8 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/vid-fay0vqurotc.mp4",
+          "src": "/case-studies/project-1776014998709/vid-o79zz3riiz4.mp4",
+          "caption": "",
           "isVideo": true,
           "isGif": false,
           "embedType": ""
@@ -291,10 +518,67 @@
       "imageCarouselInterval": 2000
     },
     {
+      "type": "question",
+      "label": "The Next Question",
+      "question": "Once the report had a shape — how do you make the findings inside it actually communicate?",
+      "support": "Templates gave doctors structure. Blocks gave them control. But findings were still text next to images that should have been doing the talking. Editing the report wasn't enough — the findings themselves needed a way to be shown."
+    },
+    {
+      "type": "problem",
+      "label": "Looking Outward",
+      "title": "How other tools let users mark up an image",
+      "content": "I looked at how other software handles image markup. The pattern was consistent — a small set of tools on the canvas, with the artifact interactive underneath.",
+      "issuesTitle": "What the design space agreed on",
+      "issues": [
+        "A small, fixed set of tools — pen, text, shapes, color",
+        "Tools on the canvas, not in a side panel",
+        "Artifact stays interactive — annotation is a layer on top",
+        "Marks save with the file"
+      ],
+      "highlight": "Annotation is a solved pattern. The work was adapting it — not reinventing it.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-1jz259ft1o.jpg",
+          "caption": "",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-84h1dybaw.jpg",
+          "caption": "",
+          "isVideo": false,
+          "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776014998709/img-1bbxmaemxc.jpg",
+          "isVideo": false
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "carousel",
+      "imageCarouselFit": "contain",
+      "imageCarouselInterval": 1500
+    },
+    {
       "type": "problem",
       "label": "Annotation & Tooth Chart",
       "title": "From plain scans to annotated findings",
-      "content": "Doctors were describing findings in text next to images that showed them clearly. I added two tools to close that gap — findings get marked, not explained.",
+      "content": "Doctors were writing long descriptions next to images patients couldn't read. I added two tools so findings get marked on the image — not explained around it.",
       "issuesTitle": "How it works",
       "issues": [
         "Pen, text, color — annotate at full size",
@@ -309,7 +593,8 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/vid-jl0tegce3qg.mp4",
+          "src": "/case-studies/project-1776014998709/vid-5cgrbfz8jk0.mp4",
+          "caption": "",
           "isVideo": true,
           "isGif": false,
           "embedType": ""
@@ -342,30 +627,20 @@
         {
           "position": "center center",
           "size": "large",
-          "fit": "cover",
+          "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/vid-47ggf6tvc0.mp4",
+          "src": "/case-studies/project-1776014998709/vid-6ovo2ahfmo.mp4",
           "isVideo": true,
           "isGif": false,
           "embedType": ""
         }
       ],
       "beforeDescription": "Three sidebar buttons — Preview, Download PDF, Share via QR.",
-      "afterDescription": "I replaced them with a full sharing modal — email invites, access permissions, PIN protection, multi-channel delivery.",
-      "beforeBullets": [
-        "Three isolated actions with no shared logic",
-        "QR code was the only real sharing option",
-        "No access control",
-        "No way to invite specific recipients"
-      ],
-      "afterBullets": [
-        "Email invites with access levels",
-        "PIN protection for sensitive reports",
-        "Multi-channel delivery — WhatsApp, WeChat, QR, copy link",
-        "Privacy warning built in"
-      ],
-      "highlight": "Sharing went from an afterthought to part of the report.",
+      "afterDescription": "A full sharing modal — email invites, access permissions, PIN protection, multi-channel delivery.",
+      "beforeBullets": [],
+      "afterBullets": [],
+      "highlight": null,
       "slideMode": "before-after",
       "switcherStyle": "pill",
       "splitRatio": 40,
@@ -376,29 +651,6 @@
       "beforeLabel": "Before",
       "afterLabel": "After",
       "description": "Three isolated buttons became one deliberate flow — delivery as part of the report, not a step after it."
-    },
-    {
-      "type": "problem",
-      "label": "End-to-end",
-      "title": "From scan to patient — the full journey",
-      "content": "Every feature designed individually had to land as one continuous flow. I walked the report end-to-end one last time — scan finishes, template loads, doctor edits and annotates, patient receives a clean PDF on their channel. If any seam showed, the redesign hadn't shipped.",
-      "highlight": "The report doesn't end when the doctor saves it. It ends when the patient understands it.",
-      "image": [
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "contain",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "[[MEDIA]]",
-          "caption": "End-to-end flow — scan → template → edit → annotate → share → patient view",
-          "isVideo": false,
-          "embedType": ""
-        }
-      ],
-      "splitRatio": 40,
-      "gridCols": 1,
-      "imageDisplayMode": "grid"
     },
     {
       "type": "testimonial",
@@ -439,7 +691,7 @@
       "cardVariant": "default",
       "gridColumns": 4,
       "splitRatio": 40,
-      "highlight": "Early-access signals — directional, not final. Quantitative targets tracked post-rollout."
+      "highlight": null
     },
     {
       "type": "reflection",
@@ -448,23 +700,26 @@
       "whatWorked": [
         "Defining KPIs before design kept every decision tied to an outcome.",
         "Modular blocks — customizable structure was the right balance.",
-        "Mapping the flow before features kept the system coherent end-to-end."
+        "Mapping the flow before features kept the system coherent end-to-end.",
+        "Color-coding blocks by category — doctors could scan reports without reading every label."
       ],
       "whatFailed": [
-        "I scoped annotation too late, triggering a full rework after the first feedback round."
+        "I scoped annotation too late, triggering a full rework after the first feedback round.",
+        "Block colors were initially decorative — only became a system after doctors confused two similar blocks in testing."
       ],
       "whatYoudDoDifferently": [
         "Test with actual doctors before locking — internal reviews weren't enough.",
-        "Define sharing permissions with engineering earlier — edge cases made the handoff harder."
+        "Define sharing permissions with engineering earlier — edge cases made the handoff harder.",
+        "Design the block category system upfront, not as a polish pass."
       ],
-      "whatYouLearned": "I fix the defaults professionals shouldn't have to manage.",
+      "whatYouLearned": "The hardest part wasn't adding features — it was making sure each one earned its place in the workflow.",
       "whatYouCouldntMeasure": "Long-term adoption and variability — needs 6+ months of data.",
       "subtitle": "The decisions I'd change weren't mistakes. They were sequencing problems."
     },
     {
       "type": "end",
       "title": "Thank You",
-      "subtitle": "Designing clinical tools that work at the speed of care.",
+      "subtitle": "I fix the defaults professionals shouldn't have to manage.",
       "cta": "Get in touch",
       "splitRatio": 40
     }
