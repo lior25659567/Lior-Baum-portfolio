@@ -97,7 +97,7 @@
   font-size: 1.5rem;
   line-height: 1.5;
 }
-.presenter-notes-body p { margin: 0 0 0.6em; }
+.presenter-notes-body p { margin: 0 0 0.6em; text-align: start; }
 .presenter-empty { opacity: 0.45; font-style: italic; }
 
 .presenter-controls {

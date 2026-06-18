@@ -257,7 +257,7 @@ const PresenterView = () => {
         {(() => {
           const notesText = liveNotes != null ? liveNotes : current?.presenterNotes;
           return notesText
-            ? notesText.split('\n').map((line, i) => <p key={i}>{line || ' '}</p>)
+            ? notesText.split('\n').map((line, i) => <p key={i} dir="auto">{line || ' '}</p>)
             : <p className="presenter-empty">(no notes for this slide)</p>;
         })()}
       </div>

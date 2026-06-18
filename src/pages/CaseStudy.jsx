@@ -155,6 +155,9 @@ const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'la
   // nearby = ±1 slide (load src + preload metadata to warm up)
   // lazy = far slides (gate via IntersectionObserver, no preload)
   const [visible, setVisible] = useState(priority !== 'lazy');
+  // Default playback speed: author-set `playbackRate` prop, else 1.5×. Viewers
+  // change speed via the native player controls (the browser's speed menu).
+  const effectiveRate = Number(playbackRate) || 1.5;
   useEffect(() => {
     if (priority !== 'lazy') { setVisible(true); return; }
     const el = ref.current;
@@ -208,22 +211,22 @@ const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'la
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const rate = Number(playbackRate) || 1;
+    const rate = Number(effectiveRate) || 1;
     try { el.defaultPlaybackRate = rate; } catch {}
     try { el.playbackRate = rate; } catch {}
-  }, [playbackRate, visible]);
+  }, [effectiveRate, visible]);
   const handleCanPlay = useCallback((e) => {
     const el = e.currentTarget;
-    const rate = Number(playbackRate) || 1;
+    const rate = Number(effectiveRate) || 1;
     try { el.playbackRate = rate; } catch {}
     tryPlay(el);
-  }, [tryPlay, playbackRate]);
+  }, [tryPlay, effectiveRate]);
   const handleLoadedData = useCallback((e) => {
     const el = e.currentTarget;
-    const rate = Number(playbackRate) || 1;
+    const rate = Number(effectiveRate) || 1;
     try { el.playbackRate = rate; } catch {}
     tryPlay(el);
-  }, [tryPlay, playbackRate]);
+  }, [tryPlay, effectiveRate]);
   // Kick off playback whenever `visible` flips to true — covers the case
   // where `canplay` already fired (video was preloaded from a prior mount)
   // and won't fire again, so the existing canplay handler would never run.
@@ -792,16 +795,19 @@ const EditableField = memo(function EditableField({ value, onChange, multiline =
   };
   
   if (!editMode) {
-    // Render with line breaks preserved
+    // Render with line breaks preserved. `dir="auto"` lets the browser pick
+    // direction from the first strong character, so Hebrew renders RTL while
+    // English stays LTR (mixed decks keep working).
     if (isTextarea || (stringValue && stringValue.includes('\n'))) {
-      return <span className={className} style={{ whiteSpace: 'pre-line' }}>{stringValue}</span>;
+      return <span className={className} dir="auto" style={{ whiteSpace: 'pre-line' }}>{stringValue}</span>;
     }
-    return stringValue;
+    return stringValue ? <span dir="auto">{stringValue}</span> : stringValue;
   }
-  
+
   return isTextarea ? (
     <textarea
       className={`editable-field ${className}`}
+      dir="auto"
       value={localValue}
       onChange={handleChange}
       onBlur={handleBlur}
@@ -813,6 +819,7 @@ const EditableField = memo(function EditableField({ value, onChange, multiline =
     <input
       type="text"
       className={`editable-field ${className}`}
+      dir="auto"
       value={localValue}
       onChange={handleChange}
       onBlur={handleBlur}
@@ -1062,7 +1069,7 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
             </div>
           </div>
           <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-            <div className="problem-highlight">
+            <div className="problem-highlight" dir="auto">
               <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
             </div>
           </OptionalField>
@@ -1242,7 +1249,7 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
 
           {/* Shared: highlight */}
           <OptionalField slide={slide} index={index} field="highlight" label="Highlight" defaultValue="Add highlighted note..." multiline>
-            <div className="problem-highlight">
+            <div className="problem-highlight" dir="auto">
               <EditableField value={slide.highlight} onChange={(v) => updateSlide(index, { highlight: v })} multiline />
             </div>
           </OptionalField>
@@ -5411,7 +5418,7 @@ My instructions: `;
                                   {[0.5, 1, 1.5, 2, 3].map((rate) => (
                                     <button
                                       key={rate}
-                                      className={`size-preset-btn ${(Number(imgData.playbackRate) || 1) === rate ? 'active' : ''}`}
+                                      className={`size-preset-btn ${(Number(imgData.playbackRate) || 1.5) === rate ? 'active' : ''}`}
                                       onClick={() => updateImage(imgIndex, 'playbackRate', rate)}
                                       title={`${rate}× speed`}
                                     >
@@ -7408,15 +7415,34 @@ My instructions: `;
               <div className="ba-columns dir-columns">
                 {dirs.map((n) => {
                   const st = statusOf(n);
+                  const chipHidden = !!slide[`dir${n}HideChip`];
                   return (
-                    <div key={n} className={`ba-col dir-col dir-col--${st}`}>
-                      {editMode ? (
-                        <button
-                          type="button"
-                          className="ba-col-label dir-chip"
-                          onClick={() => cycleStatus(n)}
-                          title="Toggle Accepted / Rejected"
-                        >{st === 'accepted' ? 'Accepted' : 'Rejected'}</button>
+                    <div key={n} className={`ba-col dir-col dir-col--${st}${chipHidden ? ' dir-col--no-chip' : ''}`}>
+                      {chipHidden ? (
+                        editMode ? (
+                          <button
+                            type="button"
+                            className="dir-chip-add"
+                            onClick={() => updateSlide(index, { [`dir${n}HideChip`]: false })}
+                            title="Add status chip back"
+                          >+ Status</button>
+                        ) : null
+                      ) : editMode ? (
+                        <span className="dir-chip-edit">
+                          <button
+                            type="button"
+                            className="ba-col-label dir-chip"
+                            onClick={() => cycleStatus(n)}
+                            title="Toggle Accepted / Rejected"
+                          >{st === 'accepted' ? 'Accepted' : 'Rejected'}</button>
+                          <button
+                            type="button"
+                            className="dir-chip-remove"
+                            onClick={() => updateSlide(index, { [`dir${n}HideChip`]: true })}
+                            title="Remove status chip"
+                            aria-label="Remove status chip"
+                          >×</button>
+                        </span>
                       ) : (
                         <span className="ba-col-label dir-chip">{st === 'accepted' ? 'Accepted' : 'Rejected'}</span>
                       )}
@@ -7676,9 +7702,9 @@ My instructions: `;
                 )}
 
                 {slide.issues?.length > 0 && (
-                  <div 
+                  <div
                     className="issues-breakdown-grid"
-                    style={{ gridTemplateColumns: `repeat(${slide.gridColumns || 2}, minmax(0, 1fr))` }}
+                    style={slide.gridColumns ? { gridTemplateColumns: `repeat(${slide.gridColumns}, minmax(0, 1fr))` } : undefined}
                   >
                     {slide.issues.map((issue, i) => (
                       <div key={i} className="issue-breakdown-card">
@@ -9497,6 +9523,7 @@ My instructions: `;
           {notesPanelOpen && (
             <textarea
               className="presenter-notes-textarea"
+              dir="auto"
               placeholder="Private notes for this slide — shown only in presenter view (press P while presenting)."
               value={project.slides[currentSlide]?.presenterNotes || ''}
               onChange={(e) => updateSlide(currentSlide, { presenterNotes: e.target.value })}

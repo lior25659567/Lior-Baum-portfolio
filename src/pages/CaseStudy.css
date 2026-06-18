@@ -2278,6 +2278,12 @@ body.case-study-active .footer {
   border: 1px solid var(--color-border);
   background: var(--color-bg-secondary);
 }
+/* Before/After (comparison) + Directions/Ideation slides: drop the global 40px
+   media inset (from `.dynamic-images`) so each column's image fills its frame.
+   Scoped to .slide-before-after — other slide types keep the 40px. */
+.case-study:not(.edit-mode) .slide-before-after .ba-col-images {
+  padding: 0;
+}
 /* Empty image slots render a placeholder box. In view mode, hide each empty
    cell so a real image + extra empty slots shows just the image; and hide the
    whole image block only when the column has no real media at all (so a
@@ -2387,6 +2393,51 @@ button.dir-chip:hover {
   background: var(--color-accent);
   color: #fff;
   border-color: transparent;
+}
+
+/* Edit-mode chip + remove (×) grouping, and the "+ Status" re-add button. */
+.dir-chip-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.dir-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.dir-chip-remove:hover {
+  border-color: #e5484d;
+  color: #e5484d;
+}
+.dir-chip-add {
+  display: inline-flex;
+  align-items: center;
+  border: 1px dashed var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.dir-chip-add:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 /* Edit-mode count control (2 / 3 directions). */
@@ -3575,6 +3626,9 @@ button.dir-chip:hover {
   border: 1px solid rgba(255, 88, 74, 0.15);
   border-radius: 8px;
   margin-top: clamp(0.75rem, 2vw, 1.5rem);
+  /* With dir="auto" on the block, `start` follows the text direction so a
+     Hebrew note aligns right and an English note aligns left. */
+  text-align: start;
 }
 
 /* Description wrapper styling */
@@ -3740,11 +3794,10 @@ button.dir-chip:hover {
   width: 100%;
 }
 
-/* View-mode: Figma 1170:3526 — 3 cards per row, 20px gutters; extra cards
-   wrap to the next row. Forced over the JSX inline gridColumns so the grid
-   always matches the Figma 3-up layout. */
+/* View-mode: Figma 1170:3526 — 20px gutters. The JSX sets the column count
+   inline (`repeat(N, 1fr)`, default 3), so the author's chosen `gridColumns`
+   wins while untouched decks keep the Figma 3-up layout. */
 .case-study:not(.edit-mode) .quotes-grid {
-  grid-template-columns: repeat(3, 1fr) !important;
   gap: 20px;
 }
 
@@ -5772,6 +5825,7 @@ button.dir-chip:hover {
   object-position: center;
 }
 
+
 .dynamic-image-caption-wrapper {
   display: flex;
   align-items: center;
@@ -6436,6 +6490,10 @@ button.dir-chip:hover {
   height: 100%;
   flex: 1 1 auto;
   min-height: 0;
+}
+/* Intro slide: drop the global 40px media inset so the image fills its panel. */
+.case-study:not(.edit-mode) .intro-images-wrapper > .dynamic-images {
+  padding: 0;
 }
 .case-study:not(.edit-mode) .split-images-wrapper .dynamic-images-grid,
 .case-study:not(.edit-mode) .intro-images-wrapper .dynamic-images-grid {
@@ -13036,14 +13094,12 @@ textarea.editable-field {
   overflow: visible;
 }
 
-/* View-mode: the JSX sets `gridTemplateColumns: repeat(N, minmax(0,1fr))`
-   inline based on the user's chosen `gridColumns`. At 1280 with 4 cards
-   that puts each card under ~270px and pushes descriptions to 8+ wraps,
-   blowing past the viewport cap. Force auto-fit at view time (the
-   editor still sees their explicit column count). */
-.case-study:not(.edit-mode) .issues-breakdown-grid {
-  grid-template-columns: repeat(auto-fit, minmax(var(--ib-min, 220px), 1fr)) !important;
-}
+/* View-mode: when the author has chosen a `gridColumns`, the JSX sets
+   `gridTemplateColumns: repeat(N, minmax(0,1fr))` inline and that wins.
+   The base `.issues-breakdown-grid` rule above provides the auto-fit
+   fallback for decks that never picked a column count. (In canvas mode the
+   slide is a fixed 1920px artboard, so an explicit 3–4 columns no longer
+   overflows the way it did against the old fluid 1280 viewport.) */
 
 @media (max-width: 480px) {
   .issues-breakdown-grid {
@@ -17524,6 +17580,7 @@ textarea.editable-field {
   line-height: 1.5;
   font-family: inherit;
   outline: none;
+  text-align: start; /* follows dir="auto" so Hebrew notes align right */
 }
 
 .presenter-hint {
