@@ -1,5 +1,5 @@
 {
-  "dataVersion": 38,
+  "dataVersion": 39,
   "title": "Patient Report\nRedesign",
   "subtitle": "From a blank page into a structured, shareable communication tool.",
   "category": "Clinical UX",
@@ -50,18 +50,19 @@
           "label": "Tools",
           "value": "Figma · Notion"
         }
-      ]
+      ],
+      "presenterNotes": "אז הקייס הזה הוא על ה־Patient Report — הכלי שבו רופאי שיניים מתקשרים עם המטופלים אחרי הסריקה. זה חלק מה־Align Oral Health Suite, החבילה הקלינית של אליין. עיצבתי אותו מחדש כדי שיתמוך בכל מה שרופאים באמת היו צריכים — בלי לסבך את העבודה. עבדתי על זה ב־2025 עם PM, הנדסה, וצוות מחקר קליני."
     },
     {
       "type": "problem",
       "label": "Context",
       "title": "Where the patient report lives in the workflow",
-      "content": "After every scan, doctors generate a report to communicate findings to the patient — what was found, what comes next, what it costs. It's the moment the clinical work translates into something the patient takes home.",
+      "content": "The Patient Report is part of the Align Oral Health Suite — the moment after the scan, when clinical findings turn into something the patient takes home. Doctors use the iTero snapshot tool to capture images, annotate findings, and share the report chairside via QR code.",
       "issuesTitle": "When and why it matters",
       "issues": [
-        "Generated after the scan — while the patient is still in the chair",
+        "Generated chair-side — while the patient is still in the room",
+        "Pulls images directly from the iTero snapshot tool",
         "Read by the patient at home — without the doctor to explain",
-        "Used to make decisions — accept treatment, schedule follow-ups, share with family",
         "Often the only artifact the patient keeps from the visit"
       ],
       "highlight": "If the patient can't read it, the clinical work doesn't land.",
@@ -73,14 +74,15 @@
           "wrapperBg": false,
           "embedUrl": "",
           "src": "/case-studies/project-1776014998709/img-125zvm77a8g.png",
-          "caption": "The report sits between the appointment and the patient's decision",
+          "caption": "",
           "isVideo": false,
           "embedType": ""
         }
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "presenterNotes": "ה־Patient Report הוא לא כלי בודד — הוא חי בתוך ה־Align Oral Health Suite, כחלק מ־flow קליני שלם. אחרי שהרופא סורק עם iTero, הוא לוקח snapshots, מסמן ממצאים על התמונה, ומשתף את הדוח עם המטופל — בדרך כלל דרך QR code, ישר בחדר. הנקודה החשובה — המטופל קורא את זה בבית, בלי שהרופא לידו להסביר. אם הוא לא מבין — כל העבודה הקלינית לא מגיעה ליעדה."
     },
     {
       "type": "problem",
@@ -109,7 +111,8 @@
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "presenterNotes": "הבעיה הייתה שאנשים השתמשו ב־report — הם פשוט נתקלו בתקרה. הסיידבר תפס רבע מהמסך, כל דוח התחיל מדף ריק, לא היה איך להוסיף עלות או before/after, וה־PDF שיצא בסוף היה לא קריא למטופל. בעצם הכלי נבנה למלא — לא להיות שימושי."
     },
     {
       "type": "issuesBreakdown",
@@ -140,7 +143,8 @@
           "description": "High-stakes decisions — need detailed reports the patient can review before committing."
         }
       ],
-      "subtitle": null
+      "subtitle": null,
+      "presenterNotes": "הדוח לא משמש קבוצה אחת של רופאים — הוא משמש ארבע התמחויות שונות, וכל אחת צריכה דוח שמדבר בשפה אחרת. רופא כללי צריך משהו מהיר וקצר, מומחה שיקום צריך לראות לפני־אחרי ועלויות, אורתודנט צריך מעקב לאורך זמן, ואימפלנטולוג צריך לבסס החלטה כבדה. השאלה הייתה — איך אני בונה דוח אחד שמשרת את כולם בלי להפוך לכזה שלא משרת אף אחד."
     },
     {
       "type": "quotes",
@@ -170,7 +174,8 @@
       "gridColumns": 4,
       "cardVariant": "soft",
       "splitRatio": 40,
-      "highlight": null
+      "highlight": null,
+      "presenterNotes": "ראיינתי רופאים מכל ארבעת ההתמחויות. המעניין היה שהם לא התלוננו שהדוח קיים — הם דווקא רצו להשתמש בו. הם פשוט עקפו את כל מה שהוא לא יכל לעשות. דילגו עליו בין מטופלים, הסבירו בעל פה מה שהדוח לא הראה, ויצרו פורמט משלהם כי אין נקודת התחלה אחידה."
     },
     {
       "type": "issuesBreakdown",
@@ -202,7 +207,8 @@
         }
       ],
       "subtitle": null,
-      "gridColumns": 4
+      "gridColumns": 4,
+      "presenterNotes": "לקחתי את כל מה ששמעתי וגיבשתי אותו לארבע נקודות כאב. כל אחת קיבלה תשובה עיצובית ישירה. הדוח לוקח יותר מדי זמן — לכן Templates. הדוח מתאר ולא מראה — לכן Annotation. אין מבנה אחיד — לכן procedure-based templates. הדוח לא מגיע למטופל בצורה שימושית — לכן multi-channel sharing. כל החלטה אחרי הסלייד הזה היא תשובה לאחת מהארבע."
     },
     {
       "type": "goals",
@@ -243,7 +249,8 @@
       "showKpisSection": true,
       "goalsCardVariant": "minimal",
       "splitRatio": 40,
-      "description": "Each goal answers the same question: how do I add more without overwhelming the doctor? \nEverything here came from doctors — nothing assumed."
+      "description": "Each goal answers the same question: how do I add more without overwhelming the doctor? \nEverything here came from doctors — nothing assumed.",
+      "presenterNotes": "ארבע מטרות עיצוב, וכל אחת צמודה ל־KPI שאני יכול למדוד. השאלה שהובילה אותי — איך אני מוסיף הרבה יותר תוכן ופונקציונליות, בלי שהרופא ירגיש שהכלי הפך מסובך יותר. כל מטרה כאן הגיעה ממה שרופאים אמרו לי בראיונות, לא מהנחות שלי."
     },
     {
       "type": "issuesBreakdown",
@@ -269,7 +276,8 @@
           "description": "The sharing modal had to inherit the existing privacy and consent system — no shortcuts, no parallel auth."
         }
       ],
-      "subtitle": null
+      "subtitle": null,
+      "presenterNotes": "שלוש מגבלות גדולות שלא יכולתי לעקוף. מנוע ה־PDF הקיים נשאר, אז כל עיצוב היה צריך לעבוד עם מה שהוא יודע לרנדר. ML היה outside scope לגרסה הראשונה, אז annotation היה חייב להיות ידני לגמרי. ושיתוף היה חייב לעבור דרך מערכת הפרטיות הקיימת — בלי לעקוף, בלי קיצורי דרך. שמתי את זה על השולחן בהתחלה כדי שה־scope יישאר ישים."
     },
     {
       "type": "issuesBreakdown",
@@ -301,7 +309,8 @@
         }
       ],
       "subtitle": null,
-      "gridColumns": 2
+      "gridColumns": 2,
+      "presenterNotes": "זה לא היה פיצ'ר אחד — זה היה ארבעה פיצ'רים שעובדים יחד כמערכת. Templates נותנים לרופא נקודת התחלה. Modular blocks נותנים לו שליטה. Annotation מאפשרת לסמן ממצאים על התמונה. ו־Sharing מבטיח שהדוח באמת מגיע למטופל בצורה שהוא יכול לקרוא. כל אחד עוצב להיות חלק מהשני, לא כפיצ'ר נפרד."
     },
     {
       "type": "problem",
@@ -324,7 +333,8 @@
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "presenterNotes": "אחרי שהיו לי ארבעת הפיצ'רים, מיפיתי איך הם מתחברים ל־flow אחד רציף. הסריקה נגמרת, ה־template נטען, הרופא עורך ומסמן, המטופל מקבל את הדוח. הזרימה היא מה שמחזיק את הפיצ'רים ביחד — בלי המבנה הזה, כל פיצ'ר יכל להפוך לעצירה נפרדת."
     },
     {
       "type": "directions",
@@ -364,7 +374,8 @@
       ],
       "highlight": null,
       "dir1HideChip": true,
-      "dir2HideChip": true
+      "dir2HideChip": true,
+      "presenterNotes": "לפני שהשקעתי בעיצוב מלא, סקיצתי שני כיוונים כ־wireframes. הראשון — עריכה מתוך הסיידבר, דפוס מוכר אבל מחייב את הרופא לעבוד בשני מקומות. השני — עריכה ישירות על התוכן, יותר מסוכן אבל הכל קורה במקום אחד. רציתי להחליט על המבנה לפני שמתחייבים לפיקסלים."
     },
     {
       "type": "directions",
@@ -400,7 +411,8 @@
           "src": "/case-studies/project-1776014998709/img-1te5c1kqfg.png",
           "isVideo": false
         }
-      ]
+      ],
+      "presenterNotes": "אחרי שה־wireframes הצביעו על עריכה ישירה, בניתי את שני הכיוונים ב־full fidelity ובדקתי שוב. אותו תוכן, UI מלוטש, ועם רופאים אמיתיים. כל רופא שבדק העדיף לערוך ישירות על התוכן — פחות מעבר בין אזורים, יותר מהיר. הבדיקה הראתה שגם אם הסיידבר נראה מוכר, הוא בפועל יוצר יותר חיכוך."
     },
     {
       "type": "problem",
@@ -431,7 +443,8 @@
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "presenterNotes": "אחרי שהחלטתי על מודל העריכה, מיפיתי איזה בלוק שייך לאיזה תבנית. כל תא במטריצה הוא החלטה — לא ברירת מחדל. למשל, Implant מתחיל עם cost summary כי המטופל צריך לקבל החלטה כלכלית. Crown מתחיל עם before/after כי המקרה נמכר ויזואלית. כל תבנית מבטאת דעה קלינית של איך הפרוצדורה הזו צריכה להיות מוצגת."
     },
     {
       "type": "problem",
@@ -463,7 +476,8 @@
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid"
+      "imageDisplayMode": "grid",
+      "presenterNotes": "אחרי שהבלוקים הוקצו לתבניות, כל בלוק קיבל צבע שמייצג מה הוא עושה. הצבע הוא לא קישוט — הוא אומר לרופא איזה סוג תוכן הוא מסתכל עליו בלי לקרוא את ה־label. רופאים סורקים דוחות מהר בין מטופלים, והקטגוריות נותנות להם למצוא את הבלוק הנכון במבט אחד. הצבע הוא חיזוק — לכל בלוק יש גם אייקון וגם שם."
     },
     {
       "type": "problem",
@@ -496,13 +510,15 @@
       "gridCols": 1,
       "imageDisplayMode": "grid",
       "imageCarouselFit": "contain",
-      "imageCarouselInterval": 2000
+      "imageCarouselInterval": 2000,
+      "presenterNotes": "וזאת התוצאה — חמש תבניות, כל אחת עם המבנה הקליני שלה. הרופא בוחר את הפרוצדורה והדוח מוכן עוד לפני שהוא פותח אותו. הוא יכול להוסיף, להזיז, או למחוק בלוקים — אבל הוא לא מתחיל מדף ריק. תבניות נותנות התחלה רצה, בלוקים נותנים שליטה."
     },
     {
       "type": "question",
       "label": "The Next Question",
       "question": "Once the report had a shape — how do you make the findings inside it actually communicate?",
-      "support": "Templates gave doctors structure. Blocks gave them control. But findings were still text next to images that should have been doing the talking. Editing the report wasn't enough — the findings themselves needed a way to be shown."
+      "support": "Templates gave doctors structure. Blocks gave them control. But findings were still text next to images that should have been doing the talking. Editing the report wasn't enough — the findings themselves needed a way to be shown.",
+      "presenterNotes": "ברגע שהדוח קיבל צורה, השאלה הבאה הייתה — איך הממצאים בתוכו באמת מתקשרים. עד לפה בניתי לרופא מבנה ושליטה. אבל הממצאים עצמם עדיין היו טקסט ליד תמונות שיכלו להראות הכל. צריך לעבור משלב העריכה לשלב התקשורת."
     },
     {
       "type": "problem",
@@ -524,8 +540,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-1jz259ft1o.jpg",
-          "caption": "",
+          "src": "/case-studies/project-1776014998709/img-1bbxmaemxc.jpg",
           "isVideo": false
         },
         {
@@ -535,9 +550,7 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/project-1776014998709/img-84h1dybaw.jpg",
-          "caption": "",
-          "isVideo": false,
-          "isGif": false
+          "isVideo": false
         },
         {
           "position": "center center",
@@ -545,7 +558,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-1bbxmaemxc.jpg",
+          "src": "/case-studies/project-1776014998709/img-1jz259ft1o.jpg",
           "isVideo": false
         }
       ],
@@ -553,7 +566,8 @@
       "gridCols": 1,
       "imageDisplayMode": "carousel",
       "imageCarouselFit": "contain",
-      "imageCarouselInterval": 1500
+      "imageCarouselInterval": 1500,
+      "presenterNotes": "במקום להמציא משהו חדש, הסתכלתי איך תוכנות אחרות פותרות את אותה בעיה של סימון על תמונה. הדפוס היה זהה בכולן — סט קטן וקבוע של כלים על הקנבס, התמונה נשארת אינטראקטיבית, וכל הסימונים נשמרים עם הקובץ. annotation הוא דפוס פתור. העבודה שלי הייתה ליישם אותו, לא להמציא מחדש."
     },
     {
       "type": "problem",
@@ -585,7 +599,8 @@
       "gridCols": 1,
       "imageDisplayMode": "grid",
       "imageCarouselFit": "contain",
-      "imageCarouselInterval": 2000
+      "imageCarouselInterval": 2000,
+      "presenterNotes": "אז ככה זה נראה בסוף. שני כלים — annotation על התמונה עצמה עם עט, טקסט וצבעים, וגם tooth chart שבה הרופא מסמן את השיניים המעורבות. המטופל רואה בדיוק על איזו שן מדובר ומה הממצא. הרעיון פשוט — להראות, לא לתאר. זה הקשר שהיה חסר בין הטקסט לתמונה."
     },
     {
       "type": "comparison",
@@ -611,7 +626,7 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/vid-6ovo2ahfmo.mp4",
+          "src": "/case-studies/project-1776014998709/vid-7o41wt2e5k.mp4",
           "isVideo": true,
           "isGif": false,
           "embedType": ""
@@ -631,7 +646,8 @@
       "gridCols": 1,
       "beforeLabel": "Before",
       "afterLabel": "After",
-      "description": "Three isolated buttons became one deliberate flow — delivery as part of the report, not a step after it."
+      "description": "Three isolated buttons became one deliberate flow — delivery as part of the report, not a step after it.",
+      "presenterNotes": "השיתוף לפני ואחרי. לפני — שלושה כפתורים בודדים בסיידבר, ו־QR היה הדרך היחידה לשתף עם המטופל. אחרי — מודל מלא שמתייחס לשיתוף כחלק מהדוח, לא צעד אחרי. הוספתי email invites, הגנת PIN, ושיתוף לכל ערוץ — וואטסאפ, WeChat, לינק. הרעיון — המטופל מקבל את הדוח דרך הערוץ שהוא באמת בודק."
     },
     {
       "type": "testimonial",
@@ -640,7 +656,8 @@
       "author": "Dr. N. Haddad",
       "role": "Orthodontist, iTero early access program",
       "splitRatio": 40,
-      "context": "Feedback collected during the iTero early access program, before full rollout."
+      "context": "Feedback collected during the iTero early access program, before full rollout.",
+      "presenterNotes": "הציטוט הזה הגיע מ־early access program של iTero, עוד לפני ההשקה המלאה. הוא תופס בדיוק את מה שניסיתי לעשות — תבניות שמתאימות לעבודה האמיתית של הרופא, וכל מה שהוא צריך גלוי במקום אחד. זה האישור שהמערכת עובדת לא רק ב־Figma אלא בחדר טיפולים."
     },
     {
       "type": "outcomes",
@@ -672,7 +689,8 @@
       "cardVariant": "default",
       "gridColumns": 4,
       "splitRatio": 40,
-      "highlight": null
+      "highlight": null,
+      "presenterNotes": "התוצאות מ־early access. ארבע נקודות מאומתות איכותית — יצירת דוח מהירה יותר, תקשורת קלינית ברורה יותר, יותר השלמת דוחות, ויותר מטופלים מקבלים את הדוח בערוץ הנכון. חשוב לציין — אלה איתותים מוקדמים, לא מדדים סופיים. המספרים הכמותיים נמצאים במעקב אחרי ההשקה המלאה."
     },
     {
       "type": "reflection",
@@ -695,14 +713,16 @@
       ],
       "whatYouLearned": "The hardest part wasn't adding features — it was making sure each one earned its place in the workflow.",
       "whatYouCouldntMeasure": "Long-term adoption and variability — needs 6+ months of data.",
-      "subtitle": "The decisions I'd change weren't mistakes. They were sequencing problems."
+      "subtitle": "The decisions I'd change weren't mistakes. They were sequencing problems.",
+      "presenterNotes": "מה עבד טוב — הגדרת KPIs לפני העיצוב חיברה כל החלטה לתוצאה, ה־modular blocks היו האיזון הנכון, ומיפוי ה־flow לפני הפיצ'רים שמר על הקוהרנטיות. מה לא עבד — תכננתי את ה־annotation מאוחר מדי, וצבעי הבלוקים התחילו כקישוט במקום מערכת. בפעם הבאה — לבדוק עם רופאים אמיתיים מההתחלה, לא רק סקירות פנימיות, ולתכנן את מערכת הקטגוריות מההתחלה ולא כשכבת ליטוש. ומה שלא יכלתי למדוד — אימוץ לטווח ארוך, צריך לפחות שישה חודשים של נתונים."
     },
     {
       "type": "end",
       "title": "Thank You",
       "subtitle": "I fix the defaults professionals shouldn't have to manage.",
       "cta": "Get in touch",
-      "splitRatio": 40
+      "splitRatio": 40,
+      "presenterNotes": "אז סיכום — ניסיתי לעצב כלי שעוזר לרופאים להעביר את מה שהם רואים למטופלים בצורה שהם באמת יכולים להבין. החזון שלי — אני מתקן את ברירות המחדל שאנשי מקצוע לא צריכים להתעסק איתן. תודה."
     }
   ]
 }
