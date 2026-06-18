@@ -277,6 +277,38 @@
       "presenterNotes": "אחרי הראיונות, מיפיתי את הזרימה האמיתית שרופאים עוברים — לא איך המוצר חשב שהם עוברים. שלוש נקודות שבר צצו, וכולן באותו מקום — בין השלבים. בעצם החיכוך לא היה אקראי, הוא היה במעברים. זה היה הרגע שהבנתי שזו לא בעיה של טופס, זו בעיה של ארכיטקטורה."
     },
     {
+      "type": "issuesBreakdown",
+      "label": "Pain Points",
+      "title": "Four pain points, four design moves",
+      "description": [
+        "Five themes from the interviews, clustered into four problems the redesign had to solve. Each one became a design direction."
+      ],
+      "issues": [
+        {
+          "number": "1",
+          "title": "Setup blocks the scan",
+          "description": "Clinicians had to finish a long, popup-heavy form before scanning could begin — with the patient watching. Fix: setup that runs alongside the scan, not before it."
+        },
+        {
+          "number": "2",
+          "title": "Procedure locked in too early",
+          "description": "Clinicians often changed the procedure several times before scanning — but every change meant starting over. Fix: procedure that can be picked or swapped in one tap, before scanning starts."
+        },
+        {
+          "number": "3",
+          "title": "Tooth-by-tooth, with no visibility",
+          "description": "Every tooth opened its own modal. Clinicians couldn't see what they'd already configured. Fix: multi-select directly on the dental chart, with procedures visible at a glance."
+        },
+        {
+          "number": "4",
+          "title": "Tools scattered across the screen",
+          "description": "Clinicians lost their rhythm searching for tools mid-scan — no dedicated home, no shared visual language. Fix: one toolbar with one icon system."
+        }
+      ],
+      "subtitle": null,
+      "presenterNotes": "אחרי הראיונות לקחתי את חמישה המוטיבים שחזרו וגיבשתי אותם לארבע נקודות כאב. כל אחת מתחברת ישירות לפתרון שאני אראה בהמשך. ההגדרה חוסמת את הסריקה, הפרוצדורה ננעלת מוקדם מדי, בחירת השיניים אחת־אחת בלי שקיפות, והכלים מפוזרים בלי בית. כל אחת קיבלה תשובה עיצובית."
+    },
+    {
       "type": "goals",
       "label": "Design Goals",
       "title": "Goals by phase",
@@ -426,6 +458,60 @@
     },
     {
       "type": "directions",
+      "label": "RX Setup — Low-Fidelity Wireframes",
+      "title": "Three structures, sketched before any polish",
+      "directionCount": 3,
+      "dir1Status": "neutral",
+      "dir1Desc": "Wizard. Step-by-step, one decision per screen. Easy to test the boundary — does step-gating help or hurt under chairside pressure?",
+      "dir1Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-10i8yr5560.png",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "dir2Status": "neutral",
+      "dir2Desc": "Accordion. Everything on one screen, but collapsed by default. Open what you need, leave the rest closed.",
+      "dir2Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-1qy8chgfx0.png",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "dir3Status": "neutral",
+      "dir3Desc": "Single view. Everything visible at once — no steps, no walls. The riskiest structurally, the simplest to use.",
+      "dir3Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/itero-scan-workflow/img-3n4qli5pvc.png",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "description": "Before any polish, I sketched the three structural options as wireframes — the cheapest way to ask which form model actually fit chairside use. All three got built. All three got tested with clinicians.",
+      "highlight": null,
+      "presenterNotes": "לפני שהשקעתי בעיצוב מלא, סקיצתי את שלוש האפשרויות כ־wireframes. רציתי לבדוק איזה מבנה עובד בלחץ של חדר טיפולים — בלי להתחייב לכיוון אחד. כל שלושת המבנים נבחנו עם רופאים אמיתיים, ורק אז ידעתי לאן ללכת בפיתוח מלא.",
+      "dir1HideChip": true,
+      "dir2HideChip": true,
+      "dir3HideChip": true
+    },
+    {
+      "type": "directions",
       "label": "RX Setup — Exploration",
       "title": "Three approaches — tested with clinicians on real cases",
       "directionCount": 3,
@@ -532,7 +618,8 @@
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/vid-59beoz3v2zo.webm",
           "isVideo": true,
-          "isGif": false
+          "isGif": false,
+          "embedType": ""
         },
         {
           "position": "center center",
@@ -621,7 +708,6 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-obuzpg5d0.jpg",
-          "caption": "",
           "isVideo": false
         },
         {
@@ -631,7 +717,6 @@
           "wrapperBg": true,
           "embedUrl": "",
           "src": "/case-studies/itero-scan-workflow/img-1dn290szcw.jpg",
-          "caption": "",
           "isVideo": false
         },
         {

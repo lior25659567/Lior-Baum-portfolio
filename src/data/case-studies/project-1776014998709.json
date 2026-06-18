@@ -21,33 +21,14 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-1kpvq4sizhc.png",
+          "src": "/case-studies/project-1776014998709/img-czr9dnwjqo.png",
           "caption": "",
           "isVideo": false,
           "isGif": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-324afqhug8.png",
-          "caption": "",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776014998709/img-186j8andvk.png",
-          "isVideo": false
         }
       ],
       "gridCols": 1,
-      "imageDisplayMode": "carousel",
+      "imageDisplayMode": "grid",
       "splitRatio": 40,
       "imageCarouselBg": false,
       "imageCarouselFit": "contain",
