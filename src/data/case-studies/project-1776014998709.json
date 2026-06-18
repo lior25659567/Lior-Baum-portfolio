@@ -724,7 +724,6 @@
         "Annotation couldn't be tested in static frames — required building it in the prototype and iterating on how marking actually felt."
       ],
       "whatYoudDoDifferently": [
-        "Validate annotation in the prototype from day one — not after static designs were locked.",
         "Pull engineering into sharing constraints earlier — privacy edge cases shaped the modal.",
         "Add AI-assisted field completion — drafting notes and procedure suggestions as the doctor works.",
         "Let doctors create their own templates — five presets were a starting point, not a ceiling."
