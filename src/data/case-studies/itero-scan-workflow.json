@@ -315,16 +315,11 @@
       "goals": [
         {
           "number": "RX 1",
-          "title": "Setup runs alongside the scan",
-          "description": "Rx happens in parallel, not before."
-        },
-        {
-          "number": "RX 2",
           "title": "Configuration in one step",
           "description": "Multi-select teeth, group materials, one interaction."
         },
         {
-          "number": "RX 3",
+          "number": "RX 2",
           "title": "Less scrolling, easier to change",
           "description": "Shorter view, fewer buried menus."
         },
@@ -340,13 +335,14 @@
         }
       ],
       "kpis": [
-        "Time to first scan action",
         "Avg teeth per interaction",
         "Scroll depth in RX setup",
-        "Time to find the right tool"
+        "Blocking popups per case",
+        "Time to find the right tool",
+        "Tool discovery rate"
       ],
       "goalsCardsTitle": "Goals",
-      "gridColumns": 3,
+      "gridColumns": 2,
       "cardHeight": "100",
       "kpisGridColumns": 5,
       "showKpisSection": true,
@@ -354,7 +350,7 @@
       "kpisCardVariant": "soft",
       "goalsCardVariant": "minimal",
       "splitRatio": 40,
-      "presenterNotes": "במקום רשימה ארוכה של מטרות, חילקתי אותן לפי שלב — שלוש מטרות ל־RX, שתיים ל־Scan & View. כל מטרה צמודה ל־KPI שאני יכול למדוד. הכל מתחבר ישירות לפרקים שאני אראה בהמשך."
+      "presenterNotes": "חילקתי את המטרות לפי שלב — שתיים ל־RX, שתיים ל־Scan & View. כל מטרה צמודה ל־KPI שאני יכול למדוד, כולל מדידה ישירה של כמה popups חוסמים נשארו במסלול הקליני. הכל מתחבר ישירות לפרקים שאני אראה בהמשך."
     },
     {
       "type": "issuesBreakdown",
@@ -926,7 +922,7 @@
     {
       "type": "outcomes",
       "label": "Outcomes",
-      "title": "Five goals, five outcomes — what changed in measurable terms",
+      "title": "Four goals, Four outcomes — what changed in measurable terms",
       "outcomes": [
         {
           "metric": "Fewer",
@@ -961,7 +957,6 @@
       "label": "Reflection",
       "title": "What I took away",
       "whatWorked": [
-        "Building in Claude Code with engineers — one shared artifact, no handoff.",
         "Hands-on development — building parts of the UI myself meant faster rollout and quicker UX QA.",
         "Borrowing proven patterns — toolbar and tabs from products clinicians already use. Familiar over novel.",
         "Cross-functional negotiation — technical discussions with engineering shaped scope without degrading the experience."
@@ -979,7 +974,7 @@
       "whatYouCouldntMeasure": "Outcomes were validated in prototype testing, not the field. Post-launch metrics still pending.",
       "whatYouLearned": "Getting the diagnosis right before Figma shaped everything — and choosing familiar patterns made the rest of the work cheaper to ship.",
       "reflectionDisplay": "cards",
-      "presenterNotes": "מה עבד טוב — בנייה ב־Claude Code יחד עם המהנדסים כשעובדים על אותו ארטיפקט, פיתוח חלקים מה־UI לבד כדי לזרז QA, ושאילה של דפוסים מוכחים במקום להמציא. מה לא עבד — קפצתי לעיצוב לפני שלמדתי מספיק את העולם הקליני, והצגתי אייקונים בנפרד לפני שהראיתי את המערכת השלמה. בפעם הבאה — יותר זמן עם רופאים לפני שאני פותח Figma, ולאמת מערכות בהקשר, לא בבידוד. ויש כיוון אחד שאני אוסיף — עוזר AI ב־RX שיכתוב הערות והצעות פרוצדורה בזמן שהרופא עובד."
+      "presenterNotes": "מה עבד — פיתוח חלקים מה־UI לבד כדי לזרז QA, שאילה של דפוסים מוכחים במקום להמציא, ומשא ומתן עם הנדסה על scope בלי לפגוע בחוויה. מה לא עבד — קפצתי לעיצוב לפני שלמדתי מספיק את העולם הקליני, והצגתי אייקונים בנפרד לפני שהראיתי את המערכת השלמה. בפעם הבאה — יותר זמן עם רופאים לפני שאני פותח Figma, ולאמת מערכות בהקשר, לא בבידוד. ויש כיוון אחד שאני אוסיף — עוזר AI ב־RX שיכתוב הערות והצעות פרוצדורה בזמן שהרופא עובד."
     },
     {
       "type": "end",

@@ -6491,8 +6491,10 @@ button.dir-chip:hover {
   flex: 1 1 auto;
   min-height: 0;
 }
-/* Intro slide: drop the global 40px media inset so the image fills its panel. */
-.case-study:not(.edit-mode) .intro-images-wrapper > .dynamic-images {
+/* Intro slide: drop the global 40px media inset so the image fills its panel.
+   `intro-images-wrapper` is applied directly to the `.dynamic-images` element
+   (same node), so this targets that merged element, not a child. */
+.case-study:not(.edit-mode) .dynamic-images.intro-images-wrapper {
   padding: 0;
 }
 .case-study:not(.edit-mode) .split-images-wrapper .dynamic-images-grid,
@@ -6656,11 +6658,23 @@ button.dir-chip:hover {
   justify-content: center;
   padding: 120px 64px;
   box-sizing: border-box;
-  /* Use the same neutral background images fill against (the .dynamic-image-wrapper
-     fill color) instead of the warm accent tint, so the panel matches the image. */
-  background: var(--color-bg-secondary);
+  /* Neutral panel surface with a soft radial vignette overlay — the edges sit
+     slightly darker than the center so a contained image reads as lifted off
+     the panel and pops. Solid secondary stays underneath as the base. */
+  background:
+    radial-gradient(125% 110% at 50% 38%, transparent 52%, rgba(0, 0, 0, 0.12) 100%),
+    var(--color-bg-secondary);
   border-radius: 0;
   overflow: visible;
+}
+/* When the intro media is contain-fit (letterboxed), centering it inside the
+   right-bleeding panel (margin-right:-128px) pushes it off-center. Adding to the
+   right padding shifts the centered image back left. 64px (base) leaves it
+   right-shifted; 192px over-shoots left; ~128px lands it centered in the visible
+   column. Scoped to contain media only — cover/fill keeps its edge-bleed. */
+.case-study:not(.edit-mode) .slide-intro .intro-media-panel:has(.carousel-fit-contain),
+.case-study:not(.edit-mode) .slide-intro .intro-media-panel:has(.dynamic-image-item.img-fit-contain) {
+  padding-right: 96px;
 }
 /* Paint the panel background across the horizontal letterbox gap (the deck is
    slightly wider than 16:9, so the scaled artboard's right edge stops short of
