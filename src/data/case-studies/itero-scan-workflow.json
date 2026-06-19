@@ -242,6 +242,38 @@
       "presenterNotes": "ראיינתי רופאים משלושה תחומים — שיקום, רפואת שיניים כללית, ואורתודנטיה. ביקשתי מכל אחד לקחת אותי דרך מקרה אמיתי. מה שמעניין זה שהם לא התלוננו — הם פשוט קיבלו את החיכוך הזה כחלק מהעבודה. חמישה מוטיבים חזרו אצל כולם."
     },
     {
+      "type": "issuesBreakdown",
+      "label": "Pain Points",
+      "title": "Four pain points, four design moves",
+      "description": [
+        "Five themes from the interviews, clustered into four problems the redesign had to solve. Each one became a design direction."
+      ],
+      "issues": [
+        {
+          "number": "1",
+          "title": "Setup blocks the scan",
+          "description": "Clinicians had to finish a long, popup-heavy form before scanning could begin — with the patient watching. Fix: setup that runs alongside the scan, not before it."
+        },
+        {
+          "number": "2",
+          "title": "Procedure locked in too early",
+          "description": "Clinicians often changed the procedure several times before scanning — but every change meant starting over. Fix: procedure that can be picked or swapped in one tap, before scanning starts."
+        },
+        {
+          "number": "3",
+          "title": "Tooth-by-tooth, with no visibility",
+          "description": "Every tooth opened its own modal. Clinicians couldn't see what they'd already configured. Fix: multi-select directly on the dental chart, with procedures visible at a glance."
+        },
+        {
+          "number": "4",
+          "title": "Tools scattered across the screen",
+          "description": "Clinicians lost their rhythm searching for tools mid-scan — no dedicated home, no shared visual language. Fix: one toolbar with one icon system."
+        }
+      ],
+      "subtitle": null,
+      "presenterNotes": "אחרי הראיונות לקחתי את חמישה המוטיבים שחזרו וגיבשתי אותם לארבע נקודות כאב. כל אחת מתחברת ישירות לפתרון שאני אראה בהמשך. ההגדרה חוסמת את הסריקה, הפרוצדורה ננעלת מוקדם מדי, בחירת השיניים אחת־אחת בלי שקיפות, והכלים מפוזרים בלי בית. כל אחת קיבלה תשובה עיצובית."
+    },
+    {
       "type": "problem",
       "label": "User Flow Mapping",
       "title": "What clinicians actually do — not what the product assumed",
@@ -275,38 +307,6 @@
       "gridCols": 1,
       "imageDisplayMode": "grid",
       "presenterNotes": "אחרי הראיונות, מיפיתי את הזרימה האמיתית שרופאים עוברים — לא איך המוצר חשב שהם עוברים. שלוש נקודות שבר צצו, וכולן באותו מקום — בין השלבים. בעצם החיכוך לא היה אקראי, הוא היה במעברים. זה היה הרגע שהבנתי שזו לא בעיה של טופס, זו בעיה של ארכיטקטורה."
-    },
-    {
-      "type": "issuesBreakdown",
-      "label": "Pain Points",
-      "title": "Four pain points, four design moves",
-      "description": [
-        "Five themes from the interviews, clustered into four problems the redesign had to solve. Each one became a design direction."
-      ],
-      "issues": [
-        {
-          "number": "1",
-          "title": "Setup blocks the scan",
-          "description": "Clinicians had to finish a long, popup-heavy form before scanning could begin — with the patient watching. Fix: setup that runs alongside the scan, not before it."
-        },
-        {
-          "number": "2",
-          "title": "Procedure locked in too early",
-          "description": "Clinicians often changed the procedure several times before scanning — but every change meant starting over. Fix: procedure that can be picked or swapped in one tap, before scanning starts."
-        },
-        {
-          "number": "3",
-          "title": "Tooth-by-tooth, with no visibility",
-          "description": "Every tooth opened its own modal. Clinicians couldn't see what they'd already configured. Fix: multi-select directly on the dental chart, with procedures visible at a glance."
-        },
-        {
-          "number": "4",
-          "title": "Tools scattered across the screen",
-          "description": "Clinicians lost their rhythm searching for tools mid-scan — no dedicated home, no shared visual language. Fix: one toolbar with one icon system."
-        }
-      ],
-      "subtitle": null,
-      "presenterNotes": "אחרי הראיונות לקחתי את חמישה המוטיבים שחזרו וגיבשתי אותם לארבע נקודות כאב. כל אחת מתחברת ישירות לפתרון שאני אראה בהמשך. ההגדרה חוסמת את הסריקה, הפרוצדורה ננעלת מוקדם מדי, בחירת השיניים אחת־אחת בלי שקיפות, והכלים מפוזרים בלי בית. כל אחת קיבלה תשובה עיצובית."
     },
     {
       "type": "goals",
