@@ -181,25 +181,6 @@
       "description": ""
     },
     {
-      "type": "process",
-      "title": "How I tested the redesign",
-      "sections": [
-        {
-          "heading": "Research",
-          "content": "I sat with physiotherapists in their clinics and watched them work — what designers call contextual inquiry — to map the manual habits hiding behind the friction."
-        },
-        {
-          "heading": "Iteration",
-          "content": "I moved from rough sketches to detailed flows, sharpening each one against what clinicians told me in feedback sessions."
-        },
-        {
-          "heading": "Validation",
-          "content": "I ran the new flows past 8 clinicians and watched them work. The consolidated patient view, single-screen editing, and protocol builder each fixed one of the three breakdowns."
-        }
-      ],
-      "visual_note": "Show progression: low-fi wireframes of patient management screen → mid-fi with annotations from clinician feedback → final high-fi mockup"
-    },
-    {
       "type": "chapter",
       "number": "01",
       "title": "Patient Management",
@@ -262,17 +243,8 @@
       ],
       "beforeDescription": "Cluttered tabs, no hierarchy, adherence metrics buried where no one looked.",
       "afterDescription": "One dedicated page separating patient info, active plans, and progress — with adherence data where therapists look first.",
-      "beforeBullets": [
-        "Oversized tabs, no hierarchy",
-        "Patient info scattered across 4+ screens",
-        "Adherence metrics buried in a sub-tab"
-      ],
-      "afterBullets": [
-        "Single patient page, predictable layout",
-        "Clear hierarchy: info, plans, progress",
-        "Adherence surfaced as primary content",
-        "Secondary details collapse into expandable sections"
-      ],
+      "beforeBullets": [],
+      "afterBullets": [],
       "highlight": "Adherence data now sits where therapists' eyes land first.",
       "imageDisplayMode": "carousel",
       "beforeImageCarouselFit": "contain",
@@ -400,16 +372,8 @@
       ],
       "beforeDescription": "A single edit spanned multiple screens, pushing patient data out of view.",
       "afterDescription": "One screen. Each exercise is a card you edit in place, patient details pinned throughout. In tests, clinicians stopped jumping between screens.",
-      "beforeBullets": [
-        "4–5 screens per edit — context lost",
-        "Dense exercise lists, hard to scan",
-        "No patient data visible while editing"
-      ],
-      "afterBullets": [
-        "Single-screen flow, no nested navigation",
-        "Each exercise a draggable card",
-        "Patient data pinned for clinical context"
-      ],
+      "beforeBullets": [],
+      "afterBullets": [],
       "highlight": "I swapped pop-up windows for inline editing — \"I lose context when things pop up,\" therapists said. Trade-off: I cut custom animations to ship on time.",
       "gridCols": 1,
       "imageDisplayMode": "carousel",
@@ -418,18 +382,6 @@
       "afterImageCarouselFit": "contain",
       "afterImageCarouselInterval": 1500,
       "splitRatio": 40
-    },
-    {
-      "type": "directions",
-      "label": "Ideation",
-      "title": "Directions I explored for the Protocol Builder",
-      "directionCount": 3,
-      "dir1Status": "rejected",
-      "dir1Desc": "An expanded template library with more presets. Rejected — it still forced experts into someone else's structure and didn't solve building from scratch.",
-      "dir2Status": "rejected",
-      "dir2Desc": "A step-by-step protocol wizard. Rejected — it added linear steps to a task clinicians wanted to control directly, the opposite of removing friction.",
-      "dir3Status": "accepted",
-      "dir3Desc": "The drag-and-drop builder won — a board where you drag exercise cards into place, like arranging sticky notes. It reuses the same card pattern from the rest of the app, gives experts full control over a protocol, and removes the save-test-redo loop they described."
     },
     {
       "type": "chapter",
@@ -514,15 +466,8 @@
       ],
       "beforeDescription": "No build-from-scratch flow — and rigid templates broke on complex cases.",
       "afterDescription": "A board where therapists drag exercise cards into place — library on the left, plan on the right. Same card pattern as the editor, so there's nothing new to learn.",
-      "beforeBullets": [
-        "No dedicated creation flow",
-        "Rigid templates didn't fit complex cases"
-      ],
-      "afterBullets": [
-        "Drag-and-drop Kanban — library left, board right",
-        "Same card system as the care plan editor — zero learning curve",
-        "Full control over structure, order, and grouping"
-      ],
+      "beforeBullets": [],
+      "afterBullets": [],
       "highlight": "One familiar card pattern across the patient view, the editor, and the builder — the spine of this redesign. A new tool that feels like one clinicians already know.",
       "imageDisplayMode": "carousel",
       "beforeImageCarouselInterval": 1500,
