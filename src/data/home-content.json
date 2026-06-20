@@ -140,7 +140,13 @@
           "mediaMode": "template",
           "imageFit": "contain",
           "iframeSrc": "",
-          "cardBg": "gradient"
+          "cardBg": "gradient",
+          "description": "Redesigned the clinical scan workflow to remove the blocking popups between clinicians and starting a scan.",
+          "labels": [
+            "Product Design",
+            "Interaction Design",
+            "UX Research"
+          ]
         },
         {
           "id": "project-1776014998709",
@@ -151,7 +157,13 @@
           "mediaMode": "template",
           "iframeSrc": "",
           "cardBg": "gradient",
-          "imageFit": "contain"
+          "imageFit": "contain",
+          "description": "Rebuilt the patient-report editor with procedure templates, modular content blocks, and image annotation.",
+          "labels": [
+            "Product Design",
+            "Interaction Design",
+            "Design Systems"
+          ]
         },
         {
           "id": "project-1776628169716",
@@ -163,7 +175,13 @@
           "mediaMode": "template",
           "iframeSrc": "",
           "cardBg": "gradient",
-          "imageFit": "contain"
+          "imageFit": "contain",
+          "description": "A design system governing tokens, components, and AI-collaboration rules across scanner and web surfaces.",
+          "labels": [
+            "Design Systems",
+            "Design Engineering",
+            "AI Tooling"
+          ]
         },
         {
           "id": "wizecare",
@@ -174,7 +192,13 @@
           "mediaMode": "template",
           "iframeSrc": "",
           "cardBg": "gradient",
-          "imageFit": "contain"
+          "imageFit": "contain",
+          "description": "Redesigned a physiotherapy platform’s daily workflows — patient lookup, care plans, protocol building — around one card pattern.",
+          "labels": [
+            "Product Design",
+            "UX Research",
+            "Usability Testing"
+          ]
         }
       ],
       "removedIds": [

@@ -1,7 +1,7 @@
 # Design System
 in Claude Code — extracted text
 
-Source: `src/data/case-studies/project-1776628169716.json` — 8 slides.
+Source: `src/data/case-studies/project-1776628169716.json` — 9 slides.
 Each field shows its JSON path id in [brackets]. Reviewers: judge the prose,
 and judge whether each slide uses the RIGHT template (see `_slide-templates.md`).
 Fields marked (read-only) are factual data and cannot be auto-edited.
@@ -11,9 +11,18 @@ for something an image already shows. Use **Available unused fields** to add
 structured fields (e.g. `metaItems`, `headlineMetric`) instead of cramming that
 data into prose.
 
+## ⚠ Cross-slide duplication check
+These prose fragments appear on more than one slide (high overlap). The same
+content should not live on two slides — merge or cut. (Image-vs-text repeats are
+NOT caught here — read the images to find those.)
+
+- **73% overlap** — `[slides.7.title]` (slide 7) ↔ `[slides.8.subtitle]` (slide 8)
+  - slide 7: "How my role as a designer has changed"
+  - slide 8: "This project reflects how my role as a designer has changed."
+
 ---
 ## Slide 0 — type: intro
-_Words on screen: **33** · budget ~75_
+_Words on screen: **76** · budget ~75_
 
 - **title**  `[slides.0.title]`
   Design System
@@ -34,9 +43,33 @@ _Words on screen: **33** · budget ~75_
 - **focus**  `[slides.0.focus]`
   UX · AI · Design System
 
+- **label**  `[slides.0.metaItems.0.label]`
+  Role
+
+- **value**  `[slides.0.metaItems.0.value]`
+  [ADD: your role — e.g. Lead Product Designer]
+
+- **label**  `[slides.0.metaItems.1.label]`
+  Timeline
+
+- **value**  `[slides.0.metaItems.1.value]`
+  [ADD: project timeline — e.g. 12 weeks · Q3 2024]
+
+- **label**  `[slides.0.metaItems.2.label]`
+  Team
+
+- **value**  `[slides.0.metaItems.2.value]`
+  [ADD: team — e.g. 1 PM · 2 engineers · 1 tech lead]
+
+- **label**  `[slides.0.metaItems.3.label]`
+  Tools
+
+- **value**  `[slides.0.metaItems.3.value]`
+  [ADD: tools — e.g. Figma, Storybook, Claude Code]
+
 _Images (READ these — content may live here):_ `public/case-studies/project-1776628169716/img-8dznv70e80.png`, `public/case-studies/project-1776628169716/img-83eugahcc0.png`, `public/case-studies/project-1776628169716/img-c9ao2nbhh8.png`, `public/case-studies/project-1776628169716/img-9c9dvnaw5c.png`
 
-_Available unused fields (`intro` template): metaItems, subtitle, logo, introHeaderMode, cta, headlineMetric_
+_Available unused fields (`intro` template): subtitle, logo, introHeaderMode, cta, headlineMetric_
 
 ---
 ## Slide 1 — type: problem
@@ -182,7 +215,7 @@ _Available unused fields (`textAndImage` template): bullets2, bullets2Title, con
 _Words on screen: **54** · budget ~75_
 
 - **label**  `[slides.5.label]`
-  06 · AI as a Collaborator · Ways of Working
+  05 · AI as a Collaborator · Ways of Working
 
 - **title**  `[slides.5.title]`
   AI didn't replace the work. It amplified it.
@@ -203,7 +236,7 @@ _Available unused fields (`textAndImage` template): issues, issuesTitle, bullets
 _Words on screen: **57** · budget ~95_
 
 - **label**  `[slides.6.label]`
-  07 · Outcomes · What Changed
+  06 · Outcomes · What Changed
 
 - **title**  `[slides.6.title]`
   What this project reflects about design today.
@@ -247,16 +280,40 @@ _Words on screen: **57** · budget ~95_
 _Available unused fields (`outcomes` template): highlight_
 
 ---
-## Slide 7 — type: end
-_Words on screen: **16** · budget ~18_
+## Slide 7 — type: reflection
+_Words on screen: **91** · budget ~100_
+
+- **label**  `[slides.7.label]`
+  Reflection
 
 - **title**  `[slides.7.title]`
+  How my role as a designer has changed
+
+- **whatWorked**  `[slides.7.whatWorked.0]`
+  [ADD: one specific thing that worked well — e.g. 'Governing tokens in code meant drift caught itself before it shipped']
+
+- **whatFailed**  `[slides.7.whatFailed.0]`
+  [ADD: one specific thing that didn't work — e.g. 'Scoped AI rules too late; first sprint had inconsistencies the governance layer would have caught']
+
+- **whatYoudDoDifferently**  `[slides.7.whatYoudDoDifferently.0]`
+  [ADD: one concrete change — e.g. 'Define the token contract with engineering before component work begins, not alongside it']
+
+- **whatYouCouldntMeasure**  `[slides.7.whatYouCouldntMeasure]`
+  [ADD: what you couldn't measure — e.g. 'Long-term adoption across rotating engineers — would need 6+ months post-launch data']
+
+_Available unused fields (`reflection` template): whatYouLearned, nextIteration_
+
+---
+## Slide 8 — type: end
+_Words on screen: **16** · budget ~18_
+
+- **title**  `[slides.8.title]`
   Thank You
 
-- **subtitle**  `[slides.7.subtitle]`
+- **subtitle**  `[slides.8.subtitle]`
   This project reflects how my role as a designer has changed.
 
-- **cta**  `[slides.7.cta]`
+- **cta**  `[slides.8.cta]`
   Get in touch
 
 _Available unused fields (`end` template): buttons, email, phone, linkedinUrl_

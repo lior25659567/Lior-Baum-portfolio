@@ -1,6 +1,6 @@
 # WizeCare — extracted text
 
-Source: `src/data/case-studies/wizecare.json` — 17 slides.
+Source: `src/data/case-studies/wizecare.json` — 15 slides.
 Each field shows its JSON path id in [brackets]. Reviewers: judge the prose,
 and judge whether each slide uses the RIGHT template (see `_slide-templates.md`).
 Fields marked (read-only) are factual data and cannot be auto-edited.
@@ -14,7 +14,7 @@ data into prose.
 State each stat ONCE unless a deliberate tease (e.g. a cover headline metric also
 shown in outcomes). Otherwise the repeat reads as padding — pick one home, cut the rest.
 
-- **"80 %"** appears on slides 14, 15
+- **"80 %"** appears on slides 12, 13
 
 ---
 ## Slide 0 — type: intro
@@ -228,89 +228,41 @@ _Words on screen: **108** · budget ~100_
 _Available unused fields (`goals` template): showGoalsSection, highlight, cardVariant, showNumbers_
 
 ---
-## Slide 5 — type: process
-_Words on screen: **82** · budget ~85_
-
-- **title**  `[slides.5.title]`
-  How I tested the redesign
-
-- **heading**  `[slides.5.sections.0.heading]`
-  Research
-
-- **content**  `[slides.5.sections.0.content]`
-  I sat with physiotherapists in their clinics and watched them work — what designers call contextual inquiry — to map the manual habits hiding behind the friction.
-
-- **heading**  `[slides.5.sections.1.heading]`
-  Iteration
-
-- **content**  `[slides.5.sections.1.content]`
-  I moved from rough sketches to detailed flows, sharpening each one against what clinicians told me in feedback sessions.
-
-- **heading**  `[slides.5.sections.2.heading]`
-  Validation
-
-- **content**  `[slides.5.sections.2.content]`
-  I ran the new flows past 8 clinicians and watched them work. The consolidated patient view, single-screen editing, and protocol builder each fixed one of the three breakdowns.
-
-_Available unused fields (`process` template): steps, label, highlight, cardVariant, showNumbers_
-
----
-## Slide 6 — type: chapter
+## Slide 5 — type: chapter
 _Words on screen: **13** · budget ~18_
 
-- **number** (read-only)  `[slides.6.number]`
+- **number** (read-only)  `[slides.5.number]`
   01
 
-- **title**  `[slides.6.title]`
+- **title**  `[slides.5.title]`
   Patient Management
 
-- **subtitle**  `[slides.6.subtitle]`
+- **subtitle**  `[slides.5.subtitle]`
   Where clinicians land first — and where they got lost most.
 
 ---
-## Slide 7 — type: comparison
-_Words on screen: **98** · budget ~110_
+## Slide 6 — type: comparison
+_Words on screen: **61** · budget ~110_
 
-- **label**  `[slides.7.label]`
+- **label**  `[slides.6.label]`
   Patient Screen
 
-- **title**  `[slides.7.title]`
+- **title**  `[slides.6.title]`
   Everything a clinician needs, in one place
 
-- **caption**  `[slides.7.beforeImage.0.caption]`
+- **caption**  `[slides.6.beforeImage.0.caption]`
   Old — cluttered tabs, buried adherence data
 
-- **caption**  `[slides.7.afterImage.0.caption]`
+- **caption**  `[slides.6.afterImage.0.caption]`
   New — dedicated patient page, clear hierarchy
 
-- **beforeDescription**  `[slides.7.beforeDescription]`
+- **beforeDescription**  `[slides.6.beforeDescription]`
   Cluttered tabs, no hierarchy, adherence metrics buried where no one looked.
 
-- **afterDescription**  `[slides.7.afterDescription]`
+- **afterDescription**  `[slides.6.afterDescription]`
   One dedicated page separating patient info, active plans, and progress — with adherence data where therapists look first.
 
-- **beforeBullets**  `[slides.7.beforeBullets.0]`
-  Oversized tabs, no hierarchy
-
-- **beforeBullets**  `[slides.7.beforeBullets.1]`
-  Patient info scattered across 4+ screens
-
-- **beforeBullets**  `[slides.7.beforeBullets.2]`
-  Adherence metrics buried in a sub-tab
-
-- **afterBullets**  `[slides.7.afterBullets.0]`
-  Single patient page, predictable layout
-
-- **afterBullets**  `[slides.7.afterBullets.1]`
-  Clear hierarchy: info, plans, progress
-
-- **afterBullets**  `[slides.7.afterBullets.2]`
-  Adherence surfaced as primary content
-
-- **afterBullets**  `[slides.7.afterBullets.3]`
-  Secondary details collapse into expandable sections
-
-- **highlight**  `[slides.7.highlight]`
+- **highlight**  `[slides.6.highlight]`
   Adherence data now sits where therapists' eyes land first.
 
 _Images (READ these — content may live here):_ `public/case-studies/wizecare/img-xu92y5bwo.webp`, `public/case-studies/wizecare/img-7qfmd98x00.webp`, `public/case-studies/wizecare/img-4chmer0xr4.webp`, `public/case-studies/wizecare/img-3e9ywkzxfk.webp`
@@ -318,59 +270,41 @@ _Images (READ these — content may live here):_ `public/case-studies/wizecare/i
 _Available unused fields (`comparison` template): description, beforeLabel, afterLabel, beforeBulletsTitle, afterBulletsTitle, bullets, bulletsTitle_
 
 ---
-## Slide 8 — type: chapter
+## Slide 7 — type: chapter
 _Words on screen: **16** · budget ~18_
 
-- **number** (read-only)  `[slides.8.number]`
+- **number** (read-only)  `[slides.7.number]`
   02
 
-- **title**  `[slides.8.title]`
+- **title**  `[slides.7.title]`
   Care Plan Editing
 
-- **subtitle**  `[slides.8.subtitle]`
+- **subtitle**  `[slides.7.subtitle]`
   The most frequent task — and the one with the most wasted steps.
 
 ---
-## Slide 9 — type: comparison
-_Words on screen: **128** · budget ~110_
+## Slide 8 — type: comparison
+_Words on screen: **93** · budget ~110_
 
-- **label**  `[slides.9.label]`
+- **label**  `[slides.8.label]`
   Care Plan Editing
 
-- **title**  `[slides.9.title]`
+- **title**  `[slides.8.title]`
   Editing a plan shouldn't need a map — so I flattened it into one screen
 
-- **caption**  `[slides.9.beforeImage.0.caption]`
+- **caption**  `[slides.8.beforeImage.0.caption]`
   Old — multi-screen flow, dense exercise lists
 
-- **caption**  `[slides.9.afterImage.0.caption]`
+- **caption**  `[slides.8.afterImage.0.caption]`
   New — single screen, exercise cards, inline editing
 
-- **beforeDescription**  `[slides.9.beforeDescription]`
+- **beforeDescription**  `[slides.8.beforeDescription]`
   A single edit spanned multiple screens, pushing patient data out of view.
 
-- **afterDescription**  `[slides.9.afterDescription]`
+- **afterDescription**  `[slides.8.afterDescription]`
   One screen. Each exercise is a card you edit in place, patient details pinned throughout. In tests, clinicians stopped jumping between screens.
 
-- **beforeBullets**  `[slides.9.beforeBullets.0]`
-  4–5 screens per edit — context lost
-
-- **beforeBullets**  `[slides.9.beforeBullets.1]`
-  Dense exercise lists, hard to scan
-
-- **beforeBullets**  `[slides.9.beforeBullets.2]`
-  No patient data visible while editing
-
-- **afterBullets**  `[slides.9.afterBullets.0]`
-  Single-screen flow, no nested navigation
-
-- **afterBullets**  `[slides.9.afterBullets.1]`
-  Each exercise a draggable card
-
-- **afterBullets**  `[slides.9.afterBullets.2]`
-  Patient data pinned for clinical context
-
-- **highlight**  `[slides.9.highlight]`
+- **highlight**  `[slides.8.highlight]`
   I swapped pop-up windows for inline editing — "I lose context when things pop up," therapists said. Trade-off: I cut custom animations to ship on time.
 
 _Images (READ these — content may live here):_ `public/case-studies/wizecare/img-7qfmd98x00.webp`, `public/case-studies/wizecare/img-3icuntqcc0.webp`, `public/case-studies/wizecare/img-fu77sazv3c.webp`, `public/case-studies/wizecare/img-4k0tnag9eo.webp`, `public/case-studies/wizecare/img-3e9ywkzxfk.webp`, `public/case-studies/wizecare/img-4gqtt2o900.webp`, `public/case-studies/wizecare/img-4t0xrhcg8w.webp`, `public/case-studies/wizecare/img-20olxb6bo8.webp`, `public/case-studies/wizecare/img-6yoff99cec.webp`
@@ -378,104 +312,59 @@ _Images (READ these — content may live here):_ `public/case-studies/wizecare/i
 _Available unused fields (`comparison` template): description, beforeLabel, afterLabel, beforeBulletsTitle, afterBulletsTitle, bullets, bulletsTitle_
 
 ---
-## Slide 10 — type: directions
-_Words on screen: **101** · budget ~90_
-
-- **label**  `[slides.10.label]`
-  Ideation
-
-- **title**  `[slides.10.title]`
-  Directions I explored for the Protocol Builder
-
-- **dir1Status**  `[slides.10.dir1Status]`
-  rejected
-
-- **dir1Desc**  `[slides.10.dir1Desc]`
-  An expanded template library with more presets. Rejected — it still forced experts into someone else's structure and didn't solve building from scratch.
-
-- **dir2Status**  `[slides.10.dir2Status]`
-  rejected
-
-- **dir2Desc**  `[slides.10.dir2Desc]`
-  A step-by-step protocol wizard. Rejected — it added linear steps to a task clinicians wanted to control directly, the opposite of removing friction.
-
-- **dir3Status**  `[slides.10.dir3Status]`
-  accepted
-
-- **dir3Desc**  `[slides.10.dir3Desc]`
-  The drag-and-drop builder won — a board where you drag exercise cards into place, like arranging sticky notes. It reuses the same card pattern from the rest of the app, gives experts full control over a protocol, and removes the save-test-redo loop they described.
-
-_Available unused fields (`directions` template): dir1Image, dir2Image, dir3Image_
-
----
-## Slide 11 — type: chapter
+## Slide 9 — type: chapter
 _Words on screen: **16** · budget ~18_
 
-- **number** (read-only)  `[slides.11.number]`
+- **number** (read-only)  `[slides.9.number]`
   03
 
-- **title**  `[slides.11.title]`
+- **title**  `[slides.9.title]`
   Protocol Builder
 
-- **subtitle**  `[slides.11.subtitle]`
+- **subtitle**  `[slides.9.subtitle]`
   Experienced physiotherapists want to build protocols — the old system gave them no way.
 
 ---
-## Slide 12 — type: testimonial
+## Slide 10 — type: testimonial
 _Words on screen: **32** · budget ~45_
 
-- **label**  `[slides.12.label]`
+- **label**  `[slides.10.label]`
   Early Research Insight
 
-- **quote**  `[slides.12.quote]`
+- **quote**  `[slides.10.quote]`
   I'd rather build my own protocols than work around predefined care plans. Every patient needs specific adjustments, and rigid templates just don't fit how I work.
 
-- **author**  `[slides.12.author]`
+- **author**  `[slides.10.author]`
   Maya Levi
 
-- **role**  `[slides.12.role]`
+- **role**  `[slides.10.role]`
   Physiotherapist
 
 _Available unused fields (`testimonial` template): context, highlight_
 
 ---
-## Slide 13 — type: comparison
-_Words on screen: **132** · budget ~110_
+## Slide 11 — type: comparison
+_Words on screen: **96** · budget ~110_
 
-- **label**  `[slides.13.label]`
+- **label**  `[slides.11.label]`
   Protocol Builder
 
-- **title**  `[slides.13.title]`
+- **title**  `[slides.11.title]`
   Protocol Builder — why I replaced templates with a drag-and-drop Kanban
 
-- **caption**  `[slides.13.beforeImage.0.caption]`
+- **caption**  `[slides.11.beforeImage.0.caption]`
   Old — no creation flow, rigid templates only
 
-- **caption**  `[slides.13.afterImage.0.caption]`
+- **caption**  `[slides.11.afterImage.0.caption]`
   New — drag-and-drop Kanban builder
 
-- **beforeDescription**  `[slides.13.beforeDescription]`
+- **beforeDescription**  `[slides.11.beforeDescription]`
   No build-from-scratch flow — and rigid templates broke on complex cases.
 
-- **afterDescription**  `[slides.13.afterDescription]`
+- **afterDescription**  `[slides.11.afterDescription]`
   A board where therapists drag exercise cards into place — library on the left, plan on the right. Same card pattern as the editor, so there's nothing new to learn.
 
-- **beforeBullets**  `[slides.13.beforeBullets.0]`
-  No dedicated creation flow
-
-- **beforeBullets**  `[slides.13.beforeBullets.1]`
-  Rigid templates didn't fit complex cases
-
-- **afterBullets**  `[slides.13.afterBullets.0]`
-  Drag-and-drop Kanban — library left, board right
-
-- **afterBullets**  `[slides.13.afterBullets.1]`
-  Same card system as the care plan editor — zero learning curve
-
-- **afterBullets**  `[slides.13.afterBullets.2]`
-  Full control over structure, order, and grouping
-
-- **highlight**  `[slides.13.highlight]`
+- **highlight**  `[slides.11.highlight]`
   One familiar card pattern across the patient view, the editor, and the builder — the spine of this redesign. A new tool that feels like one clinicians already know.
 
 _Images (READ these — content may live here):_ `public/case-studies/wizecare/img-db2ae7syo.webp`, `public/case-studies/wizecare/img-hxjw766x2s.webp`, `public/case-studies/wizecare/img-1nmfkbclf0.webp`, `public/case-studies/wizecare/img-aklnh5dvt8.webp`
@@ -483,88 +372,88 @@ _Images (READ these — content may live here):_ `public/case-studies/wizecare/i
 _Available unused fields (`comparison` template): description, beforeLabel, afterLabel, beforeBulletsTitle, afterBulletsTitle, bullets, bulletsTitle_
 
 ---
-## Slide 14 — type: outcomes
+## Slide 12 — type: outcomes
 _Words on screen: **73** · budget ~95_
 
-- **label**  `[slides.14.label]`
+- **label**  `[slides.12.label]`
   Outcomes
 
-- **title**  `[slides.14.title]`
+- **title**  `[slides.12.title]`
   What changed: faster days, fewer mistakes, more people actually using it
 
-- **metric** (read-only)  `[slides.14.outcomes.0.metric]`
+- **metric** (read-only)  `[slides.12.outcomes.0.metric]`
   10–15 min
 
-- **title**  `[slides.14.outcomes.0.title]`
+- **title**  `[slides.12.outcomes.0.title]`
   Saved per session
 
-- **description**  `[slides.14.outcomes.0.description]`
+- **description**  `[slides.12.outcomes.0.description]`
   Navigation and task time per session dropped against the usability-test baseline — roughly 10–15 minutes back per patient.
 
-- **metric** (read-only)  `[slides.14.outcomes.1.metric]`
+- **metric** (read-only)  `[slides.12.outcomes.1.metric]`
   75%
 
-- **title**  `[slides.14.outcomes.1.title]`
+- **title**  `[slides.12.outcomes.1.title]`
   Reduction in misclicks
 
-- **description**  `[slides.14.outcomes.1.description]`
+- **description**  `[slides.12.outcomes.1.description]`
   Clearer layouts and inline editing cut prescription misclicks by ~75% in post-launch validation.
 
-- **metric** (read-only)  `[slides.14.outcomes.2.metric]`
+- **metric** (read-only)  `[slides.12.outcomes.2.metric]`
   80%
 
-- **title**  `[slides.14.outcomes.2.title]`
+- **title**  `[slides.12.outcomes.2.title]`
   Former non-users now opening it every day
 
-- **description**  `[slides.14.outcomes.2.description]`
+- **description**  `[slides.12.outcomes.2.description]`
   Clinicians who had avoided the platform now use it daily, per stakeholder report in the first month.
 
 _Available unused fields (`outcomes` template): highlight_
 
 ---
-## Slide 15 — type: reflection
+## Slide 13 — type: reflection
 _Words on screen: **103** · budget ~100_
 
-- **label**  `[slides.15.label]`
+- **label**  `[slides.13.label]`
   Reflection
 
-- **title**  `[slides.15.title]`
+- **title**  `[slides.13.title]`
   What I'd do differently
 
-- **whatWorked**  `[slides.15.whatWorked.0]`
+- **whatWorked**  `[slides.13.whatWorked.0]`
   Switching from interviews to direct observation surfaced friction users had stopped reporting
 
-- **whatWorked**  `[slides.15.whatWorked.1]`
+- **whatWorked**  `[slides.13.whatWorked.1]`
   One reusable card system unified the patient view, editor, and builder
 
-- **whatFailed**  `[slides.15.whatFailed.0]`
+- **whatFailed**  `[slides.13.whatFailed.0]`
   I set the error-rate baseline too late, so the misclick gain leans on post-launch numbers alone
 
-- **whatFailed**  `[slides.15.whatFailed.1]`
+- **whatFailed**  `[slides.13.whatFailed.1]`
   Custom exercise animations got cut to hit the sprint and never came back
 
-- **whatYoudDoDifferently**  `[slides.15.whatYoudDoDifferently.0]`
+- **whatYoudDoDifferently**  `[slides.13.whatYoudDoDifferently.0]`
   Capture a pre-launch baseline for every metric before the first design ships
 
-- **whatYoudDoDifferently**  `[slides.15.whatYoudDoDifferently.1]`
+- **whatYoudDoDifferently**  `[slides.13.whatYoudDoDifferently.1]`
   Validate the protocol builder with experts earlier, not only after the flow was built
 
-- **whatYouCouldntMeasure**  `[slides.15.whatYouCouldntMeasure]`
+- **whatYouCouldntMeasure**  `[slides.13.whatYouCouldntMeasure]`
   Whether the 80% adoption holds past month one. I had no long-term retention data and no clean pre-launch error-rate baseline.
 
 _Available unused fields (`reflection` template): whatYouLearned, nextIteration_
 
 ---
-## Slide 16 — type: end
+## Slide 14 — type: end
 _Words on screen: **14** · budget ~18_
 
-- **title**  `[slides.16.title]`
+- **title**  `[slides.14.title]`
   Thank You
 
-- **subtitle**  `[slides.16.subtitle]`
+- **subtitle**  `[slides.14.subtitle]`
   Designing systems that respect the people who use them.
 
-- **cta**  `[slides.16.cta]`
+- **cta**  `[slides.14.cta]`
   Get in touch
 
 _Available unused fields (`end` template): buttons, email, phone, linkedinUrl_

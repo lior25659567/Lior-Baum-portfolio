@@ -167,7 +167,7 @@
   background: var(--color-bg);
   display: flex;
   flex-direction: column;
-  /* Soft, accent-tinted resting elevation (translated from the reference card). */
+  /* Default subtle, accent-tinted resting elevation. */
   box-shadow:
     0 10px 28px color-mix(in srgb, var(--color-accent) 5%, transparent),
     0 1px 2px rgba(0, 0, 0, 0.07);
@@ -211,7 +211,7 @@
 /* Media: image portion with fixed aspect ratio */
 .project-media {
   position: relative;
-  aspect-ratio: 4/3;
+  aspect-ratio: 16/10;
   overflow: hidden;
   flex-shrink: 0;
   border-bottom: 1px solid var(--color-border-soft);
@@ -4698,7 +4698,7 @@
 
 /* Content: always visible below the image */
 .project-content {
-  padding: 1.5rem 1.5rem 1.75rem;
+  padding: 1.25rem; /* p-5 — even padding all around (reference) */
   min-height: 9rem;
   display: flex;
   flex-direction: column;
@@ -4713,7 +4713,7 @@
   line-height: var(--lh-snug);
   letter-spacing: var(--ls-tight);
   color: var(--color-text);
-  margin: 0 0 0.6rem;
+  margin: 0 0 0.75rem;
 }
 
 /* Description — one-sentence summary (falls back to category) */
@@ -4751,7 +4751,7 @@
   opacity: 0.8;
 }
 
-/* Tags — filled accent-soft pills at the top of the content (reference style) */
+/* Tags — bordered pill chips (matches the .dir-chip style from the slides) */
 .project-content-labels {
   display: flex;
   flex-wrap: wrap;
@@ -4762,26 +4762,41 @@
 .project-content-label {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.625rem;
-  font-family: var(--font-body);
-  font-size: var(--text-body-sm);
-  font-weight: var(--fw-medium);
-  line-height: 1.2;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
   color: var(--color-text-muted);
-  background: var(--color-accent-soft);
+  padding: 0.3rem 0.85rem;
   border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
+/* Edit mode keeps the pill/chip row layout (the view-mode line is plain text). */
 .project-content-labels--editing {
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.35rem;
 }
 
 .project-content-label--editing {
+  display: inline-flex;
+  align-items: center;
   padding: 0.15rem 0.35rem 0.15rem 0.55rem;
   gap: 0.25rem;
   text-transform: none;
   letter-spacing: 0;
   font-size: 0.72rem;
+  background: var(--color-accent-soft);
+  border-radius: 999px;
+}
+
+/* No comma separators on the edit-mode chips */
+.project-content-label--editing:not(:last-child)::after {
+  content: none;
 }
 
 .project-content-label-input {
