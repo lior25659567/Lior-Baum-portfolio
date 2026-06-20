@@ -128,8 +128,9 @@ const Navigation = () => {
                 )}
               </div>
             ) : (
-              <AnimatedButton 
-                href={content.hero.cvLink || 'https://drive.google.com/file/d/1wdnZiNuaSKB_TByqJm4TYQ7Cbg2W6sND/view?usp=sharing'} 
+              <AnimatedButton
+                href={content.hero.cvLink || 'https://drive.google.com/file/d/1wdnZiNuaSKB_TByqJm4TYQ7Cbg2W6sND/view?usp=sharing'}
+                target="_blank"
                 variant="outline"
                 icon="→"
                 className="nav-cta-btn"
@@ -213,6 +214,7 @@ const Navigation = () => {
               >
                 <AnimatedButton
                   href={content.hero.cvLink || 'https://drive.google.com/file/d/1wdnZiNuaSKB_TByqJm4TYQ7Cbg2W6sND/view?usp=sharing'}
+                  target="_blank"
                   variant="secondary"
                   icon="→"
                   className="mobile-cta-btn"

@@ -44,8 +44,9 @@ const Contact = () => {
             >
               Get in touch
             </AnimatedButton>
-            <AnimatedButton 
+            <AnimatedButton
               href={content.hero?.cvLink || 'https://drive.google.com/file/d/1wdnZiNuaSKB_TByqJm4TYQ7Cbg2W6sND/view?usp=sharing'}
+              target="_blank"
               variant="outline"
               icon="↓"
             >
