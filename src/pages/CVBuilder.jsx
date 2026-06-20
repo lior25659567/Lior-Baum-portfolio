@@ -120,6 +120,7 @@ const DEFAULT_CV = {
   contentWidth: 180,   // mm — content area width inside A4
   columns: 2,          // 1 = single-column flow, 2 = two-column body (default/minimal styles)
   pairEduLang: false,  // one-column: render Education + Languages side by side in one row
+  titleColor: 'accent', // role line color: 'accent' (orange) or 'ink' (dark)
   sectionOrder: ['summary', 'experience', 'projects', 'volunteer', 'education', 'service', 'skills', 'certifications', 'languages', 'awards'],
   showSummary: true,
   showExperience: true,
@@ -1139,6 +1140,23 @@ const CVBuilder = () => {
                 </div>
               </div>
             )}
+            {parseCvStyle(cvStyle).layout === 'default' && (
+              <div className="cv-layout-control">
+                <label>Role line color</label>
+                <div className="cv-col-toggle">
+                  <button
+                    type="button"
+                    className={`cv-col-btn ${(cv.titleColor || 'accent') === 'accent' ? 'active' : ''}`}
+                    onClick={() => update('titleColor', 'accent')}
+                  >Accent</button>
+                  <button
+                    type="button"
+                    className={`cv-col-btn ${cv.titleColor === 'ink' ? 'active' : ''}`}
+                    onClick={() => update('titleColor', 'ink')}
+                  >Ink</button>
+                </div>
+              </div>
+            )}
             {parseCvStyle(cvStyle).layout === 'default' && (cv.columns || 2) === 1 && (
               <div className="cv-layout-control">
                 <label>Education &amp; Languages</label>
@@ -1308,7 +1326,7 @@ const CVBuilder = () => {
         ) : parseCvStyle(cvStyle).layout === 'single' ? (
           <EditorialCV cv={cv} theme={parseCvStyle(cvStyle).theme} innerRef={printRef} overflowing={!fits} />
         ) : (
-        <div className={`cv-preview cv-style-${cvStyle}${!fits ? ' is-overflowing' : ''}`} data-cv-cols={cv.columns || 2} ref={printRef} style={{ '--cv-font-size': `${cv.fontSize || 11}pt`, '--cv-content-width': `${cv.contentWidth || 180}mm` }}>
+        <div className={`cv-preview cv-style-${cvStyle}${!fits ? ' is-overflowing' : ''}`} data-cv-cols={cv.columns || 2} data-cv-title-color={cv.titleColor || 'accent'} ref={printRef} style={{ '--cv-font-size': `${cv.fontSize || 11}pt`, '--cv-content-width': `${cv.contentWidth || 180}mm` }}>
           {/* Header */}
           <header className="cv-doc-header">
             <div className="cv-doc-header-left">

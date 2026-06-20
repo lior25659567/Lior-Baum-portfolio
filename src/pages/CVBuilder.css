@@ -1270,11 +1270,18 @@
 /* Skill guidance: hierarchy via size/weight/contrast, not color; avoid
    gray-on-gray; dividers low-contrast (gridline-subtle); restrained bold. */
 
-/* Role/title under the name — ink (not the accent), medium weight. */
+/* Role/title under the name — medium weight; color chosen via the toggle. */
 .cv-style-minimal .cv-doc-title {
-  color: var(--color-text);
-  opacity: 0.68;
   font-weight: 500;
+}
+/* Role line color option (accent orange vs dark ink). */
+.cv-preview[data-cv-title-color="accent"] .cv-doc-title {
+  color: var(--color-accent);
+  opacity: 1;
+}
+.cv-preview[data-cv-title-color="ink"] .cv-doc-title {
+  color: var(--color-text);
+  opacity: 0.7;
 }
 
 /* Section headers — brand orange accent, lighter weight than 700, hairline rule. */
