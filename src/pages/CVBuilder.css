@@ -510,6 +510,70 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Columns toggle (one / two) */
+.cv-col-toggle {
+  display: flex;
+  gap: 0.4rem;
+}
+.cv-col-btn {
+  flex: 1;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.cv-col-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.cv-col-btn.active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+/* Reorder controls (↑ ↓) for sections and skill categories */
+.cv-section-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.cv-section-row .cv-toggle-row { flex: 1; }
+.cv-reorder {
+  display: inline-flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.cv-reorder-btn {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.cv-reorder-btn:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.cv-reorder-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
 /* Style picker — 2-column grid with theme swatches */
 .cv-style-grid {
   display: grid;
@@ -732,6 +796,19 @@
   position: relative;
 }
 
+/* The CV is printed paper — always white with dark ink, never inverted by the
+   site's dark theme. Redefine the neutral tokens on the document so every
+   `.cv-doc-*` element (which reads these vars) renders on white. */
+.cv-preview {
+  background: #ffffff;
+  color: #1a1a1a;
+  --color-bg: #ffffff;
+  --color-text: #1a1a1a;
+  --color-text-muted: #5b5b5b;
+  --color-border: #e3e3e3;
+  --color-accent: #ff584a; /* brand orange — keep accent consistent on paper */
+}
+
 /* Overflow indicator — a hairline marker drawn at 297mm down from top */
 .cv-preview.is-overflowing::after,
 .cv-preview-editorial.is-overflowing::after,
@@ -847,6 +924,37 @@
   grid-template-columns: 1.15fr 0.85fr;
   gap: 1.4rem;
   align-items: start;
+}
+
+/* One-column layout option — left + right columns stack into a single flow. */
+.cv-preview[data-cv-cols="1"] .cv-doc-body {
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+/* Paired sections side by side in one row (e.g. Education + Languages). */
+.cv-doc-pair-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.4rem;
+  align-items: start;
+}
+.cv-doc-pair-col { min-width: 0; }
+.cv-doc-pair-col > .cv-doc-section { margin-bottom: 0; }
+
+/* One-column "Skills & Tools" — each category a "label · item · item" row. */
+.cv-doc-skill-row {
+  margin: 0 0 0.32rem;
+  line-height: 1.5;
+}
+.cv-doc-skill-row:last-child { margin-bottom: 0; }
+.cv-doc-skill-row strong {
+  font-weight: 600;
+  color: var(--color-text);
+  margin-right: 0.55rem;
+}
+.cv-doc-skill-row span {
+  color: var(--color-text-muted);
 }
 
 .cv-doc-col-left,
@@ -1152,9 +1260,71 @@
 }
 
 .cv-style-minimal .cv-doc-impact {
-  color: var(--color-text-muted);
+  color: var(--color-text);
+  opacity: 0.74;
   font-style: italic;
   font-weight: 400;
+}
+
+/* ── Minimal: clearer hierarchy (ink + weight + spacing, not pale gray) ── */
+/* Skill guidance: hierarchy via size/weight/contrast, not color; avoid
+   gray-on-gray; dividers low-contrast (gridline-subtle); restrained bold. */
+
+/* Role/title under the name — ink (not the accent), medium weight. */
+.cv-style-minimal .cv-doc-title {
+  color: var(--color-text);
+  opacity: 0.68;
+  font-weight: 500;
+}
+
+/* Section headers — brand orange accent, lighter weight than 700, hairline rule. */
+.cv-style-minimal .cv-doc-section h2 {
+  color: var(--color-accent);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 13%, transparent);
+  padding-bottom: 0.22rem;
+}
+
+/* Secondary text — a readable mid-tone, darker than the global muted so it
+   doesn't wash out (was the "lots of gray" problem). */
+.cv-style-minimal .cv-doc-summary p,
+.cv-style-minimal .cv-doc-contact-item {
+  color: var(--color-text);
+  opacity: 0.8;
+}
+
+/* Dates — quiet but legible, not bold. */
+.cv-style-minimal .cv-doc-period-badge {
+  color: var(--color-text);
+  opacity: 0.6;
+  font-weight: 500;
+}
+
+/* Company stays the single bold emphasis; tighten role line below it. */
+.cv-style-minimal .cv-doc-exp-company {
+  font-weight: 600;
+}
+
+/* Entry separators — hairline, low-contrast (clean, not heavy). */
+.cv-style-minimal .cv-doc-exp-item:not(:last-child) {
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+
+/* Education must read like Experience: flat (no card box), school name same
+   ink + weight as the company, hairline separator between entries. */
+.cv-style-minimal .cv-doc-edu-card {
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 0.55rem;
+}
+.cv-style-minimal .cv-doc-edu-card:not(:last-child) {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+.cv-style-minimal .cv-doc-edu-card strong {
+  font-weight: 600;
 }
 
 /* ========== Responsive ========== */
@@ -1248,6 +1418,7 @@
   .cv-doc-header { display: flex !important; flex-direction: row !important; }
   .cv-doc-header-right { align-items: flex-end !important; }
   .cv-doc-body { display: grid !important; grid-template-columns: 1.15fr 0.85fr !important; }
+  .cv-preview[data-cv-cols="1"] .cv-doc-body { grid-template-columns: 1fr !important; }
 
   /* Force all backgrounds/colors to print */
   .cv-doc-summary, .cv-doc-period-badge, .cv-doc-lang-pill, .cv-doc-badge,

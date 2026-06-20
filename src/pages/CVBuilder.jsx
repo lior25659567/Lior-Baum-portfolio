@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, Fragment } from 'react';
 import './CVBuilder.css';
 
 // SVG Icons for contact
@@ -28,6 +28,27 @@ const IconLocation = () => (
   </svg>
 );
 
+// Overall section order (used to reorder sections in the one-column layout).
+const DEFAULT_SECTION_ORDER = ['summary', 'experience', 'projects', 'volunteer', 'education', 'service', 'skills', 'certifications', 'languages', 'awards'];
+const SECTION_LABELS = {
+  summary: 'Professional Summary',
+  experience: 'Work Experience',
+  education: 'Education',
+  service: 'Service',
+  skills: 'Skills',
+  projects: 'Key Projects',
+  certifications: 'Certifications',
+  languages: 'Languages',
+  awards: 'Awards',
+  volunteer: 'Volunteer & Side Projects',
+};
+const SECTION_SHOW_FIELD = {
+  summary: 'showSummary', experience: 'showExperience', education: 'showEducation',
+  service: 'showService', skills: 'showSkills', projects: 'showProjects',
+  certifications: 'showCertifications', languages: 'showLanguages',
+  awards: 'showAwards', volunteer: 'showVolunteer',
+};
+
 const DEFAULT_CV = {
   fullName: 'LIOR BAUM',
   title: 'Product & UX Designer',
@@ -36,7 +57,7 @@ const DEFAULT_CV = {
   location: '',
   portfolio: 'https://www.baumlior.com/',
   linkedin: 'linkedin.com/in/liorbaum',
-  summary: 'Product & UX Designer with hands-on experience in B2B SaaS and MedTech, specializing in complex clinical workflows, design systems, and data-driven interfaces. Passionate about bridging user needs with business goals through research-backed design decisions and rapid prototyping. Currently exploring the intersection of design and AI-assisted development.',
+  summary: 'Product Designer with ~3 years designing end-to-end workflows in clinical healthtech and B2B SaaS — iTero™ (Align Technology), a data-privacy platform, and a physical therapy product. Cuts complex, multi-step processes down to flows users already recognize; now bringing that to B2B SaaS product teams.',
   experience: [
     {
       company: 'Align Technology',
@@ -44,20 +65,18 @@ const DEFAULT_CV = {
       period: 'Dec 2024 – Present',
       location: '',
       bullets: [
-        'Improved key parts of the iTero\u2122 scanner experience, focusing on how doctors and patients move through the system.',
-        'Redesigned navigation and content structure within the iTero\u2122 Store to enhance discoverability and usability of scanner options and accessories.',
-        'Designed the full UX experience around scanning \u2013 from patient onboarding and scan setup to post-scan insights and next steps.',
+        'Redesigned the end-to-end scan workflow — patient onboarding, scan setup, and post-scan clinical review — for the global iTero™ platform used across dental practices worldwide.',
+        'Rebuilt the information architecture and navigation of the iTero™ Store, making scanner options and accessories findable without search dead-ends or support escalation.',
+        'Defined the full clinical workflow from first patient contact through post-scan next steps, collaborating with product managers and clinical stakeholders to validate each decision point.',
       ],
     },
     {
       company: 'Shenkar College',
-      role: 'Teaching Assistant \u2013 Vibe Coding Course',
+      role: 'Teaching Assistant — AI-Assisted Design (Vibe Coding)',
       period: 'Mar 2025 – Present',
       location: '',
       bullets: [
-        'Assisting in a new interdisciplinary course that teaches designers to build functional products using AI-assisted coding tools.',
-        'Supporting students in translating design concepts into working prototypes using Cursor, Claude, and modern web frameworks.',
-        'Providing one-on-one mentorship and code reviews, bridging the gap between design thinking and technical implementation.',
+        'Co-teaching designers to ship working prototypes with Cursor, Claude, and modern web frameworks.',
       ],
     },
     {
@@ -66,9 +85,8 @@ const DEFAULT_CV = {
       period: 'Jul 2024 – Oct 2024',
       location: '',
       bullets: [
-        'Led the redesign of the asset management panel within a complex privacy system.',
-        'Designed flows that supported automated risk detection in sensitive data environments.',
-        'Partnered with privacy officers and PMs to refine logic and improve system trust and usability.',
+        'Led redesign of the asset management panel in a data-privacy compliance platform, simplifying multi-role workflows for privacy officers and compliance teams in partnership with PMs.',
+        'Designed the alert and review flow for automated risk detection, enabling privacy officers to triage sensitive-data incidents directly in the product without engineering involvement.',
       ],
     },
     {
@@ -77,22 +95,20 @@ const DEFAULT_CV = {
       period: 'Jul 2023 – Nov 2023',
       location: '',
       bullets: [
-        'Reimagined clinician dashboard to reduce friction in digital physical therapy sessions.',
-        'Conducted interviews with stakeholders and therapists to identify pain points and deliver improved task flows.',
-        'Created onboarding flows and visual guidance assets to support product adoption.',
+        'Redesigned the clinician dashboard to streamline session setup and patient progress review, based on usability testing and interviews with therapists across the platform.',
+        'Delivered improved task flows and onboarding for a digital physical therapy product, translating therapist research into a design system of reusable interface patterns.',
       ],
     },
   ],
   education: [
     { institution: 'Shenkar College of Engineering, Design and Art', degree: 'BA in Visual Communication', period: 'Graduated: 2025', details: '' },
-    { institution: 'Ort Shapira High School', degree: 'Advertising and Communication', period: '2014 – 2017', details: '' },
   ],
   service: [
     { place: '', period: '', description: '' },
   ],
   skillCategories: [
-    { name: 'Tools', skills: 'Figma, After Effects, Illustrator, Photoshop, Webflow, Vibe Coding\u2122, HTML/CSS', display: 'badges' },
-    { name: 'Skills', skills: 'UX Strategy & Design Thinking, Product Discovery & User Research, Wireframing & Prototyping, Interaction Design & Microinteractions, UI Systems & Component Libraries, Site Building in Webflow & Cursor', display: 'list' },
+    { name: 'Tools', skills: 'Figma, Cursor, Webflow, HTML/CSS, Illustrator, Photoshop, After Effects', display: 'badges' },
+    { name: 'Methods', skills: 'User Research, Usability Testing, Information Architecture, Interaction Design, Design Systems, AI-Assisted Prototyping', display: 'list' },
   ],
   projects: [{ name: '', description: '', impact: '' }],
   certifications: [{ name: '', issuer: '', year: '' }],
@@ -102,6 +118,9 @@ const DEFAULT_CV = {
   // Layout settings
   fontSize: 11,        // pt — base font size (11pt min per CV typography best practice)
   contentWidth: 180,   // mm — content area width inside A4
+  columns: 2,          // 1 = single-column flow, 2 = two-column body (default/minimal styles)
+  pairEduLang: false,  // one-column: render Education + Languages side by side in one row
+  sectionOrder: ['summary', 'experience', 'projects', 'volunteer', 'education', 'service', 'skills', 'certifications', 'languages', 'awards'],
   showSummary: true,
   showExperience: true,
   showEducation: true,
@@ -473,6 +492,28 @@ const CVBuilder = () => {
     setCv(prev => ({ ...prev, [key]: (prev[key] || []).filter((_, i) => i !== index) }));
   }, []);
 
+  // Move an array item up (-1) or down (+1), clamped to the array bounds.
+  const moveArrayItem = useCallback((key, index, dir) => {
+    setCv(prev => {
+      const arr = [...(prev[key] || [])];
+      const to = index + dir;
+      if (to < 0 || to >= arr.length) return prev;
+      [arr[index], arr[to]] = [arr[to], arr[index]];
+      return { ...prev, [key]: arr };
+    });
+  }, []);
+
+  // Reorder the overall section list (string keys) up/down.
+  const moveSection = useCallback((index, dir) => {
+    setCv(prev => {
+      const order = [...(prev.sectionOrder || DEFAULT_SECTION_ORDER)];
+      const to = index + dir;
+      if (to < 0 || to >= order.length) return prev;
+      [order[index], order[to]] = [order[to], order[index]];
+      return { ...prev, sectionOrder: order };
+    });
+  }, []);
+
   const updateBullet = useCallback((expIndex, bulletIndex, value) => {
     setCv(prev => {
       const exp = [...prev.experience];
@@ -583,6 +624,157 @@ const CVBuilder = () => {
       </label>
     </div>
   );
+
+  // Render a single CV document section by key (used for both the fixed
+  // two-column split and the reorderable one-column flow).
+  const renderCvSection = (key) => {
+    switch (key) {
+      case 'summary':
+        return (cv.showSummary !== false && cv.summary) ? (
+          <section className="cv-doc-summary"><p>{cv.summary}</p></section>
+        ) : null;
+      case 'experience':
+        return (cv.showExperience !== false && cv.experience.some(e => e.company || e.role)) ? (
+          <section className="cv-doc-section">
+            <h2>Experience</h2>
+            {cv.experience.filter(e => e.company || e.role).map((exp, i) => (
+              <div key={i} className="cv-doc-exp-item">
+                <div className="cv-doc-exp-header">
+                  <span className="cv-doc-exp-company">{exp.company}</span>
+                  {exp.role && <><span className="cv-doc-exp-sep">·</span><span className="cv-doc-exp-role">{exp.role}</span></>}
+                </div>
+                {exp.period && <span className="cv-doc-period-badge">{exp.period}</span>}
+                {exp.bullets.filter(b => b).length > 0 && (
+                  <ul className="cv-doc-bullets">
+                    {exp.bullets.filter(b => b).map((b, j) => <li key={j}>{b}</li>)}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </section>
+        ) : null;
+      case 'projects':
+        return (cv.showProjects && cv.projects.some(p => p.name)) ? (
+          <section className="cv-doc-section">
+            <h2>Key Projects</h2>
+            {cv.projects.filter(p => p.name).map((proj, i) => (
+              <div key={i} className="cv-doc-project">
+                <strong>{proj.name}</strong>
+                {proj.description && <p>{proj.description}</p>}
+                {proj.impact && <p className="cv-doc-impact">{proj.impact}</p>}
+              </div>
+            ))}
+          </section>
+        ) : null;
+      case 'volunteer':
+        return (cv.showVolunteer && cv.volunteer) ? (
+          <section className="cv-doc-section">
+            <h2>Volunteer &amp; Side Projects</h2>
+            <p className="cv-doc-body-text">{cv.volunteer}</p>
+          </section>
+        ) : null;
+      case 'education':
+        return (cv.showEducation !== false && cv.education.some(e => e.institution || e.degree)) ? (
+          <section className="cv-doc-section">
+            <h2>Education</h2>
+            {cv.education.filter(e => e.institution || e.degree).map((edu, i) => (
+              <div key={i} className="cv-doc-edu-card">
+                <strong>{edu.institution}</strong>
+                {edu.period && <span className="cv-doc-edu-period">{edu.period}</span>}
+                {edu.degree && <p className="cv-doc-edu-degree">{edu.degree}</p>}
+                {edu.details && <p className="cv-doc-edu-details">{edu.details}</p>}
+              </div>
+            ))}
+          </section>
+        ) : null;
+      case 'service':
+        return (cv.showService !== false && (cv.service || []).some(s => s.place || s.description)) ? (
+          <section className="cv-doc-section">
+            <h2>Service</h2>
+            {(cv.service || []).filter(s => s.place || s.description).map((srv, i) => (
+              <div key={i} className="cv-doc-srv-item">
+                {srv.place && <strong>{srv.place}</strong>}
+                {srv.period && <span className="cv-doc-edu-period">{srv.period}</span>}
+                {srv.description && <p className="cv-doc-edu-details">{srv.description}</p>}
+              </div>
+            ))}
+          </section>
+        ) : null;
+      case 'skills':
+        return (cv.showSkills !== false && cv.skillCategories.some(c => c.name && c.skills)) ? (
+          (cv.columns || 2) === 1 ? (
+            <section className="cv-doc-section">
+              <h2>Skills &amp; Tools</h2>
+              {cv.skillCategories.filter(c => c.name && c.skills).map((cat, i) => (
+                <p key={i} className="cv-doc-skill-row">
+                  <strong>{cat.name}</strong>
+                  <span>{cat.skills.split(',').map(s => s.trim()).filter(Boolean).join(' · ')}</span>
+                </p>
+              ))}
+            </section>
+          ) : (
+            <>
+              {cv.skillCategories.filter(c => c.name && c.skills).map((cat, i) => (
+                <section key={i} className="cv-doc-section">
+                  <h2>{cat.name}</h2>
+                  {(cat.display === 'badges') ? (
+                    <div className="cv-doc-badge-list">
+                      {cat.skills.split(',').map((skill, j) => (
+                        <span key={j} className="cv-doc-badge">{skill.trim()}</span>
+                      ))}
+                    </div>
+                  ) : (
+                    <ul className="cv-doc-skill-list">
+                      {cat.skills.split(',').map((skill, j) => (
+                        <li key={j}>{skill.trim()}</li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              ))}
+            </>
+          )
+        ) : null;
+      case 'certifications':
+        return (cv.showCertifications && cv.certifications.some(c => c.name)) ? (
+          <section className="cv-doc-section">
+            <h2>Certifications</h2>
+            {cv.certifications.filter(c => c.name).map((cert, i) => (
+              <div key={i} className="cv-doc-cert">
+                <strong>{cert.name}</strong>
+                {cert.issuer && <span className="cv-doc-cert-issuer">{cert.issuer}</span>}
+                {cert.year && <span className="cv-doc-cert-year">{cert.year}</span>}
+              </div>
+            ))}
+          </section>
+        ) : null;
+      case 'languages':
+        return (cv.showLanguages && cv.languages.some(l => l.language)) ? (
+          <section className="cv-doc-section">
+            <h2>Languages</h2>
+            <div className="cv-doc-lang-list">
+              {cv.languages.filter(l => l.language).map((lang, i) => (
+                <span key={i} className="cv-doc-lang-pill">{lang.language}{lang.level ? ` — ${lang.level}` : ''}</span>
+              ))}
+            </div>
+          </section>
+        ) : null;
+      case 'awards':
+        return (cv.showAwards && cv.awards.some(a => a.title)) ? (
+          <section className="cv-doc-section">
+            <h2>Awards</h2>
+            {cv.awards.filter(a => a.title).map((award, i) => (
+              <div key={i} className="cv-doc-cert">
+                <strong>{award.title}</strong>
+                {award.issuer && <span className="cv-doc-cert-issuer">{award.issuer}</span>}
+                {award.year && <span className="cv-doc-cert-year">{award.year}</span>}
+              </div>
+            ))}
+          </section>
+        ) : null;
+      default: return null;
+    }
+  };
 
   return (
     <div className="cv-builder">
@@ -789,6 +981,10 @@ const CVBuilder = () => {
               {cv.skillCategories.map((cat, i) => (
                 <div key={i} className="cv-card cv-card--compact">
                   <div className="cv-card-header">
+                    <div className="cv-reorder">
+                      <button className="cv-reorder-btn" title="Move up" disabled={i === 0} onClick={() => moveArrayItem('skillCategories', i, -1)}>↑</button>
+                      <button className="cv-reorder-btn" title="Move down" disabled={i === cv.skillCategories.length - 1} onClick={() => moveArrayItem('skillCategories', i, 1)}>↓</button>
+                    </div>
                     <select
                       className="cv-display-select"
                       value={cat.display || 'list'}
@@ -926,6 +1122,40 @@ const CVBuilder = () => {
                 <span>{cv.contentWidth || 180}mm</span>
               </div>
             </div>
+            {parseCvStyle(cvStyle).layout === 'default' && (
+              <div className="cv-layout-control">
+                <label>Columns</label>
+                <div className="cv-col-toggle">
+                  <button
+                    type="button"
+                    className={`cv-col-btn ${(cv.columns || 2) === 1 ? 'active' : ''}`}
+                    onClick={() => update('columns', 1)}
+                  >One column</button>
+                  <button
+                    type="button"
+                    className={`cv-col-btn ${(cv.columns || 2) === 2 ? 'active' : ''}`}
+                    onClick={() => update('columns', 2)}
+                  >Two columns</button>
+                </div>
+              </div>
+            )}
+            {parseCvStyle(cvStyle).layout === 'default' && (cv.columns || 2) === 1 && (
+              <div className="cv-layout-control">
+                <label>Education &amp; Languages</label>
+                <div className="cv-col-toggle">
+                  <button
+                    type="button"
+                    className={`cv-col-btn ${cv.pairEduLang ? 'active' : ''}`}
+                    onClick={() => update('pairEduLang', true)}
+                  >Same row</button>
+                  <button
+                    type="button"
+                    className={`cv-col-btn ${!cv.pairEduLang ? 'active' : ''}`}
+                    onClick={() => update('pairEduLang', false)}
+                  >Separate</button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         )}
@@ -935,18 +1165,17 @@ const CVBuilder = () => {
           <div className="cv-form">
             <div className="cv-form-section">
               <h3>Manage sections</h3>
-              <p className="cv-hint">Toggle which sections appear on your CV. Disabled sections are hidden from the preview and PDF.</p>
+              <p className="cv-hint">Toggle which sections appear, and use ↑ ↓ to reorder them. Order applies to the one-column layout.</p>
               <div className="cv-sections-manager">
-                <SectionToggle label="Professional Summary" field="showSummary" />
-                <SectionToggle label="Work Experience" field="showExperience" />
-                <SectionToggle label="Education" field="showEducation" />
-                <SectionToggle label="Service" field="showService" />
-                <SectionToggle label="Skills" field="showSkills" />
-                <SectionToggle label="Key Projects" field="showProjects" />
-                <SectionToggle label="Certifications" field="showCertifications" />
-                <SectionToggle label="Languages" field="showLanguages" />
-                <SectionToggle label="Awards" field="showAwards" />
-                <SectionToggle label="Volunteer & Side Projects" field="showVolunteer" />
+                {(cv.sectionOrder || DEFAULT_SECTION_ORDER).map((key, i, arr) => (
+                  <div key={key} className="cv-section-row">
+                    <div className="cv-reorder">
+                      <button className="cv-reorder-btn" title="Move up" disabled={i === 0} onClick={() => moveSection(i, -1)}>↑</button>
+                      <button className="cv-reorder-btn" title="Move down" disabled={i === arr.length - 1} onClick={() => moveSection(i, 1)}>↓</button>
+                    </div>
+                    <SectionToggle label={SECTION_LABELS[key]} field={SECTION_SHOW_FIELD[key]} />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -1079,7 +1308,7 @@ const CVBuilder = () => {
         ) : parseCvStyle(cvStyle).layout === 'single' ? (
           <EditorialCV cv={cv} theme={parseCvStyle(cvStyle).theme} innerRef={printRef} overflowing={!fits} />
         ) : (
-        <div className={`cv-preview cv-style-${cvStyle}${!fits ? ' is-overflowing' : ''}`} ref={printRef} style={{ '--cv-font-size': `${cv.fontSize || 11}pt`, '--cv-content-width': `${cv.contentWidth || 180}mm` }}>
+        <div className={`cv-preview cv-style-${cvStyle}${!fits ? ' is-overflowing' : ''}`} data-cv-cols={cv.columns || 2} ref={printRef} style={{ '--cv-font-size': `${cv.fontSize || 11}pt`, '--cv-content-width': `${cv.contentWidth || 180}mm` }}>
           {/* Header */}
           <header className="cv-doc-header">
             <div className="cv-doc-header-left">
@@ -1095,148 +1324,47 @@ const CVBuilder = () => {
             </div>
           </header>
 
-          {/* Summary */}
-          {cv.showSummary !== false && cv.summary && (
-            <section className="cv-doc-summary">
-              <p>{cv.summary}</p>
-            </section>
-          )}
-
-          {/* Two-column body */}
-          <div className="cv-doc-body">
-            {/* Left column */}
-            <div className="cv-doc-col-left">
-              {cv.showExperience !== false && cv.experience.some(e => e.company || e.role) && (
-                <section className="cv-doc-section">
-                  <h2>Experience</h2>
-                  {cv.experience.filter(e => e.company || e.role).map((exp, i) => (
-                    <div key={i} className="cv-doc-exp-item">
-                      <div className="cv-doc-exp-header">
-                        <span className="cv-doc-exp-company">{exp.company}</span>
-                        {exp.role && <><span className="cv-doc-exp-sep">·</span><span className="cv-doc-exp-role">{exp.role}</span></>}
+          {/* Document body — fixed two-column split, or reorderable single column */}
+          {(cv.columns || 2) === 1 ? (
+            <div className="cv-doc-body">
+              {(() => {
+                const eduHas = cv.showEducation !== false && cv.education.some(e => e.institution || e.degree);
+                const langHas = cv.showLanguages && cv.languages.some(l => l.language);
+                const pair = cv.pairEduLang && eduHas && langHas;
+                return (cv.sectionOrder || DEFAULT_SECTION_ORDER).map((key) => {
+                  if (pair && key === 'languages') return null; // rendered next to education
+                  if (pair && key === 'education') {
+                    return (
+                      <div key="edu-lang" className="cv-doc-pair-row">
+                        <div className="cv-doc-pair-col">{renderCvSection('education')}</div>
+                        <div className="cv-doc-pair-col">{renderCvSection('languages')}</div>
                       </div>
-                      {exp.period && <span className="cv-doc-period-badge">{exp.period}</span>}
-                      {exp.bullets.filter(b => b).length > 0 && (
-                        <ul className="cv-doc-bullets">
-                          {exp.bullets.filter(b => b).map((b, j) => <li key={j}>{b}</li>)}
-                        </ul>
-                      )}
-                    </div>
-                  ))}
-                </section>
-              )}
-
-              {cv.showProjects && cv.projects.some(p => p.name) && (
-                <section className="cv-doc-section">
-                  <h2>Key Projects</h2>
-                  {cv.projects.filter(p => p.name).map((proj, i) => (
-                    <div key={i} className="cv-doc-project">
-                      <strong>{proj.name}</strong>
-                      {proj.description && <p>{proj.description}</p>}
-                      {proj.impact && <p className="cv-doc-impact">{proj.impact}</p>}
-                    </div>
-                  ))}
-                </section>
-              )}
-
-              {cv.showVolunteer && cv.volunteer && (
-                <section className="cv-doc-section">
-                  <h2>Volunteer & Side Projects</h2>
-                  <p className="cv-doc-body-text">{cv.volunteer}</p>
-                </section>
-              )}
+                    );
+                  }
+                  return <Fragment key={key}>{renderCvSection(key)}</Fragment>;
+                });
+              })()}
             </div>
-
-            {/* Right column */}
-            <div className="cv-doc-col-right">
-              {cv.showEducation !== false && cv.education.some(e => e.institution || e.degree) && (
-                <section className="cv-doc-section">
-                  <h2>Education</h2>
-                  {cv.education.filter(e => e.institution || e.degree).map((edu, i) => (
-                    <div key={i} className="cv-doc-edu-card">
-                      <strong>{edu.institution}</strong>
-                      {edu.period && <span className="cv-doc-edu-period">{edu.period}</span>}
-                      {edu.degree && <p className="cv-doc-edu-degree">{edu.degree}</p>}
-                      {edu.details && <p className="cv-doc-edu-details">{edu.details}</p>}
-                    </div>
-                  ))}
-                </section>
-              )}
-
-              {cv.showService !== false && (cv.service || []).some(s => s.place || s.description) && (
-                <section className="cv-doc-section">
-                  <h2>Service</h2>
-                  {(cv.service || []).filter(s => s.place || s.description).map((srv, i) => (
-                    <div key={i} className="cv-doc-srv-item">
-                      {srv.place && <strong>{srv.place}</strong>}
-                      {srv.period && <span className="cv-doc-edu-period">{srv.period}</span>}
-                      {srv.description && <p className="cv-doc-edu-details">{srv.description}</p>}
-                    </div>
-                  ))}
-                </section>
-              )}
-
-              {cv.showSkills !== false && cv.skillCategories.some(c => c.name && c.skills) && (
-                <>
-                  {cv.skillCategories.filter(c => c.name && c.skills).map((cat, i) => (
-                    <section key={i} className="cv-doc-section">
-                      <h2>{cat.name}</h2>
-                      {(cat.display === 'badges') ? (
-                        <div className="cv-doc-badge-list">
-                          {cat.skills.split(',').map((skill, j) => (
-                            <span key={j} className="cv-doc-badge">{skill.trim()}</span>
-                          ))}
-                        </div>
-                      ) : (
-                        <ul className="cv-doc-skill-list">
-                          {cat.skills.split(',').map((skill, j) => (
-                            <li key={j}>{skill.trim()}</li>
-                          ))}
-                        </ul>
-                      )}
-                    </section>
-                  ))}
-                </>
-              )}
-
-              {cv.showCertifications && cv.certifications.some(c => c.name) && (
-                <section className="cv-doc-section">
-                  <h2>Certifications</h2>
-                  {cv.certifications.filter(c => c.name).map((cert, i) => (
-                    <div key={i} className="cv-doc-cert">
-                      <strong>{cert.name}</strong>
-                      {cert.issuer && <span className="cv-doc-cert-issuer">{cert.issuer}</span>}
-                      {cert.year && <span className="cv-doc-cert-year">{cert.year}</span>}
-                    </div>
-                  ))}
-                </section>
-              )}
-
-              {cv.showLanguages && cv.languages.some(l => l.language) && (
-                <section className="cv-doc-section">
-                  <h2>Languages</h2>
-                  <div className="cv-doc-lang-list">
-                    {cv.languages.filter(l => l.language).map((lang, i) => (
-                      <span key={i} className="cv-doc-lang-pill">{lang.language}{lang.level ? ` — ${lang.level}` : ''}</span>
-                    ))}
-                  </div>
-                </section>
-              )}
-
-              {cv.showAwards && cv.awards.some(a => a.title) && (
-                <section className="cv-doc-section">
-                  <h2>Awards</h2>
-                  {cv.awards.filter(a => a.title).map((award, i) => (
-                    <div key={i} className="cv-doc-cert">
-                      <strong>{award.title}</strong>
-                      {award.issuer && <span className="cv-doc-cert-issuer">{award.issuer}</span>}
-                      {award.year && <span className="cv-doc-cert-year">{award.year}</span>}
-                    </div>
-                  ))}
-                </section>
-              )}
-            </div>
-          </div>
+          ) : (
+            <>
+              {renderCvSection('summary')}
+              <div className="cv-doc-body">
+                <div className="cv-doc-col-left">
+                  {renderCvSection('experience')}
+                  {renderCvSection('projects')}
+                  {renderCvSection('volunteer')}
+                </div>
+                <div className="cv-doc-col-right">
+                  {renderCvSection('education')}
+                  {renderCvSection('service')}
+                  {renderCvSection('skills')}
+                  {renderCvSection('certifications')}
+                  {renderCvSection('languages')}
+                  {renderCvSection('awards')}
+                </div>
+              </div>
+            </>
+          )}
         </div>
         )}
         </div>
