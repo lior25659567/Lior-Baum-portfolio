@@ -8934,19 +8934,6 @@ My instructions: `;
           className="nav-back-btn"
           title="Back to home"
           aria-label="Back to home"
-          onClick={(e) => {
-            /* Prefer browser back when there's prior history so the user
-               returns to the projects grid at the scroll position they
-               left from. Falls back to the `to="/"` href for direct
-               loads, right-click / middle-click / keyboard-open which
-               should keep standard link behavior. */
-            if (e.defaultPrevented) return;
-            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-            if (typeof window !== 'undefined' && window.history.length > 1) {
-              e.preventDefault();
-              navigate(-1);
-            }
-          }}
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M11.25 4.5 6.75 9l4.5 4.5"/></svg>
         </Link>

@@ -13116,7 +13116,9 @@ textarea.editable-field {
    overflows the way it did against the old fluid 1280 viewport.) */
 
 @media (max-width: 480px) {
-  .issues-breakdown-grid {
+  /* Edit-mode only — view mode renders the fixed 1920px artboard on mobile and
+     must keep the desktop column count (this rule used to stack it to 1 col). */
+  .case-study.edit-mode .issues-breakdown-grid {
     grid-template-columns: 1fr !important;
   }
 }
@@ -17206,7 +17208,9 @@ textarea.editable-field {
   margin-right: 0.4rem;
 }
 @media (max-width: 768px) {
-  .reflection-grid { grid-template-columns: 1fr; }
+  /* Edit-mode only — view mode renders the fixed 1920px artboard on mobile and
+     must keep the desktop column count (this rule used to stack it to 1 col). */
+  .case-study.edit-mode .reflection-grid { grid-template-columns: 1fr; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
