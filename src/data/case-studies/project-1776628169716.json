@@ -21,7 +21,7 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776628169716/img-8dznv70e80.png",
+          "src": "/case-studies/project-1776628169716/img-8dznv70e80.webp",
           "caption": "",
           "isVideo": false,
           "isGif": false
@@ -32,7 +32,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776628169716/img-83eugahcc0.png",
+          "src": "/case-studies/project-1776628169716/img-83eugahcc0.webp",
           "isVideo": false,
           "isGif": false
         },
@@ -42,7 +42,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776628169716/img-c9ao2nbhh8.png",
+          "src": "/case-studies/project-1776628169716/img-c9ao2nbhh8.webp",
           "isVideo": false
         },
         {
@@ -51,7 +51,7 @@
           "fit": "cover",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776628169716/img-9c9dvnaw5c.png",
+          "src": "/case-studies/project-1776628169716/img-9c9dvnaw5c.webp",
           "isVideo": false
         }
       ],
@@ -161,7 +161,7 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776628169716/vid-2dg3iypq800.mp4",
+          "src": "https://res.cloudinary.com/dl064p341/video/upload/v1782064129/example_of_storybook_design_system_eyyqjx.mov",
           "isVideo": true,
           "embedType": "",
           "isGif": false
@@ -193,15 +193,42 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776628169716/vid-1ozwu5z4y4o.mp4",
-          "isVideo": true,
-          "embedType": "",
+          "src": "/case-studies/project-1776628169716/img-3xp44vbt7k.png",
+          "isVideo": false,
           "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-6ys844me80.png",
+          "caption": "",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-5hutkfqau8.png",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/project-1776628169716/img-bj3dx3ts0.png",
+          "isVideo": false
         }
       ],
       "splitRatio": 40,
       "gridCols": 1,
-      "imageDisplayMode": "grid",
+      "imageDisplayMode": "carousel",
       "imageCarouselInterval": 1500,
       "imageCarouselFit": "contain"
     },
