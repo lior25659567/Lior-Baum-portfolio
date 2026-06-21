@@ -56,7 +56,15 @@ const PresenterView = () => {
   // The deck reconciles to this on becoming visible. Cleared when the presenter
   // window actually closes (SPA deck-switches don't fire pagehide).
   useEffect(() => {
-    try { localStorage.setItem('cs-present-study', JSON.stringify({ slug: projectId, ts: Date.now() })); } catch { /* ignore */ }
+    const write = () => {
+      try { localStorage.setItem('cs-present-study', JSON.stringify({ slug: projectId, ts: Date.now() })); } catch { /* ignore */ }
+    };
+    write();
+    // Heartbeat: refresh the timestamp while the presenter is actually open, so
+    // the audience deck can tell a LIVE presentation apart from a leftover
+    // marker. The reconciler only follows a fresh marker.
+    const hb = setInterval(write, 5000);
+    return () => clearInterval(hb);
   }, [projectId]);
   useEffect(() => {
     const clear = () => { try { localStorage.removeItem('cs-present-study'); } catch { /* ignore */ } };

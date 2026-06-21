@@ -1609,7 +1609,11 @@ const CaseStudy = () => {
         if (!raw) return;
         const { slug, ts } = JSON.parse(raw);
         if (!slug || slug === projectId) return;
-        if (Date.now() - ts > 30 * 60 * 1000) return; // stale presenter session
+        // Only follow a LIVE presenter — the marker is heartbeated every 5s
+        // while the presenter window is open. A leftover marker (presenter
+        // closed / SPA-navigated away) goes stale within seconds and can no
+        // longer hijack normal browsing (e.g. yanking "Next project" back).
+        if (typeof ts !== 'number' || Date.now() - ts > 15 * 1000) return;
         navigate(`/project/${slug}`);
       } catch { /* ignore */ }
     };
