@@ -21,76 +21,49 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/project-1776628169716/img-8dznv70e80.webp",
+          "src": "/case-studies/project-1776628169716/img-3xp44vbt7k.png",
           "caption": "",
           "isVideo": false,
-          "isGif": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776628169716/img-83eugahcc0.webp",
-          "isVideo": false,
-          "isGif": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776628169716/img-c9ao2nbhh8.webp",
-          "isVideo": false
-        },
-        {
-          "position": "center center",
-          "size": "large",
-          "fit": "cover",
-          "wrapperBg": true,
-          "embedUrl": "",
-          "src": "/case-studies/project-1776628169716/img-9c9dvnaw5c.webp",
-          "isVideo": false
+          "isGif": false,
+          "embedType": ""
         }
       ],
       "gridCols": 1,
-      "imageDisplayMode": "carousel",
+      "imageDisplayMode": "grid",
       "splitRatio": 40,
       "imageCarouselFit": "contain",
       "imageCarouselInterval": 2000,
       "metaItems": [
         {
           "label": "Role",
-          "value": "[ADD: your role — e.g. Lead Product Designer]"
+          "value": "Product Designer & Front-End Developer"
         },
         {
           "label": "Timeline",
-          "value": "[ADD: project timeline — e.g. 12 weeks · Q3 2024]"
+          "value": "2 months · 2026"
         },
         {
           "label": "Team",
-          "value": "[ADD: team — e.g. 1 PM · 2 engineers · 1 tech lead]"
+          "value": "1 designer · 2 engineers"
         },
         {
           "label": "Tools",
-          "value": "[ADD: tools — e.g. Figma, Storybook, Claude Code]"
+          "value": "Figma · Storybook · Claude Code"
         }
       ]
     },
     {
       "type": "problem",
-      "label": "01 · The Shift · Context",
-      "title": "From design systems to infrastructure",
-      "content": "Design systems used to be libraries. Now they're infrastructure — shared governance for designers, developers, and AI.",
-      "issuesTitle": "What changed",
+      "label": "01 · The Shift · From Then to Now",
+      "title": "From pictures of pages to design as data",
+      "content": "Every tool moved design closer to code — and closer to a single source of truth. That's the path that leads to building components in Storybook.",
+      "issuesTitle": "The throughline",
       "issues": [
-        "Manual consistency → automated governance",
-        "Components → systems that collaborate with designers",
-        "Figma library → code as the source of truth"
+        "Photoshop → Figma — design left the canvas for the browser",
+        "Tokens turned design into data — one source of truth",
+        "AI-assisted — prompt-to-component, code-aware, living previews"
       ],
-      "highlight": "The system stopped being a reference. It became the infrastructure.",
+      "highlight": "Each shift pushed design and code closer. Storybook is where they meet.",
       "image": [
         {
           "position": "center center",
@@ -99,7 +72,7 @@
           "wrapperBg": false,
           "embedUrl": "/iframes/timeline.html",
           "src": "",
-          "caption": "Timeline — Photoshop → Sketch → Figma → Tokens",
+          "caption": "From design system to developer handoff",
           "isVideo": false,
           "embedType": "iframe",
           "isGif": false
@@ -108,21 +81,21 @@
       "splitRatio": 40,
       "gridCols": 1,
       "imageDisplayMode": "grid",
-      "presenterNotes": "sdsdsdssd"
+      "presenterNotes": ""
     },
     {
       "type": "problem",
       "label": "02 · System Architecture · Foundation",
       "title": "Shared by designers, developers, and AI",
-      "content": "Storybook, design tokens, and product surfaces — all governed by the same constraints, with Claude Code as the connective layer.",
+      "content": "Tokens, a living Storybook, and every page — one set of constraints, with Claude Code as the connective layer.",
       "issuesTitle": "The layers",
       "issues": [
         "Design tokens — primitive, semantic, component",
-        "Storybook — the shared visual contract",
-        "Product surfaces — scanner and web",
+        "Storybook — the living, browsable contract for every component and state",
+        "Product pages — every screen across the web app",
         "Claude/AI rules — the governance layer"
       ],
-      "highlight": "All governed by the same constraints.",
+      "highlight": "One set of constraints — Storybook is where they become visible.",
       "image": [
         {
           "position": "center center",
@@ -131,7 +104,7 @@
           "wrapperBg": false,
           "embedUrl": "/iframes/architecture.html",
           "src": "",
-          "caption": "System architecture — tokens, Storybook, surfaces, AI rules",
+          "caption": "System architecture — tokens, Storybook, pages, AI rules",
           "isVideo": false,
           "embedType": "iframe",
           "isGif": false
@@ -144,16 +117,16 @@
     {
       "type": "problem",
       "label": "03 · The System · Tokens, Components, Variants",
-      "title": "One connected library",
-      "content": "Tokens at the foundation, components on top, variants that flex to every context. Built in code, governed across designers, developers, and AI.",
+      "title": "One connected library, documented in Storybook",
+      "content": "Tokens at the foundation, components on top, variants for every context. Storybook renders every state — the living workshop where the system is built, documented, and tested.",
       "issuesTitle": "What's inside",
       "issues": [
         "Tokens — colour, typography, spacing, motion",
         "Core components — buttons, inputs, modals, cards, tables",
-        "Variants for every state, size, platform, and theme",
-        "Living docs alongside every component"
+        "Variants for every state, size, and theme",
+        "Storybook — every state documented, versioned, and testable"
       ],
-      "highlight": "Consistency was a baseline. Extensibility was the goal.",
+      "highlight": "Consistency was the baseline. Extensibility was the goal. Storybook kept both honest.",
       "image": [
         {
           "position": "center center",
@@ -175,17 +148,17 @@
     },
     {
       "type": "problem",
-      "label": "04 · Surfaces & Themes",
-      "title": "Same component. Every surface, every theme.",
-      "content": "Scanner needs bigger targets and touch. Web is compact and mouse-driven. Dark and light just respond to the token layer. One library, every context.",
+      "label": "04 · Pages & Themes",
+      "title": "Same component. Every page, every theme.",
+      "content": "One web design system. The same components compose into every page — dashboards, settings, tables, forms — while dark and light respond to the token layer.",
       "issuesTitle": "How it works",
       "issues": [
-        "Scanner — bigger targets, touch-first, gloved hands",
-        "Web — compact, dense, keyboard and mouse",
-        "Dark and light handled at the token layer",
-        "Switching is a flag — not a rebuild"
+        "One web design system — components that compose into any page",
+        "Dashboards, settings, tables, forms — all built from the same library",
+        "Dark and light handled entirely at the token layer",
+        "Switching themes is a flag — not a rebuild"
       ],
-      "highlight": "One system. Two platforms. Every theme. Same logic underneath.",
+      "highlight": "One system. Every page. Every theme. Same logic underneath.",
       "image": [
         {
           "position": "center center",
@@ -292,20 +265,25 @@
       "label": "Reflection",
       "title": "How my role as a designer has changed",
       "whatWorked": [
-        "[ADD: one specific thing that worked well — e.g. 'Governing tokens in code meant drift caught itself before it shipped']"
+        "Storybook became the single source of truth — design, engineering, and AI all judged work against the same rendered states, which ended the subjective 'is this on-system?' debates.",
+        "Putting tokens in code turned visual drift into a build error instead of a production bug — the system enforced itself.",
+        "My role shifted from drawing screens to defining rules. The clearer the constraints, the faster everyone else moved."
       ],
       "whatFailed": [
-        "[ADD: one specific thing that didn't work — e.g. 'Scoped AI rules too late; first sprint had inconsistencies the governance layer would have caught']"
+        "I assumed good work would drive adoption. It didn't — developers only reached for the system once Storybook lived inside their actual workflow, not beside it.",
+        "Early on I documented components after building them. The gap let inconsistencies slip in before the docs caught up."
       ],
       "whatYoudDoDifferently": [
-        "[ADD: one concrete change — e.g. 'Define the token contract with engineering before component work begins, not alongside it']"
+        "Wire Storybook into the dev workflow on day one — make using the system the path of least resistance.",
+        "Lock one repeatable pattern for building a component before scaling it across the library.",
+        "Document each component in Storybook as it's built, never in a cleanup pass at the end."
       ],
-      "whatYouCouldntMeasure": "[ADD: what you couldn't measure — e.g. 'Long-term adoption across rotating engineers — would need 6+ months post-launch data']"
+      "whatYouCouldntMeasure": "Whether the system keeps teaching itself as engineers rotate on and off. Real adoption only shows up 6+ months post-launch — beyond the window I had."
     },
     {
       "type": "end",
       "title": "Thank You",
-      "subtitle": "This project reflects how my role as a designer has changed.",
+      "subtitle": "A design system is only as good as its handoff — this is the system that made Storybook the way developers build.",
       "cta": "Get in touch",
       "splitRatio": 40
     }
