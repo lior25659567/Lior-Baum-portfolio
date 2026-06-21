@@ -35,6 +35,11 @@ const isVideoSrc = (v) =>
 // when the <img> had tried the URL before the file existed).
 const withCacheBuster = (url) => {
   if (!url || url.startsWith('data:')) return url;
+  // Remote/hosted URLs (Cloudinary, etc.) are immutable and cacheable — never
+  // bust them, or every navigation re-downloads and the image flashes blank
+  // (e.g. arriving at About from the heavy Playground page). Only local paths
+  // the save API may have just written need the timestamp.
+  if (/^https?:\/\//i.test(url)) return url;
   return url.includes('?') ? url : `${url}?t=${Date.now()}`;
 };
 

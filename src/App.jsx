@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useLayoutEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { EditProvider } from './context/EditContext';
 import Navigation from './components/Navigation';
@@ -18,6 +18,24 @@ const DesignSystem = lazy(() => import('./pages/DesignSystem'));
 const AgentsHub = lazy(() => import('./pages/AgentsHub'));
 const PresenterView = lazy(() => import('./pages/PresenterView'));
 
+// Reset scroll to the top of the page on every route change. SPA navigation
+// otherwise keeps the previous page's scroll offset, so arriving at e.g. About
+// from the middle of Playground would land mid-page. Runs before paint
+// (useLayoutEffect) to avoid a visible jump, and skips when the URL has a hash
+// so in-page anchor links still work. Browser scroll restoration is disabled so
+// it never fights this on back/forward.
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useLayoutEffect(() => {
+    if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual';
+  }, []);
+  useLayoutEffect(() => {
+    if (window.location.hash) return;
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 function AppLayout() {
   const location = useLocation();
   const isAbout = location.pathname === '/about';
@@ -28,6 +46,7 @@ function AppLayout() {
 
   return (
     <>
+      <ScrollToTop />
       <Navigation />
       <main>
         <RouteErrorBoundary>
