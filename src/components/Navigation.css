@@ -6,7 +6,8 @@
   right: 0;
   z-index: 1000;
   padding: var(--spacing-sm) var(--spacing-lg);
-  transition: padding var(--transition-medium), background var(--transition-medium);
+  transition: padding var(--transition-medium), background var(--transition-medium),
+    backdrop-filter var(--transition-medium), -webkit-backdrop-filter var(--transition-medium);
   background: rgba(247, 249, 244, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -14,6 +15,18 @@
 
 [data-theme="dark"] .navigation {
   background: rgba(10, 10, 10, 0.88);
+}
+
+/* Transparent over the hero (home page, scrolled to the top): no background or
+   blur, so the nav blends seamlessly into the hero with no banded seam. The
+   background fades back in via the transition above the moment you scroll. */
+.navigation.nav-transparent {
+  background: transparent;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+}
+[data-theme="dark"] .navigation.nav-transparent {
+  background: transparent;
 }
 
 .navigation.menu-open {

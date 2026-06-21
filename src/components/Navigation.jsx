@@ -9,12 +9,28 @@ import './Navigation.css';
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditingLink, setIsEditingLink] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { content, editMode, updateContent } = useEdit();
 
   // Close menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
+  }, [location]);
+
+  // Track whether the page has scrolled past the very top. On the home page the
+  // nav stays transparent while pinned over the hero (so the two read as one
+  // piece with no banded seam) and only fades its background in once you scroll
+  // down — making the hero→nav switch unnoticeable. Re-checked on route change
+  // since each page resets to the top.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  useEffect(() => {
+    setScrolled(window.scrollY > 24);
   }, [location]);
 
   // Prevent body scroll when menu is open
@@ -56,7 +72,7 @@ const Navigation = () => {
   return (
     <>
       <motion.nav
-        className={`navigation ${isMenuOpen ? 'menu-open' : ''}`}
+        className={`navigation ${isMenuOpen ? 'menu-open' : ''} ${location.pathname === '/' && !scrolled && !isMenuOpen ? 'nav-transparent' : ''}`}
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
