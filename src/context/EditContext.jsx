@@ -8,6 +8,16 @@ try {
   if (key) savedHomeData = mod[key].default || mod[key];
 } catch { /* file doesn't exist yet */ }
 
+// The About page editor saves its section to about-content.json (the
+// /api/save-about-content endpoint), so that file — when present — is the
+// authoritative source for the About section and overrides home-content.json.
+let savedAboutData = null;
+try {
+  const mod = import.meta.glob('../data/about-content.json', { eager: true });
+  const key = Object.keys(mod)[0];
+  if (key) savedAboutData = mod[key].default || mod[key];
+} catch { /* file doesn't exist yet */ }
+
 const EditContext = createContext();
 
 /* After the 2026-04-23 WebP conversion, /case-studies/*.webp|jpg paths no
@@ -194,18 +204,25 @@ const STALE_SKILLS_TITLES = new Set([
 
 // Override defaults with saved home-content.json if present
 const effectiveDefaultContent = (() => {
-  if (!savedHomeData?.content) return defaultContent;
-  const mergedAbout = { ...defaultContent.about, ...savedHomeData.content.about };
+  const homeContent = savedHomeData?.content;
+  // about-content.json (the About editor's dedicated file) wins over
+  // home-content.json for the About section, which in turn wins over defaults.
+  const mergedAbout = {
+    ...defaultContent.about,
+    ...homeContent?.about,
+    ...savedAboutData?.about,
+  };
+  if (!homeContent && !savedAboutData?.about) return defaultContent;
   if (isPlaceholderSkills(mergedAbout.skills)) mergedAbout.skills = defaultContent.about.skills;
   if (!mergedAbout.experience?.length) mergedAbout.experience = defaultContent.about.experience;
   return {
     ...defaultContent,
-    ...savedHomeData.content,
-    hero: { ...defaultContent.hero, ...savedHomeData.content.hero },
-    footer: { ...defaultContent.footer, ...savedHomeData.content.footer },
+    ...homeContent,
+    hero: { ...defaultContent.hero, ...homeContent?.hero },
+    footer: { ...defaultContent.footer, ...homeContent?.footer },
     about: mergedAbout,
-    projects: { ...defaultContent.projects, ...savedHomeData.content.projects },
-    playground: { ...defaultContent.playground, ...savedHomeData.content.playground },
+    projects: { ...defaultContent.projects, ...homeContent?.projects },
+    playground: { ...defaultContent.playground, ...homeContent?.playground },
   };
 })();
 
