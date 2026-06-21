@@ -91,10 +91,15 @@ const About = () => {
   const skillsRef = useRef(null);
   const experienceRef = useRef(null);
   const [profileImage, setProfileImage] = useState(() => {
-    const stored = normalizeProfilePath(localStorage.getItem('aboutProfileImage'));
-    if (isPersistableImage(stored)) return withCacheBuster(stored);
+    // The committed about-content.json is the published source of truth and
+    // wins, so changing the photo via git (the actual workflow) always shows —
+    // a stale localStorage path from an old in-app upload can no longer mask it.
+    // localStorage is only the fallback when the JSON has no image, and an
+    // in-session upload still updates state immediately via setProfileImage.
     const fromJson = normalizeProfilePath(savedAboutData?.profileImage);
-    return isPersistableImage(fromJson) ? withCacheBuster(fromJson) : '';
+    if (isPersistableImage(fromJson)) return withCacheBuster(fromJson);
+    const stored = normalizeProfilePath(localStorage.getItem('aboutProfileImage'));
+    return isPersistableImage(stored) ? withCacheBuster(stored) : '';
   });
   const [publishStatus, setPublishStatus] = useState('');
 
