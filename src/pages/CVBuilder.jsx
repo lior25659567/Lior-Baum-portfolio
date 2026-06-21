@@ -55,7 +55,7 @@ const DEFAULT_CV = {
   email: 'Lior2565967@gmail.com',
   phone: '050-555-0409',
   location: '',
-  portfolio: 'https://www.baumlior.com/',
+  portfolio: 'https://liorbaum.netlify.app/',
   linkedin: 'linkedin.com/in/liorbaum',
   summary: 'Product Designer with ~3 years designing end-to-end workflows in clinical healthtech and B2B SaaS — iTero™ (Align Technology), a data-privacy platform, and a physical therapy product. Cuts complex, multi-step processes down to flows users already recognize; now bringing that to B2B SaaS product teams.',
   experience: [
@@ -65,9 +65,9 @@ const DEFAULT_CV = {
       period: 'Dec 2024 – Present',
       location: '',
       bullets: [
-        'Redesigned the end-to-end scan workflow — patient onboarding, scan setup, and post-scan clinical review — for the global iTero™ platform used across dental practices worldwide.',
-        'Rebuilt the information architecture and navigation of the iTero™ Store, making scanner options and accessories findable without search dead-ends or support escalation.',
-        'Defined the full clinical workflow from first patient contact through post-scan next steps, collaborating with product managers and clinical stakeholders to validate each decision point.',
+        'Designing clinical workflows for the global iTero™ platform, from scan setup to post-scan review.',
+        'Redesigned key scan and review flows to make complex dental procedures clearer and easier to use.',
+        'Collaborating with product, clinical, and R&D teams to define scalable UX patterns for iTero™.',
       ],
     },
     {
@@ -76,7 +76,7 @@ const DEFAULT_CV = {
       period: 'Mar 2025 – Present',
       location: '',
       bullets: [
-        'Co-teaching designers to ship working prototypes with Cursor, Claude, and modern web frameworks.',
+        'Teaching design students to build working prototypes using AI tools, Cursor, Claude, and modern web frameworks.',
       ],
     },
     {
@@ -85,8 +85,8 @@ const DEFAULT_CV = {
       period: 'Jul 2024 – Oct 2024',
       location: '',
       bullets: [
-        'Led redesign of the asset management panel in a data-privacy compliance platform, simplifying multi-role workflows for privacy officers and compliance teams in partnership with PMs.',
-        'Designed the alert and review flow for automated risk detection, enabling privacy officers to triage sensitive-data incidents directly in the product without engineering involvement.',
+        'Redesigned asset-management workflows for a data-privacy compliance platform.',
+        'Designed risk detection and review flows for privacy and compliance teams.',
       ],
     },
     {
@@ -95,8 +95,8 @@ const DEFAULT_CV = {
       period: 'Jul 2023 – Nov 2023',
       location: '',
       bullets: [
-        'Redesigned the clinician dashboard to streamline session setup and patient progress review, based on usability testing and interviews with therapists across the platform.',
-        'Delivered improved task flows and onboarding for a digital physical therapy product, translating therapist research into a design system of reusable interface patterns.',
+        'Redesigned clinician dashboard flows for session setup and patient progress review.',
+        'Translated therapist research into reusable UI patterns for a digital physical therapy product.',
       ],
     },
   ],
@@ -107,12 +107,12 @@ const DEFAULT_CV = {
     { place: '', period: '', description: '' },
   ],
   skillCategories: [
-    { name: 'Tools', skills: 'Figma, Cursor, Webflow, HTML/CSS, Illustrator, Photoshop, After Effects', display: 'badges' },
-    { name: 'Methods', skills: 'User Research, Usability Testing, Information Architecture, Interaction Design, Design Systems, AI-Assisted Prototyping', display: 'list' },
+    { name: 'Tools', skills: 'Figma, Claude Code, Cursor AI, Illustrator, Photoshop, After Effects, Procreate, DaVinci Resolve, HTML, CSS, JavaScript', display: 'badges' },
+    { name: 'Skills', skills: 'Interaction design, visual design, user research, usability testing, prototyping, storytelling, wireframing, user flows, UX writing, responsive design, A/B testing, data-driven design, cross-functional collaboration', display: 'list' },
   ],
   projects: [{ name: '', description: '', impact: '' }],
   certifications: [{ name: '', issuer: '', year: '' }],
-  languages: [{ language: '', level: '' }],
+  languages: [{ language: 'English', level: 'Fluent' }, { language: 'Hebrew', level: 'Native' }],
   awards: [{ title: '', issuer: '', year: '' }],
   volunteer: '',
   // Layout settings
@@ -129,7 +129,7 @@ const DEFAULT_CV = {
   showSkills: true,
   showProjects: false,
   showCertifications: false,
-  showLanguages: false,
+  showLanguages: true,
   showAwards: false,
   showVolunteer: false,
 };
@@ -851,7 +851,7 @@ const CVBuilder = () => {
               <div className="cv-field-row">
                 <div className="cv-field">
                   <label>Portfolio URL</label>
-                  <input value={cv.portfolio} onChange={e => update('portfolio', e.target.value)} placeholder="https://www.baumlior.com/" />
+                  <input value={cv.portfolio} onChange={e => update('portfolio', e.target.value)} placeholder="https://liorbaum.netlify.app/" />
                 </div>
                 <div className="cv-field">
                   <label>LinkedIn</label>
