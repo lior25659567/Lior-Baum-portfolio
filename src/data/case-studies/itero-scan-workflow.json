@@ -1,5 +1,5 @@
 {
-  "dataVersion": 66,
+  "dataVersion": 67,
   "title": "Clinical Scanning\nWorkflow",
   "subtitle": "Redesigning the clinical scanning workflow for speed, clarity, and decision-making in real treatment conditions.",
   "category": "Clinical Workflow Redesign",
@@ -979,7 +979,7 @@
     {
       "type": "end",
       "title": "Thank You",
-      "subtitle": "The Rx looked like a form problem. It was an architecture problem.",
+      "subtitle": "The real solution wasn't Rx—it was rethinking the architecture.",
       "email": "lior2565967@gmail.com",
       "phone": "050-5550409",
       "linkedinUrl": "https://www.linkedin.com/in/lior-baum/",
