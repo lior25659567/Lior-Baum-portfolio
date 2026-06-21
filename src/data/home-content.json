@@ -141,7 +141,7 @@
           "imageFit": "contain",
           "iframeSrc": "",
           "cardBg": "gradient",
-          "description": "Redesigned the clinical scan workflow to remove the blocking popups between clinicians and starting a scan.",
+          "description": "Redesigned the end-to-end clinical scan workflow, from setup to review, removing blocking pop-ups and creating a smoother clinical experience.",
           "labels": [
             "Product Design",
             "Interaction Design",
@@ -193,7 +193,7 @@
           "iframeSrc": "",
           "cardBg": "gradient",
           "imageFit": "contain",
-          "description": "Redesigned a physiotherapy platform’s daily workflows — patient lookup, care plans, protocol building — around one card pattern.",
+          "description": "Redesigned the core daily workflows of a physiotherapy platform, including finding patients, managing care plans, and creating treatment protocols. around one card pattern.",
           "labels": [
             "Product Design",
             "UX Research",
