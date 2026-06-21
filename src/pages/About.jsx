@@ -18,6 +18,10 @@ try {
   if (key) savedAboutData = mod[key].default || mod[key];
 } catch { /* file doesn't exist yet */ }
 
+// Self-hosted, committed-to-repo portrait. Used as the default and as the
+// onError fallback so a flaky remote/CDN src can never leave the spot blank.
+const FALLBACK_PROFILE_IMAGE = '/about/profile.webp';
+
 const isPersistableImage = (v) => !!v && !v.startsWith('data:');
 
 // The default portrait is webp-only now. Any older stored path that still
@@ -437,7 +441,15 @@ const About = () => {
                     {isVideoSrc(profileImage) ? (
                       <video src={profileImage} autoPlay muted loop playsInline />
                     ) : (
-                      <img src={profileImage} alt="Profile" />
+                      <img
+                        src={profileImage}
+                        alt="Profile"
+                        onError={(e) => {
+                          if (!e.currentTarget.src.endsWith(FALLBACK_PROFILE_IMAGE)) {
+                            e.currentTarget.src = FALLBACK_PROFILE_IMAGE;
+                          }
+                        }}
+                      />
                     )}
                     <div className="image-edit-overlay">Click to change</div>
                   </>
@@ -453,7 +465,15 @@ const About = () => {
                   isVideoSrc(profileImage) ? (
                     <video src={profileImage} autoPlay muted loop playsInline />
                   ) : (
-                    <img src={profileImage} alt="Profile" />
+                    <img
+                      src={profileImage}
+                      alt="Profile"
+                      onError={(e) => {
+                        if (!e.currentTarget.src.endsWith(FALLBACK_PROFILE_IMAGE)) {
+                          e.currentTarget.src = FALLBACK_PROFILE_IMAGE;
+                        }
+                      }}
+                    />
                   )
                 ) : (
                   <div className="image-placeholder">
