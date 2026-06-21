@@ -103,9 +103,69 @@
       480,
       960,
       1440,
+      1920,
       2048
     ],
     "full": 2048
+  },
+  "/case-studies/itero-scan-workflow/img-108q6prepok.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/itero-scan-workflow/img-10i8yr5560.webp": {
+    "widths": [
+      480,
+      960,
+      1440
+    ],
+    "full": 1440
+  },
+  "/case-studies/itero-scan-workflow/img-11jh7m97o0c.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880,
+      6741
+    ],
+    "full": 6741
+  },
+  "/case-studies/itero-scan-workflow/img-13ppzspjls.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2878
+    ],
+    "full": 2878
+  },
+  "/case-studies/itero-scan-workflow/img-14c9uopols.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1913
+    ],
+    "full": 1913
+  },
+  "/case-studies/itero-scan-workflow/img-14ptax4ol0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880,
+      4262
+    ],
+    "full": 4262
   },
   "/case-studies/itero-scan-workflow/img-163xnxxw4w.webp": {
     "widths": [
@@ -116,6 +176,73 @@
     ],
     "full": 1600
   },
+  "/case-studies/itero-scan-workflow/img-178ho63ect0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2878
+    ],
+    "full": 2878
+  },
+  "/case-studies/itero-scan-workflow/img-1a24bv6csak.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/itero-scan-workflow/img-1crp5ftfldc.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2876
+    ],
+    "full": 2876
+  },
+  "/case-studies/itero-scan-workflow/img-1dn290szcw.webp": {
+    "widths": [
+      480,
+      960,
+      1280
+    ],
+    "full": 1280
+  },
+  "/case-studies/itero-scan-workflow/img-1hklwqa8auc.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/itero-scan-workflow/img-1hrv6w761k.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920
+    ],
+    "full": 1920
+  },
+  "/case-studies/itero-scan-workflow/img-1lmur40xew.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
   "/case-studies/itero-scan-workflow/img-1qeu0er8cg.webp": {
     "widths": [
       480,
@@ -124,6 +251,14 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-1qy8chgfx0.webp": {
+    "widths": [
+      480,
+      960,
+      1440
+    ],
+    "full": 1440
   },
   "/case-studies/itero-scan-workflow/img-1w2ve8n9eo.webp": {
     "widths": [
@@ -143,6 +278,26 @@
     ],
     "full": 1600
   },
+  "/case-studies/itero-scan-workflow/img-23dgjitb5o.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920
+    ],
+    "full": 1920
+  },
+  "/case-studies/itero-scan-workflow/img-26h3mjasne8.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880,
+      2902
+    ],
+    "full": 2902
+  },
   "/case-studies/itero-scan-workflow/img-26ilmo0g00.webp": {
     "widths": [
       480,
@@ -151,6 +306,14 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-28wrjys53s.webp": {
+    "widths": [
+      480,
+      960,
+      1280
+    ],
+    "full": 1280
   },
   "/case-studies/itero-scan-workflow/img-2c477ox0yo.webp": {
     "widths": [
@@ -196,6 +359,26 @@
     ],
     "full": 1600
   },
+  "/case-studies/itero-scan-workflow/img-33osvqlhm0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2870
+    ],
+    "full": 2870
+  },
+  "/case-studies/itero-scan-workflow/img-3iouixta6w.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
   "/case-studies/itero-scan-workflow/img-3mvz13kkh8.webp": {
     "widths": [
       480,
@@ -205,6 +388,14 @@
     ],
     "full": 1600
   },
+  "/case-studies/itero-scan-workflow/img-3n4qli5pvc.webp": {
+    "widths": [
+      480,
+      960,
+      1440
+    ],
+    "full": 1440
+  },
   "/case-studies/itero-scan-workflow/img-4a434ejgwg.webp": {
     "widths": [
       480,
@@ -213,6 +404,16 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-4gnykp544g.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
   },
   "/case-studies/itero-scan-workflow/img-4ia2al00ec.webp": {
     "widths": [
@@ -241,6 +442,16 @@
     ],
     "full": 1920
   },
+  "/case-studies/itero-scan-workflow/img-4v5lzkwh2o.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
   "/case-studies/itero-scan-workflow/img-58re9pw3k.webp": {
     "widths": [
       480,
@@ -250,6 +461,15 @@
     ],
     "full": 1600
   },
+  "/case-studies/itero-scan-workflow/img-59lf56vcn4.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920
+    ],
+    "full": 1920
+  },
   "/case-studies/itero-scan-workflow/img-5jzxqvcqfs.webp": {
     "widths": [
       480,
@@ -258,6 +478,14 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-5ljyfdsz90.webp": {
+    "widths": [
+      480,
+      960,
+      1236
+    ],
+    "full": 1236
   },
   "/case-studies/itero-scan-workflow/img-5pdk4g6ngg.webp": {
     "widths": [
@@ -285,6 +513,16 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-5zxvdpxe88.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2878
+    ],
+    "full": 2878
   },
   "/case-studies/itero-scan-workflow/img-6akvwfbgtc.webp": {
     "widths": [
@@ -322,6 +560,16 @@
     ],
     "full": 1600
   },
+  "/case-studies/itero-scan-workflow/img-6s57kfmq7o.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
   "/case-studies/itero-scan-workflow/img-6tols6qi64.webp": {
     "widths": [
       480,
@@ -331,6 +579,16 @@
     ],
     "full": 1600
   },
+  "/case-studies/itero-scan-workflow/img-6v6qayitu4.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
   "/case-studies/itero-scan-workflow/img-6wrqetdb6w.webp": {
     "widths": [
       480,
@@ -339,6 +597,17 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-73988r6wpso.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880,
+      4416
+    ],
+    "full": 4416
   },
   "/case-studies/itero-scan-workflow/img-75hrod5cu0.webp": {
     "widths": [
@@ -367,6 +636,16 @@
     ],
     "full": 1600
   },
+  "/case-studies/itero-scan-workflow/img-8myvnhq20w.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
   "/case-studies/itero-scan-workflow/img-8n1xpfe880.webp": {
     "widths": [
       480,
@@ -394,6 +673,16 @@
     ],
     "full": 1600
   },
+  "/case-studies/itero-scan-workflow/img-8scq4b0bbc.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
   "/case-studies/itero-scan-workflow/img-91stftgb10.webp": {
     "widths": [
       480,
@@ -402,6 +691,36 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-9399qcjdwc.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/itero-scan-workflow/img-9c8jecasrc.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2878
+    ],
+    "full": 2878
+  },
+  "/case-studies/itero-scan-workflow/img-9ck3jq30yo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2878
+    ],
+    "full": 2878
   },
   "/case-studies/itero-scan-workflow/img-9gb9xiaoyc.webp": {
     "widths": [
@@ -429,6 +748,15 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-aqspm4gaww.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920
+    ],
+    "full": 1920
   },
   "/case-studies/itero-scan-workflow/img-b7q2i3k38c.webp": {
     "widths": [
@@ -473,6 +801,26 @@
     ],
     "full": 1600
   },
+  "/case-studies/itero-scan-workflow/img-ci5p9rz4lc.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/itero-scan-workflow/img-cy7ucjs8u0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2639
+    ],
+    "full": 2639
+  },
   "/case-studies/itero-scan-workflow/img-d49102m1c.webp": {
     "widths": [
       480,
@@ -490,6 +838,25 @@
     ],
     "full": 1600
   },
+  "/case-studies/itero-scan-workflow/img-e18ubxd5eo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920
+    ],
+    "full": 1920
+  },
+  "/case-studies/itero-scan-workflow/img-e382hxcguo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
   "/case-studies/itero-scan-workflow/img-g3lsfkemtc.webp": {
     "widths": [
       480,
@@ -498,6 +865,27 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-gbt60p4dc0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/itero-scan-workflow/img-gex5fzttfs.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880,
+      2882
+    ],
+    "full": 2882
   },
   "/case-studies/itero-scan-workflow/img-ghr5xr5fic.webp": {
     "widths": [
@@ -544,6 +932,16 @@
     ],
     "full": 1600
   },
+  "/case-studies/itero-scan-workflow/img-jdb8sw8648.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
   "/case-studies/itero-scan-workflow/img-js52z59i8w.webp": {
     "widths": [
       480,
@@ -562,6 +960,36 @@
     ],
     "full": 1600
   },
+  "/case-studies/itero-scan-workflow/img-k19yigcasg.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/itero-scan-workflow/img-kq0vcpx8fo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/itero-scan-workflow/img-l2uav3nae8.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2872
+    ],
+    "full": 2872
+  },
   "/case-studies/itero-scan-workflow/img-l87h2jkfv0.webp": {
     "widths": [
       480,
@@ -571,6 +999,17 @@
     ],
     "full": 1600
   },
+  "/case-studies/itero-scan-workflow/img-lel5s285kg.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880,
+      2902
+    ],
+    "full": 2902
+  },
   "/case-studies/itero-scan-workflow/img-mdl2hftxfc.webp": {
     "widths": [
       480,
@@ -579,6 +1018,24 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/itero-scan-workflow/img-morqwmjyo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2876
+    ],
+    "full": 2876
+  },
+  "/case-studies/itero-scan-workflow/img-obuzpg5d0.webp": {
+    "widths": [
+      480,
+      960,
+      1120
+    ],
+    "full": 1120
   },
   "/case-studies/itero-scan-workflow/img-ojnudsaui8.webp": {
     "widths": [
@@ -598,12 +1055,41 @@
     ],
     "full": 1600
   },
+  "/case-studies/itero-scan-workflow/img-t2to0gdcf0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880,
+      6389
+    ],
+    "full": 6389
+  },
   "/case-studies/itero-scan-workflow/img-t3sgtn400.webp": {
     "widths": [
       480,
       722
     ],
     "full": 722
+  },
+  "/case-studies/itero-scan-workflow/img-t6og3qruo0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/itero-scan-workflow/img-ubpw6k7cw.webp": {
+    "widths": [
+      480,
+      960,
+      1280
+    ],
+    "full": 1280
   },
   "/case-studies/itero-scan-workflow/img-uykask3eo.webp": {
     "widths": [
@@ -620,6 +1106,91 @@
       922
     ],
     "full": 922
+  },
+  "/case-studies/itero-scan-workflow/img-zh5bmjp60.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/project-1776014998709/img-1151oh706o0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2874
+    ],
+    "full": 2874
+  },
+  "/case-studies/project-1776014998709/img-125zvm77a8g.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1448
+    ],
+    "full": 1448
+  },
+  "/case-studies/project-1776014998709/img-186j8andvk.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/project-1776014998709/img-1bbxmaemxc.webp": {
+    "widths": [
+      480,
+      960,
+      1120
+    ],
+    "full": 1120
+  },
+  "/case-studies/project-1776014998709/img-1jz259ft1o.webp": {
+    "widths": [
+      480,
+      960,
+      1120
+    ],
+    "full": 1120
+  },
+  "/case-studies/project-1776014998709/img-1kpvq4sizhc.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/project-1776014998709/img-1n6bnqqzoio.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/project-1776014998709/img-1te5c1kqfg.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
   },
   "/case-studies/project-1776014998709/img-1v3xk53sa0.webp": {
     "widths": [
@@ -666,6 +1237,16 @@
     ],
     "full": 1600
   },
+  "/case-studies/project-1776014998709/img-324afqhug8.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
   "/case-studies/project-1776014998709/img-35rxbmx9w0.webp": {
     "widths": [
       480,
@@ -675,6 +1256,57 @@
     ],
     "full": 1600
   },
+  "/case-studies/project-1776014998709/img-3qwdyicll0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880,
+      3040
+    ],
+    "full": 3040
+  },
+  "/case-studies/project-1776014998709/img-4bk68uggf0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2878
+    ],
+    "full": 2878
+  },
+  "/case-studies/project-1776014998709/img-4fxx1cqmpo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/project-1776014998709/img-4pgnx6eoj4.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/project-1776014998709/img-4q16mo67bk.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2876
+    ],
+    "full": 2876
+  },
   "/case-studies/project-1776014998709/img-5s72t1zyj0.webp": {
     "widths": [
       480,
@@ -683,6 +1315,14 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-6rtq9b9u0.webp": {
+    "widths": [
+      480,
+      960,
+      1440
+    ],
+    "full": 1440
   },
   "/case-studies/project-1776014998709/img-6y3e4fy8w0.webp": {
     "widths": [
@@ -702,6 +1342,16 @@
     ],
     "full": 1600
   },
+  "/case-studies/project-1776014998709/img-7br99f1k6o.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
   "/case-studies/project-1776014998709/img-7hxw7sh0g0.webp": {
     "widths": [
       480,
@@ -711,6 +1361,24 @@
     ],
     "full": 1600
   },
+  "/case-studies/project-1776014998709/img-7nltfqu4k.webp": {
+    "widths": [
+      480,
+      960,
+      1439
+    ],
+    "full": 1439
+  },
+  "/case-studies/project-1776014998709/img-7vc4bc2hzg.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
   "/case-studies/project-1776014998709/img-7zblvi8vj8.webp": {
     "widths": [
       480,
@@ -719,6 +1387,14 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-84h1dybaw.webp": {
+    "widths": [
+      480,
+      960,
+      1120
+    ],
+    "full": 1120
   },
   "/case-studies/project-1776014998709/img-87shh9vrr4.webp": {
     "widths": [
@@ -737,6 +1413,66 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-9d7zcuw3i8.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/project-1776014998709/img-9nk0gkuos0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/project-1776014998709/img-9vfcz4002o.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2878
+    ],
+    "full": 2878
+  },
+  "/case-studies/project-1776014998709/img-a508ey41xs.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/project-1776014998709/img-a7ul96shsc.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2878
+    ],
+    "full": 2878
+  },
+  "/case-studies/project-1776014998709/img-adpyo5ov7c.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2876
+    ],
+    "full": 2876
   },
   "/case-studies/project-1776014998709/img-b4gk9toqg0.webp": {
     "widths": [
@@ -774,6 +1510,26 @@
     ],
     "full": 1600
   },
+  "/case-studies/project-1776014998709/img-czr9dnwjqo.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2868
+    ],
+    "full": 2868
+  },
+  "/case-studies/project-1776014998709/img-edpdx9mk8o.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2876
+    ],
+    "full": 2876
+  },
   "/case-studies/project-1776014998709/img-eep6296pc0.webp": {
     "widths": [
       480,
@@ -782,6 +1538,16 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-gflty6ufe0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
   },
   "/case-studies/project-1776014998709/img-hs4e511h0.webp": {
     "widths": [
@@ -819,6 +1585,16 @@
     ],
     "full": 1600
   },
+  "/case-studies/project-1776014998709/img-mlkys3yp6w.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
   "/case-studies/project-1776014998709/img-mpp2k7l6t4.webp": {
     "widths": [
       480,
@@ -837,6 +1613,27 @@
     ],
     "full": 1600
   },
+  "/case-studies/project-1776014998709/img-n5xp1ifl7c.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880,
+      4096
+    ],
+    "full": 4096
+  },
+  "/case-studies/project-1776014998709/img-n6hz4on1f4.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
   "/case-studies/project-1776014998709/img-ojgbryqvo.webp": {
     "widths": [
       480,
@@ -845,6 +1642,14 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-onhducg7s.webp": {
+    "widths": [
+      480,
+      960,
+      1440
+    ],
+    "full": 1440
   },
   "/case-studies/project-1776014998709/img-poyh2up2g.webp": {
     "widths": [
@@ -855,6 +1660,27 @@
     ],
     "full": 1600
   },
+  "/case-studies/project-1776014998709/img-q2qezcur0c.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2876
+    ],
+    "full": 2876
+  },
+  "/case-studies/project-1776014998709/img-vd6t8dpj40.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880,
+      5700
+    ],
+    "full": 5700
+  },
   "/case-studies/project-1776014998709/img-z1u1z0y00.webp": {
     "widths": [
       480,
@@ -863,6 +1689,26 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/project-1776014998709/img-zliyqeem00.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2874
+    ],
+    "full": 2874
+  },
+  "/case-studies/project-1776014998709/img-zo6ockzt3c.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2876
+    ],
+    "full": 2876
   },
   "/case-studies/project-1776617213367/img-1znfkza5l4g.webp": {
     "widths": [
@@ -952,6 +1798,7 @@
       480,
       960,
       1440,
+      1920,
       1992
     ],
     "full": 1992
@@ -1001,6 +1848,16 @@
     ],
     "full": 1600
   },
+  "/case-studies/project-1776628169716/img-3n5t619xtg.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2872
+    ],
+    "full": 2872
+  },
   "/case-studies/project-1776628169716/img-3pfdtniqfs.webp": {
     "widths": [
       480,
@@ -1036,6 +1893,16 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-628aptxdq4.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2854
+    ],
+    "full": 2854
   },
   "/case-studies/project-1776628169716/img-64weyca41s.webp": {
     "widths": [
@@ -1091,6 +1958,16 @@
     ],
     "full": 1600
   },
+  "/case-studies/project-1776628169716/img-7oj0ek8gbs.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2874
+    ],
+    "full": 2874
+  },
   "/case-studies/project-1776628169716/img-7tq37ttkk0.webp": {
     "widths": [
       480,
@@ -1109,6 +1986,16 @@
     ],
     "full": 1600
   },
+  "/case-studies/project-1776628169716/img-83eugahcc0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2878
+    ],
+    "full": 2878
+  },
   "/case-studies/project-1776628169716/img-8dr3hhxg00.webp": {
     "widths": [
       480,
@@ -1117,6 +2004,36 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-8dznv70e80.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/project-1776628169716/img-8oelx7f074.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2876
+    ],
+    "full": 2876
+  },
+  "/case-studies/project-1776628169716/img-9c9dvnaw5c.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
   },
   "/case-studies/project-1776628169716/img-acdebrcl0.webp": {
     "widths": [
@@ -1127,6 +2044,76 @@
     ],
     "full": 1600
   },
+  "/case-studies/project-1776628169716/img-c9ao2nbhh8.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/project-1776628169716/img-d5z6lo6abs.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/project-1776628169716/img-dh6tf1foms.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/project-1776628169716/img-dy87eu7kl0.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/project-1776628169716/img-eksyww3x48.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
+  },
+  "/case-studies/project-1776628169716/img-gyn8kmpo60.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2878
+    ],
+    "full": 2878
+  },
+  "/case-studies/project-1776628169716/img-hzbo8htz80.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2878
+    ],
+    "full": 2878
+  },
   "/case-studies/project-1776628169716/img-ogicp3wg.webp": {
     "widths": [
       480,
@@ -1135,6 +2122,16 @@
       1600
     ],
     "full": 1600
+  },
+  "/case-studies/project-1776628169716/img-vkh1u78gw.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2880
+    ],
+    "full": 2880
   },
   "/case-studies/thumbnails/aohs-navigation.webp": {
     "widths": [
