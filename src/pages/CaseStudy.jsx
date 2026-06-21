@@ -5,6 +5,7 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import AnimatedButton from '../components/AnimatedButton';
 import { useEdit } from '../context/EditContext';
 import { getCaseStudyData, getCaseStudyDataAsync, saveCaseStudyData, resetCaseStudyData, listSavedCaseStudies, slideTemplates, templateCategories, compressImage, compressDataImages, isMobileViewport, defaultCaseStudies, contactDefaults } from '../data/caseStudyData';
+import { savedCaseStudies } from '../data/case-studies/index.js';
 import { slideTemplateDocs } from '../data/slideTemplateDocs';
 import { IFRAME_FILES } from '../iframes';
 import imageVariantManifest from '../data/case-study-image-variants.json';
@@ -7246,11 +7247,29 @@ My instructions: `;
                   // reordering on Home automatically changes what comes next.
                   const items = content?.projects?.items || [];
                   const removedIds = content?.projects?.removedIds || [];
-                  const ordered = items.filter(p => !removedIds.includes(p.id));
-                  const curIdx = ordered.findIndex(p => p.id === projectId);
-                  const next = ordered.length > 0
-                    ? ordered[((curIdx >= 0 ? curIdx : -1) + 1 + ordered.length) % ordered.length]
-                    : null;
+                  let ordered = items
+                    .filter(p => !removedIds.includes(p.id))
+                    .map(p => p.id);
+                  // Self-heal: a stale localStorage `siteContent` can hold an
+                  // old/short project list that doesn't include the current
+                  // study (or has only one item), which made "next" wrap back
+                  // to the SAME project. Fall back to the canonical, deploy-fresh
+                  // case-study order in those cases so "next" always advances.
+                  const canonical = Object.keys(savedCaseStudies);
+                  if (ordered.length < 2 || !ordered.includes(projectId)) {
+                    ordered = canonical;
+                  }
+                  // Walk forward to the first DIFFERENT project — never restart
+                  // the one we're already on.
+                  let nextId = null;
+                  if (ordered.length > 0) {
+                    const start = ordered.indexOf(projectId);
+                    for (let step = 1; step <= ordered.length; step++) {
+                      const cand = ordered[(start + step + ordered.length * 2) % ordered.length];
+                      if (cand && cand !== projectId) { nextId = cand; break; }
+                    }
+                  }
+                  const next = nextId ? { id: nextId } : null;
                   // Client-side nav keeps the CaseStudy mounted so the
                   // `case-study-active` body class stays on — without it the
                   // footer would flash during the route transition.
