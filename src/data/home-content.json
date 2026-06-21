@@ -5,7 +5,7 @@
       "greeting": "Hello! I'm ",
       "name": "Lior Baum",
       "description": "I love working on platforms and complex products with awesome people that are passionate about what they're building. I think in systems, I'm savvy with code and AI, and I go just as deep on the details as I do on the big picture.",
-      "cvLink": "https://drive.google.com/file/d/1XMml6ERqb5VLbpUFNfY84GAjOWJ5BaoF/view?usp=sharing",
+      "cvLink": "https://drive.google.com/file/d/1W07ISUBXKBv3uHl8N8IKWN2x1OshdI5X/view?usp=sharing",
       "ctaText": "View work",
       "ctaLink": "#projects"
     },
@@ -136,7 +136,7 @@
           "title": "iTero Scan Workflow",
           "category": "Product Design · Redesigning a complex clinical flow.",
           "year": "2024",
-          "image": "/home/img-7cfa91115da7.webp",
+          "image": "/home/img-7cfa91115da7.png",
           "mediaMode": "template",
           "imageFit": "contain",
           "iframeSrc": "",
@@ -152,7 +152,7 @@
           "id": "project-1776014998709",
           "title": "Patient Report Redesign",
           "category": "Product Design · Turning complex data into clarity.",
-          "image": "/home/img-c91ef4a2118d.webp",
+          "image": "/home/img-c91ef4a2118d.png",
           "year": "2026",
           "mediaMode": "template",
           "iframeSrc": "",
@@ -169,7 +169,7 @@
           "id": "project-1776628169716",
           "title": "Design System in Claude Code",
           "category": "Design Systems · Scalable UI built with AI.",
-          "image": "/home/img-841341ca00ba.webp",
+          "image": "/home/img-841341ca00ba.png",
           "year": "2026",
           "tag": "work",
           "mediaMode": "template",
@@ -188,7 +188,7 @@
           "title": "Simplifying Remote Physical Therapy",
           "category": "Product Design · Streamlining a B2B clinician workflow.",
           "year": "2023",
-          "image": "/home/img-f69b0e037182.webp",
+          "image": "/home/img-f69b0e037182.png",
           "mediaMode": "template",
           "iframeSrc": "",
           "cardBg": "gradient",
@@ -243,7 +243,7 @@
             {
               "id": "m-1780855025408",
               "type": "image",
-              "src": "/home/img-bc26220e5ecc.webp",
+              "src": "/home/img-bc26220e5ecc.png",
               "aspect": 1.6038,
               "fullWidth": false,
               "perRow": 3
@@ -251,39 +251,39 @@
             {
               "id": "m-1780855033625",
               "type": "image",
-              "src": "/home/img-ccd400000a9d.webp",
+              "src": "/home/img-ccd400000a9d.png",
               "aspect": 1.6067,
               "perRow": 3
             },
             {
               "id": "m-1780855040658",
               "type": "image",
-              "src": "/home/img-623eaff2b4ab.webp",
+              "src": "/home/img-623eaff2b4ab.png",
               "aspect": 1.602,
               "perRow": 3
             },
             {
               "id": "m-1780855048075",
               "type": "image",
-              "src": "/home/img-941ab43c2ab4.webp",
+              "src": "/home/img-941ab43c2ab4.png",
               "aspect": 1.5978
             },
             {
               "id": "m-1780855055908",
               "type": "image",
-              "src": "/home/img-f8cff3a80dd2.webp",
+              "src": "/home/img-f8cff3a80dd2.png",
               "aspect": 1.6042
             },
             {
               "id": "m-1780855069308",
               "type": "image",
-              "src": "/home/img-57c769751050.webp",
+              "src": "/home/img-57c769751050.png",
               "aspect": 1.6
             },
             {
               "id": "m-1780855076226",
               "type": "image",
-              "src": "/home/img-849630e6ee15.webp",
+              "src": "/home/img-849630e6ee15.png",
               "aspect": 1.6
             }
           ],
@@ -313,37 +313,37 @@
             {
               "id": "m-1780856006768",
               "type": "image",
-              "src": "/home/img-78e979eab5e3.webp",
+              "src": "/home/img-78e979eab5e3.png",
               "aspect": 1.6
             },
             {
               "id": "m-1780856009202",
               "type": "image",
-              "src": "/home/img-1eccf072f6cb.webp",
+              "src": "/home/img-1eccf072f6cb.png",
               "aspect": 1.6
             },
             {
               "id": "m-1780856009668",
               "type": "image",
-              "src": "/home/img-6fdce66b0125.webp",
+              "src": "/home/img-6fdce66b0125.png",
               "aspect": 1.5989
             },
             {
               "id": "m-1780856026504",
               "type": "image",
-              "src": "/home/img-c62973a0834a.webp",
+              "src": "/home/img-c62973a0834a.png",
               "aspect": 1.6
             },
             {
               "id": "m-1780856031452",
               "type": "image",
-              "src": "/home/img-1e23068ba5be.webp",
+              "src": "/home/img-1e23068ba5be.png",
               "aspect": 1.6
             },
             {
               "id": "m-1780856036235",
               "type": "image",
-              "src": "/home/img-b0b2689e10f7.webp",
+              "src": "/home/img-b0b2689e10f7.png",
               "aspect": 1.5996
             }
           ],
@@ -376,55 +376,55 @@
             {
               "id": "m-1780856769385",
               "type": "image",
-              "src": "/home/img-a222b8791eda.webp",
+              "src": "/home/img-a222b8791eda.png",
               "aspect": 1.6
             },
             {
               "id": "m-1780856772867",
               "type": "image",
-              "src": "/home/img-fc6b4973bd11.webp",
+              "src": "/home/img-fc6b4973bd11.png",
               "aspect": 1.6007
             },
             {
               "id": "m-1780856784318",
               "type": "image",
-              "src": "/home/img-0f3887694cd7.webp",
+              "src": "/home/img-0f3887694cd7.png",
               "aspect": 1.5978
             },
             {
               "id": "m-1780856786801",
               "type": "image",
-              "src": "/home/img-b0a30a6c1df5.webp",
+              "src": "/home/img-b0a30a6c1df5.png",
               "aspect": 1.6
             },
             {
               "id": "m-1780856795651",
               "type": "image",
-              "src": "/home/img-2fd94337921e.webp",
+              "src": "/home/img-2fd94337921e.png",
               "aspect": 1.6
             },
             {
               "id": "m-1780856798534",
               "type": "image",
-              "src": "/home/img-72214efe1bab.webp",
+              "src": "/home/img-72214efe1bab.png",
               "aspect": 1.6
             },
             {
               "id": "m-1780856817217",
               "type": "image",
-              "src": "/home/img-dec3622fff7e.webp",
+              "src": "/home/img-dec3622fff7e.png",
               "aspect": 1.6
             },
             {
               "id": "m-1780856820834",
               "type": "image",
-              "src": "/home/img-134959e79ec8.webp",
+              "src": "/home/img-134959e79ec8.png",
               "aspect": 1.6
             },
             {
               "id": "m-1780856834317",
               "type": "image",
-              "src": "/home/img-9b338844e90c.webp",
+              "src": "/home/img-9b338844e90c.png",
               "aspect": 1.6018
             }
           ]
