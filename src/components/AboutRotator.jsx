@@ -23,7 +23,7 @@ export const DEFAULT_SKILLS = [
   'Optimism',
   'Shared Wins',
   'Mentorship',
-  'Calm Under Pressure',
+  'Clear Thinking',
   'Good Coffee',
 ];
 
