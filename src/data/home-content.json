@@ -176,7 +176,7 @@
           "iframeSrc": "",
           "cardBg": "gradient",
           "imageFit": "contain",
-          "description": "A design system governing tokens, components, and AI-collaboration rules across scanner and web surfaces.",
+          "description": "Creating and scaling a design system with AI, then integrating it into Storybook to align tokens, components, and interaction patterns.",
           "labels": [
             "Design Systems",
             "Design Engineering",
