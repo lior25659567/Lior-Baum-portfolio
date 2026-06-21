@@ -61,7 +61,10 @@ const PresenterView = () => {
   useEffect(() => {
     const clear = () => { try { localStorage.removeItem('cs-present-study'); } catch { /* ignore */ } };
     window.addEventListener('pagehide', clear);
-    return () => window.removeEventListener('pagehide', clear);
+    // Also clear on unmount: leaving the presenter via in-app (SPA) navigation
+    // doesn't fire pagehide, so without this the marker would persist and make
+    // the audience deck reconcile back to the last-presented study for 30 min.
+    return () => { window.removeEventListener('pagehide', clear); clear(); };
   }, []);
 
   // Switching case studies remounts on the same component (only the param

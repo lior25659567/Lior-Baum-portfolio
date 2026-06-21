@@ -7292,6 +7292,12 @@ My instructions: `;
                       presenterChannelRef.current?.postMessage({ type: 'goto-study', slug: nextId, src: presenterPeerId.current });
                     }
                     if (followMode) return;
+                    // Deliberate in-deck navigation means the user is driving,
+                    // not following a presenter. Drop any stale presenter-follow
+                    // marker so the focus/visibility reconciler can't yank them
+                    // back to a previously-presented study (was sending "Next
+                    // project" back to the same case study).
+                    try { localStorage.removeItem('cs-present-study'); } catch { /* ignore */ }
                     if (to.startsWith('/project/')) {
                       const nextId = to.slice('/project/'.length);
                       const data = getCaseStudyData(nextId);
