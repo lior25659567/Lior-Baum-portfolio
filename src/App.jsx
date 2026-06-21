@@ -31,7 +31,22 @@ function ScrollToTop() {
   }, []);
   useLayoutEffect(() => {
     if (window.location.hash) return;
-    window.scrollTo(0, 0);
+    // Jump instantly to the top. `html { scroll-behavior: smooth }` would
+    // otherwise animate the jump, and because route pages are lazy-loaded the
+    // animation gets interrupted when the new (often tall) page mounts a tick
+    // later — stranding you mid-page. Disable smooth for the reset, then
+    // re-assert over the next frames so the lazy mount can't re-anchor scroll.
+    const root = document.documentElement;
+    const toTop = () => {
+      const prev = root.style.scrollBehavior;
+      root.style.scrollBehavior = 'auto';
+      window.scrollTo(0, 0);
+      root.style.scrollBehavior = prev;
+    };
+    toTop();
+    const raf = requestAnimationFrame(toTop);
+    const timer = setTimeout(toTop, 140);
+    return () => { cancelAnimationFrame(raf); clearTimeout(timer); };
   }, [pathname]);
   return null;
 }
