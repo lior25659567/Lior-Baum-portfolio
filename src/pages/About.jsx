@@ -20,6 +20,12 @@ try {
 
 const isPersistableImage = (v) => !!v && !v.startsWith('data:');
 
+// The default portrait is webp-only now. Any older stored path that still
+// points at /about/profile.png is remapped to the webp so the image never
+// blanks out after the PNG was removed from the repo.
+const normalizeProfilePath = (v) =>
+  typeof v === 'string' ? v.replace('/about/profile.png', '/about/profile.webp') : v;
+
 // A pasted media URL can point at a video as well as an image.
 const isVideoSrc = (v) =>
   !!v && (/\.(mp4|webm|mov|m4v|ogv|ogg)(\?|#|$)/i.test(v) || /\/video\/upload\//i.test(v) || v.startsWith('data:video'));
@@ -80,9 +86,9 @@ const About = () => {
   const skillsRef = useRef(null);
   const experienceRef = useRef(null);
   const [profileImage, setProfileImage] = useState(() => {
-    const stored = localStorage.getItem('aboutProfileImage');
+    const stored = normalizeProfilePath(localStorage.getItem('aboutProfileImage'));
     if (isPersistableImage(stored)) return withCacheBuster(stored);
-    const fromJson = savedAboutData?.profileImage;
+    const fromJson = normalizeProfilePath(savedAboutData?.profileImage);
     return isPersistableImage(fromJson) ? withCacheBuster(fromJson) : '';
   });
   const [publishStatus, setPublishStatus] = useState('');
