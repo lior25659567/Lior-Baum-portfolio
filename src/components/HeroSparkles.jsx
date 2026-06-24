@@ -29,6 +29,8 @@ const HeroSparkles = () => {
     let raf = 0;
     let running = true;
     let t = 0;
+    let parX = 0;                    // eased parallax offset (depth tilt)
+    let parY = 0;
 
     const particles = [];
     const trail = [];
@@ -47,9 +49,11 @@ const HeroSparkles = () => {
     let absorb = 0;                     // handoff pulse: cursor "swallows" the intro
     const cur = { x: 0, y: 0, vx: 0, vy: 0, has: false };
 
-    // ── Theme-aware colour ramp (our coral / warm palette) ──────────────
+    // ── Theme-aware colour ramp — our design colour system (coral/orange) ──
+    // Built off --color-accent / --color-accent-vivid so it tracks the brand
+    // palette. A warm ramp from soft amber → vivid coral, with white-hot
+    // sparkle cores added at render time for the twinkle.
     let dark = false;
-    // warm coral ramp ≈ the reference's orange ramp, in brand colours
     let palette = ['#ffb38a', '#ff8a5c', '#ff6a5d', '#ff584a', '#cc3520'];
     let trailCore = '#ffd9c2'; // hot comet core
     const readTheme = () => {
@@ -87,9 +91,9 @@ const HeroSparkles = () => {
           by,
           mx: bx,            // live position (eased by the cursor swirl)
           my: by,
-          r: rand(8, 22),
+          r: rand(7, 18),    // soft ambient glow points (not sharp confetti)
           depth: rand(0.3, 1),
-          baseA: rand(0.05, 0.16),
+          baseA: rand(0.035, 0.09),
           tw: rand(0.4, 1.2),
           ph: rand(0, Math.PI * 2),
           color: palette[(Math.random() * palette.length) | 0],
@@ -110,14 +114,22 @@ const HeroSparkles = () => {
       if (reduce) drawStatic();
     };
 
-    // Soft radial glow — the building block of the metaball look.
+    // Radial glow shaped like the reference shader's inverse-distance field
+    // (brightness ∝ 1/distance): a hot, near-blown-out core with a long, slow
+    // falloff so neighbouring glows fuse into plasma-like metaballs rather than
+    // reading as separate soft dots. Drawn additively (see render) so overlaps
+    // accumulate toward white exactly like `sum(color / distance)`.
     const glow = (x, y, radius, color, alpha) => {
       if (radius <= 0 || alpha <= 0) return;
       const [r, g, b] = typeof color === 'string' ? hexToRgb(color) : color;
       const grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
-      grad.addColorStop(0, `rgba(${r},${g},${b},${alpha})`);
-      grad.addColorStop(0.35, `rgba(${r},${g},${b},${alpha * 0.45})`);
-      grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+      const c = `${r},${g},${b}`;
+      grad.addColorStop(0,    `rgba(${c},${alpha})`);
+      grad.addColorStop(0.04, `rgba(${c},${alpha * 0.85})`);
+      grad.addColorStop(0.12, `rgba(${c},${alpha * 0.45})`);
+      grad.addColorStop(0.28, `rgba(${c},${alpha * 0.20})`);
+      grad.addColorStop(0.55, `rgba(${c},${alpha * 0.07})`);
+      grad.addColorStop(1,    `rgba(${c},0)`);
       ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.arc(x, y, radius, 0, Math.PI * 2);
@@ -143,6 +155,7 @@ const HeroSparkles = () => {
         mass: rand(1, 20) * (1 + energy * 0.9),
         drag: rand(0.92, 0.97),
         color: hot ? hotColor() : palette[(Math.random() * palette.length) | 0],
+        z: rand(0.5, 1.4),    // depth: <1 far (small/dim), >1 near (big/bright)
       });
     };
 
@@ -221,6 +234,13 @@ const HeroSparkles = () => {
       if (absorb < 0.01) absorb = 0;
       cur.vx *= 0.85;                    // cursor velocity bleeds off when still
       cur.vy *= 0.85;
+
+      // Eased parallax — the field tilts toward the cursor; near layers (high
+      // depth) shift more than far ones, giving the cloud real volume/3D.
+      const ptx = cur.has ? (cur.x - width / 2) : 0;
+      const pty = cur.has ? (cur.y - height / 2) : 0;
+      parX += (ptx - parX) * 0.045;
+      parY += (pty - parY) * 0.045;
 
       // After a long idle, replay the intro so the hero returns to its opening
       // state and re-invites the cursor.
@@ -307,18 +327,32 @@ const HeroSparkles = () => {
         }
       }
 
-      // Mote glows at their live (swirled) positions.
+      // Mote glows at their live (swirled) positions, offset by depth-parallax
+      // and scaled by depth so near motes read larger/brighter than far ones.
       for (const m of motes) {
         const tw = 0.6 + 0.4 * Math.sin(t * m.tw + m.ph);
-        glow(m.mx, m.my, m.r, m.color, m.baseA * tw);
+        const ox = -parX * m.depth * 0.06;
+        const oy = -parY * m.depth * 0.06;
+        glow(m.mx + ox, m.my + oy, m.r * (0.55 + m.depth), m.color, m.baseA * tw * (0.45 + m.depth * 0.75));
       }
 
-      // Trail — the hot comet core that the particles peel off of.
+      // Trail — the comet body. Wide, overlapping 1/r glows along the recent
+      // path fuse into a continuous luminous streak (newer = brighter), just
+      // like the shader's `i / distance` trail term.
       for (let i = 0; i < trail.length; i++) {
         const p = trail[i];
         const k = i / MAX_TRAIL;          // 0 = oldest, ~1 = newest
-        glow(p[0], p[1], 6 + k * 26, trailCore, (dark ? 0.5 : 0.28) * k * introFade);
-        glow(p[0], p[1], 2 + k * 10, '#ffffff', (dark ? 0.45 : 0.22) * k * k * introFade);
+        glow(p[0], p[1], 30 + k * 80, trailCore, (dark ? 0.18 : 0.11) * k * introFade);
+      }
+
+      // Dense head at the pointer — the brightest, tightest part of the field
+      // (the freshest trail samples in the reference), brightening with speed.
+      if (cur.has && !reduce) {
+        const cv = Math.min(1, Math.hypot(cur.vx, cur.vy) / 24);
+        const f = (0.45 + cv) * introFade;
+        glow(cur.x, cur.y, 110, trailCore, (dark ? 0.12 : 0.07) * f);
+        glow(cur.x, cur.y, 40, palette[0], (dark ? 0.18 : 0.11) * f);
+        glow(cur.x, cur.y, 16, '#ffffff', (dark ? 0.45 : 0.26) * f);
       }
 
       // Particles — fling out, slow under drag, fade as they die.
@@ -343,11 +377,19 @@ const HeroSparkles = () => {
         p.y += p.vy;
         const speed = Math.hypot(p.vx, p.vy);
         if (speed < 0.1) { particles.splice(i, 1); continue; }
-        // radius/alpha scale with mass*speed — capped so nothing balloons.
-        const energy = Math.min(0.55, (p.mass * speed) / 100);
-        const radius = 12 + energy * 90;
-        const alpha = Math.min(dark ? 0.4 : 0.26, 0.05 + energy * 1.1) * introFade;
-        glow(p.x, p.y, radius, p.color, alpha);
+        // Reach scales with mass*speed like the shader's `color/distance*mass`
+        // term — wide, additive glows that fuse into plasma metaballs, with a
+        // white-hot core that emerges where they overlap.
+        const energy = Math.min(0.6, (p.mass * speed) / 90);
+        const z = p.z || 1;          // depth: near particles bigger + brighter
+        const radius = (26 + energy * 130) * z;
+        const alpha = Math.min(dark ? 0.34 : 0.2, 0.05 + energy * 0.9) * introFade * (0.55 + z * 0.45);
+        const ox = -parX * (z - 1) * 0.05;   // near sparks parallax-shift slightly
+        const oy = -parY * (z - 1) * 0.05;
+        // single coral glow per particle — no baked white core; the white-hot
+        // centres emerge only where many of these additively overlap, exactly
+        // like the shader's summed 1/distance field.
+        glow(p.x + ox, p.y + oy, radius, p.color, alpha);
       }
 
       // Click shockwave rings — expand outward and fade.

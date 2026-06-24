@@ -85,7 +85,7 @@ const defaultProjects = [
   },
 ];
 
-const ProjectCard = ({ project, index, total, editMode, hideCardYear, onImageChange, onRemove, onUpdate, onMoveUp, onMoveDown }) => {
+const ProjectCard = ({ project, index, total, editMode, canonicalImage, hideCardYear, onImageChange, onRemove, onUpdate, onMoveUp, onMoveDown }) => {
   // When the section-level hideCardYear flag is on, collapse the year to an
   // empty string so decorative strings like "$ build --year 2024" become
   // "$ build --year " and "Display · 2024" becomes "Display · ". The
@@ -100,6 +100,26 @@ const ProjectCard = ({ project, index, total, editMode, hideCardYear, onImageCha
   const imageFit = project.imageFit === 'contain' ? 'contain' : 'cover';
   const cardBg = project.cardBg === 'gradient' ? 'gradient' : 'plain';
   const iframeSrc = (project.iframeSrc || '').trim();
+
+  // A CSS background-image can't report load failure, so a project whose
+  // `image` points at a path that no longer exists (e.g. stale edit-mode
+  // content) would render a blank frame. Probe the URL and fall back to the
+  // placeholder when it 404s, so a missing image always degrades gracefully.
+  const [imgBroken, setImgBroken] = useState(false);
+  useEffect(() => {
+    if (!project.image || project.image.startsWith('data:')) { setImgBroken(false); return; }
+    let alive = true;
+    const probe = new Image();
+    probe.onload = () => { if (alive) setImgBroken(false); };
+    probe.onerror = () => { if (alive) setImgBroken(true); };
+    probe.src = project.image;
+    return () => { alive = false; };
+  }, [project.image]);
+  // When the stored image is missing/404s, fall back to the committed (git)
+  // image for this project id so the real card image shows instead of a blank.
+  const useCanonical = imgBroken && canonicalImage && canonicalImage !== project.image;
+  const resolvedImage = useCanonical ? canonicalImage : project.image;
+  const showImage = !!resolvedImage && !(imgBroken && !useCanonical);
 
   const applyIframe = (raw) => {
     const src = toIframeSrc(raw);
@@ -1298,11 +1318,11 @@ const ProjectCard = ({ project, index, total, editMode, hideCardYear, onImageCha
               <div
                 className="project-image media-inner"
                 style={{
-                  backgroundImage: project.image ? `url(${project.image})` : undefined,
+                  backgroundImage: showImage ? `url(${resolvedImage})` : undefined,
                   backgroundSize: imageFit,
                 }}
               />
-              {!project.image && <div className="project-image-placeholder" />}
+              {!showImage && <div className="project-image-placeholder" />}
             </>
           )}
         </div>
@@ -1592,7 +1612,7 @@ const ProjectCard = ({ project, index, total, editMode, hideCardYear, onImageCha
 };
 
 const Projects = () => {
-  const { content, setContent, editMode } = useEdit();
+  const { content, setContent, editMode, homeProjectImages } = useEdit();
   const navigate = useNavigate();
   const titleRef = useRef(null);
   const gridRef = useRef(null);
@@ -1895,6 +1915,7 @@ const Projects = () => {
                   index={index}
                   total={filteredProjects.length}
                   editMode={editMode}
+                  canonicalImage={homeProjectImages?.[project.id]}
                   hideCardYear={!!content.projects?.hideCardYear}
                   onImageChange={handleImageChange}
                   onUpdate={handleUpdateProject}

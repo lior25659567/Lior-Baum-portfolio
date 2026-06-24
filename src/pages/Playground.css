@@ -80,8 +80,8 @@
 
 .playground-title .serif {
   font-family: var(--font-display);
-  font-style: normal;
-  font-weight: var(--fw-body);
+  font-style: italic;
+  font-weight: 600; /* variant C — heavier Crimson Text italic accent */
   color: var(--color-text);
   display: inline-block;
   overflow: visible !important;

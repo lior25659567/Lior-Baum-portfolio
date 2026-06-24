@@ -18,6 +18,17 @@ try {
   if (key) savedAboutData = mod[key].default || mod[key];
 } catch { /* file doesn't exist yet */ }
 
+// Canonical project-card images straight from the committed home-content.json,
+// keyed by project id. Used as a fallback when a cached/edited item points at
+// an image that no longer exists, so the real (git) image renders instead of a
+// blank/placeholder frame.
+const homeProjectImages = {};
+try {
+  for (const it of (savedHomeData?.content?.projects?.items || [])) {
+    if (it?.id && it?.image) homeProjectImages[it.id] = it.image;
+  }
+} catch { /* no saved home data */ }
+
 const EditContext = createContext();
 
 /* After the 2026-04-23 WebP conversion, /case-studies/*.webp|jpg paths no
@@ -137,8 +148,15 @@ const defaultContent = {
   },
 };
 
+// Bumping this resets the font/accent fields of any older saved `siteStyles`
+// to the current defaults. The runtime applies those as inline CSS vars
+// (--font-display / --font-body / --color-accent) which otherwise override
+// index.css — so without this, a cached style blob keeps showing old fonts.
+const DS_VERSION = 'serif-original-1';
+
 // Default styles
 const defaultStyles = {
+  dsVersion: DS_VERSION,
   fonts: {
     display: "'Crimson Text', Georgia, serif",
     body: "'Mona Sans', system-ui, sans-serif",
@@ -177,6 +195,19 @@ const defaultStyles = {
     text: '#1a1a1a',
     textDark: '#f5f5f5',
   },
+};
+
+// Force the font/accent fields of a styles blob written before the current
+// design back to the new defaults (other customizations are kept). Returns the
+// blob unchanged once it already carries DS_VERSION.
+const migrateStyles = (saved) => {
+  if (!saved || saved.dsVersion === DS_VERSION) return saved;
+  return {
+    ...saved,
+    dsVersion: DS_VERSION,
+    fonts: { ...saved.fonts, ...defaultStyles.fonts },
+    colors: { ...saved.colors, accent: defaultStyles.colors.accent },
+  };
 };
 
 // Treat skill arrays that are only unedited placeholders (empty categories
@@ -227,7 +258,7 @@ const effectiveDefaultContent = (() => {
 })();
 
 const effectiveDefaultStyles = savedHomeData?.styles
-  ? { ...defaultStyles, ...savedHomeData.styles }
+  ? { ...defaultStyles, ...migrateStyles(savedHomeData.styles) }
   : defaultStyles;
 
 function mergeContent(saved) {
@@ -267,7 +298,7 @@ export const EditProvider = ({ children }) => {
   const [styles, setStyles] = useState(() => {
     try {
       const saved = localStorage.getItem('siteStyles');
-      return saved ? { ...effectiveDefaultStyles, ...JSON.parse(saved) } : effectiveDefaultStyles;
+      return saved ? { ...effectiveDefaultStyles, ...migrateStyles(JSON.parse(saved)) } : effectiveDefaultStyles;
     } catch { return effectiveDefaultStyles; }
   });
 
@@ -280,7 +311,7 @@ export const EditProvider = ({ children }) => {
       ]);
       if (cancelled) return;
       if (savedContent) setContent(migrateCaseStudyImagePathsToWebp(mergeContent(savedContent)));
-      if (savedStyles) setStyles(prev => ({ ...prev, ...savedStyles }));
+      if (savedStyles) setStyles(prev => ({ ...prev, ...migrateStyles(savedStyles) }));
       hydrated.current = true;
     })();
     return () => { cancelled = true; };
@@ -484,6 +515,7 @@ export const EditProvider = ({ children }) => {
       gitPush,
       defaultContent,
       defaultStyles,
+      homeProjectImages,
     }}>
       {children}
     </EditContext.Provider>

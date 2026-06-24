@@ -1,5 +1,5 @@
 import { useEffect, useRef, useLayoutEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -106,16 +106,33 @@ const Footer = () => {
               </div>
             </div>
           </div>
-          <motion.div
-            className="footer-decoration"
-            initial={{ scale: 0, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
+          <motion.nav
+            className="footer-sitemap"
+            aria-label="Footer"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="decoration-circle" />
-            <div className="decoration-ring" />
-          </motion.div>
+            <div className="footer-sitemap-col">
+              <span className="footer-sitemap-title">Explore</span>
+              <Link to="/" className="footer-sitemap-link">Home</Link>
+              <Link to="/playground" className="footer-sitemap-link">Playground</Link>
+              <Link to="/about" className="footer-sitemap-link">About</Link>
+            </div>
+            <div className="footer-sitemap-col">
+              <span className="footer-sitemap-title">Connect</span>
+              <a className="footer-sitemap-link" href={`mailto:${content.footer.email}`}>Email</a>
+              <a
+                className="footer-sitemap-link"
+                href={content.hero.cvLink || '#'}
+                target="_blank"
+                rel="noreferrer"
+              >
+                CV
+              </a>
+            </div>
+          </motion.nav>
         </div>
 
         {/* Footer Bottom */}

@@ -66,8 +66,8 @@
 /* Serif (Crimson Text) */
 .cta-text.serif {
   font-family: var(--font-display);
-  font-style: normal;
-  font-weight: var(--fw-body);
+  font-style: italic;
+  font-weight: 600; /* variant B — heavier Crimson Text italic */
 }
 
 .cta-text.highlight {
@@ -78,64 +78,56 @@
   flex-shrink: 0;
 }
 
-/* Visual Decoration */
-.footer-decoration {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto 0;
-  width: 280px;
-  height: 280px;
-  z-index: 1;
+/* Footer sitemap — replaces the old decorative circle/ring. Columns of
+   navigation + contact links, sitting on the right of the CTA. */
+.footer-sitemap {
+  display: flex;
+  gap: clamp(2.5rem, 5vw, 4.5rem);
+  flex-shrink: 0;
+  z-index: 2;
 }
 
-.decoration-circle {
-  position: absolute;
-  inset: 30%;
-  background: var(--color-accent);
-  border-radius: 50%;
-  animation: pulse 4s ease-in-out infinite;
+.footer-sitemap-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
 }
 
-.decoration-ring {
-  position: absolute;
-  inset: 0;
-  border: 2px solid var(--color-border);
-  border-radius: 50%;
-  animation: spin 20s linear infinite;
+.footer-sitemap-title {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-caps);
+  color: var(--color-text-muted);
+  margin-bottom: 0.35rem;
 }
 
-.decoration-ring::before,
-.decoration-ring::after {
-  content: '';
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background: var(--color-accent);
-  border-radius: 50%;
+.footer-sitemap-link {
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  color: var(--color-text-muted);
+  width: fit-content;
+  transition: color var(--transition-fast);
 }
 
-.decoration-ring::before {
-  top: -6px;
-  left: 50%;
-  transform: translateX(-50%);
+.footer-sitemap-link:hover {
+  color: var(--color-accent);
 }
 
-.decoration-ring::after {
-  bottom: -6px;
-  left: 50%;
-  transform: translateX(-50%);
+.footer-sitemap-link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 3px;
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.1); opacity: 0.8; }
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+/* Comfortable tap targets on touch screens */
+@media (max-width: 767.98px) {
+  .footer-sitemap-col { gap: 0.4rem; }
+  .footer-sitemap-link {
+    padding: 6px 0;
+    font-size: var(--text-body);
+  }
 }
 
 /* Footer Bottom */
@@ -173,22 +165,8 @@
     font-size: clamp(2.5rem, 4vw, 4.5rem);
   }
 
-  .footer-decoration {
-    width: 320px;
-    height: 320px;
-  }
-
   .footer-bottom {
     padding-top: var(--spacing-2xl);
-  }
-}
-
-/* 1440px */
-@media (max-width: 1535.98px) {
-  .footer-decoration {
-    width: 240px;
-    height: 240px;
-    right: 3%;
   }
 }
 
@@ -197,41 +175,35 @@
   .footer-cta-wrapper {
     min-height: 260px;
   }
-  
+
   .cta-text {
     font-size: clamp(2rem, 5vw, 3.5rem);
   }
-  
+
   .cta-line.with-button {
     gap: var(--spacing-md);
   }
-  
-  .footer-decoration {
-    width: 200px;
-    height: 200px;
-  }
 }
 
-/* 1024px - Tablet */
+/* 1024px - Tablet: stack the sitemap beneath the CTA text */
 @media (max-width: 1023.98px) {
   .footer {
     padding: var(--spacing-xl) var(--spacing-md);
   }
-  
+
   .footer-cta-wrapper {
-    min-height: 300px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2.5rem;
+    min-height: auto;
   }
-  
+
   .cta-text {
     font-size: clamp(2rem, 5.5vw, 4rem);
   }
-  
+
   .cta-line.with-button {
     gap: var(--spacing-md);
-  }
-  
-  .footer-decoration {
-    display: none;
   }
 }
 

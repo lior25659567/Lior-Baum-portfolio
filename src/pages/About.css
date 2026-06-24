@@ -67,8 +67,8 @@
 
 .about-title .serif {
   font-family: var(--font-display);
-  font-style: normal;
-  font-weight: var(--fw-body);
+  font-style: italic;
+  font-weight: 600; /* variant B — heavier Crimson Text italic */
   color: var(--color-text);
   display: inline-block;
   overflow: visible !important;
@@ -76,8 +76,8 @@
 
 .about-title .accent {
   font-family: var(--font-display);
-  font-style: normal;
-  font-weight: var(--fw-body);
+  font-style: italic;
+  font-weight: 600; /* variant B — heavier Crimson Text italic */
   color: var(--color-accent);
 }
 
