@@ -1320,6 +1320,8 @@ const ProjectCard = ({ project, index, total, editMode, canonicalImage, hideCard
                 style={{
                   backgroundImage: showImage ? `url(${resolvedImage})` : undefined,
                   backgroundSize: imageFit,
+                  // centre fully-contained images; cover keeps its CSS default
+                  backgroundPosition: imageFit === 'contain' ? 'center' : undefined,
                 }}
               />
               {!showImage && <div className="project-image-placeholder" />}
@@ -1711,11 +1713,13 @@ const Projects = () => {
     setContent(prev => {
       const items = prev.projects?.items || defaultProjects.map(p => ({ ...p }));
       const existingIdx = items.findIndex(item => item.id === projectId);
+      // Uploaded images fit fully inside the placeholder (whole image visible,
+      // nothing cropped) rather than filling/cropping the frame.
       if (existingIdx >= 0) {
-        items[existingIdx] = { ...items[existingIdx], image: imageDataUrl };
+        items[existingIdx] = { ...items[existingIdx], image: imageDataUrl, imageFit: 'contain' };
       } else {
         const defaultProject = defaultProjects.find(p => p.id === projectId);
-        if (defaultProject) items.push({ ...defaultProject, image: imageDataUrl });
+        if (defaultProject) items.push({ ...defaultProject, image: imageDataUrl, imageFit: 'contain' });
       }
       return { ...prev, projects: { ...prev.projects, items } };
     });
