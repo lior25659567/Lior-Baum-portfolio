@@ -31,11 +31,13 @@ try {
 
 const EditContext = createContext();
 
-/* After the 2026-04-23 WebP conversion, /case-studies/*.webp|jpg paths no
-   longer resolve. localStorage/IndexedDB copies of site content written
-   before that deploy still reference them — this walker rewrites those
-   paths on load so pre-migration snapshots keep rendering. Non-mutating:
-   returns a new tree so shared default objects are never touched. */
+/* After the WebP conversions, /case-studies, /home and /playground *.png|jpg
+   files were replaced by .webp. localStorage/IndexedDB copies of site content
+   written before those deploys still reference the old extensions — and an
+   edit-mode "Save to Code" can write them straight back into home-content.json,
+   blanking the project cards. This walker rewrites any such path to .webp on
+   load so pre-conversion snapshots keep rendering. Non-mutating: returns a new
+   tree so shared default objects are never touched. */
 function migrateCaseStudyImagePathsToWebp(node) {
   if (node == null) return node;
   if (Array.isArray(node)) return node.map(migrateCaseStudyImagePathsToWebp);
@@ -44,7 +46,7 @@ function migrateCaseStudyImagePathsToWebp(node) {
     for (const k of Object.keys(node)) out[k] = migrateCaseStudyImagePathsToWebp(node[k]);
     return out;
   }
-  if (typeof node === 'string' && /^\/case-studies\//.test(node)) {
+  if (typeof node === 'string' && /^\/(case-studies|home|playground)\//.test(node)) {
     return node.replace(/\.(png|jpe?g)(?=($|[?#]))/i, '.webp');
   }
   return node;
