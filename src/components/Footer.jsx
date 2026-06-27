@@ -89,7 +89,7 @@ const Footer = () => {
             <div className="cta-line-wrapper">
               <div className="cta-line" ref={line2Ref}>
                 <span className="cta-text sans">{content.footer.line2_1}</span>
-                <span className="cta-text serif highlight">{content.footer.line2_2}</span>
+                <span className="cta-text serif highlight cta-text--cap">{content.footer.line2_2}</span>
               </div>
             </div>
             <div className="cta-line-wrapper">
@@ -102,8 +102,15 @@ const Footer = () => {
             </div>
             <div className="cta-line-wrapper">
               <div className="cta-line" ref={line4Ref}>
-                <span className="cta-text serif highlight">{content.footer.line4}</span>
+                <span className="cta-text serif highlight cta-text--cap">{content.footer.line4}</span>
               </div>
+            </div>
+            {/* Mobile only: the CTA button sits at the bottom, after all the
+                text lines (desktop keeps it inline beside line 3). */}
+            <div className="cta-line-wrapper footer-cta-mobile-btn">
+              <AnimatedButton href={`mailto:${content.footer.email}`} variant="outline" icon="→">
+                Get in touch
+              </AnimatedButton>
             </div>
           </div>
           <motion.nav

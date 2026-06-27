@@ -39,13 +39,13 @@
 .cta-line {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: clamp(0.75rem, 1.5vw, 1.5rem);
   flex-wrap: wrap;
   will-change: transform;
 }
 
 .cta-line.with-button {
-  gap: var(--spacing-lg);
+  gap: 0.5rem;
   margin-bottom: var(--spacing-xs);
 }
 
@@ -74,8 +74,19 @@
   color: var(--color-accent);
 }
 
+/* Force the closing word ("Together") to start capitalised regardless of how
+   it's stored in content. */
+.cta-text--cap {
+  text-transform: capitalize;
+}
+
 .cta-line .animated-btn {
   flex-shrink: 0;
+}
+
+/* Bottom CTA button is mobile-only; desktop keeps the inline one on line 3. */
+.footer-cta-mobile-btn {
+  display: none;
 }
 
 /* Footer sitemap — replaces the old decorative circle/ring. Columns of
@@ -231,11 +242,23 @@
     line-height: 1.05;
   }
 
+  /* Layout only (no style/size/font change): move the CTA button to the bottom,
+     after all the text lines, like the reference. Hide the inline (desktop)
+     button and let line 3 ("or two,") read like every other line. */
   .cta-line.with-button {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.85rem;
-    margin-top: 0.5rem;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0;
+    margin-top: 0;
+  }
+
+  .cta-line.with-button .animated-btn {
+    display: none;
+  }
+
+  .footer-cta-mobile-btn {
+    display: block;
+    margin-top: 1.25rem;
   }
 
   .footer-bottom {
