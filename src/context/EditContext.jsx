@@ -154,14 +154,14 @@ const defaultContent = {
 // to the current defaults. The runtime applies those as inline CSS vars
 // (--font-display / --font-body / --color-accent) which otherwise override
 // index.css — so without this, a cached style blob keeps showing old fonts.
-const DS_VERSION = 'serif-original-1';
+const DS_VERSION = 'satoshi-1';
 
 // Default styles
 const defaultStyles = {
   dsVersion: DS_VERSION,
   fonts: {
     display: "'Crimson Text', Georgia, serif",
-    body: "'Mona Sans', system-ui, sans-serif",
+    body: "'Satoshi', 'Mona Sans', system-ui, sans-serif",
   },
   fontSizes: {
     heroName: 'clamp(3rem, 8vw, 6rem)',

@@ -43,6 +43,7 @@ const EditPanel = () => {
 
   const fontOptions = [
     { value: "'Crimson Text', Georgia, serif", label: 'Crimson Text' },
+    { value: "'Satoshi', 'Mona Sans', system-ui, sans-serif", label: 'Satoshi' },
     { value: "'Mona Sans', system-ui, sans-serif", label: 'Mona Sans' },
     { value: "'Inter', system-ui, sans-serif", label: 'Inter' },
     { value: "'Poppins', system-ui, sans-serif", label: 'Poppins' },

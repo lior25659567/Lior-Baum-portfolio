@@ -76,39 +76,29 @@
 
 .nav-links {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: var(--spacing-md);
+  gap: 1.5rem; /* 24px — matches the reference gap-6 */
 }
 
 .nav-link {
   font-size: var(--text-body-sm);
   font-weight: var(--fw-medium);
   letter-spacing: var(--ls-meta);
-  color: var(--color-text);
-  position: relative;
-  padding: 0.35rem 0;
+  color: var(--color-text-muted);
   transition: color var(--transition-fast);
 }
 
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--color-accent);
-  transition: width var(--transition-medium);
+/* Non-active links darken on hover; the selected page stays full-strength below. */
+.nav-link:hover {
+  color: var(--color-text);
 }
 
-.nav-link:hover::after,
-.nav-link.active::after {
-  width: 100%;
-}
-
-.nav-link:hover,
+/* Selected page: full text color + Semibold (true 600 via the Satoshi
+   variable font — a real step between Medium and Bold, not the Bold jump). */
 .nav-link.active {
-  color: var(--color-accent);
+  color: var(--color-text);
+  font-weight: var(--fw-semibold);
 }
 
 .nav-right {
@@ -305,7 +295,7 @@
   }
 
   .nav-links {
-    gap: var(--spacing-md);
+    gap: 1.5rem; /* keep 24px (reference gap-6) on desktop */
   }
 }
 

@@ -3,6 +3,12 @@ body.case-study-active .navigation {
   display: none !important;
 }
 
+/* …but the public article view keeps the site header — like the reference
+   case study. (Slides + edit mode stay chromeless via the rule above.) */
+body.case-study-active.cs-article-nav .navigation {
+  display: block !important;
+}
+
 body.case-study-active .footer {
   display: none !important;
 }
@@ -400,8 +406,8 @@ body.case-study-active .footer {
      var(--font-display) reference inside slides resolves to DM Sans —
      view AND edit mode — overriding the site defaults (Mona Sans / Crimson
      Text) without touching the rest of the site. */
-  --font-body: 'DM Sans', sans-serif;
-  --font-display: 'DM Sans', sans-serif;
+  --font-body: 'Satoshi', 'DM Sans', sans-serif;
+  --font-display: 'Satoshi', 'DM Sans', sans-serif;
   --slide-max-w: min(1920px, 100%);
   --slide-pad-x: clamp(40px, 4.5vw, 144px);
   /* Vertical padding/gap take the smaller of vw-driven and vh-driven clamps,
@@ -688,7 +694,7 @@ body.case-study-active .footer {
 
 /* Base */
 .case-study:not(.edit-mode) .slide-inner {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Satoshi', 'DM Sans', sans-serif;
   font-size: var(--slide-font-body);
   line-height: var(--slide-leading-body);
   letter-spacing: var(--slide-tracking-body);

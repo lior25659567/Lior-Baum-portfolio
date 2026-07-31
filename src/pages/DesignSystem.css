@@ -136,7 +136,7 @@
 .ds-token.is-copied { border-color: var(--color-accent); background: var(--color-accent-soft); }
 
 .ds-token-name {
-  font-family: 'Mona Sans', ui-monospace, monospace;
+  font-family: 'Satoshi', 'Mona Sans', ui-monospace, monospace;
   font-size: 0.78rem;
   color: var(--color-text);
 }
@@ -253,7 +253,7 @@
 .ds-swatch-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 
 .ds-swatch-name {
-  font-family: 'Mona Sans', ui-monospace, monospace;
+  font-family: 'Satoshi', 'Mona Sans', ui-monospace, monospace;
   font-size: 0.76rem;
   color: var(--color-text);
   white-space: nowrap;
@@ -287,7 +287,7 @@
 }
 
 .ds-btn-label {
-  font-family: 'Mona Sans', ui-monospace, monospace;
+  font-family: 'Satoshi', 'Mona Sans', ui-monospace, monospace;
   font-size: 0.72rem;
   color: var(--color-text-muted);
 }

@@ -1,0 +1,1553 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   CaseStudyArticle — the default public reading view of a case study, and
+   (in edit mode) its block-based editor.
+
+   Layers:
+   1. `.case-study--article` — integration overrides on the `.case-study`
+      fixed wrapper: it becomes the scroll container; the case-nav (only
+      rendered in edit mode for articles) goes sticky.
+   2. `.cs-view-toggle` — the edit-mode Slides/Article segmented control.
+   3. `.cs-article-*` — the article itself. Notion-style reference layout:
+      prose ≈ 720px, wide figures ≈ 1160px, full ≈ 1400px. Cards mirror the
+      slide deck's card language (transparent bg, accent-tinted border,
+      radius-lg, accent number chips, hover lift) at rem scale.
+   4. Editor chrome — block outlines, control pills, insert handles,
+      add-block picker, seed bar.
+   Tokens only (index.css) so dark/light theming is automatic.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Integration: .case-study becomes a scroll page ─────────────────── */
+
+.case-study.case-study--article {
+  overflow-y: auto;
+  overflow-x: hidden;
+  touch-action: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.case-study.case-study--article .case-nav {
+  position: sticky;
+  top: 0;
+}
+
+/* Edit mode adds a fixed accent bar above everything (z-index 200) — push
+   the sticky nav (and the scroll content) below it so the view toggle
+   stays clickable. */
+.case-study.case-study--article.edit-mode {
+  padding-top: var(--edit-bar-h, 3.25rem);
+}
+
+.case-study.case-study--article.edit-mode .case-nav {
+  top: var(--edit-bar-h, 3.25rem);
+}
+
+/* ── 2. View-mode toggle (edit mode only, lives inside .case-nav) ─────── */
+
+.cs-view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  margin-right: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg-secondary);
+  flex-shrink: 0;
+}
+
+.cs-view-btn {
+  border: none;
+  background: transparent;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+  white-space: nowrap;
+}
+
+.cs-view-btn:not(.is-active):hover {
+  color: var(--color-text);
+}
+
+.cs-view-btn.is-active {
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+/* ── 3. The article ────────────────────────────────────────────────────── */
+
+.cs-article {
+  --cs-prose: 720px;
+  --cs-wide: 1160px;
+  --cs-full: 1400px;
+  --cs-pad: clamp(20px, 4vw, 40px);
+  /* Soft lavender "float" shadow shared by figures and the next-case cards
+     (matched from the royshlain reference). */
+  --cs-float: 0 4px 24px 6px rgba(171, 162, 189, 0.12);
+  /* The article reads in the SITE's typeface (Mona Sans — same as the home
+     page, project cards, and About page), not the deck's DM Sans. Primitives
+     aren't shadowed by .case-study, so this resolves correctly here. */
+  --font-body: var(--primitive-font-sans, 'Satoshi', 'Mona Sans', sans-serif);
+  --font-display: var(--primitive-font-sans, 'Satoshi', 'Mona Sans', sans-serif);
+  /* Primary text color — Figma article ink (#37352F). Light mode only;
+     dark mode keeps white below so text stays readable. */
+  --color-text: #37352f;
+  width: 100%;
+  max-width: calc(var(--cs-full) + 2 * var(--cs-pad));
+  margin: 0 auto;
+  padding: 3.5rem var(--cs-pad) 6rem;
+  font-family: var(--font-body);
+  color: var(--color-text);
+}
+
+/* Dark mode: don't apply the light-ink override — keep the theme's white text. */
+:root[data-theme='dark'] .cs-article {
+  --color-text: var(--primitive-white);
+  --cs-float: 0 4px 24px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* Edit mode keeps the sticky nav, so less top padding is needed. */
+.case-study.edit-mode .cs-article {
+  padding-top: 1.5rem;
+}
+
+/* Public article view shows the fixed site header (like the reference case
+   study) — clear its height so the first block isn't tucked under it, and
+   drop the floating back arrow below the header so they don't overlap. */
+body.cs-article-nav .cs-article {
+  padding-top: 5.5rem;
+}
+
+body.cs-article-nav .cs-article-back {
+  top: max(74px, calc(env(safe-area-inset-top) + 62px));
+}
+
+/* Block wrappers are full-width; inner elements center themselves. */
+.cs-article-block {
+  position: relative;
+}
+
+/* Prose-width helper: text elements sit in a centered reading column;
+   figures/cards break out to their own tiers. */
+.cs-article-h1,
+.cs-article-h2,
+.cs-article-h3,
+.cs-article-p,
+.cs-article-lede,
+.cs-article-eyebrow,
+.cs-article-list,
+.cs-article-callout,
+.cs-article-quote,
+.cs-article-meta,
+.cs-article-labelrow,
+.cs-article-hr,
+.cs-article-marklist,
+.cs-article-reflect-group,
+.cs-article-contact,
+.cs-article-next-grid,
+.cs-article-chapter-inner,
+.cs-article-item-toolbar,
+.cs-article-seedbar,
+.cs-article-emptystate,
+.cs-article-addblock-row,
+.cs-article-toolsrow {
+  width: 100%;
+  max-width: var(--cs-prose);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cs-article-cards {
+  width: 100%;
+  max-width: var(--cs-prose);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cs-article-cards--stat {
+  max-width: var(--cs-prose);
+}
+
+/* ── Typography (Notion reference metrics) ── */
+
+/* Headings follow the site's heading voice (Mona Sans, light-medium weight,
+   tight tracking — like .section-heading on About / .section-title on home). */
+/* Fixed integer type scale (40/30/24/18/16/14) — the article deliberately
+   avoids the site's fluid clamp() tokens so sizes are whole pixels and
+   match the Figma text styles 1:1. */
+/* Reference: royshlain.com case study. Title is Bold (700) with light
+   tracking; section heads are Semibold (600) with tight 1.3 leading and no
+   negative tracking; sections breathe with a ~90px gap above each. */
+.cs-article-h1 {
+  font-family: var(--font-display, inherit);
+  font-size: 40px;
+  font-weight: var(--fw-bold, 700);
+  line-height: 48px;
+  letter-spacing: -0.4px;
+  margin: 1.4rem auto 0.9rem;
+}
+
+.cs-article-h2 {
+  font-family: var(--font-display, inherit);
+  font-size: 24px;
+  font-weight: var(--fw-semibold, 600);
+  line-height: 31px;
+  letter-spacing: 0;
+  margin: 4.25rem auto 1rem;
+}
+
+.cs-article-h3 {
+  font-size: 20px;
+  font-weight: var(--fw-semibold, 600);
+  line-height: 26px;
+  letter-spacing: 0;
+  margin: 2rem auto 0.6rem;
+}
+
+/* Body follows the site's description voice (.bio-text on About /
+   .project-content-desc on the home project cards): muted, relaxed leading. */
+.cs-article-p {
+  font-size: 16px;
+  font-weight: var(--fw-body, 400);
+  line-height: 25px;
+  color: var(--color-text);
+  margin: 0 auto 1rem;
+  white-space: pre-line;
+}
+
+.cs-article-p strong {
+  color: var(--color-text);
+  font-weight: var(--fw-semibold, 600);
+}
+
+.cs-article-lede {
+  font-size: 24px;
+  font-weight: var(--fw-body, 400);
+  line-height: 33px;
+  color: var(--color-text);
+  margin: 0.5rem auto;
+  white-space: pre-line;
+}
+
+.cs-article-eyebrow {
+  font-size: 14px;
+  font-weight: var(--fw-medium, 500);
+  line-height: 20px;
+  letter-spacing: 0.1px;
+  text-transform: none;
+  color: var(--color-accent);
+  margin: 4.25rem auto 0.4rem;
+}
+
+/* Eyebrow directly answers to its heading: tighten the pair. */
+.cs-article-eyebrow + .cs-article-h2,
+.cs-article-eyebrow + .cs-article-h3 {
+  margin-top: 0.35rem;
+}
+
+.cs-article-list {
+  padding-left: 1.5rem;
+  margin: 0.65rem auto;
+  font-size: 16px;
+  line-height: 25px;
+  color: var(--color-text);
+  list-style: disc;
+  display: block;
+}
+
+.cs-article-list strong {
+  color: var(--color-text);
+  font-weight: var(--fw-semibold, 600);
+}
+
+.cs-article-list--ordered {
+  list-style: decimal;
+}
+
+.cs-article-list li {
+  margin: 0.4rem 0;
+  padding-left: 0.15rem;
+}
+
+.cs-article-hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 2.4rem auto;
+}
+
+/* ── Header ── */
+
+.cs-article-header {
+  margin-top: 0.25rem;
+}
+
+/* ── Meta grid (Role / Timeline / Team / …) ── */
+
+.cs-article-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 2rem;
+  margin: 1.6rem auto;
+}
+
+.cs-article-meta-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.cs-article-meta-label {
+  font-size: 16px;
+  line-height: 25px;
+  font-weight: 600;
+}
+
+.cs-article-meta-value {
+  font-size: 16px;
+  line-height: 25px;
+  color: var(--color-text);
+  white-space: pre-line;
+}
+
+/* ── Label → body rows (Problem / Solution / Impact, timeline, notes) ── */
+
+.cs-article-labelrow {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 13fr);
+  gap: 0.4rem 2rem;
+  align-items: start;
+  margin: 0.9rem auto;
+}
+
+.cs-article-labelrow-label {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 25px;
+}
+
+.cs-article-labelrow-body .cs-article-p {
+  margin: 0 0 0.5rem;
+  max-width: none;
+}
+
+.cs-article-labelrow-body .cs-article-p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Problem · Solution · Impact (a group of labelled rows) ── */
+/* Figma node 34:296 — three "Meta Label 16/20" + "Body 16/28" rows stacked. */
+
+.cs-article-psi {
+  width: 100%;
+  max-width: var(--cs-prose);
+  margin: 1.6rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.cs-article-psi-row {
+  margin: 0;
+}
+
+/* ── Figures ── */
+
+.cs-article-figure {
+  width: 100%;
+  margin: 2.2rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.cs-article-figure--prose { max-width: var(--cs-prose); }
+.cs-article-figure--wide  { max-width: var(--cs-wide); }
+.cs-article-figure--full  { max-width: var(--cs-full); }
+
+.cs-article-figure-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.cs-article-figure-cell {
+  position: relative;
+  min-width: 0;
+}
+
+.cs-article-media {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-soft, var(--color-border));
+  box-shadow: var(--cs-float);
+}
+
+.cs-article-embed {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-soft, var(--color-border));
+  background: var(--color-bg-secondary);
+  box-shadow: var(--cs-float);
+}
+
+.cs-article-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ── Carousel (deck-style cycling media) ── */
+
+.cs-article-carousel {
+  width: 100%;
+}
+
+.cs-article-carousel-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-soft, var(--color-border));
+  box-shadow: var(--cs-float);
+}
+
+.cs-article-carousel-item {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.cs-article-carousel-item.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cs-article-carousel-item .cs-article-media-entry {
+  width: 100%;
+  height: 100%;
+}
+
+.cs-article-carousel-item .cs-article-media {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border: none;
+  border-radius: 0;
+}
+
+.cs-article-carousel-item .cs-article-embed {
+  height: 100%;
+  border: none;
+  border-radius: 0;
+}
+
+.cs-article-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-bg) 80%, transparent);
+  color: var(--color-text);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.15s ease;
+  backdrop-filter: blur(4px);
+}
+
+.cs-article-carousel-arrow--prev { left: 0.6rem; }
+.cs-article-carousel-arrow--next { right: 0.6rem; }
+
+.cs-article-carousel:hover .cs-article-carousel-arrow,
+.cs-article-carousel-arrow:focus-visible {
+  opacity: 1;
+}
+
+.cs-article-carousel-arrow:hover {
+  background: var(--color-bg);
+}
+
+.cs-article-carousel-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+
+.cs-article-carousel-dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-border);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.cs-article-carousel-dot.is-active {
+  background: var(--color-accent);
+  transform: scale(1.25);
+}
+
+.cs-article-figure figcaption {
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+/* ── Callout + quotes ── */
+
+/* Callout = the deck's view-mode highlight (.problem-highlight, Figma
+   1045:3526), exact: soft accent tint, ACCENT body text, 8px radius,
+   no border. */
+.cs-article-callout {
+  margin: 2rem auto;
+  padding: 1.1rem 1.15rem;
+  background: rgba(255, 88, 74, 0.06);
+  background: color-mix(in srgb, var(--color-accent) 6%, var(--color-bg));
+  border: none;
+  border-radius: 8px;
+}
+
+.cs-article-callout .cs-article-p {
+  margin: 0.15rem 0;
+  max-width: none;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--color-accent);
+}
+
+.cs-article-quote {
+  margin: 1.6rem auto;
+  padding: 0.2rem 0 0.2rem 1.3rem;
+  border-left: 3px solid var(--color-border);
+}
+
+.cs-article-quote p {
+  font-size: 18px;
+  line-height: 28px;
+  font-style: italic;
+  margin: 0 0 0.4rem;
+  white-space: pre-line;
+}
+
+.cs-article-quote cite {
+  font-size: 14px;
+  line-height: 20px;
+  font-style: normal;
+  color: var(--color-text-muted);
+}
+
+.cs-article-quote--large p {
+  font-size: 20px;
+  line-height: 36px;
+  font-weight: 500;
+}
+
+/* ── Cards — mirrors the slide deck card language at rem scale ── */
+
+.cs-article-cards {
+  display: grid;
+  grid-template-columns: repeat(var(--cs-cards-cols, 2), minmax(0, 1fr));
+  gap: 0.9rem;
+  margin: 1.4rem auto;
+}
+
+/* Odd icon-card count: last card spans the full row (reference behavior). */
+.cs-article-cards--icon .cs-article-card:nth-child(odd):last-child {
+  grid-column: 1 / -1;
+}
+
+/* Card = the deck's .issue-breakdown-card, exact: transparent bg, accent-
+   tinted border, radius-lg, big accent chip ABOVE a light heading, hover
+   lift + chip scale + heading tint. */
+.cs-article-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: 1.5rem 1.25rem;
+  background: var(--primitive-white, #fff);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg, 16px);
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+/* Dark theme: white cards would glare — use the elevated surface tone. */
+:root[data-theme='dark'] .cs-article-card {
+  background: var(--color-bg-secondary);
+}
+
+.cs-article-card:hover {
+  transform: translateY(-4px);
+}
+
+.cs-article-card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  min-width: 0;
+  width: 100%;
+}
+
+/* Accent circle number chip — the deck's .issue-breakdown-number, exact */
+.cs-article-card-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-bottom: 1rem;
+  transition: transform 0.25s ease;
+}
+
+.cs-article-card:hover .cs-article-card-num {
+  transform: scale(1.08);
+}
+
+/* Accent value pill — the deck's .stat-value, exact */
+.cs-article-card-value {
+  align-self: flex-start;
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.4px;
+  margin-bottom: 1rem;
+  transition: transform 0.25s ease;
+}
+
+.cs-article-card:hover .cs-article-card-value {
+  transform: scale(1.05);
+}
+
+.cs-article-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-width: 2.75rem;
+  border-radius: 50%;
+  color: var(--color-text-muted);
+  background: var(--color-bg-secondary);
+  flex-shrink: 0;
+  margin-bottom: 1rem;
+}
+
+.cs-article-card-icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.cs-article-card-icon--negative {
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+.cs-article-card-icon--positive {
+  color: #10a37f;
+  background: rgba(16, 163, 127, 0.12);
+}
+
+/* Heading/desc — the deck's .issue-breakdown-heading/.issue-breakdown-desc:
+   larger LIGHT heading that tints accent on hover, muted description. */
+.cs-article-card-title {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
+  margin: 0 0 0.5rem;
+  transition: color 0.25s ease;
+}
+
+.cs-article-card:hover .cs-article-card-title {
+  color: var(--color-accent);
+}
+
+.cs-article-card-desc {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--color-text-muted);
+  margin: 0;
+  white-space: pre-line;
+}
+
+/* ── Reflection checklists ── */
+
+.cs-article-marklist {
+  list-style: none;
+  padding: 0;
+  margin: 0.6rem auto;
+}
+
+.cs-article-marklist li {
+  position: relative;
+  padding-left: 1.7rem;
+  margin: 0.5rem 0;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.cs-article-marklist li::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 700;
+}
+
+.cs-article-marklist--check li::before,
+.cs-article-marklist--cross li::before,
+.cs-article-marklist--arrow li::before { content: '•'; color: var(--color-text-muted); }
+
+/* ── Chapter dividers ── */
+
+.cs-article-block--chapter {
+  margin-top: 3.5rem;
+}
+
+.cs-article-chapter-inner {
+  padding-top: 2.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.cs-article-chapter-number {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-accent);
+  margin-bottom: 0.5rem;
+}
+
+.cs-article-chapter-title {
+  font-family: var(--font-display, inherit);
+  font-size: clamp(1.55rem, 3vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+}
+
+.cs-article-chapter-subtitle {
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+  margin: 0;
+  white-space: pre-line;
+}
+
+/* ── Floating back button (public article view) ── */
+
+.cs-article-back {
+  position: fixed;
+  top: max(20px, env(safe-area-inset-top));
+  left: 20px;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 44px;
+  max-width: 44px; /* a circle at rest; expands to a pill on hover */
+  padding: 0 13px; /* 13 + 16px icon + 13 ≈ 44px → arrow centered at rest */
+  overflow: hidden;
+  white-space: nowrap;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: max-width 0.3s cubic-bezier(0, 0, 0.2, 1),
+    background 0.3s cubic-bezier(0, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0, 0, 0.2, 1), color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cs-article-back-label {
+  font-size: 0.85rem;
+  font-weight: 550;
+  opacity: 0;
+  transition: opacity 0.2s ease 0.05s;
+}
+
+/* Icon window — clips the sliding arrows. flex-shrink:0 so the collapsed
+   (hidden) label never squeezes the arrow out of view at rest. */
+.cs-article-back-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.cs-article-back-arrow {
+  flex-shrink: 0;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* The incoming clone waits off to the right. */
+.cs-article-back-arrow--clone {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translateX(130%);
+}
+
+@media (hover: hover) {
+  .cs-article-back:hover,
+  .cs-article-back:focus-visible {
+    max-width: 150px;
+    background: color-mix(in srgb, var(--color-bg) 82%, transparent);
+    border-color: var(--color-border);
+    color: var(--color-text);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  .cs-article-back:hover .cs-article-back-label,
+  .cs-article-back:focus-visible .cs-article-back-label {
+    opacity: 1;
+  }
+  /* Arrow slides out left, clone slides in from the right (CV-button motion). */
+  .cs-article-back:hover .cs-article-back-arrow:not(.cs-article-back-arrow--clone),
+  .cs-article-back:focus-visible .cs-article-back-arrow:not(.cs-article-back-arrow--clone) {
+    transform: translateX(-130%);
+  }
+  .cs-article-back:hover .cs-article-back-arrow--clone,
+  .cs-article-back:focus-visible .cs-article-back-arrow--clone {
+    transform: translateX(0);
+  }
+}
+
+/* ── End / contact ── */
+
+.cs-article-end {
+  text-align: center;
+  padding-top: 2.5rem;
+}
+
+.cs-article-end .cs-article-p {
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.cs-article-contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-top: 1.4rem;
+}
+
+.cs-article-contact-btn {
+  display: inline-block;
+  padding: 0.6rem 1.3rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.cs-article-contact-btn:hover { opacity: 0.88; }
+
+.cs-article-contact-link {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── Next case study cards ── */
+
+.cs-article-next {
+  margin-top: 4rem;
+}
+
+.cs-article-next-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem;
+}
+
+/* Reference (royshlain): a soft lavender-tinted FLOAT shadow at rest, which
+   tightens into a small glow on hover while the thumbnail scales up from its
+   bottom edge. 14px card radius, 10px thumbnail radius, faint ink border. */
+.cs-article-next-card {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  padding: 12px;
+  border: 1px solid rgba(55, 53, 47, 0.14);
+  border-radius: 14px;
+  background: var(--primitive-white, #fff);
+  text-decoration: none;
+  color: var(--color-text);
+  box-shadow: var(--cs-float);
+  transition: box-shadow 0.2s cubic-bezier(0, 0, 0.2, 1), border-color 0.2s ease;
+}
+
+:root[data-theme='dark'] .cs-article-next-card {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-border);
+}
+
+.cs-article-next-card:hover {
+  box-shadow: 0 0 5px 1px rgba(171, 162, 189, 0.3);
+}
+
+:root[data-theme='dark'] .cs-article-next-card:hover {
+  box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.5);
+}
+
+.cs-article-next-thumb {
+  display: block;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--color-bg-secondary);
+}
+
+.cs-article-next-thumb img {
+  display: block;
+  width: 100%;
+  height: 72px;
+  object-fit: cover;
+  transform-origin: bottom center;
+  transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cs-article-next-card:hover .cs-article-next-thumb img {
+  transform: scale(1.05);
+}
+
+.cs-article-next-kicker {
+  display: block;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--color-text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.cs-article-next-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+/* ── 4. Editor chrome ──────────────────────────────────────────────────── */
+
+.cs-article-block--editing {
+  border-radius: 8px;
+  padding: 0.15rem 0;
+}
+
+.cs-article-block--editing:hover,
+.cs-article-block--editing:focus-within {
+  outline: 1px dashed rgba(255, 88, 74, 0.45);
+  outline: 1px dashed color-mix(in srgb, var(--color-accent) 45%, transparent);
+  outline-offset: 4px;
+}
+
+/* Control pill — top-right of the block, shown on hover/focus */
+.cs-article-block-controls {
+  position: absolute;
+  top: -0.9rem;
+  right: 0.5rem;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg-secondary);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.cs-article-block--editing:hover .cs-article-block-controls,
+.cs-article-block--editing:focus-within .cs-article-block-controls {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cs-article-block-type {
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  color: var(--color-text-muted);
+  padding: 0 0.45rem;
+  text-transform: lowercase;
+}
+
+.cs-article-ctl-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.cs-article-ctl-btn:hover:not(:disabled) {
+  background: var(--color-border);
+}
+
+.cs-article-ctl-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.cs-article-ctl-btn--danger:hover:not(:disabled) {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+/* Insert zone — sits between blocks. Resting state: hairline with a gently
+   pulsing "+" dot (the signifier that content can go HERE). On hover/focus it
+   expands into one-click chips for the common block types. */
+.cs-article-insertzone {
+  position: relative;
+  width: 100%;
+  max-width: var(--cs-prose);
+  margin: 0 auto;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.cs-article-insertzone-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: transparent;
+  transition: background 0.15s ease;
+}
+
+.cs-article-insertzone:hover .cs-article-insertzone-line,
+.cs-article-insertzone:focus-within .cs-article-insertzone-line {
+  background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+
+.cs-article-insertzone-dot {
+  position: relative;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.55;
+  animation: csInsertPulse 2.2s ease-in-out infinite;
+}
+
+@keyframes csInsertPulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 35%, transparent); }
+  50% { box-shadow: 0 0 0 7px transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-article-insertzone-dot { animation: none; }
+}
+
+.cs-article-insertzone-chips {
+  position: relative;
+  z-index: 1;
+  display: none;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cs-article-insertzone:hover .cs-article-insertzone-chips,
+.cs-article-insertzone:focus-within .cs-article-insertzone-chips {
+  display: flex;
+}
+
+.cs-article-insertzone:hover .cs-article-insertzone-dot,
+.cs-article-insertzone:focus-within .cs-article-insertzone-dot {
+  display: none;
+}
+
+.cs-article-quickchip {
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 0.28rem 0.7rem;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, transform 0.12s ease;
+}
+
+.cs-article-quickchip:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.cs-article-quickchip--more {
+  color: var(--color-text-muted);
+}
+
+/* New-block feedback: the freshly added block glows and fades. */
+.cs-article-block--flash {
+  animation: csBlockFlash 1.5s ease-out;
+}
+
+@keyframes csBlockFlash {
+  0% {
+    background: var(--color-accent-soft);
+    box-shadow: 0 0 0 4px var(--color-accent-soft);
+    border-radius: 10px;
+  }
+  100% {
+    background: transparent;
+    box-shadow: 0 0 0 4px transparent;
+    border-radius: 10px;
+  }
+}
+
+/* Mini buttons + per-item toolbars */
+.cs-article-mini-btn {
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  cursor: pointer;
+  transition: color 0.12s ease, border-color 0.12s ease;
+  flex-shrink: 0;
+}
+
+.cs-article-mini-btn:hover {
+  color: var(--color-text);
+  border-color: var(--color-text-muted);
+}
+
+.cs-article-mini-btn.is-active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+.cs-article-item-toolbar {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0.5rem auto 0.2rem;
+}
+
+.cs-article-item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.cs-article-item-row .editable-field {
+  flex: 1;
+}
+
+.cs-article-card-tools {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+}
+
+.cs-article-meta-remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* Figure editing — the empty slot is a big, obviously-clickable dropzone
+   with a slow breathing border so an unfilled media block is impossible
+   to miss. */
+.cs-article-upload-slot {
+  width: 100%;
+  min-height: 200px;
+  border: 2px dashed color-mix(in srgb, var(--color-accent) 40%, transparent);
+  border-radius: 12px;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  animation: csSlotBreathe 2.6s ease-in-out infinite;
+}
+
+@keyframes csSlotBreathe {
+  0%, 100% { border-color: color-mix(in srgb, var(--color-accent) 40%, transparent); }
+  50% { border-color: color-mix(in srgb, var(--color-accent) 75%, transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-article-upload-slot { animation: none; }
+}
+
+.cs-article-upload-slot:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  animation: none;
+}
+
+.cs-article-figure-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.cs-article-embed-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 0.78rem;
+  padding: 0.3rem 0.6rem;
+}
+
+/* Seed bar (edit mode, un-authored article) */
+.cs-article-seedbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin: 0 auto 2rem;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 10px;
+  background: var(--color-bg-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.cs-article-seed-btn {
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.82rem;
+  font-weight: 650;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.cs-article-seed-btn:hover {
+  border-color: var(--color-text-muted);
+}
+
+.cs-article-seed-btn--primary {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+.cs-article-seed-btn--primary:hover {
+  opacity: 0.9;
+  border-color: var(--color-accent);
+}
+
+.cs-article-addblock-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+/* End-section wrapper: the hide control sits centered under the strip. */
+.cs-article-end-wrap {
+  position: relative;
+}
+
+.cs-article-end-hide {
+  display: block;
+  margin: 0.6rem auto 0;
+}
+
+/* Bottom-of-editor utility row: re-seed / revert. Deliberately muted — these
+   are rare, destructive-ish actions, not part of the writing flow. */
+.cs-article-toolsrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.4rem;
+  padding-top: 1.1rem;
+  border-top: 1px dashed var(--color-border);
+}
+
+.cs-article-toolsrow-label {
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-right: 0.3rem;
+}
+
+.cs-article-emptystate {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 3rem auto;
+  padding: 2rem;
+  border: 1.5px dashed var(--color-border);
+  border-radius: 14px;
+  color: var(--color-text-muted);
+}
+
+.cs-article-emptystate p {
+  margin: 0;
+}
+
+/* Add-block picker (reuses the deck's modal overlay backdrop) */
+.cs-article-picker {
+  width: min(560px, 92vw);
+  max-height: 80vh;
+  overflow-y: auto;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 1.1rem 1.2rem 1.3rem;
+}
+
+.cs-article-picker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+}
+
+.cs-article-picker-category {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 1rem 0 0.5rem;
+}
+
+.cs-article-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.cs-article-picker-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg-secondary);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.12s ease, transform 0.12s ease;
+}
+
+.cs-article-picker-btn:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.cs-article-picker-label {
+  font-size: 0.88rem;
+  font-weight: 650;
+  color: var(--color-text);
+}
+
+.cs-article-picker-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* Article-scoped editable-field skin: text looks like TEXT, not a form.
+   Fields inherit the prose typography and sit flush; a soft tint on hover
+   says "you can edit me", a ring on focus says "you are editing me". */
+.cs-article .editable-field {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  padding: 0.06em 0.3em;
+  margin: -0.06em -0.3em;
+  transition: background 0.12s ease, box-shadow 0.12s ease;
+}
+
+.cs-article .editable-field:hover {
+  background: var(--color-bg-secondary);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  cursor: text;
+}
+
+.cs-article .editable-field:focus {
+  outline: none;
+  background: var(--color-bg-secondary);
+  box-shadow: 0 0 0 2px var(--color-accent-soft), inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 45%, transparent);
+}
+
+.cs-article .editable-field::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.cs-article textarea.editable-field {
+  min-height: 2.6em;
+  resize: vertical;
+  field-sizing: content; /* auto-grow with content (Chromium); harmless elsewhere */
+}
+
+/* Headings/title edit as wrapping textareas — keep them heading-sized. */
+.cs-article-h1 textarea.editable-field,
+.cs-article-h2 textarea.editable-field,
+.cs-article-h3 textarea.editable-field {
+  min-height: 1.35em;
+  overflow: hidden;
+}
+
+/* Inline fields inside cite/toolbars stay inline-friendly */
+.cs-article-quote cite .editable-field {
+  display: inline-block;
+  width: auto;
+  min-width: 8ch;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 899px) {
+  .cs-article-cards[style] {
+    grid-template-columns: repeat(min(var(--cs-cards-cols, 2), 2), minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .cs-article {
+    padding-top: 4.5rem;
+    padding-bottom: 4rem;
+  }
+  .case-study.edit-mode .cs-article {
+    padding-top: 1rem;
+  }
+  .cs-article-cards,
+  .cs-article-cards[style] {
+    grid-template-columns: 1fr;
+  }
+  .cs-article-figure-grid {
+    grid-template-columns: 1fr;
+  }
+  .cs-article-meta {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+  .cs-article-labelrow {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+  .cs-article-next-grid {
+    grid-template-columns: 1fr;
+  }
+  .cs-article-block--chapter {
+    margin-top: 2.75rem;
+  }
+  .cs-view-toggle { margin-right: 0.5rem; }
+  .cs-view-btn { padding: 0.24rem 0.55rem; font-size: 0.68rem; }
+}

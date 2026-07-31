@@ -59,7 +59,7 @@
 
 .about-title .sans {
   font-family: var(--font-body);
-  font-weight: var(--fw-body);
+  font-weight: var(--fw-medium);
   color: var(--color-text);
   display: inline-block;
   overflow: visible !important;
@@ -239,7 +239,7 @@
 .bio-heading {
   font-family: var(--font-body);
   font-size: clamp(1.2rem, 2.5vw, 1.5rem);
-  font-weight: var(--fw-body);
+  font-weight: var(--fw-medium);
   letter-spacing: var(--ls-heading);
   color: var(--color-text);
   margin-bottom: var(--spacing-sm);
@@ -343,7 +343,7 @@
 .section-heading {
   font-family: var(--font-body);
   font-size: clamp(1.4rem, 3.2vw, 2rem);
-  font-weight: var(--fw-body);
+  font-weight: var(--fw-medium);
   letter-spacing: var(--ls-heading);
   color: var(--color-text);
   margin-bottom: var(--spacing-md);

@@ -44,3 +44,5 @@ cases/reviews/_jobs/
 # hand anytime; left on disk so nothing the app uses is removed).
 .node_modules_trash/
 .nm_trash2/
+.superpowers/
+website-cloner0lior/

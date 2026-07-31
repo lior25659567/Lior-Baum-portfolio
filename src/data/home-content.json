@@ -468,7 +468,7 @@
     "dsVersion": "serif-original-1",
     "fonts": {
       "display": "'Crimson Text', Georgia, serif",
-      "body": "'Mona Sans', system-ui, sans-serif"
+      "body": "'Satoshi', 'Mona Sans', system-ui, sans-serif"
     },
     "fontSizes": {
       "heroName": "clamp(3rem, 8vw, 6rem)",
