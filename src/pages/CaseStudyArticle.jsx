@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useRef, useState, useEffect } from 'react';
+import { Fragment, createContext, useContext, useMemo, useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { savedCaseStudies } from '../data/case-studies/index.js';
 import { contactDefaults } from '../data/caseStudyData';
@@ -9,6 +9,10 @@ import {
   splitBold, articleBlockCategories, deriveArticleFromSlides,
 } from '../data/articleBlocks';
 import './CaseStudyArticle.css';
+
+// Lets module-level block renderers (e.g. FigureBlock) reach the media-library
+// opener without threading it through every renderer's props.
+const MediaLibraryContext = createContext(null);
 
 // ─────────────────────────────────────────────────────────────────────────
 // CaseStudyArticle — the long-form reading view of a case study, and (in
@@ -409,9 +413,11 @@ const CardsBlock = ({ block, editing, onPatch }) => {
 };
 
 const FigureBlock = ({ block, editing, onPatch }) => {
+  const openLibrary = useContext(MediaLibraryContext);
   const media = listOf(block.media);
   const width = ['prose', 'wide', 'full'].includes(block.width) ? block.width : 'wide';
   const setEntry = (i, patch) => onPatch({ media: media.map((m, j) => (j === i ? { ...m, ...patch } : m)) });
+  const pickFromLibrary = (i) => openLibrary((item) => setEntry(i, { src: item.src || '', isVideo: !!item.isVideo, embedUrl: item.embedUrl || '' }));
   const visible = editing ? media : media.filter((m) => hasText(m.src) || hasText(m.embedUrl));
   if (!visible.length && !editing) return null;
   // Carousel view: cycle entries like the deck does. While editing, entries
@@ -435,13 +441,29 @@ const FigureBlock = ({ block, editing, onPatch }) => {
             {(hasText(entry.src) || hasText(entry.embedUrl))
               ? <MediaEntry entry={entry} tier={width} />
               : editing && (
-                <button type="button" className="cs-article-upload-slot" onClick={() => pickMediaFile((m) => setEntry(i, m))}>
-                  + Upload image / video
-                </button>
+                <>
+                  <button type="button" className="cs-article-upload-slot" onClick={() => pickMediaFile((m) => setEntry(i, m))}>
+                    + Upload image / video
+                  </button>
+                  {openLibrary && !(hasText(entry.src) || hasText(entry.embedUrl)) && (
+                    <button
+                      type="button"
+                      className="cs-article-mini-btn cs-article-lib-btn"
+                      onClick={() => pickFromLibrary(i)}
+                    >
+                      ⊞ Library
+                    </button>
+                  )}
+                </>
               )}
             {editing && (
               <div className="cs-article-figure-tools">
                 <button type="button" className="cs-article-mini-btn" onClick={() => pickMediaFile((m) => setEntry(i, { ...m, embedUrl: '' }))}>upload</button>
+                {openLibrary && (
+                  <button type="button" className="cs-article-mini-btn" onClick={() => pickFromLibrary(i)}>
+                    library
+                  </button>
+                )}
                 <input
                   type="text"
                   className="cs-article-embed-input"
@@ -787,7 +809,7 @@ const NextCaseCards = ({ projectId }) => {
 
 /* ── Main component ───────────────────────────────────────────────────── */
 
-const CaseStudyArticle = ({ project, projectId, editMode = false, ops }) => {
+const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMediaLibrary }) => {
   const authored = project?.article?.blocks?.length ? project.article : null;
   const derived = useMemo(
     () => (authored ? null : deriveArticleFromSlides(project)),
@@ -856,6 +878,7 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops }) => {
   };
 
   return (
+    <MediaLibraryContext.Provider value={openMediaLibrary}>
     <article className={`cs-article${editing ? ' cs-article--editing' : ''}`}>
       {!editMode && <FloatingBack />}
 
@@ -980,6 +1003,7 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops }) => {
         />
       )}
     </article>
+    </MediaLibraryContext.Provider>
   );
 };
 

@@ -9004,7 +9004,7 @@ My instructions: `;
       )}
 
       {isArticleMode && (
-        <CaseStudyArticle project={project} projectId={projectId} editMode={editMode} ops={articleOps} />
+        <CaseStudyArticle project={project} projectId={projectId} editMode={editMode} ops={articleOps} openMediaLibrary={openMediaLibrary} />
       )}
 
       {!isArticleMode && (
