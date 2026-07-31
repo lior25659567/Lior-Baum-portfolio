@@ -585,7 +585,7 @@ const getSplitStyleModule = (slide, editMode = false) => {
 //   'comparison'      → 'before-after'
 //   'problemSolution' → 'tabs'
 //   all others        → 'simple'
-const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideControls, editMode, updateSlide, OptionalField, DynamicImages, DynamicBullets, DynamicContent, SplitRatioControl, SplitDragHandle, setLightboxImage, spacingStyle, titleSpacingControl }) {
+const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideControls, editMode, updateSlide, OptionalField, DynamicImages, DynamicBullets, DynamicContent, SplitRatioControl, SplitDragHandle, setLightboxImage, spacingStyle, titleSpacingControl, openMediaLibrary }) {
   // ── mode ──
   const getDefaultMode = (s) => {
     if (s.slideMode) return s.slideMode;
@@ -1031,6 +1031,7 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
                           <button type="button" className="media-type-btn media-type-figma" onClick={() => setPsEmbedInput({ tabIdx, draft: '', type: 'figma' })}><span className="media-type-icon">◈</span><span>Embed Figma</span></button>
                           <button type="button" className="media-type-btn media-type-site" onClick={() => setPsEmbedInput({ tabIdx, draft: '', type: 'site' })}><span className="media-type-icon">⧉</span><span>Embed Site</span></button>
                           <button type="button" className="media-type-btn media-type-iframe" onClick={() => setPsEmbedInput({ tabIdx, draft: '', type: 'iframe' })}><span className="media-type-icon">⟨⟩</span><span>Embed iframe</span></button>
+                          <button type="button" className="media-type-btn" onClick={() => openMediaLibrary((item) => updatePsTab(tabIdx, { image: item.src || '', embedUrl: item.embedUrl || '' }))}><span className="media-type-icon">⊞</span><span>Library</span></button>
                         </div>
                       )}
                     </div>
@@ -5511,6 +5512,10 @@ My instructions: `;
                             <span className="media-type-icon">🔗</span>
                             <span>Image/Video URL</span>
                           </button>
+                          <button type="button" className="media-type-btn" onClick={(e) => { e.stopPropagation(); openMediaLibrary((item) => updateImage(imgIndex, { src: item.src || '', isVideo: !!item.isVideo, embedUrl: item.embedUrl || '' })); }}>
+                            <span className="media-type-icon">⊞</span>
+                            <span>Library</span>
+                          </button>
                         </div>
                       )}
                     </div>
@@ -5573,7 +5578,7 @@ My instructions: `;
         )}
       </div>
     );
-  }, [editMode, updateSlide, toFigmaEmbedUrl]);
+  }, [editMode, updateSlide, toFigmaEmbedUrl, openMediaLibrary]);
 
   // ========== SPLIT RATIO CONTROL ==========
   // Allows adjusting the width ratio between text and images in split layouts (memoized for stable identity)
@@ -6672,6 +6677,7 @@ My instructions: `;
             setLightboxImage={setLightboxImage}
             spacingStyle={spacingStyle}
             titleSpacingControl={titleSpacingControl}
+            openMediaLibrary={openMediaLibrary}
           />
         );
 
@@ -7308,6 +7314,7 @@ My instructions: `;
             setLightboxImage={setLightboxImage}
             spacingStyle={spacingStyle}
             titleSpacingControl={titleSpacingControl}
+            openMediaLibrary={openMediaLibrary}
           />
         );
 
@@ -8042,6 +8049,7 @@ My instructions: `;
             setLightboxImage={setLightboxImage}
             spacingStyle={spacingStyle}
             titleSpacingControl={titleSpacingControl}
+            openMediaLibrary={openMediaLibrary}
           />
         );
 
