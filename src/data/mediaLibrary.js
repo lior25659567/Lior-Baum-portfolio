@@ -58,7 +58,10 @@ export const collectStudyMedia = (project) => {
         const src = v.trim();
         push({ src, isVideo: /^data:video\//i.test(src) || isVideoSrc(src), caption });
       } else if (isEmbedKey(k) && isHttpUrl(v)) {
-        push({ embedUrl: v.trim() });
+        // Carry the sibling embedType (figma/youtube/site/iframe) when present
+        // so a picked embed renders with the right iframe treatment on slides.
+        const et = typeof node.embedType === 'string' && node.embedType ? node.embedType : '';
+        push(et ? { embedUrl: v.trim(), embedType: et } : { embedUrl: v.trim() });
       } else if (v && typeof v === 'object') {
         walk(v);
       }

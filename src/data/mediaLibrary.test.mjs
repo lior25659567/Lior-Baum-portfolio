@@ -73,3 +73,21 @@ test('usageCount counts references across slides + article', () => {
   assert.equal(usageCount(project, '/case-studies/x/c.webp'), 1);
   assert.equal(usageCount(project, '/case-studies/x/missing.webp'), 0);
 });
+
+test('collectStudyMedia carries embedType from array-item embeds', () => {
+  const proj = {
+    slides: [
+      { type: 'media', image: [{ embedUrl: 'https://www.youtube.com/embed/abc', embedType: 'youtube' }] },
+      { type: 'media', image: [{ embedUrl: 'https://example.com/x', embedType: 'site' }] },
+      { type: 'media', imageEmbedUrl: 'https://www.figma.com/embed?node=9' }, // no sibling embedType
+    ],
+    mediaLibrary: [], mediaLibraryRemoved: [],
+  };
+  const items = collectStudyMedia(proj);
+  const yt = items.find((i) => i.embedUrl === 'https://www.youtube.com/embed/abc');
+  const site = items.find((i) => i.embedUrl === 'https://example.com/x');
+  const fig = items.find((i) => i.embedUrl === 'https://www.figma.com/embed?node=9');
+  assert.equal(yt.embedType, 'youtube');
+  assert.equal(site.embedType, 'site');
+  assert.equal('embedType' in fig, false); // no sibling → omitted, not empty
+});

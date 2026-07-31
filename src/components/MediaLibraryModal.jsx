@@ -29,7 +29,7 @@ const Thumb = ({ item }) => {
         src={item.src}
         controls={false}
         priority="lazy"
-        style={{ display: 'block', width: '100%', aspectRatio: '16 / 10', objectFit: 'cover' }}
+        style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }}
       />
     );
   }

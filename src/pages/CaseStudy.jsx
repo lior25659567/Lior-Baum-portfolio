@@ -1031,7 +1031,7 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
                           <button type="button" className="media-type-btn media-type-figma" onClick={() => setPsEmbedInput({ tabIdx, draft: '', type: 'figma' })}><span className="media-type-icon">◈</span><span>Embed Figma</span></button>
                           <button type="button" className="media-type-btn media-type-site" onClick={() => setPsEmbedInput({ tabIdx, draft: '', type: 'site' })}><span className="media-type-icon">⧉</span><span>Embed Site</span></button>
                           <button type="button" className="media-type-btn media-type-iframe" onClick={() => setPsEmbedInput({ tabIdx, draft: '', type: 'iframe' })}><span className="media-type-icon">⟨⟩</span><span>Embed iframe</span></button>
-                          <button type="button" className="media-type-btn" onClick={() => openMediaLibrary((item) => updatePsTab(tabIdx, { image: item.src || '', embedUrl: item.embedUrl || '' }))}><span className="media-type-icon">⊞</span><span>Library</span></button>
+                          <button type="button" className="media-type-btn" onClick={() => openMediaLibrary((item) => updatePsTab(tabIdx, item.embedUrl ? { image: '', embedUrl: item.embedUrl, embedType: item.embedType || 'figma' } : { image: item.src || '', embedUrl: '' }))}><span className="media-type-icon">⊞</span><span>Library</span></button>
                         </div>
                       )}
                     </div>
@@ -5519,7 +5519,7 @@ My instructions: `;
                             <span className="media-type-icon">🔗</span>
                             <span>Image/Video URL</span>
                           </button>
-                          <button type="button" className="media-type-btn" onClick={(e) => { e.stopPropagation(); openMediaLibrary((item) => updateImage(imgIndex, item.embedUrl ? { embedUrl: item.embedUrl } : { src: item.src || '', isVideo: !!item.isVideo })); }}>
+                          <button type="button" className="media-type-btn" onClick={(e) => { e.stopPropagation(); openMediaLibrary((item) => updateImage(imgIndex, item.embedUrl ? { embedUrl: item.embedUrl, embedType: item.embedType || 'site' } : { src: item.src || '', isVideo: !!item.isVideo })); }}>
                             <span className="media-type-icon">⊞</span>
                             <span>Library</span>
                           </button>
