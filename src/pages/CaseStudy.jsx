@@ -12,10 +12,11 @@ import imageVariantManifest from '../data/case-study-image-variants.json';
 import './CaseStudy.css';
 import { exportCaseStudyToPdf } from '../utils/exportCaseStudyPdf';
 import CaseStudyArticle from './CaseStudyArticle';
-import { buildResponsiveWebp, deriveVideoPoster, deriveMobileVideoSrc, useLowBandwidthMedia, LazyVideo } from './caseStudyMedia';
+import { buildResponsiveWebp, deriveVideoPoster, deriveMobileVideoSrc, useLowBandwidthMedia, LazyVideo, pickMediaFile } from './caseStudyMedia';
 import EditableField from '../components/EditableField';
 import { makeArticleBlock, deriveArticleFromSlides } from '../data/articleBlocks';
-import { mergeIntoLibrary } from '../data/mediaLibrary';
+import { mergeIntoLibrary, libraryItemRef, usageCount, newLibraryItemId } from '../data/mediaLibrary';
+import MediaLibraryModal from '../components/MediaLibraryModal';
 
 /* Manifest-aware path adapter for case-study images.
    PNG/JPG → WEBP rewrite happens only when a .webp variant for that exact
@@ -1329,6 +1330,9 @@ const CaseStudy = () => {
   const [pasteText, setPasteText] = useState('');
   const [parsedPreview, setParsedPreview] = useState(null); // { slides, preview }
   const [lightboxImage, setLightboxImage] = useState(null);
+  // Media library modal. `null` = closed. { onPick } = pick mode (insert into a
+  // target slot). 'curate' = browse/remove/add only.
+  const [mediaLibraryTarget, setMediaLibraryTarget] = useState(null);
   // When this tab is hidden (e.g. the deck is a background tab while the
   // presenter drives it), the browser throttles requestAnimationFrame, so a
   // framer-motion exit animation never completes and the lightbox overlay would
@@ -1440,6 +1444,63 @@ const CaseStudy = () => {
       return next === prev.mediaLibrary ? prev : { ...prev, mediaLibrary: next };
     });
   }, [editMode, isArticleMode]);
+
+  // Opens the media library modal. With `onPick`, it's a targeted pick (used to
+  // fill a specific slide/article slot); without it, it's curate mode (browse/
+  // add/remove only). Freshens the bin first — covers the async-load race where
+  // slides finish loading after the merge effect above already ran once.
+  const openMediaLibrary = useCallback((onPick) => {
+    setProject((prev) => {
+      const next = mergeIntoLibrary(prev, Date.now());
+      return next === prev.mediaLibrary ? prev : { ...prev, mediaLibrary: next };
+    });
+    setMediaLibraryTarget(onPick ? { onPick } : 'curate');
+  }, []);
+
+  // Add an item to the bin (from upload or embed URL). Deduped by ref.
+  const addToMediaLibrary = useCallback((item) => {
+    const ref = libraryItemRef(item);
+    if (!ref) return;
+    setProject((prev) => {
+      const lib = prev.mediaLibrary || [];
+      if (lib.some((x) => libraryItemRef(x) === ref)) return prev;
+      const removed = (prev.mediaLibraryRemoved || []).filter((r) => r !== ref); // un-tombstone if re-added
+      return { ...prev, mediaLibrary: [...lib, { id: newLibraryItemId(ref), addedAt: Date.now(), ...item }], mediaLibraryRemoved: removed };
+    });
+  }, []);
+
+  const removeFromMediaLibrary = useCallback((item) => {
+    const ref = libraryItemRef(item);
+    if (!ref) return;
+    setProject((prev) => ({
+      ...prev,
+      mediaLibrary: (prev.mediaLibrary || []).filter((x) => libraryItemRef(x) !== ref),
+      mediaLibraryRemoved: [...new Set([...(prev.mediaLibraryRemoved || []), ref])],
+    }));
+  }, []);
+
+  const handleLibraryPick = useCallback((item) => {
+    const target = mediaLibraryTarget;
+    setMediaLibraryTarget(null);
+    if (target && target.onPick) target.onPick(item);
+  }, [mediaLibraryTarget]);
+
+  const handleLibraryAddFile = useCallback(() => {
+    pickMediaFile((m) => {
+      addToMediaLibrary(m);
+      // In pick mode, also fill the target slot with the freshly uploaded media.
+      const target = mediaLibraryTarget;
+      if (target && target.onPick) { setMediaLibraryTarget(null); target.onPick(m); }
+    });
+  }, [mediaLibraryTarget, addToMediaLibrary]);
+
+  const handleLibraryAddEmbed = useCallback((url) => {
+    if (!/^https?:\/\//i.test(url || '')) return;
+    const item = { embedUrl: url };
+    addToMediaLibrary(item);
+    const target = mediaLibraryTarget;
+    if (target && target.onPick) { setMediaLibraryTarget(null); target.onPick(item); }
+  }, [mediaLibraryTarget, addToMediaLibrary]);
 
   /* Sync URL params in ONE effect. React Router's functional setSearchParams
      reads the location at call time, NOT pending updates — two effects
@@ -8259,7 +8320,7 @@ My instructions: `;
                 <button
                   type="button"
                   className="cs-media-lib-btn"
-                  onClick={() => openMediaLibrary && openMediaLibrary()}
+                  onClick={() => openMediaLibrary()}
                 >
                   Media Library ({(project.mediaLibrary || []).length})
                 </button>
@@ -9418,6 +9479,18 @@ My instructions: `;
           </motion.div>
         )}
       </AnimatePresence>
+
+      <MediaLibraryModal
+        open={mediaLibraryTarget != null}
+        mode={mediaLibraryTarget && mediaLibraryTarget !== 'curate' ? 'pick' : 'curate'}
+        items={project.mediaLibrary || []}
+        onPick={handleLibraryPick}
+        onRemove={removeFromMediaLibrary}
+        onAddFile={handleLibraryAddFile}
+        onAddEmbed={handleLibraryAddEmbed}
+        onClose={() => setMediaLibraryTarget(null)}
+        usageCountOf={(ref) => usageCount(project, ref)}
+      />
 
       {presenterHint && <div className="presenter-hint">{presenterHint}</div>}
 
