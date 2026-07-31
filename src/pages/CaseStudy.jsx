@@ -15,6 +15,7 @@ import CaseStudyArticle from './CaseStudyArticle';
 import { buildResponsiveWebp, deriveVideoPoster, deriveMobileVideoSrc, useLowBandwidthMedia, LazyVideo } from './caseStudyMedia';
 import EditableField from '../components/EditableField';
 import { makeArticleBlock, deriveArticleFromSlides } from '../data/articleBlocks';
+import { mergeIntoLibrary } from '../data/mediaLibrary';
 
 /* Manifest-aware path adapter for case-study images.
    PNG/JPG → WEBP rewrite happens only when a .webp variant for that exact
@@ -1427,6 +1428,18 @@ const CaseStudy = () => {
   useEffect(() => {
     if (!isArticleMode && containerRef.current) containerRef.current.scrollTop = 0;
   }, [isArticleMode]);
+
+  // Media library: additively collect every image/video/embed used across the
+  // slides + article into project.mediaLibrary. Runs on edit-enter and on each
+  // slides<->article switch. Idempotent (mergeIntoLibrary returns the same ref
+  // when there's nothing new, so this never loops).
+  useEffect(() => {
+    if (!editMode) return;
+    setProject((prev) => {
+      const next = mergeIntoLibrary(prev, Date.now());
+      return next === prev.mediaLibrary ? prev : { ...prev, mediaLibrary: next };
+    });
+  }, [editMode, isArticleMode]);
 
   /* Sync URL params in ONE effect. React Router's functional setSearchParams
      reads the location at call time, NOT pending updates — two effects
@@ -8241,6 +8254,15 @@ My instructions: `;
                     Article
                   </button>
                 </div>
+              )}
+              {editMode && (
+                <button
+                  type="button"
+                  className="cs-media-lib-btn"
+                  onClick={() => openMediaLibrary && openMediaLibrary()}
+                >
+                  Media Library ({(project.mediaLibrary || []).length})
+                </button>
               )}
               {!isArticleMode && <button className="builder-trigger" onClick={() => setShowBuilder(true)}>🚀 Build from Scratch</button>}
               <button onClick={handleCopyJSON}>{saveStatus === 'copied' ? '✓ Copied!' : '📋 Copy JSON for ChatGPT'}</button>
