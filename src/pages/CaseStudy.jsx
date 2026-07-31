@@ -1496,8 +1496,15 @@ const CaseStudy = () => {
   }, [mediaLibraryTarget, addToMediaLibrary]);
 
   const handleLibraryAddEmbed = useCallback((url) => {
-    if (!/^https?:\/\//i.test(url || '')) return;
-    const item = { embedUrl: url };
+    const raw = (url || '').trim();
+    if (!/^https?:\/\//i.test(raw)) return;
+    let embedUrl = raw;
+    let embedType = 'site';
+    const fig = toFigmaEmbedUrlModule(raw);
+    const yt = toYouTubeEmbedUrl(raw);
+    if (fig) { embedUrl = fig; embedType = 'figma'; }
+    else if (yt) { embedUrl = yt; embedType = 'youtube'; }
+    const item = { embedUrl, embedType };
     addToMediaLibrary(item);
     const target = mediaLibraryTarget;
     if (target && target.onPick) { setMediaLibraryTarget(null); target.onPick(item); }
@@ -5512,7 +5519,7 @@ My instructions: `;
                             <span className="media-type-icon">🔗</span>
                             <span>Image/Video URL</span>
                           </button>
-                          <button type="button" className="media-type-btn" onClick={(e) => { e.stopPropagation(); openMediaLibrary((item) => updateImage(imgIndex, { src: item.src || '', isVideo: !!item.isVideo, embedUrl: item.embedUrl || '' })); }}>
+                          <button type="button" className="media-type-btn" onClick={(e) => { e.stopPropagation(); openMediaLibrary((item) => updateImage(imgIndex, item.embedUrl ? { embedUrl: item.embedUrl } : { src: item.src || '', isVideo: !!item.isVideo })); }}>
                             <span className="media-type-icon">⊞</span>
                             <span>Library</span>
                           </button>
