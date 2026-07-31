@@ -1,8 +1,8 @@
 import { Fragment, useMemo, useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { savedCaseStudies } from '../data/case-studies/index.js';
-import { contactDefaults, compressImage, isMobileViewport } from '../data/caseStudyData';
-import { buildResponsiveWebp, LazyVideo } from './caseStudyMedia';
+import { contactDefaults } from '../data/caseStudyData';
+import { buildResponsiveWebp, LazyVideo, pickMediaFile } from './caseStudyMedia';
 import EditableField from '../components/EditableField';
 import {
   hasText, clean, oneLine, listOf, isVideoSrc, normalizeMedia,
@@ -142,35 +142,6 @@ const ArticleCarousel = ({ entries, tier, interval }) => {
       </div>
     </div>
   );
-};
-
-/* ── Upload helper (mirrors the deck's handleDynamicImageUpload) ──────── */
-
-const pickArticleMedia = (cb) => {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*,video/mp4,video/webm,.gif';
-  input.onchange = async (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
-    const isVideo = /^video\//.test(file.type);
-    const isGif = file.type === 'image/gif';
-    const maxBytes = isVideo ? 100 * 1024 * 1024 : isGif ? 40 * 1024 * 1024 : 10 * 1024 * 1024;
-    if (file.size > maxBytes) {
-      alert(`File too large (max ${Math.round(maxBytes / 1024 / 1024)}MB).`);
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = async () => {
-      let dataUrl = reader.result;
-      if (!isVideo && !isGif && isMobileViewport()) {
-        try { dataUrl = await compressImage(dataUrl); } catch { /* keep original */ }
-      }
-      cb({ src: dataUrl, isVideo });
-    };
-    reader.readAsDataURL(file);
-  };
-  input.click();
 };
 
 /* ── Block renderers ──────────────────────────────────────────────────── */
@@ -464,13 +435,13 @@ const FigureBlock = ({ block, editing, onPatch }) => {
             {(hasText(entry.src) || hasText(entry.embedUrl))
               ? <MediaEntry entry={entry} tier={width} />
               : editing && (
-                <button type="button" className="cs-article-upload-slot" onClick={() => pickArticleMedia((m) => setEntry(i, m))}>
+                <button type="button" className="cs-article-upload-slot" onClick={() => pickMediaFile((m) => setEntry(i, m))}>
                   + Upload image / video
                 </button>
               )}
             {editing && (
               <div className="cs-article-figure-tools">
-                <button type="button" className="cs-article-mini-btn" onClick={() => pickArticleMedia((m) => setEntry(i, { ...m, embedUrl: '' }))}>upload</button>
+                <button type="button" className="cs-article-mini-btn" onClick={() => pickMediaFile((m) => setEntry(i, { ...m, embedUrl: '' }))}>upload</button>
                 <input
                   type="text"
                   className="cs-article-embed-input"

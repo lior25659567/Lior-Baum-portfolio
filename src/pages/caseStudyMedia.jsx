@@ -1,5 +1,36 @@
 import { memo, useRef, useState, useEffect, useCallback } from 'react';
 import imageVariantManifest from '../data/case-study-image-variants.json';
+import { compressImage, isMobileViewport } from '../data/caseStudyData';
+
+// Imperative file picker shared by the article editor, the slide editor, and
+// the media library "add new". Returns media as a data: URI (persisted to a
+// real file later by Save-to-Code). cb receives { src, isVideo, isGif }.
+export const pickMediaFile = (cb) => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*,video/mp4,video/webm,.gif';
+  input.onchange = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const isVideo = /^video\//.test(file.type);
+    const isGif = file.type === 'image/gif';
+    const maxBytes = isVideo ? 100 * 1024 * 1024 : isGif ? 40 * 1024 * 1024 : 10 * 1024 * 1024;
+    if (file.size > maxBytes) {
+      alert(`File too large (max ${Math.round(maxBytes / 1024 / 1024)}MB).`);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async () => {
+      let dataUrl = reader.result;
+      if (!isVideo && !isGif && isMobileViewport()) {
+        try { dataUrl = await compressImage(dataUrl); } catch { /* keep original */ }
+      }
+      cb({ src: dataUrl, isVideo, isGif });
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+};
 
 // ─── Responsive media helpers ────────────────────────────────────────────
 // Shared by the slide deck (CaseStudy.jsx) and the article view
