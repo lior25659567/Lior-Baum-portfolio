@@ -21,9 +21,17 @@ const Thumb = ({ item }) => {
   const kind = classifyMediaItem(item);
   if (kind === 'video') {
     const poster = deriveVideoPoster(item.src);
-    return poster
-      ? <img className="cs-media-thumb-img" src={poster} alt="" loading="lazy" />
-      : <div className="cs-media-thumb-fallback">▶ video</div>;
+    if (poster) {
+      return <img className="cs-media-thumb-img" src={poster} alt="" loading="lazy" />;
+    }
+    return (
+      <LazyVideo
+        src={item.src}
+        controls={false}
+        priority="lazy"
+        style={{ display: 'block', width: '100%', aspectRatio: '16 / 10', objectFit: 'cover' }}
+      />
+    );
   }
   if (kind === 'figma' || kind === 'youtube' || kind === 'embed') {
     return <div className={`cs-media-thumb-embed cs-media-thumb-embed--${kind}`}>{kind === 'figma' ? 'Figma' : kind === 'youtube' ? 'YouTube' : 'Embed'}</div>;
