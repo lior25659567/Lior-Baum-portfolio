@@ -1000,7 +1000,7 @@
         "interval": 2000,
         "media": [
           {
-            "src": "/case-studies/itero-scan-workflow/img-ktwg83prko.png",
+            "src": "/case-studies/itero-scan-workflow/img-ktwg83prko.webp",
             "caption": "",
             "isVideo": false,
             "embedUrl": "",
@@ -1218,7 +1218,7 @@
         "width": "prose",
         "media": [
           {
-            "src": "/case-studies/itero-scan-workflow/img-bw1g0xceg.png",
+            "src": "/case-studies/itero-scan-workflow/img-bw1g0xceg.webp",
             "caption": "Appointment flow map — three handoffs, three breakpoints",
             "isVideo": false,
             "embedUrl": "",
@@ -2030,14 +2030,14 @@
     {
       "id": "ml-n6sog4",
       "addedAt": 1785687914086,
-      "src": "/case-studies/itero-scan-workflow/img-bw1g0xceg.png",
+      "src": "/case-studies/itero-scan-workflow/img-bw1g0xceg.webp",
       "isVideo": false,
       "caption": "Appointment flow map — three handoffs, three breakpoints"
     },
     {
       "id": "ml-1vtnu26",
       "addedAt": 1785788778289,
-      "src": "/case-studies/itero-scan-workflow/img-ktwg83prko.png",
+      "src": "/case-studies/itero-scan-workflow/img-ktwg83prko.webp",
       "isVideo": false,
       "caption": ""
     }

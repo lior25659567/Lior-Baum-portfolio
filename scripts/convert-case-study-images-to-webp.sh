@@ -24,12 +24,27 @@
 #   gitignored.
 #
 # USAGE
-#   ./scripts/convert-case-study-images-to-webp.sh
+#   ./scripts/convert-case-study-images-to-webp.sh              # png + jpg/jpeg
+#   ./scripts/convert-case-study-images-to-webp.sh --png-only   # png only
+#
+# --png-only restricts the sweep to PNGs, whose conversion is pixel-exact
+# (-lossless). Use it when the requirement is strictly "no quality loss at
+# all" — JPEG re-encoding at q95 is visually lossless but not bit-exact, and
+# lossless-encoding an already-lossy JPEG would balloon the file instead.
 #
 # Re-runs cheaply — if a file has already been converted (sibling .webp
 # exists and is newer than the source), conversion is skipped.
 # ────────────────────────────────────────────────────────────────────────────
 set -euo pipefail
+
+# ── Args ──
+PNG_ONLY=0
+for arg in "$@"; do
+  case "$arg" in
+    --png-only) PNG_ONLY=1 ;;
+    *) echo "error: unknown argument '$arg' (expected --png-only)" >&2; exit 1 ;;
+  esac
+done
 
 # ── Resolve repo root relative to this script so it works from anywhere ──
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
@@ -57,14 +72,19 @@ fi
 TIMESTAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 BACKUP_DIR="backups/case-studies-${TIMESTAMP}"
 
-echo "▸ Scanning $SRC_ROOT for PNG/JPG/JPEG…"
+if (( PNG_ONLY )); then
+  FIND_PREDICATE=(-iname "*.png")
+  echo "▸ Scanning $SRC_ROOT for PNG… (--png-only: JPG/JPEG skipped)"
+else
+  FIND_PREDICATE=(\( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \))
+  echo "▸ Scanning $SRC_ROOT for PNG/JPG/JPEG…"
+fi
 # mapfile ships with bash 4+; macOS bash is 3.2, so fall back to while-read.
 # -print0 / IFS= read -r -d '' handles spaces/newlines in filenames safely.
 SOURCES=()
 while IFS= read -r -d '' f; do
   SOURCES+=("$f")
-done < <(find "$SRC_ROOT" -type f \
-  \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) -print0)
+done < <(find "$SRC_ROOT" -type f "${FIND_PREDICATE[@]}" -print0)
 
 if (( ${#SOURCES[@]} == 0 )); then
   echo "  no PNG/JPG/JPEG files found — already fully WebP."
@@ -125,10 +145,18 @@ fi
 # must literally include both single-quote AND backtick (to stop at JSX
 # string delimiters) is a portability trap. \x22 \x27 \x60 keep shell
 # escaping out of the picture.
-echo "▸ Rewriting /case-studies/*.{png,jpg,jpeg} refs → .webp in src/"
-PERL_EXPR='s{(/case-studies/[^\x22\x27\x60]*?)\.(?i:png|jpe?g)}{$1.webp}g'
+# Under --png-only the extension alternation must narrow to png as well, or we
+# would repoint .jpg refs at .webp files that were never produced.
+if (( PNG_ONLY )); then
+  EXT_ALT='png'
+  echo "▸ Rewriting /case-studies/*.png refs → .webp in src/"
+else
+  EXT_ALT='png|jpe?g'
+  echo "▸ Rewriting /case-studies/*.{png,jpg,jpeg} refs → .webp in src/"
+fi
+PERL_EXPR="s{(/case-studies/[^\\x22\\x27\\x60]*?)\\.(?i:${EXT_ALT})}{\$1.webp}g"
 REFERENCE_FILES="$(find src -type f \( -name "*.json" -o -name "*.jsx" -o -name "*.js" \) -print0 \
-  | xargs -0 perl -lne 'print $ARGV if /\/case-studies\/[^\x22\x27\x60]*\.(?i:png|jpe?g)/' 2>/dev/null \
+  | xargs -0 perl -lne "print \$ARGV if /\\/case-studies\\/[^\\x22\\x27\\x60]*\\.(?i:${EXT_ALT})/" 2>/dev/null \
   | sort -u || true)"
 
 if [[ -z "${REFERENCE_FILES}" ]]; then
