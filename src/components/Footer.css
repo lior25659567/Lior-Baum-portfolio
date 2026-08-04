@@ -107,7 +107,7 @@
 .footer-sitemap-title {
   font-family: var(--font-body);
   font-size: var(--text-caption);
-  font-weight: var(--fw-medium); /* Figma: Satoshi Medium */
+  font-weight: var(--fw-semibold); /* Figma: Satoshi Medium */
   text-transform: uppercase;
   letter-spacing: var(--ls-caps);
   color: var(--color-text-muted);

@@ -203,9 +203,9 @@ body.cs-article-nav .cs-article-back {
 }
 
 .cs-article-h3 {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: var(--fw-semibold, 600);
-  line-height: 26px;
+  line-height: 24px;
   letter-spacing: 0;
   margin: 2rem auto 0.6rem;
 }
@@ -271,7 +271,7 @@ body.cs-article-nav .cs-article-back {
 }
 
 .cs-article-list li {
-  margin: 0.4rem 0;
+  margin: 0.65rem 0;
   padding-left: 0.15rem;
 }
 
@@ -373,7 +373,7 @@ body.cs-article-nav .cs-article-back {
 
 .cs-article-figure-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--cs-figure-cols, 2), minmax(0, 1fr));
   gap: 1rem;
 }
 
@@ -381,14 +381,128 @@ body.cs-article-nav .cs-article-back {
   position: relative;
   min-width: 0;
 }
+.cs-article-figure-cell-caption {
+  margin-top: 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  text-align: center;
+}
+.cs-article-figure-cell-title {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: var(--fw-semibold);
+  color: var(--color-text);
+}
+.cs-article-figure-cell-desc {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--color-text-muted);
+}
+/* Accepted / Rejected chip overlaid on an image — mirrors the Ideation
+   (directions) slide: Accepted = accent-fill pill, Rejected = quiet glass chip. */
+.cs-article-figure-chip {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  z-index: 3;
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.72rem;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  border: 1px solid var(--color-border-soft);
+  background: color-mix(in srgb, var(--color-bg) 82%, transparent);
+  color: var(--color-text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6px);
+}
+.cs-article-figure-chip--accepted {
+  background: var(--color-accent);
+  color: #fff;
+  border-color: transparent;
+}
+.cs-article-chip-btn--accepted { color: var(--color-accent); }
 
 .cs-article-media {
   display: block;
   width: 100%;
   height: auto;
   border-radius: 10px;
-  border: 1px solid var(--color-border-soft, var(--color-border));
+  /* No border by default, and a drop-shadow (not box-shadow) so a transparent
+     PNG casts a shadow that follows its real shape rather than a rectangle. */
+  filter: drop-shadow(0 4px 18px rgba(171, 162, 189, 0.20));
+}
+:root[data-theme='dark'] .cs-article-media {
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.5));
+}
+
+/* Read-view images open the shared slide lightbox on click — zoom-in cursor
+   only, no hover treatment. */
+.cs-article-media--zoom {
+  cursor: zoom-in;
+}
+
+/* Optional per-image framed border (toggled in edit mode via the "border"
+   button on each media entry). A thick WHITE matted frame around the whole
+   media entry; the image keeps its own hairline edge + radius so it stays
+   delineated from the mat even when the image itself is white. Off by default. */
+.cs-article-media-entry--bordered {
+  padding: 24px;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
   box-shadow: var(--cs-float);
+}
+.cs-article-media-entry--bordered .cs-article-media,
+.cs-article-media-entry--bordered .cs-article-embed {
+  box-shadow: none;
+  filter: none;
+}
+/* Mat color choice (only when bordered): white (default) or cream #F1F0ED.
+   Placed after the --bordered rule so it wins on equal specificity. */
+.cs-article-media-entry--matcream {
+  background: #F1F0ED;
+}
+:root[data-theme='dark'] .cs-article-media-entry--bordered:not(.cs-article-media-entry--matcream) {
+  background: var(--color-bg-secondary);
+}
+
+/* Mat-color swatch buttons in the per-image edit tools. */
+.cs-article-mat-swatches {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+.cs-article-mat-swatch {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+}
+.cs-article-mat-swatch.is-active {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+/* Per-image drop-shadow toggle (default on). Off strips the float shadow from
+   the image — or from the framed border when the image is also bordered. */
+.cs-article-media-entry--noshadow .cs-article-media,
+.cs-article-media-entry--noshadow .cs-article-embed {
+  box-shadow: none;
+  filter: none;
+}
+.cs-article-media-entry--noshadow.cs-article-media-entry--bordered {
+  box-shadow: none;
+}
+.cs-article-media--zoom:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
 }
 
 .cs-article-embed {
@@ -397,9 +511,18 @@ body.cs-article-nav .cs-article-back {
   aspect-ratio: 16 / 9;
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid var(--color-border-soft, var(--color-border));
+  /* No border by default — matches .cs-article-media. The hairline is added
+     back only inside a matted frame (below), where it's needed to separate the
+     embed from the white/cream mat. */
+  border: 0;
   background: var(--color-bg-secondary);
   box-shadow: var(--cs-float);
+}
+
+/* Inside the matted frame the embed needs an edge again, or a light embed
+   dissolves into a white mat. */
+.cs-article-media-entry--bordered .cs-article-embed {
+  border: 1px solid var(--color-border-soft, var(--color-border));
 }
 
 .cs-article-embed iframe {
@@ -408,6 +531,18 @@ body.cs-article-nav .cs-article-back {
   width: 100%;
   height: 100%;
   border: 0;
+}
+/* Transparent shield: intercepts the wheel so the page scrolls past the embed
+   instead of the iframe swallowing it. Click removes it (see setEmbedActive). */
+.cs-article-embed-shield {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
 }
 
 /* ── Carousel (deck-style cycling media) ── */
@@ -467,18 +602,27 @@ body.cs-article-nav .cs-article-back {
   top: 50%;
   transform: translateY(-50%);
   z-index: 2;
-  width: 34px;
-  height: 34px;
-  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--color-border-soft);
   border-radius: 50%;
-  background: color-mix(in srgb, var(--color-bg) 80%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 82%, transparent);
   color: var(--color-text);
-  font-size: 1.2rem;
-  line-height: 1;
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.15s ease, background 0.15s ease;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.cs-article-carousel-arrow svg {
+  display: block;
+  width: 16px;
+  height: 16px;
 }
 
 .cs-article-carousel-arrow--prev { left: 0.6rem; }
@@ -529,21 +673,24 @@ body.cs-article-nav .cs-article-back {
 /* Callout = the deck's view-mode highlight (.problem-highlight, Figma
    1045:3526), exact: soft accent tint, ACCENT body text, 8px radius,
    no border. */
+/* Callout — subtle left-accent-bar highlight (royshlain reference) in our
+   accent: a 3px orange bar, ~6% orange wash, rounded on the right only, ink text. */
 .cs-article-callout {
-  margin: 2rem auto;
-  padding: 1.1rem 1.15rem;
+  margin: 1.75rem auto;
+  padding: 1rem 1.25rem;
   background: rgba(255, 88, 74, 0.06);
   background: color-mix(in srgb, var(--color-accent) 6%, var(--color-bg));
   border: none;
-  border-radius: 8px;
+  border-left: 3px solid var(--color-accent);
+  border-radius: 0 8px 8px 0;
 }
 
 .cs-article-callout .cs-article-p {
-  margin: 0.15rem 0;
+  margin: 0;
   max-width: none;
   font-size: 16px;
-  line-height: 24px;
-  color: var(--color-accent);
+  line-height: 1.55;
+  color: var(--color-text);
 }
 
 .cs-article-quote {
@@ -698,7 +845,7 @@ body.cs-article-nav .cs-article-back {
    larger LIGHT heading that tints accent on hover, muted description. */
 .cs-article-card-title {
   font-size: 18px;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 24px;
   margin: 0 0 0.5rem;
   transition: color 0.25s ease;
@@ -952,6 +1099,7 @@ body.cs-article-nav .cs-article-back {
 
 .cs-article-next-thumb {
   display: block;
+  min-height: 72px; /* keep the thumbnail box sized even for a color-only placeholder */
   border-radius: 10px;
   overflow: hidden;
   background: var(--color-bg-secondary);
@@ -972,8 +1120,8 @@ body.cs-article-nav .cs-article-back {
 
 .cs-article-next-kicker {
   display: block;
-  font-size: 12px;
-  line-height: 16px;
+  font-size: 14px;
+  line-height: 18px;
   color: var(--color-text-muted);
   margin-bottom: 0.25rem;
 }
@@ -998,6 +1146,35 @@ body.cs-article-nav .cs-article-back {
   outline: 1px dashed color-mix(in srgb, var(--color-accent) 45%, transparent);
   outline-offset: 4px;
 }
+
+/* Floating "Bold" affordance — appears above an editable prose field while text
+   is selected (article edit mode). Portaled to <body>, so it uses the :root
+   tokens (which resolve globally), not the .cs-article-scoped overrides. */
+.editable-bold-btn {
+  position: fixed;
+  z-index: 3000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid var(--color-border, rgba(55, 53, 47, 0.16));
+  background: var(--color-bg-secondary, #fff);
+  color: var(--color-text, #37352f);
+  font: 600 15px/1 var(--primitive-font-sans, 'Satoshi', system-ui, sans-serif);
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
+  transition: transform 0.1s ease, background 0.12s ease, color 0.12s ease;
+}
+.editable-bold-btn:hover {
+  background: var(--color-accent, #ff584a);
+  border-color: transparent;
+  color: var(--color-accent-contrast, #fff);
+  transform: translateY(-1px);
+}
+.editable-bold-btn strong { font-weight: 700; }
 
 /* Control pill — top-right of the block, shown on hover/focus */
 .cs-article-block-controls {
@@ -1031,6 +1208,59 @@ body.cs-article-nav .cs-article-back {
   color: var(--color-text-muted);
   padding: 0 0.45rem;
   text-transform: lowercase;
+}
+
+/* In edit mode the block-type chip is a converter dropdown — change a block's
+   type (Cards → Bullets, etc.) and its content migrates. */
+select.cs-article-block-typesel {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg);
+  cursor: pointer;
+  padding: 1px 0.3rem;
+  max-width: 140px;
+  appearance: auto;
+  text-transform: none;
+}
+select.cs-article-block-typesel:hover {
+  color: var(--color-text);
+  border-color: var(--color-text-muted);
+}
+
+/* Per-block JSON editor modal. */
+.cs-article-json-modal {
+  width: min(640px, 92vw);
+}
+.cs-article-json-textarea {
+  width: 100%;
+  min-height: 320px;
+  resize: vertical;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.5;
+  white-space: pre;
+  tab-size: 2;
+}
+.cs-article-json-textarea:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+.cs-article-json-error {
+  margin: 0.5rem 0 0;
+  color: var(--color-accent);
+  font-size: 0.8rem;
+}
+.cs-article-json-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
 }
 
 .cs-article-ctl-btn {
@@ -1224,6 +1454,20 @@ body.cs-article-nav .cs-article-back {
 
 .cs-article-item-row .editable-field {
   flex: 1;
+}
+
+/* Per-bullet bold title lead-in (view) + its narrower edit field. */
+.cs-article-bullet-title {
+  font-weight: 600;
+  color: var(--color-text);
+}
+.cs-article-bullet-edit {
+  flex-wrap: wrap;
+}
+.cs-article-bullet-edit .cs-article-bullet-title-input {
+  flex: 0 1 34%;
+  min-width: 88px;
+  font-weight: 600;
 }
 
 .cs-article-card-tools {
@@ -1509,6 +1753,77 @@ body.cs-article-nav .cs-article-back {
   display: inline-block;
   width: auto;
   min-width: 8ch;
+}
+
+/* Quote-card variant — the slides' quote card (white rounded card, soft border,
+   a big accent quote mark, author below, NO avatar) but in the article's own
+   typeface. Toggled per-block via the "quote card" button. Rules come after the
+   base .cs-article-quote so they win on equal specificity. */
+.cs-article-quote--card {
+  padding: 1.4rem 1.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  background: var(--primitive-white, #fff);
+  box-shadow: var(--cs-float);
+}
+:root[data-theme='dark'] .cs-article-quote--card {
+  background: var(--color-bg-secondary);
+}
+.cs-article-quote-mark {
+  display: block;
+  font-size: 36px;
+  line-height: 0.55;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin-bottom: 0.4rem;
+}
+/* Card quote text is upright (not the italic of the inline blockquote) and a
+   touch smaller than the large inline pull-quote. */
+.cs-article-quote--card p {
+  font-style: normal;
+  color: var(--color-text);
+  font-size: 16px;
+  line-height: 24px;
+}
+.cs-article-quote--card cite {
+  display: block;
+  margin-top: 0.7rem;
+}
+
+/* Multiple quotes in one block lay out in a 1–3 column grid (chosen per block). */
+.cs-article-quotes-grid {
+  width: 100%;
+  max-width: var(--cs-wide);
+  margin: 1.5rem auto;
+  display: grid;
+  grid-template-columns: repeat(var(--cs-quote-cols, 2), minmax(0, 1fr));
+  gap: 1rem;
+}
+.cs-article-quotes-grid .cs-article-quote {
+  position: relative;   /* anchor the per-card remove button */
+  margin: 0;
+  height: 100%;         /* equal-height cards across a row */
+  max-width: none;      /* the grid controls width, not each card */
+}
+
+/* Quote width — prose (default) / wide / full, like figures. */
+.cs-article-quote--w-wide { max-width: var(--cs-wide); }
+.cs-article-quote--w-full { max-width: var(--cs-full); }
+.cs-article-quotes-grid--w-prose { max-width: var(--cs-prose); }
+.cs-article-quotes-grid--w-full { max-width: var(--cs-full); }
+/* Per-block card shadow toggle (off strips the float shadow from the cards). */
+.cs-article-quote--card.cs-article-quote--noshadow {
+  box-shadow: none;
+}
+/* Remove-quote button on a card, edit mode only. */
+.cs-article-quote-remove {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+}
+@media (max-width: 640px) {
+  .cs-article-quotes-grid { grid-template-columns: 1fr; }
 }
 
 /* ── Responsive ── */

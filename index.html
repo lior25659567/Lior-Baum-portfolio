@@ -5,13 +5,18 @@
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
+    <!-- We manage light/dark ourselves (theme toggle). Declaring the supported
+         schemes stops mobile browsers (Chrome/Samsung "Auto Dark Theme") from
+         force-inverting the light page when the phone is in dark mode. -->
+    <meta name="color-scheme" content="light dark" />
     <!-- Satoshi (site sans-serif) — loaded here so it's available on first paint,
          independent of Vite's CSS @import handling in dev. -->
     <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
     <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
     <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@1&display=swap" />
     <meta name="description" content="Lior Baum — Product & UX Designer. Crafting digital experiences that merge clarity, precision, and human behavior." />
-    <meta name="theme-color" content="#0a0a0a" />
+    <!-- Light default (mirrors --color-bg); ThemeContext updates it live on toggle. -->
+    <meta name="theme-color" content="#f7f9f4" />
     <meta property="og:title" content="Lior Baum | Product & UX Designer" />
     <meta property="og:description" content="Crafting digital experiences that merge clarity, precision, and human behavior." />
     <meta property="og:image" content="/apple-touch-icon.png" />

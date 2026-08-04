@@ -1840,15 +1840,6 @@ const Projects = () => {
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
         >
-          <motion.span
-            className="section-label"
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            {content.projects?.sectionLabel || 'Portfolio'}
-          </motion.span>
           <h2 ref={titleRef} className="section-title cta-text serif highlight">
             {((content.projects?.sectionTitle) || 'Selected Projects').split(/\s+/).map((word, i) => (
               <span key={i} className="section-title-word">

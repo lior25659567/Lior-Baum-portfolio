@@ -12,6 +12,40 @@
 }
 
 /* Copy All button — sticky top-right */
+/* Slides / Article tab switch — sticky top-left, mirrors the copy button. */
+.docs-tabs {
+  position: sticky;
+  top: 80px;
+  float: left;
+  z-index: 100;
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--color-bg-secondary, #fff);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+.docs-tab {
+  border: none;
+  background: transparent;
+  padding: 0.42em 1.15em;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.docs-tab.is-active {
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+.docs-tab:not(.is-active):hover {
+  color: var(--color-text);
+}
+
 .docs-copy-btn {
   position: sticky;
   top: 80px;

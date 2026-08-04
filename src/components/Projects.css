@@ -4706,7 +4706,7 @@
 .project-content-title {
   font-family: var(--font-body); /* Satoshi */
   font-size: 24px;
-  font-weight: var(--fw-semibold); /* 600 — reference title (true 600 via variable Satoshi) */
+  font-weight: var(--fw-semibold); /* 600 — reference title, bumped one step from --fw-medium (was rendering 500) */
   line-height: 1.2;
   letter-spacing: normal; /* reference has no negative tracking on the title */
   color: var(--color-text);
@@ -4717,7 +4717,7 @@
 .project-content-desc {
   font-family: var(--font-body);
   font-size: 1rem; /* 16px per Figma */
-  font-weight: var(--fw-medium); /* 500 — reference description weight */
+  font-weight: var(--fw-medium); /* 600 — bumped one step from 500 */
   line-height: 1.5;
   color: var(--color-text-muted);
   margin: 0;
@@ -4766,7 +4766,7 @@
   border-radius: 999px;
   font-family: var(--font-body);
   font-size: var(--text-caption);
-  font-weight: 500;
+  font-weight: var(--fw-medium); /* 600 — bumped one step from 500 */
   line-height: 1.2;
   letter-spacing: normal;
   text-transform: none;

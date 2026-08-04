@@ -14,7 +14,7 @@ import { exportCaseStudyToPdf } from '../utils/exportCaseStudyPdf';
 import CaseStudyArticle from './CaseStudyArticle';
 import { buildResponsiveWebp, deriveVideoPoster, deriveMobileVideoSrc, useLowBandwidthMedia, LazyVideo, pickMediaFile } from './caseStudyMedia';
 import EditableField from '../components/EditableField';
-import { makeArticleBlock, deriveArticleFromSlides } from '../data/articleBlocks';
+import { makeArticleBlock, deriveArticleFromSlides, convertArticleBlock as convertBlockData } from '../data/articleBlocks';
 import { mergeIntoLibrary, libraryItemRef, usageCount, newLibraryItemId } from '../data/mediaLibrary';
 import MediaLibraryModal from '../components/MediaLibraryModal';
 
@@ -31,6 +31,11 @@ import MediaLibraryModal from '../components/MediaLibraryModal';
        whose .webp counterparts were generated will continue to migrate.
    This replaces the unconditional rewrite that used to silently break new
    PNG uploads with no .webp on disk. */
+// Case studies whose timestamp slug was renamed to a readable one keep their
+// old /case-studies/<old>/ image folder path in any browser-cached copy — remap
+// it so cached data (article media + the media-library bin) resolves the images.
+const CASE_STUDY_SLUG_RENAMES = { 'project-1776014998709': 'patient-report', 'project-1776628169716': 'design-system' };
+
 function migrateCaseStudyImagePathsToWebp(node) {
   if (node == null) return node;
   if (Array.isArray(node)) return node.map(migrateCaseStudyImagePathsToWebp);
@@ -42,11 +47,16 @@ function migrateCaseStudyImagePathsToWebp(node) {
     return out;
   }
   if (typeof node === 'string' && /^\/case-studies\//.test(node)) {
-    const m = node.match(/^([^?#]+?)\.(png|jpe?g)((?:[?#].*)?)$/i);
-    if (!m) return node;
+    let s = node;
+    for (const oldId in CASE_STUDY_SLUG_RENAMES) {
+      const oldPrefix = '/case-studies/' + oldId + '/';
+      if (s.startsWith(oldPrefix)) { s = '/case-studies/' + CASE_STUDY_SLUG_RENAMES[oldId] + '/' + s.slice(oldPrefix.length); break; }
+    }
+    const m = s.match(/^([^?#]+?)\.(png|jpe?g)((?:[?#].*)?)$/i);
+    if (!m) return s;
     const webpPath = m[1] + '.webp';
     if (imageVariantManifest[webpPath]) return webpPath + m[3];
-    return node;
+    return s;
   }
   return node;
 }
@@ -1427,7 +1437,13 @@ const CaseStudy = () => {
       return 'article';
     } catch { return 'article'; }
   });
-  const isArticleMode = viewMode === 'article' && !followMode;
+  // Phones, tablets, and laptops up to 1280px never show the slide deck — the
+  // article is the only view there, so a case study reads like a normal
+  // scrolling article. Slides stay a large-desktop-only presentation view
+  // (?view=slides / the edit toggle). The presenter follower embed (followMode)
+  // is the one exception — it's slides-by-design.
+  const isCompact = useMediaQuery('(max-width: 1280px)');
+  const isArticleMode = (viewMode === 'article' || isCompact) && !followMode;
   // Leaving the article mid-scroll would otherwise leave the fixed deck
   // container scrolled and clipped.
   useEffect(() => {
@@ -2307,6 +2323,37 @@ const CaseStudy = () => {
     });
   }, []);
 
+  // Change a block's type, migrating its content (e.g. Cards → Bullets).
+  const convertArticleBlock = useCallback((blockIndex, toType) => {
+    setProject(prev => {
+      const article = ensureArticle(prev);
+      const src = article.blocks[blockIndex];
+      if (!src || src.type === toType) return prev;
+      return {
+        ...prev,
+        article: {
+          ...article,
+          blocks: article.blocks.map((b, i) => (i === blockIndex ? convertBlockData(b, toType) : b)),
+        },
+      };
+    });
+  }, []);
+
+  // Replace a block entirely with an edited object (per-block JSON editor).
+  const replaceArticleBlock = useCallback((blockIndex, newBlock) => {
+    setProject(prev => {
+      const article = ensureArticle(prev);
+      if (!article.blocks[blockIndex]) return prev;
+      return {
+        ...prev,
+        article: {
+          ...article,
+          blocks: article.blocks.map((b, i) => (i === blockIndex ? { ...newBlock, id: newBlock.id || b.id } : b)),
+        },
+      };
+    });
+  }, []);
+
   // Returns the new block's id so the editor can scroll to + flash it.
   const addArticleBlock = useCallback((type, afterIndex) => {
     const blk = makeArticleBlock(type);
@@ -2388,6 +2435,8 @@ const CaseStudy = () => {
   const articleOps = useMemo(() => ({
     updateArticle,
     updateArticleBlock,
+    convertArticleBlock,
+    replaceArticleBlock,
     addArticleBlock,
     removeArticleBlock,
     moveArticleBlock,
@@ -2395,7 +2444,7 @@ const CaseStudy = () => {
     seedArticleFromSlides,
     startBlankArticle,
     clearArticle,
-  }), [updateArticle, updateArticleBlock, addArticleBlock, removeArticleBlock, moveArticleBlock, duplicateArticleBlock, seedArticleFromSlides, startBlankArticle, clearArticle]);
+  }), [updateArticle, updateArticleBlock, convertArticleBlock, replaceArticleBlock, addArticleBlock, removeArticleBlock, moveArticleBlock, duplicateArticleBlock, seedArticleFromSlides, startBlankArticle, clearArticle]);
 
   const applyLayoutToAllSlides = useCallback((ratio) => {
     setProject(prev => ({
@@ -8262,7 +8311,7 @@ My instructions: `;
 
   return (
     <div
-      className={`case-study ${editMode ? 'edit-mode' : ''} ${followMode ? 'present-follow' : ''} ${isArticleMode ? 'case-study--article' : ''}`}
+      className={`case-study ${editMode ? 'edit-mode' : ''} ${followMode ? 'present-follow' : ''} ${isArticleMode ? 'case-study--article' : ''} ${lightboxImage ? 'lightbox-active' : ''}`}
       ref={containerRef}
       data-card-style={cardStyle !== 'outlined' ? cardStyle : undefined}
       data-display-mode={isArticleMode ? 'article' : 'slides'}
@@ -8311,7 +8360,7 @@ My instructions: `;
           >
             <span>✏️ Edit Mode</span>
             <div className="edit-actions">
-              {!followMode && (
+              {!followMode && !isCompact && (
                 <div className="cs-view-toggle" role="group" aria-label="Document being edited">
                   <button
                     type="button"
@@ -9011,7 +9060,7 @@ My instructions: `;
       )}
 
       {isArticleMode && (
-        <CaseStudyArticle project={project} projectId={projectId} editMode={editMode} ops={articleOps} openMediaLibrary={openMediaLibrary} />
+        <CaseStudyArticle project={project} projectId={projectId} editMode={editMode} ops={articleOps} openMediaLibrary={openMediaLibrary} onImageClick={setLightboxImage} />
       )}
 
       {!isArticleMode && (

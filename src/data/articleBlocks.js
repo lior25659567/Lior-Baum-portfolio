@@ -105,6 +105,127 @@ export const makeArticleBlock = (type) => {
   return { id: newBlockId(), type, ...defaults };
 };
 
+/* ── Block type conversion ────────────────────────────────────────────────
+   Best-effort content migration between block types so the editor can change,
+   e.g. Cards → Bullets. Any block is normalized into a common shape
+   { title, rows: [{ head, body }], text }, then the target type is rebuilt
+   from it (each card ↔ each bullet ↔ each row). Media-carrying (figure) and
+   empty (divider) blocks are intentionally left out of the convertible set. */
+export const CONVERTIBLE_BLOCK_TYPES = [
+  'heading', 'paragraph', 'quote', 'callout', 'bullets', 'cards',
+  'checklist', 'metaGrid', 'labelRow', 'problemSolutionImpact', 'chapter',
+];
+
+const normalizeBlockContent = (block) => {
+  const rows = [];
+  let title = '';
+  let text = '';
+  switch (block.type) {
+    case 'cards':
+      listOf(block.items).forEach((it) => rows.push({ head: clean(it.title), body: clean(it.description || it.value) }));
+      break;
+    case 'bullets':
+      title = clean(block.title);
+      listOf(block.items).forEach((it) => {
+        if (typeof it === 'string') rows.push({ head: clean(it), body: '' });
+        else rows.push({ head: clean(it.title), body: clean(it.text) });
+      });
+      break;
+    case 'checklist':
+      [...listOf(block.worked), ...listOf(block.failed), ...listOf(block.differently)]
+        .forEach((s) => { if (clean(s)) rows.push({ head: clean(s), body: '' }); });
+      break;
+    case 'metaGrid':
+      listOf(block.items).forEach((it) => rows.push({ head: clean(it.label), body: clean(it.value) }));
+      break;
+    case 'problemSolutionImpact':
+      listOf(block.items).forEach((it) => rows.push({ head: clean(it.label), body: clean(it.text) }));
+      break;
+    case 'labelRow':
+      rows.push({ head: clean(block.label), body: clean(block.text) });
+      break;
+    case 'paragraph':
+    case 'callout':
+      text = clean(block.text);
+      text.split(/\n+/).map((s) => s.trim()).filter(Boolean).forEach((line) => rows.push({ head: line, body: '' }));
+      break;
+    case 'quote': {
+      const qs = (Array.isArray(block.quotes) && block.quotes.length)
+        ? block.quotes
+        : [{ text: block.text, author: block.author, role: block.role }];
+      qs.forEach((q) => rows.push({ head: clean(q.text), body: [clean(q.author), clean(q.role)].filter(Boolean).join(', ') }));
+      text = clean(qs[0] && qs[0].text);
+      break;
+    }
+    case 'heading':
+      title = clean(block.text);
+      text = clean(block.text);
+      break;
+    case 'chapter':
+      title = clean(block.title);
+      if (clean(block.subtitle)) rows.push({ head: clean(block.subtitle), body: '' });
+      break;
+    default:
+      text = clean(block.text);
+  }
+  if (!text) text = rows.map((r) => [r.head, r.body].filter(Boolean).join(' — ')).filter(Boolean).join('\n');
+  return { title, rows, text };
+};
+
+const buildBlockFields = (toType, { title, rows, text }) => {
+  const lines = () => (text ? text.split(/\n+/).map((s) => s.trim()).filter(Boolean) : []);
+  const firstLine = (text.split('\n')[0] || '').trim();
+  const joinedRows = () => rows.map((r) => [r.head, r.body].filter(Boolean).join(' — ')).filter(Boolean);
+  switch (toType) {
+    case 'bullets': {
+      // Each bullet is { title, text }; a row's head becomes the bold title
+      // only when it also has body text (so a card's title→bold lead-in, a
+      // plain paragraph line→plain bullet text).
+      const src = rows.length ? rows : lines().map((l) => ({ head: l, body: '' }));
+      const bulletItems = src.map((r) => (r.body ? { title: r.head || '', text: r.body } : { title: '', text: r.head || '' }));
+      return { title, ordered: false, items: bulletItems.length ? bulletItems : [{ title: '', text: '' }] };
+    }
+    case 'cards':
+      return {
+        variant: 'numbered', columns: 2,
+        items: (rows.length ? rows : lines().map((l) => ({ head: l, body: '' }))).map((r, i) => ({
+          number: String(i + 1), tone: 'neutral', title: r.head || '', description: r.body || '',
+        })),
+      };
+    case 'checklist':
+      return {
+        workedTitle: 'What worked', worked: (rows.length ? rows.map((r) => r.head).filter(Boolean) : lines()).length ? (rows.length ? rows.map((r) => r.head).filter(Boolean) : lines()) : [''],
+        failedTitle: "What didn't", failed: [''],
+        differentlyTitle: "What I'd do differently", differently: [''],
+      };
+    case 'metaGrid':
+      return { items: (rows.length ? rows : [{ head: 'Label', body: text }]).map((r) => ({ label: r.head || 'Label', value: r.body || '' })) };
+    case 'problemSolutionImpact':
+      return { items: (rows.length ? rows : [{ head: 'Label', body: text }]).map((r) => ({ label: r.head || 'Label', text: r.body || '' })) };
+    case 'labelRow':
+      return { label: title || rows[0]?.head || 'Label', text };
+    case 'paragraph':
+      return { text: text || joinedRows().join('\n') };
+    case 'callout':
+      return { text: text || joinedRows().join('\n') };
+    case 'quote':
+      return { variant: '', quotes: (rows.length ? rows : [{ head: firstLine || text, body: '' }]).map((r) => ({ text: r.head || '', author: '', role: '' })) };
+    case 'heading':
+      return { level: 2, eyebrow: '', text: title || rows[0]?.head || firstLine || 'Section' };
+    case 'chapter':
+      return { number: '01', title: title || rows[0]?.head || firstLine || 'Chapter', subtitle: '' };
+    default:
+      return null;
+  }
+};
+
+export const convertArticleBlock = (block, toType) => {
+  if (!block || block.type === toType) return block;
+  const fields = buildBlockFields(toType, normalizeBlockContent(block));
+  if (!fields) return { ...makeArticleBlock(toType), id: block.id };
+  return { id: block.id, type: toType, ...fields };
+};
+
 // Add-block picker groups (mirrors templateCategories' shape for slides).
 export const articleBlockCategories = {
   Text: [

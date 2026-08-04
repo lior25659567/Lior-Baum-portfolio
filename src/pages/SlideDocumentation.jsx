@@ -9,7 +9,16 @@ import {
   getUndocumentedTemplates,
 } from '../data/templateIntrospection';
 import { TemplatePreview } from './CaseStudy';
+import { articleBlockCategories, makeArticleBlock } from '../data/articleBlocks';
 import './SlideDocumentation.css';
+
+// Flat article-block reference (type · label · hint · fields) for the Article
+// Blocks table — derived from articleBlocks.js so it stays in sync automatically.
+const ARTICLE_BLOCK_ROWS = Object.values(articleBlockCategories).flat().map(({ type, label, hint }) => {
+  let fields = [];
+  try { fields = Object.keys(makeArticleBlock(type)).filter((k) => k !== 'id' && k !== 'type'); } catch { fields = []; }
+  return { type, label, hint, fields };
+});
 
 /* ── Markdown builders ─────────────────────────────────── */
 function md_h(level, text) { return `${'#'.repeat(level)} ${text}`; }
@@ -417,6 +426,7 @@ const SlideDocumentation = () => {
   const navigate = useNavigate();
   const contentRef = useRef(null);
   const [copyStatus, setCopyStatus] = useState(null);
+  const [docTab, setDocTab] = useState('slides'); // 'slides' | 'article' — top tab switch
 
   // Allow the Design Agent (running on a different port) to bypass edit-mode
   // gating when it loads this page in an iframe with ?screenshot=1
@@ -615,9 +625,15 @@ const SlideDocumentation = () => {
 
   return (
     <div className="docs-page">
-      {/* Sticky copy button */}
+      {/* Slides / Article tab switch */}
+      <div className="docs-tabs" role="tablist">
+        <button type="button" role="tab" aria-selected={docTab === 'slides'} className={`docs-tab${docTab === 'slides' ? ' is-active' : ''}`} onClick={() => setDocTab('slides')}>Slides</button>
+        <button type="button" role="tab" aria-selected={docTab === 'article'} className={`docs-tab${docTab === 'article' ? ' is-active' : ''}`} onClick={() => setDocTab('article')}>Article</button>
+      </div>
+
+      {/* Sticky copy button — copies whichever tab is active */}
       <button className={`docs-copy-btn ${copyStatus ? 'docs-copy-btn--done' : ''}`} onClick={handleCopyAll}>
-        {copyStatus === 'copied' ? 'Copied!' : copyStatus === 'selected' ? 'Selected!' : 'Copy All for ChatGPT'}
+        {copyStatus === 'copied' ? 'Copied!' : copyStatus === 'selected' ? 'Selected!' : (docTab === 'article' ? 'Copy Article Docs' : 'Copy Slides for ChatGPT')}
       </button>
 
       {/* Sticky JSON copy menu */}
@@ -697,6 +713,8 @@ const SlideDocumentation = () => {
       </div>
 
       <div ref={contentRef}>
+        {docTab === 'slides' && (
+        <>
         {/* Header */}
         <header className="docs-header">
           <h1>Slide Template Documentation</h1>
@@ -934,6 +952,79 @@ Return the JSON array now.`}</pre>
             </div>
           ))}
         </section>
+        </>
+        )}
+
+        {docTab === 'article' && (
+        <>
+        {/* Article header */}
+        <header className="docs-header">
+          <h1>Article Documentation</h1>
+          <p className="docs-subtitle">
+            Reference for the <strong>article</strong> — a case study's default public reading view,
+            built from editable blocks (separate from the slide deck above).
+          </p>
+        </header>
+
+        {/* Article Blocks */}
+        <section className="docs-section" id="article-blocks">
+          <h2>Article Blocks</h2>
+          <p className="docs-subtitle">
+            The <strong>article</strong> is a case study's default public reading view — a vertical,
+            block-based document. In edit mode a Slides / Article toggle switches between the deck and
+            the article; an un-authored article auto-seeds from the slides and stays editable.
+          </p>
+
+          <h3>Editing model</h3>
+          <ul className="docs-tips-list">
+            <li>Hover a block in edit mode for its control pill: <strong>move ↑↓</strong>, <strong>duplicate</strong>, <strong>delete</strong>, a <strong>{'{ }'}</strong> button to edit <strong>that block's raw JSON</strong> on its own, and a <strong>type dropdown</strong> that <strong>converts</strong> the block to another type — the content migrates (Cards ⇄ Bullets keeps each card's title as the bullet's bold lead-in; anything ⇄ Paragraph joins/splits the text).</li>
+            <li><strong>Insert zones</strong> between blocks drop a new block exactly where you are (Text · Heading · Media · Bullets · Cards, or "More…" for the rest).</li>
+            <li>Any prose field supports <strong>**bold**</strong> markdown — select text and click the floating <strong>B</strong> (or press ⌘/Ctrl+B) to wrap it.</li>
+            <li><strong>Edit Article JSON</strong> (edit-mode toolbar) opens the raw article to hand-edit or paste; <strong>Import JSON</strong> replaces it. Shape: <code>{'{ "title", "lede", "blocks": [ { "id", "type", …fields } ] }'}</code>.</li>
+            <li>Toggling edit mode keeps your scroll position — you land back on the block you were viewing.</li>
+          </ul>
+
+          <h3>Block types</h3>
+          <table className="docs-table">
+            <thead>
+              <tr><th>Type</th><th>Label</th><th>Purpose</th><th>Fields</th></tr>
+            </thead>
+            <tbody>
+              {ARTICLE_BLOCK_ROWS.map((r) => (
+                <tr key={r.type}>
+                  <td><code className="docs-field-name">{r.type}</code></td>
+                  <td>{r.label}</td>
+                  <td>{r.hint}</td>
+                  <td>{r.fields.map((f) => <code key={f} className="docs-field-name">{f}</code>)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <h3>Media (figure blocks)</h3>
+          <ul className="docs-tips-list">
+            <li>Holds one or more <strong>images, videos, or iframe embeds</strong> (Figma, YouTube, …) at three widths — <code>prose</code> · <code>wide</code> · <code>full</code> — laid out as a grid or a cycling carousel.</li>
+            <li>Per-media controls (edit mode, each item independently): <strong>border</strong> — a framed mat with a <strong>white / #F1F0ED</strong> mat-colour choice; <strong>shadow</strong> — the float drop-shadow, on by default; and a <strong>caption</strong>. Works on images, videos, and embeds.</li>
+            <li>In the read view, every image opens a full-size <strong>lightbox</strong> on click — the same one the slides use.</li>
+          </ul>
+
+          <h3>Block-specific options</h3>
+          <ul className="docs-tips-list">
+            <li><strong>Bullets</strong> — each item can carry a <strong>bold title</strong> lead-in plus its text; toggle bulleted / numbered. (Maps to Card title ⇄ Bullet title on convert.)</li>
+            <li><strong>Quote</strong> — a <strong>quote-card</strong> variant (white rounded card + quote-mark, in the article's own typeface, no avatar). One block can hold <strong>several quotes</strong> in a <strong>1–3 column grid</strong>, with a per-block <strong>shadow</strong> toggle and a <strong>prose / wide / full</strong> width (like figures).</li>
+            <li><strong>Callout</strong> — a left accent-bar highlight box (orange wash, rounded-right corners).</li>
+            <li><strong>Cards</strong> — <code>numbered</code> / <code>icon</code> / <code>stat</code> variants, 1–3 columns, per-card tone (neutral / positive / negative).</li>
+            <li><strong>Checklist</strong> — three groups: What worked ✓ · What didn't ✕ · What I'd do differently →.</li>
+          </ul>
+
+          <p className="docs-hint">
+            Article blocks live in <code>src/data/articleBlocks.js</code> (defaults + the block-type
+            converter) and render in <code>src/pages/CaseStudyArticle.jsx</code>. This table is
+            generated from that file, so it stays in sync as block types change.
+          </p>
+        </section>
+        </>
+        )}
 
         {/* Footer */}
         <footer className="docs-footer">

@@ -301,7 +301,7 @@
   font-size: clamp(1.0625rem, 0.9rem + 0.6vw, 1.25rem); /* 20px per Figma */
   line-height: var(--lh-body);
   color: var(--color-text-muted);
-  max-width: 700px;
+  max-width: 880px;
   margin: 0 auto clamp(28px, 4vh, 40px);
 }
 

@@ -14580,6 +14580,15 @@ textarea.editable-field {
 }
 
 /* ========== LIGHTBOX ========== */
+/* `.case-study` is position:fixed, which always forms a stacking context — so
+   the lightbox (z-index below) is trapped beneath the site header nav (z 1000)
+   in the article view. Lift the whole case-study above the nav while a lightbox
+   is open; the full-screen overlay covers everything anyway, so the hidden nav
+   is invisible. */
+.case-study.lightbox-active {
+  z-index: 10000;
+}
+
 .lightbox-overlay {
   position: fixed;
   top: 0;
@@ -16356,13 +16365,16 @@ textarea.editable-field {
        desktop deck. The library only scales this artboard to fit the phone. */
   }
 
-  /* Dark presentation chrome on the whole case study page when the mobile
-     viewer is engaged — so the top nav / any gap reads as one dark stage. */
-  .case-study {
+  /* Dark presentation chrome for the mobile SLIDE viewer only — so the top nav
+     / any gap reads as one dark stage. Scoped away from `.case-study--article`:
+     on phones/tablets the article is the default (and only) view and must stay
+     light — without this guard the forced-article mobile view inherited the
+     black slide stage. */
+  .case-study:not(.case-study--article) {
     background: #0a0a0a !important;
   }
 
-  .case-study .case-nav {
+  .case-study:not(.case-study--article) .case-nav {
     background: rgba(10, 10, 10, 0.88) !important;
     border-bottom-color: rgba(255, 255, 255, 0.08) !important;
     /* The nav is overlay chrome OUTSIDE the artboard, rendered at real
@@ -16372,14 +16384,14 @@ textarea.editable-field {
     padding-left: 24px !important;
     padding-right: 24px !important;
   }
-  .case-study .case-nav,
-  .case-study .case-nav .progress-current,
-  .case-study .case-nav .progress-total,
-  .case-study .case-nav .nav-slide-label,
-  .case-study .case-nav .nav-back-btn {
+  .case-study:not(.case-study--article) .case-nav,
+  .case-study:not(.case-study--article) .case-nav .progress-current,
+  .case-study:not(.case-study--article) .case-nav .progress-total,
+  .case-study:not(.case-study--article) .case-nav .nav-slide-label,
+  .case-study:not(.case-study--article) .case-nav .nav-back-btn {
     color: rgba(255, 255, 255, 0.92) !important;
   }
-  .case-study .case-nav .progress-bar {
+  .case-study:not(.case-study--article) .case-nav .progress-bar {
     background: rgba(255, 255, 255, 0.12) !important;
   }
 

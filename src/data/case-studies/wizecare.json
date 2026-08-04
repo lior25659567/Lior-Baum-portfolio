@@ -528,5 +528,693 @@
       "cta": "Get in touch",
       "splitRatio": 40
     }
+  ],
+  "article": {
+    "articleVersion": 1,
+    "title": "Making everyday clinician work feel like less work",
+    "lede": "Three everyday physiotherapist tasks — finding a patient, editing a care plan, building a protocol — fought clinicians at every turn. I rebuilt all three around one familiar pattern, so the platform saved time instead of costing it.",
+    "blocks": [
+      {
+        "id": "bmsc4ynd1ok7t72",
+        "type": "figure",
+        "width": "wide",
+        "display": "carousel",
+        "interval": 1500,
+        "media": [
+          {
+            "src": "/case-studies/wizecare/img-3e9ywkzxfk.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/wizecare/img-4oykmxaws0.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/wizecare/img-ehylbk97xs.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          }
+        ]
+      },
+      {
+        "id": "bmsc4ynd1olnxx0",
+        "type": "metaGrid",
+        "items": [
+          {
+            "label": "Role",
+            "value": "Product Designer"
+          },
+          {
+            "label": "Timeline",
+            "value": "12 weeks · 2024"
+          },
+          {
+            "label": "Team",
+            "value": "1 PM · 2 eng"
+          },
+          {
+            "label": "Tools",
+            "value": "Figma"
+          }
+        ]
+      },
+      {
+        "id": "bmsc4ynd1om6exo",
+        "type": "divider"
+      },
+      {
+        "id": "bmsc4ynd1onhl82",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "The Context",
+        "text": "Physiotherapists spend too much of their day fighting admin, not treating patients"
+      },
+      {
+        "id": "bmsc4ynd1ooe3nz",
+        "type": "paragraph",
+        "text": "Therapists run a full day of back-to-back patients across three separate systems — exercise history, notes, billing. Hunting between screens adds up fast, and by lunch they're already behind. So they lean on years-old routines and drop any tool that adds steps."
+      },
+      {
+        "id": "bmsc4ynd1opj1rj",
+        "type": "figure",
+        "width": "wide",
+        "media": [
+          {
+            "src": "/case-studies/wizecare/img-39wooi4v0w.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          }
+        ]
+      },
+      {
+        "id": "bmsc4ynd1oq7q51",
+        "type": "callout",
+        "text": "The system had to feel like a time-saver from day one. That made adoption — not features — the real design problem."
+      },
+      {
+        "id": "bmsc4ynd1ord6io",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "The Problem",
+        "text": "Three places it broke down"
+      },
+      {
+        "id": "bmsc4ynd1osqbfe",
+        "type": "paragraph",
+        "text": "Across 6 clinic observations, 8 provider interviews, and 89 support tickets over 8 weeks, the same three friction points kept surfacing."
+      },
+      {
+        "id": "bmsc4ynd1otoxin",
+        "type": "cards",
+        "variant": "numbered",
+        "columns": 3,
+        "items": [
+          {
+            "number": "",
+            "tone": "negative",
+            "title": "Patient screen unclear",
+            "description": "Patient details and care plans were buried with no hierarchy. Clinicians were \"unclear how to navigate to the patient tab to view a workout session.\""
+          },
+          {
+            "number": "",
+            "tone": "negative",
+            "title": "Care plan editing too complex",
+            "description": "A single edit spanned multiple screens, losing clinical context. Clinicians \"couldn't see all the exercise options at once.\""
+          },
+          {
+            "number": "",
+            "tone": "negative",
+            "title": "No protocol creation flow",
+            "description": "No way to build a protocol from scratch — only rigid templates. Even experts \"couldn't add new care plans to existing protocols.\""
+          }
+        ]
+      },
+      {
+        "id": "bmsc4ynd1oulj9r",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "Problem Discovery",
+        "text": "Clinicians had stopped seeing the friction — so I stopped asking and started watching"
+      },
+      {
+        "id": "bmsc4ynd1ov9mdb",
+        "type": "paragraph",
+        "text": "Every therapist described the same workarounds — but treated them as just how the job works, not problems anyone could fix. Years of daily use had made the friction invisible, so I trusted what I watched them do over what they told me."
+      },
+      {
+        "id": "bmsc4ynd1owukmd",
+        "type": "quote",
+        "text": "\"I'm unclear how to navigate to the patient tab to view a workout session.\"",
+        "author": "Noa Avraham, physiotherapist",
+        "role": "",
+        "variant": ""
+      },
+      {
+        "id": "bmsc4ynd1oxlarn",
+        "type": "quote",
+        "text": "\"I can't see all the exercise options at once, so I forget which I've already added.\"",
+        "author": "Tomer Shapira, physiotherapist",
+        "role": ""
+      },
+      {
+        "id": "bmsc4ynd1oyyewc",
+        "type": "quote",
+        "text": "\"Despite my experience, I can't add new care plans to existing protocols.\"",
+        "author": "Yael Mizrahi, physiotherapist",
+        "role": ""
+      },
+      {
+        "id": "bmsc4ynd1ozztqz",
+        "type": "callout",
+        "text": "These weren't edge cases. They were the daily routine — which is exactly why I watched instead of asked."
+      },
+      {
+        "id": "bmsc4ynd1p0r46d",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "Design Goals",
+        "text": "What I set out to fix — and why"
+      },
+      {
+        "id": "bmsc4ynd1p1zlil",
+        "type": "bullets",
+        "title": "",
+        "ordered": false,
+        "items": [
+          {
+            "title": "Simplify navigation",
+            "text": "Make patient data and key actions reachable without hunting. Constraint: therapists need 6+ data points visible at a glance — I could only reorganize, not hide."
+          },
+          {
+            "title": "Streamline care plan editing",
+            "text": "Replace disconnected screens with one focused flow, while keeping custom protocols flexible without rebuilding the backend."
+          },
+          {
+            "title": "Enable protocol creation",
+            "text": "Let experts build protocols from scratch, working within the existing template architecture — no net-new data models mid-project."
+          },
+          {
+            "title": "Reduce the learning curve",
+            "text": "Make the redesign self-explanatory so adoption wouldn't require full retraining."
+          }
+        ]
+      },
+      {
+        "id": "bmsc4ynd1p2jefq",
+        "type": "bullets",
+        "title": "KPIs",
+        "ordered": false,
+        "items": [
+          "User adoption rate",
+          "Training time reduction",
+          "Decrease in support requests",
+          "Task completion time"
+        ]
+      },
+      {
+        "id": "bmsc4ynd1p4fyb4",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "Patient Screen",
+        "text": "Everything a clinician needs, in one place"
+      },
+      {
+        "id": "bmsc4ynd1p5zy61",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "Before"
+      },
+      {
+        "id": "bmsc4ynd1p6hnh0",
+        "type": "paragraph",
+        "text": "Cluttered tabs, no hierarchy, adherence metrics buried where no one looked."
+      },
+      {
+        "id": "bmsc4ynd1p7msdm",
+        "type": "figure",
+        "width": "wide",
+        "display": "carousel",
+        "interval": 1500,
+        "media": [
+          {
+            "src": "/case-studies/wizecare/img-xu92y5bwo.webp",
+            "caption": "Old — cluttered tabs, buried adherence data",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/wizecare/img-7qfmd98x00.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          }
+        ]
+      },
+      {
+        "id": "bmsc4ynd1p8ibvj",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "After"
+      },
+      {
+        "id": "bmsc4ynd1p92e8u",
+        "type": "paragraph",
+        "text": "One dedicated page separating patient info, active plans, and progress — with adherence data where therapists look first."
+      },
+      {
+        "id": "bmsc4ynd1patucf",
+        "type": "figure",
+        "width": "wide",
+        "display": "carousel",
+        "interval": 1500,
+        "media": [
+          {
+            "src": "/case-studies/wizecare/img-4chmer0xr4.webp",
+            "caption": "New — dedicated patient page, clear hierarchy",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/wizecare/img-3e9ywkzxfk.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          }
+        ]
+      },
+      {
+        "id": "bmsc4ynd1pbwo98",
+        "type": "callout",
+        "text": "Adherence data now sits where therapists' eyes land first."
+      },
+      {
+        "id": "bmsc4ynd1pde0zk",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "Care Plan Editing",
+        "text": "Editing a plan shouldn't need a map — so I flattened it into one screen"
+      },
+      {
+        "id": "bmsc4ynd1peqj68",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "Before"
+      },
+      {
+        "id": "bmsc4ynd1pf794u",
+        "type": "paragraph",
+        "text": "A single edit spanned multiple screens, pushing patient data out of view."
+      },
+      {
+        "id": "bmsc4ynd1pgvan8",
+        "type": "figure",
+        "width": "wide",
+        "display": "carousel",
+        "interval": 1500,
+        "media": [
+          {
+            "src": "/case-studies/wizecare/img-7qfmd98x00.webp",
+            "caption": "Old — multi-screen flow, dense exercise lists",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/wizecare/img-3icuntqcc0.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/wizecare/img-fu77sazv3c.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/wizecare/img-4k0tnag9eo.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          }
+        ]
+      },
+      {
+        "id": "bmsc4ynd1phtw9e",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "After"
+      },
+      {
+        "id": "bmsc4ynd1piij1b",
+        "type": "paragraph",
+        "text": "One screen. Each exercise is a card you edit in place, patient details pinned throughout. In tests, clinicians stopped jumping between screens."
+      },
+      {
+        "id": "bmsc4ynd1pjxka4",
+        "type": "figure",
+        "width": "wide",
+        "display": "carousel",
+        "interval": 1500,
+        "media": [
+          {
+            "src": "/case-studies/wizecare/img-3e9ywkzxfk.webp",
+            "caption": "New — single screen, exercise cards, inline editing",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/wizecare/img-4gqtt2o900.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/wizecare/img-4t0xrhcg8w.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/wizecare/img-20olxb6bo8.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/wizecare/img-6yoff99cec.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          }
+        ]
+      },
+      {
+        "id": "bmsc4ynd1pkecys",
+        "type": "callout",
+        "text": "I swapped pop-up windows for inline editing — \"I lose context when things pop up,\" therapists said. Trade-off: I cut custom animations to ship on time."
+      },
+      {
+        "id": "bmsc4ynd1pn3ggu",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "Protocol Builder",
+        "text": "Protocol Builder — why I replaced templates with a drag-and-drop Kanban"
+      },
+      {
+        "id": "bmsc4ynd1po6gor",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "Before"
+      },
+      {
+        "id": "bmsc4ynd1ppj72e",
+        "type": "paragraph",
+        "text": "No build-from-scratch flow — and rigid templates broke on complex cases."
+      },
+      {
+        "id": "bmsc4ynd1pqyhdm",
+        "type": "figure",
+        "width": "wide",
+        "display": "carousel",
+        "interval": 1500,
+        "media": [
+          {
+            "src": "/case-studies/wizecare/img-db2ae7syo.webp",
+            "caption": "Old — no creation flow, rigid templates only",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/wizecare/img-hxjw766x2s.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/wizecare/img-1nmfkbclf0.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/wizecare/img-aklnh5dvt8.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          }
+        ]
+      },
+      {
+        "id": "bmsc4ynd1prclc2",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "After"
+      },
+      {
+        "id": "bmsc4ynd1psz49c",
+        "type": "paragraph",
+        "text": "A board where therapists drag exercise cards into place — library on the left, plan on the right. Same card pattern as the editor, so there's nothing new to learn."
+      },
+      {
+        "id": "bmsc4ynd1ptt9g2",
+        "type": "figure",
+        "width": "wide",
+        "media": [
+          {
+            "src": "",
+            "caption": "New — drag-and-drop Kanban builder",
+            "isVideo": false,
+            "embedUrl": "https://www.youtube.com/embed/JVQ3GlbPI0A?autoplay=1&mute=1&loop=1&playlist=JVQ3GlbPI0A&rel=0&modestbranding=1&playsinline=1",
+            "size": "large"
+          }
+        ]
+      },
+      {
+        "id": "bmsc4ynd1pu4wqr",
+        "type": "callout",
+        "text": "One familiar card pattern across the patient view, the editor, and the builder — the spine of this redesign. A new tool that feels like one clinicians already know."
+      },
+      {
+        "id": "bmsc4ynd1pv4ybc",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "Outcomes",
+        "text": "What changed: faster days, fewer mistakes, more people actually using it"
+      },
+      {
+        "id": "bmsc4ynd1pwd0h7",
+        "type": "bullets",
+        "title": "",
+        "ordered": false,
+        "items": [
+          {
+            "title": "Saved per session",
+            "text": "Navigation and task time per session dropped against the usability-test baseline — roughly 10–15 minutes back per patient."
+          },
+          {
+            "title": "Reduction in misclicks",
+            "text": "Clearer layouts and inline editing cut prescription misclicks by ~75% in post-launch validation."
+          },
+          {
+            "title": "Former non-users now opening it every day",
+            "text": "Clinicians who had avoided the platform now use it daily, per stakeholder report in the first month."
+          }
+        ]
+      },
+      {
+        "id": "bmsc4ynd1pxvqx7",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "Reflection",
+        "text": "What I'd do differently"
+      },
+      {
+        "id": "bmsc4ynd1pyh6qv",
+        "type": "checklist",
+        "workedTitle": "What worked",
+        "worked": [
+          "Switching from interviews to direct observation surfaced friction users had stopped reporting",
+          "One reusable card system unified the patient view, editor, and builder"
+        ],
+        "failedTitle": "What didn't",
+        "failed": [
+          "I set the error-rate baseline too late, so the misclick gain leans on post-launch numbers alone",
+          "Custom exercise animations got cut to hit the sprint and never came back"
+        ],
+        "differentlyTitle": "What I'd do differently",
+        "differently": [
+          "Capture a pre-launch baseline for every metric before the first design ships",
+          "Validate the protocol builder with experts earlier, not only after the flow was built"
+        ]
+      }
+    ],
+    "hideContact": true
+  },
+  "mediaLibrary": [
+    {
+      "id": "ml-58b7nv",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-3e9ywkzxfk.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-ii0n6r",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-4oykmxaws0.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-1yu32ae",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-ehylbk97xs.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-chlihj",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-39wooi4v0w.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-1k8v0q",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-xu92y5bwo.webp",
+      "isVideo": false,
+      "caption": "Old — cluttered tabs, buried adherence data"
+    },
+    {
+      "id": "ml-146r9wk",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-7qfmd98x00.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-1dd0y3x",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-4chmer0xr4.webp",
+      "isVideo": false,
+      "caption": "New — dedicated patient page, clear hierarchy"
+    },
+    {
+      "id": "ml-1kfxw3d",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-3icuntqcc0.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-14fkzgf",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-fu77sazv3c.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-wejtr6",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-4k0tnag9eo.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-dy5b4a",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-4gqtt2o900.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-1brhtrz",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-4t0xrhcg8w.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-1kwg3ci",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-20olxb6bo8.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-1h873fn",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-6yoff99cec.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-11ugc24",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-db2ae7syo.webp",
+      "isVideo": false,
+      "caption": "Old — no creation flow, rigid templates only"
+    },
+    {
+      "id": "ml-slxb6l",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-hxjw766x2s.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-1rv91hc",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-1nmfkbclf0.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-1g12lid",
+      "addedAt": 1785695444677,
+      "src": "/case-studies/wizecare/img-aklnh5dvt8.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-10c7npf",
+      "addedAt": 1785695444677,
+      "embedUrl": "https://www.youtube.com/embed/JVQ3GlbPI0A?autoplay=1&mute=1&loop=1&playlist=JVQ3GlbPI0A&rel=0&modestbranding=1&playsinline=1",
+      "embedType": "youtube"
+    }
   ]
 }

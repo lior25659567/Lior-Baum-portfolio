@@ -84,7 +84,7 @@
 .nav-link {
   font-size: var(--text-body-sm);
   font-weight: var(--fw-medium);
-  letter-spacing: var(--ls-meta);
+  letter-spacing: normal;
   color: var(--color-text-muted);
   transition: color var(--transition-fast);
 }

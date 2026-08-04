@@ -1,0 +1,686 @@
+{
+  "dataVersion": 6,
+  "title": "Design System\nin Claude Code",
+  "subtitle": "An AI-first design system — shared by designers, developers, and AI.",
+  "category": "Design Systems / AI Tooling",
+  "year": "2025",
+  "color": "#D97757",
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Design System\nin Claude Code",
+      "description": "Tokens, components, and rules shared by designers, developers, and AI — one source of truth across every surface.",
+      "clientLabel": "Client",
+      "client": "Align Technology",
+      "focusLabel": "Focus",
+      "focus": "UX · AI · Design System",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/design-system/img-jk9hy2wvmk.webp",
+          "caption": "",
+          "isVideo": false,
+          "isGif": false,
+          "embedType": ""
+        }
+      ],
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
+      "splitRatio": 40,
+      "imageCarouselFit": "contain",
+      "imageCarouselInterval": 2000,
+      "metaItems": [
+        {
+          "label": "Role",
+          "value": "Product Designer & Front-End Developer"
+        },
+        {
+          "label": "Timeline",
+          "value": "2 months · 2026"
+        },
+        {
+          "label": "Team",
+          "value": "1 designer · 2 engineers"
+        },
+        {
+          "label": "Tools",
+          "value": "Figma · Storybook · Claude Code"
+        }
+      ]
+    },
+    {
+      "type": "problem",
+      "label": "01 · The Shift · From Then to Now",
+      "title": "From pictures of pages to design as data",
+      "content": "Every tool moved design closer to code — and closer to a single source of truth. That's the path that leads to building components in Storybook.",
+      "issuesTitle": "The throughline",
+      "issues": [
+        "Photoshop → Figma — design left the canvas for the browser",
+        "Tokens turned design into data — one source of truth",
+        "AI-assisted — prompt-to-component, code-aware, living previews"
+      ],
+      "highlight": "Each shift pushed design and code closer. Storybook is where they meet.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "/iframes/timeline.html",
+          "src": "",
+          "caption": "From design system to developer handoff",
+          "isVideo": false,
+          "embedType": "iframe",
+          "isGif": false
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
+      "presenterNotes": ""
+    },
+    {
+      "type": "problem",
+      "label": "02 · System Architecture · Foundation",
+      "title": "Shared by designers, developers, and AI",
+      "content": "Tokens, a living Storybook, and every page — one set of constraints, with Claude Code as the connective layer.",
+      "issuesTitle": "The layers",
+      "issues": [
+        "Design tokens — primitive, semantic, component",
+        "Storybook — the living, browsable contract for every component and state",
+        "Product pages — every screen across the web app",
+        "Claude/AI rules — the governance layer"
+      ],
+      "highlight": "One set of constraints — Storybook is where they become visible.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "/iframes/architecture.html",
+          "src": "",
+          "caption": "System architecture — tokens, Storybook, pages, AI rules",
+          "isVideo": false,
+          "embedType": "iframe",
+          "isGif": false
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "problem",
+      "label": "03 · The System · Tokens, Components, Variants",
+      "title": "One connected library, documented in Storybook",
+      "content": "Tokens at the foundation, components on top, variants for every context. Storybook renders every state — the living workshop where the system is built, documented, and tested.",
+      "issuesTitle": "What's inside",
+      "issues": [
+        "Tokens — colour, typography, spacing, motion",
+        "Core components — buttons, inputs, modals, cards, tables",
+        "Variants for every state, size, and theme",
+        "Storybook — every state documented, versioned, and testable"
+      ],
+      "highlight": "Consistency was the baseline. Extensibility was the goal. Storybook kept both honest.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "https://res.cloudinary.com/dl064p341/video/upload/v1782064129/example_of_storybook_design_system_eyyqjx.mov",
+          "isVideo": true,
+          "embedType": "",
+          "isGif": false
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
+      "imageCarouselFit": "contain",
+      "imageCarouselInterval": 1500
+    },
+    {
+      "type": "problem",
+      "label": "04 · Pages & Themes",
+      "title": "Same component. Every page, every theme.",
+      "content": "One web design system. The same components compose into every page — dashboards, settings, tables, forms — while dark and light respond to the token layer.",
+      "issuesTitle": "How it works",
+      "issues": [
+        "One web design system — components that compose into any page",
+        "Dashboards, settings, tables, forms — all built from the same library",
+        "Dark and light handled entirely at the token layer",
+        "Switching themes is a flag — not a rebuild"
+      ],
+      "highlight": "One system. Every page. Every theme. Same logic underneath.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/design-system/img-3xp44vbt7k.webp",
+          "isVideo": false,
+          "isGif": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/design-system/img-6ys844me80.webp",
+          "caption": "",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/design-system/img-5hutkfqau8.webp",
+          "isVideo": false
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "cover",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/design-system/img-bj3dx3ts0.webp",
+          "isVideo": false
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "carousel",
+      "imageCarouselInterval": 1500,
+      "imageCarouselFit": "contain"
+    },
+    {
+      "type": "problem",
+      "label": "05 · AI as a Collaborator · Ways of Working",
+      "title": "AI didn't replace the work. It amplified it.",
+      "content": "Claude Code as a structured collaborator — explicit rules, prompts, methodologies. Designers owned intent. AI accelerated execution.",
+      "highlight": "AI did not replace human work. It amplified capabilities and reduced friction.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": false,
+          "embedUrl": "/iframes/collaboration (1).html",
+          "src": "",
+          "caption": "Designer and AI — a structured collaboration",
+          "isVideo": false,
+          "embedType": "iframe",
+          "isGif": false
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "outcomes",
+      "label": "06 · Outcomes · What Changed",
+      "title": "What this project reflects about design today.",
+      "outcomes": [
+        {
+          "metric": "Faster",
+          "title": "Iteration",
+          "description": "Prototyping in the real stack — sprints shrink to hours."
+        },
+        {
+          "metric": "Fewer",
+          "title": "Breaking changes",
+          "description": "Shared governance catches drift before it ships."
+        },
+        {
+          "metric": "Faster",
+          "title": "Onboarding",
+          "description": "New designers inherit the rules — the system teaches itself."
+        },
+        {
+          "metric": "Changed",
+          "title": "The designer's role",
+          "description": "Less drawing, more defining — the system is the deliverable."
+        }
+      ],
+      "showNumbers": false,
+      "cardVariant": "default",
+      "gridColumns": 4,
+      "splitRatio": 40
+    },
+    {
+      "type": "reflection",
+      "label": "Reflection",
+      "title": "How my role as a designer has changed",
+      "whatWorked": [
+        "Storybook became the single source of truth — design, engineering, and AI all judged work against the same rendered states, which ended the subjective 'is this on-system?' debates.",
+        "Putting tokens in code turned visual drift into a build error instead of a production bug — the system enforced itself.",
+        "My role shifted from drawing screens to defining rules. The clearer the constraints, the faster everyone else moved."
+      ],
+      "whatFailed": [
+        "I assumed good work would drive adoption. It didn't — developers only reached for the system once Storybook lived inside their actual workflow, not beside it.",
+        "Early on I documented components after building them. The gap let inconsistencies slip in before the docs caught up."
+      ],
+      "whatYoudDoDifferently": [
+        "Wire Storybook into the dev workflow on day one — make using the system the path of least resistance.",
+        "Lock one repeatable pattern for building a component before scaling it across the library.",
+        "Document each component in Storybook as it's built, never in a cleanup pass at the end."
+      ],
+      "whatYouCouldntMeasure": "Whether the system keeps teaching itself as engineers rotate on and off. Real adoption only shows up 6+ months post-launch — beyond the window I had."
+    },
+    {
+      "type": "end",
+      "title": "Thank You",
+      "subtitle": "A design system is only as good as its handoff — this is the system that made Storybook the way developers build.",
+      "cta": "Get in touch",
+      "splitRatio": 40
+    }
+  ],
+  "article": {
+    "articleVersion": 1,
+    "title": "Design System in Claude Code",
+    "lede": "Giving designers a real share of the code — building production components with Claude Code, prototyping with the actual library, and shipping straight to Storybook without an engineering handoff.",
+    "blocks": [
+      {
+        "id": "ds-hero",
+        "type": "figure",
+        "width": "full",
+        "media": [
+          {
+            "src": "/case-studies/design-system/img-p2pd0meyu0.png",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large",
+            "isGif": false
+          }
+        ]
+      },
+      {
+        "id": "ds-meta",
+        "type": "metaGrid",
+        "items": [
+          {
+            "label": "Role",
+            "value": "Product Designer & Front-End Developer"
+          },
+          {
+            "label": "Timeline",
+            "value": "2 months · 2026"
+          },
+          {
+            "label": "Team",
+            "value": "1 designer · 2 engineers"
+          },
+          {
+            "label": "Tools",
+            "value": "Figma · Storybook · Claude Code"
+          }
+        ]
+      },
+      {
+        "id": "ds-div-1",
+        "type": "divider"
+      },
+      {
+        "id": "ds-psi",
+        "type": "problemSolutionImpact",
+        "items": [
+          {
+            "label": "Problem",
+            "text": "A designer could describe a component but not deliver one. Prototypes were drawn approximations of a product that already existed in code — so exploration happened in a medium that couldn't produce anything real, and every addition to the library waited on an engineering handoff."
+          },
+          {
+            "label": "Solution",
+            "text": "Designers build the real component in Claude Code against tokens defined in code, and publish it straight to Storybook. The rules layer constrains what can be generated; Storybook renders every state as proof. No spec, no queue, no translation step."
+          },
+          {
+            "label": "Impact",
+            "text": "Designers can now prototype with the actual components rather than pictures of them — and the work that comes out of that exploration is shippable, not something an engineer has to rebuild. The deliverable changed from a description of a component to the component itself."
+          }
+        ]
+      },
+      {
+        "id": "ds-div-2",
+        "type": "divider"
+      },
+      {
+        "id": "ds-prob-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "The Problem",
+        "text": "A designer could specify a component. Only an engineer could ship one."
+      },
+      {
+        "id": "ds-prob-p",
+        "type": "paragraph",
+        "text": "Every component in the library took the same path: the designer drew it, wrote the states and behaviours into a spec, and handed it over. Then it waited. What came back was usually close but not exact — spacing off, a state missing, a hover invented — so the loop ran again. And because prototypes were drawings, the only way to test how something actually behaved was to ask someone else to build it first."
+      },
+      {
+        "id": "ds-prob-b",
+        "type": "bullets",
+        "title": "Where it broke",
+        "ordered": false,
+        "items": [
+          "**Designers couldn't build with what already existed** — prototypes recreated components in a design tool instead of using the real ones, so they were always an approximation.",
+          "**Every handoff was a translation** — the spec described the component, the engineer rebuilt it, and detail was lost in between.",
+          "**The library moved at engineering's pace** — component work competed with product work, and lost.",
+          "**The designer couldn't verify their own work** — reviewing a build meant describing corrections in a ticket rather than making them."
+        ]
+      },
+      {
+        "id": "ds-prob-callout",
+        "type": "callout",
+        "text": "The bottleneck wasn't skill or tooling. It was that the person who decided how a component should behave had no way to make it behave that way."
+      },
+      {
+        "id": "ds-goal-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "The Goal",
+        "text": "Give designers a real share of the code"
+      },
+      {
+        "id": "ds-goal-p",
+        "type": "paragraph",
+        "text": "The aim wasn't to turn designers into engineers. It was to remove the translation step — so that the person holding the intent can build with the real components, prototype in the actual product rather than a picture of it, and have what comes out be shippable instead of something to be redone."
+      },
+      {
+        "id": "ds-goal-b",
+        "type": "bullets",
+        "title": "What that required",
+        "ordered": false,
+        "items": [
+          "**Prototypes built from real components** — exploration in the same material the product is made of, not a drawn likeness of it.",
+          "**Constraints a generator can't escape** — tokens in code, so no arbitrary value can enter a component.",
+          "**Proof the work is correct** — every state rendered in Storybook, reviewable without reading the source.",
+          "**Rules the AI follows** — an explicit contract for what a component must include before it counts as done.",
+          "**A path to production** — output that lands in the real library, not a sandbox someone has to rebuild."
+        ]
+      },
+      {
+        "id": "ds-arch-fig",
+        "type": "figure",
+        "width": "prose",
+        "media": [
+          {
+            "src": "",
+            "caption": "System architecture — tokens, Storybook, pages, AI rules",
+            "isVideo": false,
+            "embedUrl": "/iframes/architecture.html",
+            "size": "large",
+            "shadow": false
+          }
+        ]
+      },
+      {
+        "id": "ds-tok-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "Foundation",
+        "text": "Two environments, one set of values"
+      },
+      {
+        "id": "ds-tok-p",
+        "type": "paragraph",
+        "text": "Figma and Storybook are maintained separately — the design file for exploration, the code library for what ships. What holds them together is the token layer: colour, typography, spacing and motion defined once, so both environments resolve to the same values instead of agreeing by convention."
+      },
+      {
+        "id": "ds-tok-p2",
+        "type": "paragraph",
+        "text": "That mattered more here than in a normal design system. A generator has to be able to read the constraints — tokens in code are what make it possible for Claude Code to build a component that's on-system by construction rather than by review. [[CONFIRM OR CORRECT — how Figma and the code tokens stay aligned in practice: manual, synced, or one-directional.]]"
+      },
+      {
+        "id": "ds-tok-b",
+        "type": "bullets",
+        "title": "How the layers sit",
+        "ordered": false,
+        "items": [
+          "**Tokens** — primitive, semantic and component tiers, defined in code.",
+          "**Figma** — where design decisions get explored, bound to the same token values.",
+          "**Storybook** — the rendered contract for every component and state that ships.",
+          "**Rules for Claude Code** — the governance layer that keeps generated work inside all of the above."
+        ]
+      },
+      {
+        "id": "ds-ai-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "How It Works",
+        "text": "The rules are what make the output shippable"
+      },
+      {
+        "id": "ds-ai-p",
+        "type": "paragraph",
+        "text": "Left alone, AI produces components that look right and aren't — plausible values, invented states, an API that doesn't match anything else in the library. Making the output production-grade meant writing the contract down: which tokens exist, which patterns are permitted, and what a component must include before it counts as finished."
+      },
+      {
+        "id": "ds-ai-b",
+        "type": "bullets",
+        "title": "The loop",
+        "ordered": false,
+        "items": [
+          "**Define the intent** — the designer describes the component, its states and its behaviour.",
+          "**Generate inside the rules** — Claude Code builds against tokens, with the contract constraining what it can produce.",
+          "**Render every state in Storybook** — the proof is visual, so correctness is checked by looking rather than reading.",
+          "**Iterate in place** — adjust and re-render, instead of writing corrections into a ticket.",
+          "**Publish to the library** — engineering reviews rather than rebuilds."
+        ]
+      },
+      {
+        "id": "ds-ai-fig",
+        "type": "figure",
+        "width": "prose",
+        "media": [
+          {
+            "src": "",
+            "caption": "Designer and AI — a structured collaboration",
+            "isVideo": false,
+            "embedUrl": "/iframes/collaboration (1).html",
+            "size": "large",
+            "shadow": false
+          }
+        ]
+      },
+      {
+        "id": "ds-ai-example",
+        "type": "paragraph",
+        "text": "[[ADD ONE WORKED EXAMPLE — pick a single component, name it, and walk it through the five steps above with the actual rules that constrained it. This is the most differentiating content on the page and the hardest for anyone else to claim.]]"
+      },
+      {
+        "id": "ds-sys-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "The Library",
+        "text": "Every state rendered, versioned, and testable"
+      },
+      {
+        "id": "ds-sys-p",
+        "type": "paragraph",
+        "text": "Storybook isn't documentation here — it's the acceptance test. A component is finished when every state renders correctly, which is what lets a designer ship without an engineer verifying the source line by line. It's also the shelf designers pull from when prototyping, so the same library serves exploration and production."
+      },
+      {
+        "id": "ds-sys-b",
+        "type": "bullets",
+        "title": "What's inside",
+        "ordered": false,
+        "items": [
+          "**Tokens** — colour, typography, spacing, motion.",
+          "**Core components** — buttons, inputs, modals, cards, tables.",
+          "**Variants for every state, size and theme** — no undocumented edge cases.",
+          "**Documented as built** — never in a cleanup pass at the end."
+        ]
+      },
+      {
+        "id": "ds-sys-vid",
+        "type": "figure",
+        "width": "wide",
+        "media": [
+          {
+            "src": "https://res.cloudinary.com/dl064p341/video/upload/v1782064129/example_of_storybook_design_system_eyyqjx.mov",
+            "caption": "Storybook — components, variants and states",
+            "isVideo": true,
+            "embedUrl": "",
+            "size": "large"
+          }
+        ]
+      },
+      {
+        "id": "ds-pages-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "Pages & Themes",
+        "text": "Same components, every surface"
+      },
+      {
+        "id": "ds-pages-p",
+        "type": "paragraph",
+        "text": "Dashboards, settings, tables and forms all compose from the same library, and light and dark resolve entirely at the token layer. This is where the code-first decision pays off twice: theming is a flag rather than a parallel set of screens, and a designer-built component inherits both themes without anyone designing the second one."
+      },
+      {
+        "id": "ds-pages-fig",
+        "type": "figure",
+        "width": "wide",
+        "display": "carousel",
+        "interval": 1500,
+        "media": [
+          {
+            "src": "/case-studies/design-system/img-3xp44vbt7k.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/design-system/img-6ys844me80.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/design-system/img-5hutkfqau8.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          },
+          {
+            "src": "/case-studies/design-system/img-bj3dx3ts0.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "size": "large"
+          }
+        ]
+      },
+      {
+        "id": "ds-out-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "Outcomes",
+        "text": "What changed"
+      },
+      {
+        "id": "ds-out-b",
+        "type": "bullets",
+        "title": "",
+        "ordered": false,
+        "items": [
+          "**Designers prototype with the real thing** — exploration happens in live components, so what's tested is how the product actually behaves.",
+          "**The deliverable changed** — a designer hands over a working component, not a picture of one.",
+          "**The handoff queue disappeared for library work** — components stopped waiting behind product priorities.",
+          "**Engineering reviews instead of rebuilds** — the same work, minus the duplication.",
+          "**Drift is caught at build time** — a value outside the system fails rather than reaching production.",
+          "**Reviews stopped being subjective** — design, engineering and AI judge work against the same rendered states."
+        ]
+      },
+      {
+        "id": "ds-ref-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "Reflection",
+        "text": "How my role changed"
+      },
+      {
+        "id": "ds-ref-c",
+        "type": "checklist",
+        "workedTitle": "What worked",
+        "worked": [
+          "Putting tokens in code made generation safe — the constraints the AI works inside are the same ones that fail the build, so bad output can't quietly ship.",
+          "Storybook as the acceptance test is what made shipping without an engineer defensible — correctness is visible, not asserted.",
+          "My role shifted from drawing screens to defining rules. The clearer the constraints, the more the AI could carry and the faster everyone else moved."
+        ],
+        "failedTitle": "What didn't",
+        "failed": [
+          "I assumed good work would drive adoption. It didn't — developers only reached for the system once Storybook lived inside their actual workflow rather than beside it.",
+          "Early on I documented components after building them, and inconsistencies slipped into the gap before the docs caught up.",
+          "The first components I generated looked correct and weren't — the rules layer only got written after I'd shipped things that had to be pulled back."
+        ],
+        "differentlyTitle": "What I'd do differently",
+        "differently": [
+          "Write the component contract before generating anything — the rules aren't documentation, they're the thing that makes the output usable.",
+          "Wire Storybook into the dev workflow on day one — make using the system the path of least resistance.",
+          "Lock one repeatable pattern for building a component before scaling it across the library."
+        ]
+      }
+    ],
+    "hideContact": true
+  },
+  "mediaLibrary": [
+    {
+      "id": "ml-129cmus",
+      "addedAt": 1785686096768,
+      "src": "/case-studies/design-system/img-jk9hy2wvmk.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-4qu4v3",
+      "addedAt": 1785686096768,
+      "src": "/case-studies/design-system/img-3xp44vbt7k.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-1k3ygay",
+      "addedAt": 1785686096768,
+      "src": "/case-studies/design-system/img-6ys844me80.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-kzlyys",
+      "addedAt": 1785686096768,
+      "src": "/case-studies/design-system/img-5hutkfqau8.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-6lbekz",
+      "addedAt": 1785686096768,
+      "src": "/case-studies/design-system/img-bj3dx3ts0.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-1buqzmb",
+      "addedAt": 1785789029272,
+      "src": "/case-studies/design-system/img-p2pd0meyu0.png",
+      "isVideo": false,
+      "caption": ""
+    }
+  ]
+}
