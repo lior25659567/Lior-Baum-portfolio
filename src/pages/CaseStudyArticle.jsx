@@ -1041,11 +1041,16 @@ const nextCaseThumb = (data) => {
   return pick(intro) || slides.map(pick).find(Boolean) || '';
 };
 
+// Studies that exist and are reachable by direct link, but shouldn't be offered
+// as a "read this next" suggestion. `index.js` is auto-generated, so the list
+// lives here rather than in the case-study registry.
+const NEXT_CARD_HIDDEN = ['wizecare'];
+
 const NextCaseCards = ({ projectId }) => {
   const all = Object.keys(savedCaseStudies || {});
   const idx = all.indexOf(projectId);
   const ordered = idx >= 0 ? [...all.slice(idx + 1), ...all.slice(0, idx)] : all;
-  const candidates = ordered.filter((id) => id !== projectId);
+  const candidates = ordered.filter((id) => id !== projectId && !NEXT_CARD_HIDDEN.includes(id));
   // Prefer studies that actually have a preview image so both next-cards show a
   // picture; only fall back to image-less studies if fewer than two qualify.
   const withThumb = candidates.filter((id) => nextCaseThumb(savedCaseStudies[id] || {}));
