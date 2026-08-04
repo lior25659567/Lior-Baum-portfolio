@@ -1593,7 +1593,7 @@
   --ed-chip: #EBE4D1;
   --ed-chip-ink: #3A372D;
   --ed-font-display: "Fraunces", serif;
-  --ed-font-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --ed-font-body: "Satoshi", "DM Sans", ui-sans-serif, system-ui, sans-serif;
   --ed-font-accent: "Fraunces", serif;
   /* Editorial body runs ~25% larger than the slider default so it reads
      like editorial copy; all sub-elements are em-relative. */
@@ -1998,7 +1998,7 @@
   --ed-chip: #0F0F0F;
   --ed-chip-ink: #F2EFE8;
   --ed-font-display: "Bricolage Grotesque", sans-serif;
-  --ed-font-body: "DM Sans", sans-serif;
+  --ed-font-body: "Satoshi", "DM Sans", sans-serif;
   --ed-font-accent: "Bricolage Grotesque", sans-serif;
 }
 .cv-preview-editorial[data-cv-theme="modernist"] .ed-name {
@@ -2093,8 +2093,8 @@
   --ed-clay-deep: #000000;
   --ed-chip: transparent;
   --ed-chip-ink: #0A0A0A;
-  --ed-font-display: "DM Sans", sans-serif;
-  --ed-font-accent: "DM Sans", sans-serif;
+  --ed-font-display: "Satoshi", "DM Sans", sans-serif;
+  --ed-font-accent: "Satoshi", "DM Sans", sans-serif;
 }
 .cv-preview-editorial[data-cv-theme="minimal-ats"] .ed-name {
   font-weight: 500;

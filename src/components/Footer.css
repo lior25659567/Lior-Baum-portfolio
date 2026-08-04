@@ -6,7 +6,7 @@
 }
 
 .footer-container {
-  max-width: var(--w-content);
+  max-width: var(--w-work-grid);
   margin: 0 auto;
   width: 100%;
   position: relative;
@@ -51,7 +51,7 @@
 
 .cta-text {
   font-size: var(--text-footer-cta);
-  font-weight: var(--fw-body); /* editorial weight — intentionally lighter than other titles */
+  font-weight: var(--fw-medium); /* Figma: Satoshi Medium */
   line-height: 1.15;
   color: var(--color-text);
   letter-spacing: var(--ls-heading);
@@ -60,7 +60,7 @@
 /* Sans-serif (Mona Sans) */
 .cta-text.sans {
   font-family: var(--font-body);
-  font-weight: var(--fw-body);
+  font-weight: var(--fw-medium); /* Figma: Satoshi Medium */
 }
 
 /* Serif (Crimson Text) */
@@ -107,7 +107,7 @@
 .footer-sitemap-title {
   font-family: var(--font-body);
   font-size: var(--text-caption);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-semibold); /* Figma: Satoshi Medium */
   text-transform: uppercase;
   letter-spacing: var(--ls-caps);
   color: var(--color-text-muted);
@@ -165,7 +165,7 @@
   }
 
   .footer-container {
-    max-width: var(--w-content);
+    max-width: var(--w-work-grid);
   }
 
   .footer-cta-wrapper {

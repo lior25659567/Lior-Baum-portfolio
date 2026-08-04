@@ -146,7 +146,7 @@
   align-items: center;
   text-align: center;
   width: 100%;
-  max-width: 880px;
+  max-width: 700px;
 }
 
 /* ── Badge + greeting ────────────────────── */
@@ -202,6 +202,7 @@
 .hero-greeting {
   opacity: 0.65;
   margin-bottom: 0;
+  font-size: 1rem; /* 16px per Figma */
 }
 
 /* ── Name ────────────────────────────────── */
@@ -214,7 +215,7 @@
   margin: 0 0 clamp(8px, 1.2vh, 16px);
   font-family: var(--font-body);
   font-size: var(--text-hero-name);
-  font-weight: var(--fw-body);
+  font-weight: var(--fw-medium); /* Figma: Satoshi Medium */
   letter-spacing: -0.045em; /* signature lockup tracking — intentional, not tokenized */
   line-height: 0.92;        /* signature lockup leading — intentional */
   color: var(--color-text);
@@ -259,7 +260,7 @@
 
 .hero-role-text {
   font-family: var(--font-display);
-  font-size: clamp(2.4rem, 6.5vw, 3.4rem); /* variant C — heavier + larger */
+  font-size: clamp(2.4rem, 6.5vw, 3.25rem); /* 52px per Figma */
   font-weight: 600; /* variant C — heavier Crimson Text italic */
   font-style: italic;
   color: var(--color-accent);
@@ -267,6 +268,17 @@
   line-height: 1.15;
   position: relative;
   display: inline-block;
+}
+
+/* The cycling role word + its per-letter spans (GSAP "breaking letters"). */
+.hero-role-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.hero-role-char {
+  display: inline-block;
+  will-change: transform, opacity, filter;
 }
 
 .hero-role-line {
@@ -286,10 +298,10 @@
 
 .hero-desc {
   font-family: var(--font-body);
-  font-size: var(--text-body);
+  font-size: clamp(1.0625rem, 0.9rem + 0.6vw, 1.25rem); /* 20px per Figma */
   line-height: var(--lh-body);
   color: var(--color-text-muted);
-  max-width: 520px;
+  max-width: 880px;
   margin: 0 auto clamp(28px, 4vh, 40px);
 }
 
@@ -420,7 +432,7 @@
   font-style: italic;
   font-family: var(--font-display);
   font-weight: 600; /* variant B — heavier Crimson Text italic */
-  font-size: clamp(1.4rem, 2.4vw, 2.1rem);
+  font-size: clamp(1.4rem, 2.4vw, 1.75rem); /* 28px per Figma */
 }
 
 .hero-marquee:hover .hero-marquee-item--accent {

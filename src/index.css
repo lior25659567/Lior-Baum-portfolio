@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap');
+/* Satoshi — the site's sans-serif family (Fontshare CDN). Old sans fonts
+   (Mona Sans / DM Sans) remain as fallbacks in each stack. */
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@1&display=swap'); /* variable — continuous weights 300–900 (true Semibold at 600) */
 
 @font-face {
   font-family: 'Mona Sans';
@@ -58,7 +61,7 @@
 
   /* Typography primitives */
   --primitive-font-serif: 'Crimson Text', serif;
-  --primitive-font-sans: 'Mona Sans', sans-serif;
+  --primitive-font-sans: 'Satoshi', 'Mona Sans', sans-serif;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -73,7 +76,7 @@
   --color-image-contain-bg: var(--primitive-image-bg-light);
 
   /* Text */
-  --color-text: var(--primitive-gray-900);
+  --color-text: #22211f; /* warm near-black (primary text) */
   /* #595959 → 7.0:1 on gray-50 (clears AA + AAA). */
   --color-text-muted: var(--primitive-gray-400);
 
@@ -130,7 +133,7 @@
      home/about/playground sections so every element is token-driven (one source
      of truth, easy global edits) without changing how anything looks. Signature
      display sizes that don't map to a primitive tier live here. */
-  --text-hero-name: clamp(3.6rem, 8vw, 6.5rem);        /* home hero name lockup */
+  --text-hero-name: clamp(3.6rem, 8vw, 6.25rem);       /* home hero name lockup (100px, per Figma) */
   --text-hero-role: clamp(1.75rem, 3.5vw, 2.75rem);    /* home hero role line */
   --text-stat-value: clamp(1.5rem, 2.5vw, 2.1rem);     /* home hero stat number */
   --text-marquee: clamp(1rem, 1.6vw, 1.45rem);         /* hero marquee + about-rotator spoke */
@@ -192,6 +195,9 @@
      --measure   : hard cap for long-form reading paragraphs (~66 chars). */
   --w-grid: var(--container-xl);
   --w-content: var(--container-lg);
+  /* Selected Work + Footer — narrow, focused 2-up grid (matches the reference
+     `--site-grid-max`). Does NOT ride the ultrawide bumps, so cards stay put. */
+  --w-work-grid: 1080px;
   --measure: 66ch;
 
   /* Border radius */
@@ -492,18 +498,21 @@ img {
      • native <button> elements (+ any descendant text nodes like .tab-label)
      • [role="button"] (for keyboard-activated divs/spans)
      • .animated-btn (used as both <button> and <a>)
-     • .nav-link (anchor that acts as a button)
    Descendants are included so any inner <span> weight overrides are also
    normalized. !important is used deliberately: many component CSS files
    set their own button font-weight; centralizing here keeps typography
-   consistent without having to patch every component file. */
+   consistent without having to patch every component file.
+   (.nav-link is intentionally excluded — the nav owns its own weight scale.) */
 button,
 button *,
 [role="button"],
-[role="button"] *,
-.animated-btn,
-.animated-btn *,
-.nav-link,
-.nav-link * {
+[role="button"] * {
   font-weight: var(--fw-medium) !important;
+}
+
+/* Pill CTA buttons (.animated-btn — View CV, Get in touch, etc.) render a
+   step heavier: Semibold. */
+.animated-btn,
+.animated-btn * {
+  font-weight: var(--fw-semibold) !important;
 }

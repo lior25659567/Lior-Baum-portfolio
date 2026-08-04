@@ -5,7 +5,7 @@
 }
 
 .projects-container {
-  max-width: var(--w-content);
+  max-width: var(--w-work-grid);
   margin: 0 auto;
   padding: 0 var(--spacing-lg);
   width: 100%;
@@ -33,7 +33,7 @@
 .projects-header .section-title.cta-text {
   font-family: var(--font-body);
   font-size: clamp(1.4rem, 3.2vw, 2rem);
-  font-weight: var(--fw-body);
+  font-weight: var(--fw-medium); /* Figma: Satoshi Medium, 32px */
   line-height: 1.2;
   letter-spacing: var(--ls-heading);
   color: var(--color-text);
@@ -161,37 +161,28 @@
 .project-card.work-grid-project {
   position: relative;
   height: 100%; /* fill the stretched grid cell so cards in a row are equal height */
-  border-radius: var(--radius-lg);
+  border-radius: 18px; /* reference card radius */
   overflow: hidden;
   border: 1px solid var(--color-border-soft);
   background: var(--color-bg);
   display: flex;
   flex-direction: column;
-  /* Default subtle, accent-tinted resting elevation. */
-  box-shadow:
-    0 10px 28px color-mix(in srgb, var(--color-accent) 5%, transparent),
-    0 1px 2px rgba(0, 0, 0, 0.07);
-  transition: transform 0.2s ease-out, border-color 0.2s ease-out, box-shadow 0.2s ease-out;
+  /* A light lavender float at rest that deepens on hover — no lift — while
+     the image zooms. */
+  box-shadow: 0 3px 16px 1px rgba(171, 162, 189, 0.1);
+  transition: box-shadow 0.25s cubic-bezier(0, 0, 0.2, 1), border-color 0.2s ease-out;
 }
 
 .project-card.work-grid-project:hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--color-accent) 30%, var(--color-border));
-  box-shadow:
-    0 20px 48px color-mix(in srgb, var(--color-accent) 13%, transparent),
-    0 6px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 44px 12px rgba(171, 162, 189, 0.26);
 }
 
 [data-theme="dark"] .project-card.work-grid-project {
-  box-shadow:
-    0 10px 28px color-mix(in srgb, var(--color-accent) 8%, transparent),
-    0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 16px 1px rgba(0, 0, 0, 0.26);
 }
 
 [data-theme="dark"] .project-card.work-grid-project:hover {
-  box-shadow:
-    0 20px 48px color-mix(in srgb, var(--color-accent) 18%, transparent),
-    0 6px 16px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 44px 12px rgba(0, 0, 0, 0.5);
 }
 
 /* Full-card link */
@@ -234,7 +225,7 @@
 }
 
 .project-card.work-grid-project:hover .project-image.media-inner {
-  transform: scale(1.025);
+  transform: scale(1.025); /* reference group-hover:scale-[1.025] */
 }
 
 .project-image-placeholder {
@@ -4703,15 +4694,21 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  background: var(--color-bg);
+  background: var(--primitive-white, #fff);
+  font-family: var(--font-body); /* Satoshi — children inherit */
+}
+
+/* Dark mode: elevated surface instead of pure white so the text stays readable. */
+:root[data-theme='dark'] .project-content {
+  background: var(--color-bg-secondary);
 }
 
 .project-content-title {
-  font-family: var(--font-body);
-  font-size: clamp(1.05rem, 0.95rem + 0.3vw, 1.2rem); /* ~17–19px, tuned for the narrower cards */
-  font-weight: var(--fw-heading); /* matches the .section-title weight (lighter) */
-  line-height: var(--lh-snug);
-  letter-spacing: var(--ls-tight);
+  font-family: var(--font-body); /* Satoshi */
+  font-size: 24px;
+  font-weight: var(--fw-semibold); /* 600 — reference title, bumped one step from --fw-medium (was rendering 500) */
+  line-height: 1.2;
+  letter-spacing: normal; /* reference has no negative tracking on the title */
   color: var(--color-text);
   margin: 0 0 0.75rem;
 }
@@ -4719,8 +4716,8 @@
 /* Description — one-sentence summary (falls back to category) */
 .project-content-desc {
   font-family: var(--font-body);
-  font-size: var(--text-body);
-  font-weight: var(--fw-medium);
+  font-size: 1rem; /* 16px per Figma */
+  font-weight: var(--fw-medium); /* 600 — bumped one step from 500 */
   line-height: 1.5;
   color: var(--color-text-muted);
   margin: 0;
@@ -4769,7 +4766,7 @@
   border-radius: 999px;
   font-family: var(--font-body);
   font-size: var(--text-caption);
-  font-weight: 500;
+  font-weight: var(--fw-medium); /* 600 — bumped one step from 500 */
   line-height: 1.2;
   letter-spacing: normal;
   text-transform: none;
@@ -5277,7 +5274,7 @@
    so content fills the screen instead of floating in empty gutters. */
 @media (min-width: 1920px) {
   .projects-container {
-    max-width: var(--w-content);
+    max-width: var(--w-work-grid);
     padding: 0 var(--spacing-lg);
   }
 

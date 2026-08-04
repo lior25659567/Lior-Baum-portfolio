@@ -10,98 +10,14 @@ import { slideTemplateDocs } from '../data/slideTemplateDocs';
 import { IFRAME_FILES } from '../iframes';
 import imageVariantManifest from '../data/case-study-image-variants.json';
 import './CaseStudy.css';
-import './CaseStudy.site.css';
 import { exportCaseStudyToPdf } from '../utils/exportCaseStudyPdf';
+import CaseStudyArticle from './CaseStudyArticle';
+import { buildResponsiveWebp, deriveVideoPoster, deriveMobileVideoSrc, useLowBandwidthMedia, LazyVideo, pickMediaFile } from './caseStudyMedia';
+import EditableField from '../components/EditableField';
+import { makeArticleBlock, deriveArticleFromSlides, convertArticleBlock as convertBlockData } from '../data/articleBlocks';
+import { mergeIntoLibrary, libraryItemRef, usageCount, newLibraryItemId } from '../data/mediaLibrary';
+import MediaLibraryModal from '../components/MediaLibraryModal';
 
-// ─── Responsive media helpers ────────────────────────────────────────────
-// The build pipeline emits:
-//   - <name>.webp + <name>@480.webp / @960.webp siblings (see
-//     scripts/generate-image-variants.mjs; availability recorded in
-//     _variants.json — the only reliable source because very small images
-//     skip variants to avoid upscaling).
-//   - <name>.mp4 + <name>.mobile.mp4 + <name>.poster.webp (see
-//     scripts/compress-videos.js; always produced for every video, so
-//     paths can be derived from the source path without a manifest).
-// Ad-hoc videos uploaded through the dev editor won't have the sibling
-// files yet; `onError` on the rendered element hides the fallback path so
-// the user still sees the underlying media.
-
-function buildResponsiveWebp(src) {
-  if (typeof src !== 'string') return null;
-  const clean = src.split('?')[0].split('#')[0];
-  if (!clean.toLowerCase().endsWith('.webp')) return null;
-  const entry = imageVariantManifest[clean];
-  if (!entry || !Array.isArray(entry.widths) || entry.widths.length < 2) return null;
-  const base = clean.replace(/\.webp$/i, '');
-  const full = entry.full;
-  const srcset = entry.widths
-    .map((w) => (w === full ? `${src} ${w}w` : `${base}@${w}.webp ${w}w`))
-    .join(', ');
-  // `100vw` (was `75vw / 1440px`): tells the browser the image MAY occupy
-  // the full viewport. On retina (DPR=2) this was already pulling the top
-  // variant, so no change there. On Windows DPR=1 panels the previous
-  // `75vw` advertised a smaller render size and biased the browser into
-  // picking @960 — at the same physical display size that looks notably
-  // softer than the @1440/@1920 retina users get. Overestimating costs
-  // ~30% bandwidth on full-width slides but ends the Mac-vs-Windows
-  // sharpness gap. Split layouts that actually render at ~50vw will fetch
-  // a slightly larger variant than strictly needed — fine tradeoff.
-  return { srcSet: srcset, sizes: '100vw' };
-}
-
-function deriveVideoPoster(src) {
-  if (typeof src !== 'string') return null;
-  const m = src.match(/^(.*)\.mp4(\?.*)?$/i);
-  return m ? `${m[1]}.poster.webp` : null;
-}
-
-function deriveMobileVideoSrc(src) {
-  if (typeof src !== 'string') return null;
-  if (/\.mobile\.mp4(\?|$)/i.test(src)) return src;
-  const m = src.match(/^(.*)\.mp4(\?.*)?$/i);
-  return m ? `${m[1]}.mobile.mp4${m[2] || ''}` : null;
-}
-
-// Detect mobile viewport + data-saver network for adaptive media delivery.
-// Re-evaluates on resize/connection change; safe on SSR (returns false).
-function useLowBandwidthMedia() {
-  const [state, setState] = useState(() => {
-    if (typeof window === 'undefined') return { mobile: false, saveData: false, slow: false };
-    const mq = window.matchMedia && window.matchMedia('(max-width: 767px)');
-    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    return {
-      mobile: !!(mq && mq.matches),
-      saveData: !!(conn && conn.saveData),
-      slow: !!(conn && /^(slow-2g|2g|3g)$/i.test(conn.effectiveType || '')),
-    };
-  });
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const mq = window.matchMedia('(max-width: 767px)');
-    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    const update = () => setState({
-      mobile: mq.matches,
-      saveData: !!(conn && conn.saveData),
-      slow: !!(conn && /^(slow-2g|2g|3g)$/i.test(conn.effectiveType || '')),
-    });
-    const onMq = () => update();
-    mq.addEventListener ? mq.addEventListener('change', onMq) : mq.addListener(onMq);
-    if (conn && conn.addEventListener) conn.addEventListener('change', update);
-    return () => {
-      mq.removeEventListener ? mq.removeEventListener('change', onMq) : mq.removeListener(onMq);
-      if (conn && conn.removeEventListener) conn.removeEventListener('change', update);
-    };
-  }, []);
-  return state;
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-// LazyVideo: IntersectionObserver-gated <video> with poster + metadata
-// preload. Case study videos are 5–35MB each; eagerly loading them all
-// bricks bandwidth. This defers the real `src` until the slide is near
-// the viewport, and asks the browser to fetch metadata only (~100KB)
-// instead of the whole file up front.
-// ─────────────────────────────────────────────────────────────────────────
 /* Manifest-aware path adapter for case-study images.
    PNG/JPG → WEBP rewrite happens only when a .webp variant for that exact
    filename is registered in case-study-image-variants.json (produced by
@@ -115,6 +31,11 @@ function useLowBandwidthMedia() {
        whose .webp counterparts were generated will continue to migrate.
    This replaces the unconditional rewrite that used to silently break new
    PNG uploads with no .webp on disk. */
+// Case studies whose timestamp slug was renamed to a readable one keep their
+// old /case-studies/<old>/ image folder path in any browser-cached copy — remap
+// it so cached data (article media + the media-library bin) resolves the images.
+const CASE_STUDY_SLUG_RENAMES = { 'project-1776014998709': 'patient-report', 'project-1776628169716': 'design-system' };
+
 function migrateCaseStudyImagePathsToWebp(node) {
   if (node == null) return node;
   if (Array.isArray(node)) return node.map(migrateCaseStudyImagePathsToWebp);
@@ -126,158 +47,19 @@ function migrateCaseStudyImagePathsToWebp(node) {
     return out;
   }
   if (typeof node === 'string' && /^\/case-studies\//.test(node)) {
-    const m = node.match(/^([^?#]+?)\.(png|jpe?g)((?:[?#].*)?)$/i);
-    if (!m) return node;
+    let s = node;
+    for (const oldId in CASE_STUDY_SLUG_RENAMES) {
+      const oldPrefix = '/case-studies/' + oldId + '/';
+      if (s.startsWith(oldPrefix)) { s = '/case-studies/' + CASE_STUDY_SLUG_RENAMES[oldId] + '/' + s.slice(oldPrefix.length); break; }
+    }
+    const m = s.match(/^([^?#]+?)\.(png|jpe?g)((?:[?#].*)?)$/i);
+    if (!m) return s;
     const webpPath = m[1] + '.webp';
     if (imageVariantManifest[webpPath]) return webpPath + m[3];
-    return node;
+    return s;
   }
   return node;
 }
-
-const LazyVideo = memo(({ src, poster, style, className, onClick, priority = 'lazy', playbackRate = 1, controls = false }) => {
-  const ref = useRef(null);
-  const { mobile, saveData, slow } = useLowBandwidthMedia();
-  // iOS Safari allows autoplay only when the `muted` HTML *attribute* is
-  // present at parse time — `el.muted = true` (what React emits from the
-  // JSX `muted` prop) is not enough. Without this, videos on `.slide-problem`
-  // (and every other LazyVideo) autoplay-fail silently on iPhone and the
-  // user just sees the poster. A ref callback is the earliest point we
-  // can force the attribute before the element is committed to the DOM.
-  const setVideoRef = useCallback((el) => {
-    ref.current = el;
-    if (el) {
-      el.muted = true;
-      if (!el.hasAttribute('muted')) el.setAttribute('muted', '');
-      if (!el.hasAttribute('playsinline')) el.setAttribute('playsinline', '');
-    }
-  }, []);
-  // high = current slide (load src + preload auto)
-  // nearby = ±1 slide (load src + preload metadata to warm up)
-  // lazy = far slides (gate via IntersectionObserver, no preload)
-  const [visible, setVisible] = useState(priority !== 'lazy');
-  // Default playback speed: author-set `playbackRate` prop, else 1.5×. Viewers
-  // change speed via the native player controls (the browser's speed menu).
-  const effectiveRate = Number(playbackRate) || 1.5;
-  useEffect(() => {
-    if (priority !== 'lazy') { setVisible(true); return; }
-    const el = ref.current;
-    if (!el || visible) return;
-    // Wider rootMargin on mobile so the video starts fetching before the user
-    // swipes in; on desktop 200px is enough to cover typical slide heights.
-    const rootMargin = mobile ? '400px 0px' : '200px 0px';
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) { setVisible(true); io.disconnect(); } });
-    }, { rootMargin });
-    io.observe(el);
-    return () => io.disconnect();
-  }, [visible, priority, mobile]);
-  // Prefer the 720p mobile variant on phones or when Save-Data / slow
-  // network is reported. `deriveMobileVideoSrc` returns the sibling path
-  // generated by scripts/compress-videos.js.
-  const useMobile = (mobile || saveData || slow);
-  const playbackSrc = useMobile ? (deriveMobileVideoSrc(src) || src) : src;
-  const effectivePoster = poster || deriveVideoPoster(src) || undefined;
-  const preload = priority === 'high' ? 'auto' : 'metadata';
-  // iOS Safari is fussy about autoplay even with muted + playsInline: Low
-  // Power Mode, transformed ancestors (we have one — the zoom-pan-pinch
-  // scaler), and timing races with the autoplay policy check can all leave
-  // the video paused on its poster frame. One `play()` call on `canplay` is
-  // not enough — we retry on every load milestone, whenever the element
-  // becomes `visible`, and whenever it enters the viewport. Each attempt is
-  // cheap (play() on a playing element is a no-op) and swallows the
-  // NotAllowedError so the promise never logs.
-  // Only the current slide ('high') ever plays. Nearby slides preload their src
-  // but stay paused on the poster so a video never starts before you're on its
-  // slide (and stops when you leave).
-  const tryPlay = useCallback((el) => {
-    if (!el || !el.paused || priority !== 'high') return;
-    el.muted = true;
-    const p = el.play();
-    if (p && p.catch) p.catch(() => {});
-  }, [priority]);
-  // Start when this slide becomes current; pause when it stops being current.
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (priority === 'high') {
-      tryPlay(el);
-    } else {
-      try { if (!el.paused) el.pause(); } catch { /* ignore */ }
-    }
-  }, [priority, tryPlay, visible]);
-  // Apply playbackRate. Browsers reset playbackRate to 1 on every src change
-  // and on some loop wraps, so we re-apply on visibility flips, on `loadedmetadata`,
-  // and whenever the prop changes.
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const rate = Number(effectiveRate) || 1;
-    try { el.defaultPlaybackRate = rate; } catch {}
-    try { el.playbackRate = rate; } catch {}
-  }, [effectiveRate, visible]);
-  const handleCanPlay = useCallback((e) => {
-    const el = e.currentTarget;
-    const rate = Number(effectiveRate) || 1;
-    try { el.playbackRate = rate; } catch {}
-    tryPlay(el);
-  }, [tryPlay, effectiveRate]);
-  const handleLoadedData = useCallback((e) => {
-    const el = e.currentTarget;
-    const rate = Number(effectiveRate) || 1;
-    try { el.playbackRate = rate; } catch {}
-    tryPlay(el);
-  }, [tryPlay, effectiveRate]);
-  // Kick off playback whenever `visible` flips to true — covers the case
-  // where `canplay` already fired (video was preloaded from a prior mount)
-  // and won't fire again, so the existing canplay handler would never run.
-  useEffect(() => {
-    if (!visible) return;
-    const el = ref.current;
-    if (!el) return;
-    tryPlay(el);
-    // One more attempt on the next frame — by then React has committed the
-    // current `src`, the element is in the DOM with all attributes set, and
-    // iOS has had a chance to register it as on-screen.
-    const raf = requestAnimationFrame(() => tryPlay(el));
-    // And a viewport-entry retry, for the zoom-pan-pinch case where the
-    // element is technically in the DOM + playing but iOS paused it because
-    // the transform briefly put it outside the visual viewport.
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) tryPlay(el); });
-    }, { threshold: 0.01 });
-    io.observe(el);
-    return () => { cancelAnimationFrame(raf); io.disconnect(); };
-  }, [visible, tryPlay]);
-  const handleError = useCallback((e) => {
-    // If the mobile variant 404s (e.g. freshly uploaded video without a
-    // sibling .mobile.mp4 yet), fall back to the desktop src once.
-    const el = e.currentTarget;
-    if (useMobile && el && el.src && /\.mobile\.mp4(\?|$)/i.test(el.src) && src) {
-      el.src = src;
-    }
-  }, [useMobile, src]);
-  return (
-    <video
-      ref={setVideoRef}
-      src={visible ? playbackSrc : undefined}
-      poster={effectivePoster}
-      preload={preload}
-      autoPlay={priority === 'high'}
-      loop
-      muted
-      playsInline
-      controls={controls}
-      controlsList="nodownload"
-      style={style}
-      className={className}
-      onClick={onClick}
-      onCanPlay={handleCanPlay}
-      onLoadedData={handleLoadedData}
-      onError={handleError}
-    />
-  );
-});
 
 // All the Save-to-Code / Push-to-Git / Save-All / Save-Image endpoints are
 // Vite dev-plugin middleware (vite-plugin-save-case-study.js). On a static
@@ -733,104 +515,6 @@ const normalizeExternalUrl = (u) => {
   return `https://${trimmed}`;
 };
 
-// Editable field component - defined outside CaseStudy for stable React identity across renders.
-// This prevents unmount/remount cycles that destroy input state, cursor position, and focus.
-const EditableField = memo(function EditableField({ value, onChange, multiline = false, allowLineBreaks = false, className = '', placeholder = '' }) {
-  const { editMode } = useEdit();
-  const stringValue = typeof value === 'string' ? value : (value != null ? String(value) : '');
-  const [localValue, setLocalValue] = useState(stringValue);
-  const timeoutRef = useRef(null);
-  const isEditingRef = useRef(false);
-  const isTextarea = multiline || allowLineBreaks;
-
-  // Sync local value when prop changes from outside (but not while user is actively typing)
-  useEffect(() => {
-    if (!isEditingRef.current) {
-      const newStringValue = typeof value === 'string' ? value : (value != null ? String(value) : '');
-      setLocalValue(newStringValue);
-    }
-  }, [value]);
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
-  
-  const handleChange = (e) => {
-    const newValue = e.target.value;
-    isEditingRef.current = true;
-    setLocalValue(newValue);
-    
-    // Debounce the update to parent
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      onChange(newValue);
-      isEditingRef.current = false;
-    }, 300);
-  };
-  
-  const handleBlur = () => {
-    // Clear editing flag and save immediately on blur
-    isEditingRef.current = false;
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    if (localValue !== value) {
-      onChange(localValue);
-    }
-  };
-
-  // In single-line input: Shift+Enter inserts newline (stored; view uses pre-line). In textarea with allowLineBreaks: only Shift+Enter adds newline, Enter does nothing.
-  const handleKeyDown = (e) => {
-    if (e.key !== 'Enter') return;
-    if (allowLineBreaks && !e.shiftKey) {
-      e.preventDefault();
-      return;
-    }
-    if (e.shiftKey && !multiline && !allowLineBreaks) {
-      e.preventDefault();
-      const newValue = localValue + '\n';
-      setLocalValue(newValue);
-      onChange(newValue);
-    }
-  };
-  
-  if (!editMode) {
-    // Render with line breaks preserved. `dir="auto"` lets the browser pick
-    // direction from the first strong character, so Hebrew renders RTL while
-    // English stays LTR (mixed decks keep working).
-    if (isTextarea || (stringValue && stringValue.includes('\n'))) {
-      return <span className={className} dir="auto" style={{ whiteSpace: 'pre-line' }}>{stringValue}</span>;
-    }
-    return stringValue ? <span dir="auto">{stringValue}</span> : stringValue;
-  }
-
-  return isTextarea ? (
-    <textarea
-      className={`editable-field ${className}`}
-      dir="auto"
-      value={localValue}
-      onChange={handleChange}
-      onBlur={handleBlur}
-      onKeyDown={handleKeyDown}
-      onClick={(e) => e.stopPropagation()}
-      placeholder={placeholder}
-    />
-  ) : (
-    <input
-      type="text"
-      className={`editable-field ${className}`}
-      dir="auto"
-      value={localValue}
-      onChange={handleChange}
-      onBlur={handleBlur}
-      onKeyDown={handleKeyDown}
-      onClick={(e) => e.stopPropagation()}
-      placeholder={placeholder}
-    />
-  );
-});
-
 // Module-level Figma URL helper (used by ComparisonSlide and CaseStudy)
 const toFigmaEmbedUrlModule = (input) => {
   if (!input || typeof input !== 'string') return null;
@@ -911,7 +595,7 @@ const getSplitStyleModule = (slide, editMode = false) => {
 //   'comparison'      → 'before-after'
 //   'problemSolution' → 'tabs'
 //   all others        → 'simple'
-const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideControls, editMode, updateSlide, OptionalField, DynamicImages, DynamicBullets, DynamicContent, SplitRatioControl, SplitDragHandle, setLightboxImage, spacingStyle, titleSpacingControl }) {
+const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideControls, editMode, updateSlide, OptionalField, DynamicImages, DynamicBullets, DynamicContent, SplitRatioControl, SplitDragHandle, setLightboxImage, spacingStyle, titleSpacingControl, openMediaLibrary }) {
   // ── mode ──
   const getDefaultMode = (s) => {
     if (s.slideMode) return s.slideMode;
@@ -1357,6 +1041,7 @@ const ComparisonSlide = memo(function ComparisonSlide({ slide, index, slideContr
                           <button type="button" className="media-type-btn media-type-figma" onClick={() => setPsEmbedInput({ tabIdx, draft: '', type: 'figma' })}><span className="media-type-icon">◈</span><span>Embed Figma</span></button>
                           <button type="button" className="media-type-btn media-type-site" onClick={() => setPsEmbedInput({ tabIdx, draft: '', type: 'site' })}><span className="media-type-icon">⧉</span><span>Embed Site</span></button>
                           <button type="button" className="media-type-btn media-type-iframe" onClick={() => setPsEmbedInput({ tabIdx, draft: '', type: 'iframe' })}><span className="media-type-icon">⟨⟩</span><span>Embed iframe</span></button>
+                          <button type="button" className="media-type-btn" onClick={() => openMediaLibrary((item) => updatePsTab(tabIdx, item.embedUrl ? { image: '', embedUrl: item.embedUrl, embedType: item.embedType || 'figma' } : { image: item.src || '', embedUrl: '' }))}><span className="media-type-icon">⊞</span><span>Library</span></button>
                         </div>
                       )}
                     </div>
@@ -1656,6 +1341,9 @@ const CaseStudy = () => {
   const [pasteText, setPasteText] = useState('');
   const [parsedPreview, setParsedPreview] = useState(null); // { slides, preview }
   const [lightboxImage, setLightboxImage] = useState(null);
+  // Media library modal. `null` = closed. { onPick } = pick mode (insert into a
+  // target slot). 'curate' = browse/remove/add only.
+  const [mediaLibraryTarget, setMediaLibraryTarget] = useState(null);
   // When this tab is hidden (e.g. the deck is a background tab while the
   // presenter drives it), the browser throttles requestAnimationFrame, so a
   // framer-motion exit animation never completes and the lightbox overlay would
@@ -1734,22 +1422,131 @@ const CaseStudy = () => {
     }
   }, [totalSlides, currentSlide]);
 
-  // Display mode is locked to 'slides' — the site/scroll-page option was removed.
+  // ── View mode: 'article' (default public view) | 'slides' (presentation) ──
+  // The article is what visitors always see. Slides are reached only via
+  // `?view=slides` (the URL the designer shares/presents from), the presenter
+  // (`?follow=1` embed), or the edit-mode toggle. No persisted preference.
   const [searchParams, setSearchParams] = useSearchParams();
-  const isSiteMode = false;
-
-  /* Sync currentSlide → URL `?slide=N` so deep-links stay accurate as the
-     user navigates. 1-indexed in URL for human-friendly sharing; the
-     `slide` param is omitted on slide 0 (the default) to keep URLs clean.
-     `replace: true` avoids polluting browser history with every step. */
+  const [viewMode, setViewMode] = useState(() => {
+    if (typeof window === 'undefined') return 'article';
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('follow') === '1') return 'slides';
+      const v = params.get('view');
+      if (v === 'article' || v === 'slides') return v;
+      return 'article';
+    } catch { return 'article'; }
+  });
+  // Phones, tablets, and laptops up to 1280px never show the slide deck — the
+  // article is the only view there, so a case study reads like a normal
+  // scrolling article. Slides stay a large-desktop-only presentation view
+  // (?view=slides / the edit toggle). The presenter follower embed (followMode)
+  // is the one exception — it's slides-by-design.
+  const isCompact = useMediaQuery('(max-width: 1280px)');
+  const isArticleMode = (viewMode === 'article' || isCompact) && !followMode;
+  // Leaving the article mid-scroll would otherwise leave the fixed deck
+  // container scrolled and clipped.
   useEffect(() => {
+    if (!isArticleMode && containerRef.current) containerRef.current.scrollTop = 0;
+  }, [isArticleMode]);
+
+  // Media library: additively collect every image/video/embed used across the
+  // slides + article into project.mediaLibrary. Runs on edit-enter and on each
+  // slides<->article switch. Idempotent (mergeIntoLibrary returns the same ref
+  // when there's nothing new, so this never loops).
+  useEffect(() => {
+    if (!editMode) return;
+    setProject((prev) => {
+      const next = mergeIntoLibrary(prev, Date.now());
+      return next === prev.mediaLibrary ? prev : { ...prev, mediaLibrary: next };
+    });
+  }, [editMode, isArticleMode]);
+
+  // Opens the media library modal. With `onPick`, it's a targeted pick (used to
+  // fill a specific slide/article slot); without it, it's curate mode (browse/
+  // add/remove only). Freshens the bin first — covers the async-load race where
+  // slides finish loading after the merge effect above already ran once.
+  const openMediaLibrary = useCallback((onPick) => {
+    setProject((prev) => {
+      const next = mergeIntoLibrary(prev, Date.now());
+      return next === prev.mediaLibrary ? prev : { ...prev, mediaLibrary: next };
+    });
+    setMediaLibraryTarget(onPick ? { onPick } : 'curate');
+  }, []);
+
+  // Add an item to the bin (from upload or embed URL). Deduped by ref.
+  const addToMediaLibrary = useCallback((item) => {
+    const ref = libraryItemRef(item);
+    if (!ref) return;
+    setProject((prev) => {
+      const lib = prev.mediaLibrary || [];
+      if (lib.some((x) => libraryItemRef(x) === ref)) return prev;
+      const removed = (prev.mediaLibraryRemoved || []).filter((r) => r !== ref); // un-tombstone if re-added
+      return { ...prev, mediaLibrary: [...lib, { id: newLibraryItemId(ref), addedAt: Date.now(), ...item }], mediaLibraryRemoved: removed };
+    });
+  }, []);
+
+  const removeFromMediaLibrary = useCallback((item) => {
+    const ref = libraryItemRef(item);
+    if (!ref) return;
+    setProject((prev) => ({
+      ...prev,
+      mediaLibrary: (prev.mediaLibrary || []).filter((x) => libraryItemRef(x) !== ref),
+      mediaLibraryRemoved: [...new Set([...(prev.mediaLibraryRemoved || []), ref])],
+    }));
+  }, []);
+
+  const handleLibraryPick = useCallback((item) => {
+    const target = mediaLibraryTarget;
+    setMediaLibraryTarget(null);
+    if (target && target.onPick) target.onPick(item);
+  }, [mediaLibraryTarget]);
+
+  const handleLibraryAddFile = useCallback(() => {
+    pickMediaFile((m) => {
+      addToMediaLibrary(m);
+      // In pick mode, also fill the target slot with the freshly uploaded media.
+      const target = mediaLibraryTarget;
+      if (target && target.onPick) { setMediaLibraryTarget(null); target.onPick(m); }
+    });
+  }, [mediaLibraryTarget, addToMediaLibrary]);
+
+  const handleLibraryAddEmbed = useCallback((url) => {
+    const raw = (url || '').trim();
+    if (!/^https?:\/\//i.test(raw)) return;
+    let embedUrl = raw;
+    let embedType = 'site';
+    const fig = toFigmaEmbedUrlModule(raw);
+    const yt = toYouTubeEmbedUrl(raw);
+    if (fig) { embedUrl = fig; embedType = 'figma'; }
+    else if (yt) { embedUrl = yt; embedType = 'youtube'; }
+    const item = { embedUrl, embedType };
+    addToMediaLibrary(item);
+    const target = mediaLibraryTarget;
+    if (target && target.onPick) { setMediaLibraryTarget(null); target.onPick(item); }
+  }, [mediaLibraryTarget, addToMediaLibrary]);
+
+  /* Sync URL params in ONE effect. React Router's functional setSearchParams
+     reads the location at call time, NOT pending updates — two effects
+     calling it in the same flush race and the last write resurrects stale
+     params. So `?view` and `?slide` are written together:
+     - `?view=slides` marks the non-default (presentation) view; the default
+       article view keeps a clean URL and legacy `?view=article` links are
+       normalized away.
+     - `?slide=N` (1-indexed) tracks the deck position; omitted on slide 0.
+     Skipped entirely in follow mode so the presenter iframe URL is never
+     rewritten. `replace: true` avoids polluting browser history. */
+  useEffect(() => {
+    if (followMode) return;
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);
+      if (viewMode === 'slides') params.set('view', 'slides');
+      else params.delete('view');
       if (currentSlide <= 0) params.delete('slide');
       else params.set('slide', String(currentSlide + 1));
       return params;
     }, { replace: true });
-  }, [currentSlide, setSearchParams]);
+  }, [currentSlide, viewMode, followMode, setSearchParams]);
 
   const [slideNavVisible, setSlideNavVisible] = useState(false);
   const slideNavHideTimeoutRef = useRef(null);
@@ -2195,6 +1992,16 @@ const CaseStudy = () => {
     };
   }, []);
 
+  // The public article view keeps the site header (like the reference case
+  // study); slides + edit mode stay chromeless. Toggled via a body class so
+  // the CSS that hides `.navigation` (a sibling of `.case-study`, not a
+  // descendant) can re-show it just for this view.
+  useEffect(() => {
+    const showNav = isArticleMode && !editMode;
+    document.body.classList.toggle('cs-article-nav', showNav);
+    return () => document.body.classList.remove('cs-article-nav');
+  }, [isArticleMode, editMode]);
+
   // Close lightbox with Escape key — but if a video is fullscreen, let Escape
   // just exit fullscreen and stay on the slide (don't also close the lightbox).
   useEffect(() => {
@@ -2212,9 +2019,9 @@ const CaseStudy = () => {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-    // Site mode renders a vertical scrolling page — let the browser handle
+    // Article mode renders a vertical scrolling page — let the browser handle
     // wheel/keyboard/touch natively. Skip attaching slide-deck handlers.
-    if (isSiteMode) return;
+    if (isArticleMode) return;
 
     // When exiting edit mode, blur any focused input so keyboard nav works immediately
     if (!editMode && document.activeElement && document.activeElement !== document.body) {
@@ -2356,7 +2163,7 @@ const CaseStudy = () => {
       // Reset scrolling lock so navigation isn't stuck after editMode toggle
       isScrollingRef.current = false;
     };
-  }, [totalSlides, editMode, isMobileSlide, isSiteMode]);
+  }, [totalSlides, editMode, isMobileSlide, isArticleMode]);
 
   const openPresenterWindow = useCallback(() => {
     const existing = presenterWindowRef.current;
@@ -2374,9 +2181,9 @@ const CaseStudy = () => {
     presenterWindowRef.current = win;
   }, [projectId]);
 
-  // View-mode "P" opens the presenter window.
+  // View-mode "P" opens the presenter window (slides-only affordance).
   useEffect(() => {
-    if (editMode) return;
+    if (editMode || isArticleMode) return;
     const onKey = (e) => {
       const t = e.target;
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
@@ -2387,7 +2194,7 @@ const CaseStudy = () => {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [editMode, openPresenterWindow]);
+  }, [editMode, isArticleMode, openPresenterWindow]);
 
   const goToSlide = useCallback((direction) => {
     if (isScrollingRef.current) return;
@@ -2485,6 +2292,159 @@ const CaseStudy = () => {
       )
     }));
   }, []);
+
+  // ── Article document CRUD ────────────────────────────────────────────
+  // The article is an independent document (project.article.blocks), edited
+  // in article mode. Everything goes through setProject so the existing
+  // auto-save (saveCaseStudyData) and Save-to-Code (extractAndSaveMedia
+  // walks the whole project, so data-URI uploads inside blocks get
+  // extracted to real files) apply with zero extra plumbing.
+  // NB: addBlock/removeBlock/moveBlock/updateBlock (without "Article")
+  // already exist for slide sub-blocks — don't collide with them.
+  const ensureArticle = (prev) =>
+    prev.article && Array.isArray(prev.article.blocks)
+      ? prev.article
+      : { articleVersion: 1, title: '', lede: '', blocks: [] };
+
+  const updateArticle = useCallback((patch) => {
+    setProject(prev => ({ ...prev, article: { ...ensureArticle(prev), ...patch } }));
+  }, []);
+
+  const updateArticleBlock = useCallback((blockIndex, patch) => {
+    setProject(prev => {
+      const article = ensureArticle(prev);
+      return {
+        ...prev,
+        article: {
+          ...article,
+          blocks: article.blocks.map((b, i) => (i === blockIndex ? { ...b, ...patch } : b)),
+        },
+      };
+    });
+  }, []);
+
+  // Change a block's type, migrating its content (e.g. Cards → Bullets).
+  const convertArticleBlock = useCallback((blockIndex, toType) => {
+    setProject(prev => {
+      const article = ensureArticle(prev);
+      const src = article.blocks[blockIndex];
+      if (!src || src.type === toType) return prev;
+      return {
+        ...prev,
+        article: {
+          ...article,
+          blocks: article.blocks.map((b, i) => (i === blockIndex ? convertBlockData(b, toType) : b)),
+        },
+      };
+    });
+  }, []);
+
+  // Replace a block entirely with an edited object (per-block JSON editor).
+  const replaceArticleBlock = useCallback((blockIndex, newBlock) => {
+    setProject(prev => {
+      const article = ensureArticle(prev);
+      if (!article.blocks[blockIndex]) return prev;
+      return {
+        ...prev,
+        article: {
+          ...article,
+          blocks: article.blocks.map((b, i) => (i === blockIndex ? { ...newBlock, id: newBlock.id || b.id } : b)),
+        },
+      };
+    });
+  }, []);
+
+  // Returns the new block's id so the editor can scroll to + flash it.
+  const addArticleBlock = useCallback((type, afterIndex) => {
+    const blk = makeArticleBlock(type);
+    setProject(prev => {
+      const article = ensureArticle(prev);
+      const blocks = [...article.blocks];
+      const at = Math.min(Math.max((afterIndex ?? blocks.length - 1) + 1, 0), blocks.length);
+      blocks.splice(at, 0, blk);
+      return { ...prev, article: { ...article, blocks } };
+    });
+    return blk.id;
+  }, []);
+
+  const removeArticleBlock = useCallback((blockIndex) => {
+    setProject(prev => {
+      const article = ensureArticle(prev);
+      return { ...prev, article: { ...article, blocks: article.blocks.filter((_, i) => i !== blockIndex) } };
+    });
+  }, []);
+
+  const moveArticleBlock = useCallback((blockIndex, direction) => {
+    setProject(prev => {
+      const article = ensureArticle(prev);
+      const target = blockIndex + direction;
+      if (target < 0 || target >= article.blocks.length) return prev;
+      const blocks = [...article.blocks];
+      [blocks[blockIndex], blocks[target]] = [blocks[target], blocks[blockIndex]];
+      return { ...prev, article: { ...article, blocks } };
+    });
+  }, []);
+
+  // Returns the copy's id so the editor can scroll to + flash it. (setProject
+  // is async — returning the pre-generated id is safe either way: flashing an
+  // id that never materialized simply matches no block.)
+  const duplicateArticleBlock = useCallback((blockIndex) => {
+    const newId = makeArticleBlock('paragraph').id;
+    setProject(prev => {
+      const article = ensureArticle(prev);
+      const source = article.blocks[blockIndex];
+      if (!source) return prev;
+      const copy = { ...JSON.parse(JSON.stringify(source)), id: newId };
+      const blocks = [...article.blocks];
+      blocks.splice(blockIndex + 1, 0, copy);
+      return { ...prev, article: { ...article, blocks } };
+    });
+    return newId;
+  }, []);
+
+  const seedArticleFromSlides = useCallback(() => {
+    setProject(prev => ({ ...prev, article: deriveArticleFromSlides(prev) }));
+  }, []);
+
+  const startBlankArticle = useCallback(() => {
+    setProject(prev => {
+      const intro = (prev.slides || []).find(s => s.type === 'intro');
+      return {
+        ...prev,
+        article: {
+          articleVersion: 1,
+          title: (intro?.title || prev.title || '').replace(/\s*\n+\s*/g, ' ').trim(),
+          lede: '',
+          blocks: [makeArticleBlock('paragraph')],
+        },
+      };
+    });
+  }, []);
+
+  // Delete the authored article entirely → the public page goes back to the
+  // auto-generated (derived-from-slides) projection.
+  const clearArticle = useCallback(() => {
+    setProject(prev => {
+      if (!prev || !prev.article) return prev;
+      const next = { ...prev };
+      delete next.article;
+      return next;
+    });
+  }, []);
+
+  const articleOps = useMemo(() => ({
+    updateArticle,
+    updateArticleBlock,
+    convertArticleBlock,
+    replaceArticleBlock,
+    addArticleBlock,
+    removeArticleBlock,
+    moveArticleBlock,
+    duplicateArticleBlock,
+    seedArticleFromSlides,
+    startBlankArticle,
+    clearArticle,
+  }), [updateArticle, updateArticleBlock, convertArticleBlock, replaceArticleBlock, addArticleBlock, removeArticleBlock, moveArticleBlock, duplicateArticleBlock, seedArticleFromSlides, startBlankArticle, clearArticle]);
 
   const applyLayoutToAllSlides = useCallback((ratio) => {
     setProject(prev => ({
@@ -5608,6 +5568,10 @@ My instructions: `;
                             <span className="media-type-icon">🔗</span>
                             <span>Image/Video URL</span>
                           </button>
+                          <button type="button" className="media-type-btn" onClick={(e) => { e.stopPropagation(); openMediaLibrary((item) => updateImage(imgIndex, item.embedUrl ? { embedUrl: item.embedUrl, embedType: item.embedType || 'site' } : { src: item.src || '', isVideo: !!item.isVideo })); }}>
+                            <span className="media-type-icon">⊞</span>
+                            <span>Library</span>
+                          </button>
                         </div>
                       )}
                     </div>
@@ -5670,7 +5634,7 @@ My instructions: `;
         )}
       </div>
     );
-  }, [editMode, updateSlide, toFigmaEmbedUrl]);
+  }, [editMode, updateSlide, toFigmaEmbedUrl, openMediaLibrary]);
 
   // ========== SPLIT RATIO CONTROL ==========
   // Allows adjusting the width ratio between text and images in split layouts (memoized for stable identity)
@@ -6769,6 +6733,7 @@ My instructions: `;
             setLightboxImage={setLightboxImage}
             spacingStyle={spacingStyle}
             titleSpacingControl={titleSpacingControl}
+            openMediaLibrary={openMediaLibrary}
           />
         );
 
@@ -7405,6 +7370,7 @@ My instructions: `;
             setLightboxImage={setLightboxImage}
             spacingStyle={spacingStyle}
             titleSpacingControl={titleSpacingControl}
+            openMediaLibrary={openMediaLibrary}
           />
         );
 
@@ -8139,6 +8105,7 @@ My instructions: `;
             setLightboxImage={setLightboxImage}
             spacingStyle={spacingStyle}
             titleSpacingControl={titleSpacingControl}
+            openMediaLibrary={openMediaLibrary}
           />
         );
 
@@ -8344,10 +8311,10 @@ My instructions: `;
 
   return (
     <div
-      className={`case-study ${editMode ? 'edit-mode' : ''} ${followMode ? 'present-follow' : ''}`}
+      className={`case-study ${editMode ? 'edit-mode' : ''} ${followMode ? 'present-follow' : ''} ${isArticleMode ? 'case-study--article' : ''} ${lightboxImage ? 'lightbox-active' : ''}`}
       ref={containerRef}
       data-card-style={cardStyle !== 'outlined' ? cardStyle : undefined}
-      data-display-mode="slides"
+      data-display-mode={isArticleMode ? 'article' : 'slides'}
     >
       {/* Per-breakpoint slide padding from the edit panel. Mobile-first
           min-width cascade; same selector specificity as CaseStudy.css
@@ -8393,7 +8360,36 @@ My instructions: `;
           >
             <span>✏️ Edit Mode</span>
             <div className="edit-actions">
-              <button className="builder-trigger" onClick={() => setShowBuilder(true)}>🚀 Build from Scratch</button>
+              {!followMode && !isCompact && (
+                <div className="cs-view-toggle" role="group" aria-label="Document being edited">
+                  <button
+                    type="button"
+                    className={`cs-view-btn ${!isArticleMode ? 'is-active' : ''}`}
+                    aria-pressed={!isArticleMode}
+                    onClick={() => setViewMode('slides')}
+                  >
+                    Slides
+                  </button>
+                  <button
+                    type="button"
+                    className={`cs-view-btn ${isArticleMode ? 'is-active' : ''}`}
+                    aria-pressed={isArticleMode}
+                    onClick={() => setViewMode('article')}
+                  >
+                    Article
+                  </button>
+                </div>
+              )}
+              {editMode && (
+                <button
+                  type="button"
+                  className="cs-media-lib-btn"
+                  onClick={() => openMediaLibrary()}
+                >
+                  Media Library ({(project.mediaLibrary || []).length})
+                </button>
+              )}
+              {!isArticleMode && <button className="builder-trigger" onClick={() => setShowBuilder(true)}>🚀 Build from Scratch</button>}
               <button onClick={handleCopyJSON}>{saveStatus === 'copied' ? '✓ Copied!' : '📋 Copy JSON for ChatGPT'}</button>
               <button onClick={() => { setShowImportJSON(true); setImportJSONText(''); setImportError(''); }}>📥 Import JSON</button>
               <button onClick={() => {
@@ -8407,9 +8403,19 @@ My instructions: `;
                   }
                   return obj;
                 };
-                setEditFullJSON({ text: JSON.stringify(stripForEdit(project), null, 2), originalProject: project, error: '' });
-              }}>{'{}'} Edit Full JSON</button>
-              <select
+                // In Article mode, scope the editor to the ARTICLE document only —
+                // applying never touches the slides. In Slides mode, edit the whole
+                // project as before.
+                if (isArticleMode) {
+                  const articleDoc = (project.article && Array.isArray(project.article.blocks) && project.article.blocks.length)
+                    ? project.article
+                    : deriveArticleFromSlides(project);
+                  setEditFullJSON({ scope: 'article', text: JSON.stringify(stripForEdit(articleDoc), null, 2), originalProject: project, originalArticle: articleDoc, error: '' });
+                } else {
+                  setEditFullJSON({ scope: 'project', text: JSON.stringify(stripForEdit(project), null, 2), originalProject: project, error: '' });
+                }
+              }}>{'{}'} {isArticleMode ? 'Edit Article JSON' : 'Edit Full JSON'}</button>
+              {!isArticleMode && <select
                 className="card-style-select"
                 value={cardStyle}
                 onChange={(e) => {
@@ -8424,8 +8430,8 @@ My instructions: `;
                 <option value="ghost">Cards: Ghost</option>
                 <option value="elevated">Cards: Elevated</option>
                 <option value="accent-left">Cards: Accent Left</option>
-              </select>
-              <select
+              </select>}
+              {!isArticleMode && <select
                 className="card-style-select"
                 value=""
                 onChange={(e) => {
@@ -8442,7 +8448,7 @@ My instructions: `;
                 <option value="40">All slides → 40/60</option>
                 <option value="50">All slides → 50/50</option>
                 <option value="60">All slides → 60/40</option>
-              </select>
+              </select>}
               {IS_DEV_EDITOR && (
                 <button onClick={handleSaveToCode} className={saveStatus === 'saved-code' ? 'save-code-done' : ''}>
                   {saveStatus === 'saving-code' ? 'Saving...' : saveStatus === 'saved-code' ? '✓ Saved to Code' : saveStatus === 'error-code' ? '✗ Error' : '💾 Save to Code'}
@@ -8957,6 +8963,10 @@ My instructions: `;
         </div>
       )}
 
+      {/* Public article view has no top bar — the floating back button
+          (rendered by CaseStudyArticle) replaces it. Deck + edit modes
+          keep the nav. */}
+      {!(isArticleMode && !editMode) && (
       <div className="case-nav">
         <Link
           to="/"
@@ -8968,19 +8978,23 @@ My instructions: `;
         </Link>
         <div className="nav-label-left">
           {editMode ? (
-            <span className="nav-slide-label nav-slide-label--edit">
-              <EditableField
-                value={project.slides[currentSlide]?.label || ''}
-                onChange={(v) => updateSlide(currentSlide, { label: v })}
-              />
-            </span>
+            isArticleMode ? (
+              <span className="nav-slide-label">Article</span>
+            ) : (
+              <span className="nav-slide-label nav-slide-label--edit">
+                <EditableField
+                  value={project.slides[currentSlide]?.label || ''}
+                  onChange={(v) => updateSlide(currentSlide, { label: v })}
+                />
+              </span>
+            )
           ) : (
-            project.slides[currentSlide]?.label && (
+            !isArticleMode && project.slides[currentSlide]?.label && (
               <span className="nav-slide-label">{project.slides[currentSlide].label}</span>
             )
           )}
         </div>
-        {editMode && (
+        {editMode && !isArticleMode && (
           <button
             type="button"
             className="nav-pdf-btn"
@@ -9006,17 +9020,20 @@ My instructions: `;
             )}
           </button>
         )}
-        <div className="nav-progress">
-          <span className="progress-current">{String(currentSlide + 1).padStart(2, '0')}</span>
-          <div className="progress-bar">
-            <div
-              className="progress-fill"
-              style={{ width: `${((currentSlide + 1) / totalSlides) * 100}%` }}
-            />
+        {!isArticleMode && (
+          <div className="nav-progress">
+            <span className="progress-current">{String(currentSlide + 1).padStart(2, '0')}</span>
+            <div className="progress-bar">
+              <div
+                className="progress-fill"
+                style={{ width: `${((currentSlide + 1) / totalSlides) * 100}%` }}
+              />
+            </div>
+            <span className="progress-total">{String(totalSlides).padStart(2, '0')}</span>
           </div>
-          <span className="progress-total">{String(totalSlides).padStart(2, '0')}</span>
-        </div>
+        )}
       </div>
+      )}
 
       {pdfExporting && (
         <div className="pdf-export-overlay" role="status" aria-live="polite">
@@ -9042,14 +9059,18 @@ My instructions: `;
         </div>
       )}
 
+      {isArticleMode && (
+        <CaseStudyArticle project={project} projectId={projectId} editMode={editMode} ops={articleOps} openMediaLibrary={openMediaLibrary} onImageClick={setLightboxImage} />
+      )}
+
+      {!isArticleMode && (
       <div
         className="case-study-slides-wrapper"
         onMouseEnter={showSlideNav}
         onMouseMove={handleSlideAreaMouseMove}
         onMouseLeave={hideSlideNavAfterDelay}
       >
-        {!isSiteMode && (
-          <div className="slides-container" onClick={handleSlideAreaClick}>
+        <div className="slides-container" onClick={handleSlideAreaClick}>
             <motion.div
               /* Keyed on projectNonce (bumped in go() on project switch) so
                  the track remounts synchronously in the same React batch
@@ -9079,23 +9100,8 @@ My instructions: `;
                 </SlideErrorBoundary>
               ))}
             </motion.div>
-          </div>
-        )}
-        {isSiteMode && (
-          <div className="case-study-site">
-            {project.slides.map((slide, index) => (
-              <SlideErrorBoundary key={`site-error-${index}`}>
-                <section
-                  className={`site-section site-section--${slide.type}`}
-                  data-slide-index={index}
-                >
-                  {renderSlide(slide, index)}
-                </section>
-              </SlideErrorBoundary>
-            ))}
-          </div>
-        )}
-        {!isSiteMode && isMobileSlide && showZoomHint && (
+        </div>
+        {isMobileSlide && showZoomHint && (
           <div className="zoom-hint" role="status" aria-live="polite">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <circle cx="11" cy="11" r="7" />
@@ -9107,7 +9113,7 @@ My instructions: `;
           </div>
         )}
 
-        {!isSiteMode && !editMode && totalSlides > 1 && (
+        {!editMode && totalSlides > 1 && (
           <>
             <div
               className="slide-nav-hover-zone"
@@ -9163,10 +9169,11 @@ My instructions: `;
           </>
         )}
       </div>
+      )}
 
       {/* Slide Sorter Panel (edit mode) */}
       <AnimatePresence>
-        {editMode && showSlideSorter && (
+        {editMode && !isArticleMode && showSlideSorter && (
           <motion.div
             className="slide-sorter"
             initial={{ y: 120, opacity: 0 }}
@@ -9300,7 +9307,7 @@ My instructions: `;
       </AnimatePresence>
 
       {/* Slide sorter collapsed toggle */}
-      {editMode && !showSlideSorter && (
+      {editMode && !isArticleMode && !showSlideSorter && (
         <button
           className="slide-sorter-toggle"
           onClick={() => setShowSlideSorter(true)}
@@ -9402,8 +9409,10 @@ My instructions: `;
               onClick={(e) => e.stopPropagation()}
             >
               <div className="import-json-header">
-                <h2>Edit Full Case Study JSON</h2>
-                <p>Images are shown as [[MEDIA]] — they are preserved when you apply. Edit all slides at once.</p>
+                <h2>{editFullJSON.scope === 'article' ? 'Edit Article JSON' : 'Edit Full Case Study JSON'}</h2>
+                <p>{editFullJSON.scope === 'article'
+                  ? 'Article document only — your slides are not touched. Images show as [[MEDIA]] and are preserved on apply.'
+                  : 'Images are shown as [[MEDIA]] — they are preserved when you apply. Edit all slides at once.'}</p>
                 <button className="import-json-close" onClick={() => setEditFullJSON(null)}>×</button>
               </div>
               <div className="import-json-body">
@@ -9423,11 +9432,6 @@ My instructions: `;
                   onClick={() => {
                     try {
                       const parsed = JSON.parse(editFullJSON.text);
-                      if (!parsed.slides || !Array.isArray(parsed.slides)) {
-                        setEditFullJSON(prev => ({ ...prev, error: 'JSON must have a "slides" array.' }));
-                        return;
-                      }
-                      const original = editFullJSON.originalProject;
                       const restoreMedia = (edited, orig) => {
                         if (edited === '[[MEDIA]]') return orig;
                         if (Array.isArray(edited)) return edited.map((item, i) => restoreMedia(item, Array.isArray(orig) ? orig[i] : undefined));
@@ -9438,6 +9442,24 @@ My instructions: `;
                         }
                         return edited;
                       };
+                      // Article-scoped: merge ONLY the article document back into the
+                      // project — slides and every other key are left exactly as-is.
+                      if (editFullJSON.scope === 'article') {
+                        if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) || !Array.isArray(parsed.blocks)) {
+                          setEditFullJSON(prev => ({ ...prev, error: 'Article JSON must be an object with a "blocks" array.' }));
+                          return;
+                        }
+                        const restoredArticle = restoreMedia(parsed, editFullJSON.originalArticle);
+                        setProject(prev => migrateCaseStudyImagePathsToWebp({ ...prev, article: restoredArticle }));
+                        setEditFullJSON(null);
+                        return;
+                      }
+                      // Project-scoped (Slides mode): edit the whole document.
+                      if (!parsed.slides || !Array.isArray(parsed.slides)) {
+                        setEditFullJSON(prev => ({ ...prev, error: 'JSON must have a "slides" array.' }));
+                        return;
+                      }
+                      const original = editFullJSON.originalProject;
                       const restored = restoreMedia(parsed, original);
                       setProject(migrateCaseStudyImagePathsToWebp(restored));
                       setEditFullJSON(null);
@@ -9522,9 +9544,21 @@ My instructions: `;
         )}
       </AnimatePresence>
 
+      <MediaLibraryModal
+        open={mediaLibraryTarget != null}
+        mode={mediaLibraryTarget && mediaLibraryTarget !== 'curate' ? 'pick' : 'curate'}
+        items={project.mediaLibrary || []}
+        onPick={handleLibraryPick}
+        onRemove={removeFromMediaLibrary}
+        onAddFile={handleLibraryAddFile}
+        onAddEmbed={handleLibraryAddEmbed}
+        onClose={() => setMediaLibraryTarget(null)}
+        usageCountOf={(ref) => usageCount(project, ref)}
+      />
+
       {presenterHint && <div className="presenter-hint">{presenterHint}</div>}
 
-      {editMode && (
+      {editMode && !isArticleMode && (
         <div className={`presenter-notes-editor ${notesPanelOpen ? 'open' : ''}`}>
           <button
             type="button"

@@ -7,7 +7,9 @@
    ═══════════════════════════════════════════════════════════ */
 
 :root {
-  --pg-rail-width: 300px;
+  /* rem (not px) so the title rail scales with the root font-size, which grows
+     on ≥1920px screens — a fixed px rail let the enlarged title overflow + wrap. */
+  --pg-rail-width: 19.5rem;
   --pg-copy-max: 62ch;
   --pg-media-radius: 8px;
 }
@@ -72,7 +74,7 @@
 
 .playground-title .sans {
   font-family: var(--font-body);
-  font-weight: var(--fw-body);
+  font-weight: var(--fw-medium);
   color: var(--color-text);
   display: inline-block;
   overflow: visible !important;
@@ -243,7 +245,7 @@
 
 .pg-copy-p {
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 16px;
   line-height: 1.65;
   color: var(--color-text);
   margin: 0;

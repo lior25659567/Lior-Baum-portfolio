@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { saveData, getData, deleteData } from '../storage/devStore';
+import { saveData, getData, deleteData, saveCaseStudy, getCaseStudy, deleteCaseStudy } from '../storage/devStore';
 
 let savedHomeData = null;
 try {
@@ -50,6 +50,30 @@ function migrateCaseStudyImagePathsToWebp(node) {
     return node.replace(/\.(png|jpe?g)(?=($|[?#]))/i, '.webp');
   }
   return node;
+}
+
+/* One-time slug rename: the old timestamp-based case-study ids
+   (project-<ts>, timeline.html) became readable slugs. Remap any cached
+   home-content project ids so the grid links to the clean /project/<slug>
+   URLs without the user having to clear their cache. */
+const PROJECT_SLUG_RENAMES = {
+  'project-1776014998709': 'patient-report',
+  'project-1776628169716': 'design-system',
+  'timeline.html': 'itero-scan-view',
+};
+function migrateProjectSlugs(content) {
+  const items = content?.projects?.items;
+  if (!Array.isArray(items)) return content;
+  const remap = (id) => PROJECT_SLUG_RENAMES[id] || id;
+  const removed = content.projects.removedIds;
+  return {
+    ...content,
+    projects: {
+      ...content.projects,
+      items: items.map((it) => (it && PROJECT_SLUG_RENAMES[it.id] ? { ...it, id: remap(it.id) } : it)),
+      ...(Array.isArray(removed) ? { removedIds: removed.map(remap) } : {}),
+    },
+  };
 }
 
 // Default site content
@@ -154,14 +178,14 @@ const defaultContent = {
 // to the current defaults. The runtime applies those as inline CSS vars
 // (--font-display / --font-body / --color-accent) which otherwise override
 // index.css — so without this, a cached style blob keeps showing old fonts.
-const DS_VERSION = 'serif-original-1';
+const DS_VERSION = 'satoshi-1';
 
 // Default styles
 const defaultStyles = {
   dsVersion: DS_VERSION,
   fonts: {
     display: "'Crimson Text', Georgia, serif",
-    body: "'Mona Sans', system-ui, sans-serif",
+    body: "'Satoshi', 'Mona Sans', system-ui, sans-serif",
   },
   fontSizes: {
     heroName: 'clamp(3rem, 8vw, 6rem)',
@@ -292,7 +316,7 @@ export const EditProvider = ({ children }) => {
     try {
       const saved = localStorage.getItem('siteContent');
       return saved
-        ? migrateCaseStudyImagePathsToWebp(mergeContent(JSON.parse(saved)))
+        ? migrateProjectSlugs(migrateCaseStudyImagePathsToWebp(mergeContent(JSON.parse(saved))))
         : effectiveDefaultContent;
     } catch { return effectiveDefaultContent; }
   });
@@ -312,11 +336,37 @@ export const EditProvider = ({ children }) => {
         getData('siteStyles'),
       ]);
       if (cancelled) return;
-      if (savedContent) setContent(migrateCaseStudyImagePathsToWebp(mergeContent(savedContent)));
+      if (savedContent) setContent(migrateProjectSlugs(migrateCaseStudyImagePathsToWebp(mergeContent(savedContent))));
       if (savedStyles) setStyles(prev => ({ ...prev, ...migrateStyles(savedStyles) }));
       hydrated.current = true;
     })();
     return () => { cancelled = true; };
+  }, []);
+
+  // One-time: migrate any browser-cached case-study copies from the old
+  // timestamp slugs to the new readable slugs, so in-progress edits aren't
+  // stranded under a slug the app no longer loads. Best-effort; idempotent.
+  useEffect(() => {
+    (async () => {
+      for (const [oldId, newId] of Object.entries(PROJECT_SLUG_RENAMES)) {
+        try {
+          const data = await getCaseStudy(oldId);
+          if (data) {
+            if (!(await getCaseStudy(newId))) await saveCaseStudy(newId, data);
+            await deleteCaseStudy(oldId);
+          }
+          for (const suffix of ['', '_minimal', '_idb']) {
+            const oldKey = `caseStudy_${oldId}${suffix}`;
+            const val = localStorage.getItem(oldKey);
+            if (val != null) {
+              const newKey = `caseStudy_${newId}${suffix}`;
+              if (localStorage.getItem(newKey) == null) localStorage.setItem(newKey, val);
+              localStorage.removeItem(oldKey);
+            }
+          }
+        } catch { /* best-effort */ }
+      }
+    })();
   }, []);
 
   // One-shot migration: if the current content (from useState init or HMR-

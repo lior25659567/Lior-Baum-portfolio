@@ -46,7 +46,7 @@ const Navigation = () => {
   }, [isMenuOpen]);
 
   const navItems = [
-    { label: 'Home', href: '/' },
+    { label: 'Work', href: '/' },
     { label: 'Playground', href: '/playground' },
     { label: 'About', href: '/about' },
     ...(editMode ? [
@@ -54,6 +54,13 @@ const Navigation = () => {
       { label: 'Docs', href: '/docs/slides' }, { label: 'CV Builder', href: '/cv' }, { label: 'Design System', href: '/design-system' },
     ] : []),
   ];
+
+  // "Work" (href '/') also reads as selected while viewing any case study, so
+  // the header shows where you are when you're inside a /project/… page.
+  const isNavActive = (item) =>
+    item.href === '/'
+      ? location.pathname === '/' || location.pathname.startsWith('/project/')
+      : location.pathname === item.href;
 
   const handleNavClick = (href) => {
     setIsMenuOpen(false);
@@ -86,24 +93,24 @@ const Navigation = () => {
           {/* Desktop Links */}
           <div className="nav-links desktop-only">
             {navItems.map((item) => (
-              <div key={item.label}>
-                {item.href.startsWith('/#') ? (
-                  <Link
-                    to={item.href.replace('/#', '/')}
-                    className={`nav-link ${location.pathname === '/' && location.hash === item.href.replace('/', '') ? 'active' : ''}`}
-                    onClick={() => handleNavClick(item.href)}
-                  >
-                    {item.label}
-                  </Link>
-                ) : (
-                  <Link
-                    to={item.href}
-                    className={`nav-link ${location.pathname === item.href ? 'active' : ''}`}
-                  >
-                    {item.label}
-                  </Link>
-                )}
-              </div>
+              item.href.startsWith('/#') ? (
+                <Link
+                  key={item.label}
+                  to={item.href.replace('/#', '/')}
+                  className={`nav-link ${location.pathname === '/' && location.hash === item.href.replace('/', '') ? 'active' : ''}`}
+                  onClick={() => handleNavClick(item.href)}
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  className={`nav-link ${isNavActive(item) ? 'active' : ''}`}
+                >
+                  {item.label}
+                </Link>
+              )
             ))}
           </div>
 
