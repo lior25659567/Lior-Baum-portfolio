@@ -1446,7 +1446,8 @@
             "caption": "New RX setup — single view, no blocking form, far less scrolling",
             "isVideo": true,
             "embedUrl": "",
-            "size": "large"
+            "size": "large",
+            "border": true
           }
         ]
       },
@@ -1669,7 +1670,8 @@
             "caption": "New top-right toolbar and unified icon set",
             "isVideo": true,
             "embedUrl": "",
-            "size": "large"
+            "size": "large",
+            "border": true
           }
         ]
       },
