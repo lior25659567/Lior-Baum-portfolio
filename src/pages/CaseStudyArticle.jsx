@@ -1,5 +1,6 @@
 import { Fragment, createContext, useContext, useMemo, useRef, useState, useEffect, useLayoutEffect } from 'react';
 import { Link } from 'react-router-dom';
+import gsap from 'gsap';
 import { savedCaseStudies } from '../data/case-studies/index.js';
 import { contactDefaults } from '../data/caseStudyData';
 import { buildResponsiveWebp, LazyVideo, pickMediaFile } from './caseStudyMedia';
@@ -1205,6 +1206,121 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
     return () => { cancelAnimationFrame(raf); clearTimeout(timer); };
   }, [projectId]);
 
+  // ── GSAP entrance stagger ────────────────────────────────────────────────
+  // Runs on first mount and on every project change (the next-case cards).
+  // Declared AFTER the scroll-reset effect above so that, on a project switch,
+  // the container is already at the top before the stagger plays — otherwise
+  // the animation would run against content the viewer can't see.
+  //
+  // Skipped in edit mode: the editor's insert zones and control pills change
+  // the layout, and re-animating blocks while the designer is working is noise.
+  const articleRef = useRef(null);
+  useLayoutEffect(() => {
+    if (editMode) return;
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) return;
+    const root = articleRef.current;
+    if (!root) return;
+    let rafHandle = null;
+    let timeoutHandle = null;
+    const ctx = gsap.context(() => {
+      // One flat query so the nodes come back in document order — that keeps
+      // the stagger correct whether or not the study leads with a hero block
+      // (a hero renders BEFORE the <header>, a normal study after it).
+      let seenLede = false;
+      const targets = Array.from(root.querySelectorAll(
+        ':scope > .cs-article-block, :scope > .cs-article-header .cs-article-h1, :scope > .cs-article-header .cs-article-lede'
+      )).filter((el) => {
+        if (!el.classList.contains('cs-article-lede')) return true;
+        if (seenLede) return false; // Prose can emit several <p class="cs-article-lede">
+        seenLede = true;
+        return true;
+      }).slice(0, 5);
+      if (!targets.length) return;
+
+      // Hide immediately, before the browser paints, so nothing flashes in at
+      // full opacity and then jumps back to animate.
+      gsap.set(targets, {
+        opacity: 0,
+        y: (i) => (i === 0 ? 24 : 16),
+        force3D: true,
+        willChange: 'opacity, transform', // own compositor layer for the tween
+      });
+
+      // ...but only START once the main thread is free. Mounting an 85-block
+      // article and decoding the hero image produces 200-330ms long tasks, and
+      // GSAP ticks on rAF — a tween begun inside that window can't tick, so it
+      // visibly jumps instead of easing. That was the reported lag. Idle-start
+      // costs nothing perceptually: the content isn't readable until that same
+      // work finishes anyway.
+      // Strip the inline styles once done. A lingering transform makes the
+      // element a containing block for fixed/absolute descendants, and
+      // caseStudyMedia notes transformed ancestors can stall iOS autoplay on
+      // videos inside. A lingering will-change pins a GPU layer for the life of
+      // the page, which costs memory on phones.
+      const CLEAR = 'opacity,transform,willChange';
+      let settled = false;
+      const play = () => {
+        if (settled) return;
+        settled = true;
+        gsap.to(targets, {
+          opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', stagger: 0.08,
+          clearProps: CLEAR,
+        });
+      };
+      // Hard bound. The targets are invisible until we start, so rather than
+      // hold a blank article indefinitely on a slow load — or play into a busy
+      // thread and stutter (the original bug) — give up on the animation and
+      // just show the content. Smooth-or-nothing, never slow-and-janky.
+      const revealNow = () => {
+        if (settled) return;
+        settled = true;
+        gsap.set(targets, { clearProps: CLEAR });
+      };
+
+      // Start only once the main thread is actually delivering fast frames.
+      // requestIdleCallback alone is NOT enough: on a client-side navigation
+      // (home project card → study) the thread is briefly idle right after the
+      // click, so rIC fires BEFORE React mounts the article — and the mount
+      // then dropped a 139ms frame into the middle of the tween. Probing real
+      // frame deltas covers both cases: a fresh load waits out the commit, a
+      // client nav waits out the mount.
+      let tries = 0, calm = 0;
+      const waitForCalm = () => {
+        const t0 = performance.now();
+        rafHandle = requestAnimationFrame(() => {
+          if (settled) return;
+          // A healthy 60Hz frame is ~16.7ms; anything beyond means the thread
+          // is still busy and a tween started now would skip. Require a short
+          // STREAK — a single fast frame can sit in a gap between two long
+          // tasks, which is exactly how a 117ms decode landed mid-tween.
+          if (performance.now() - t0 <= 24) calm++; else calm = 0;
+          if (calm >= 3 || ++tries >= 40) play();
+          else waitForCalm();
+        });
+      };
+      // Decoding the figures' images is the other long task that lands after
+      // mount (~200ms later, ~117ms long). Let it finish before animating —
+      // img.decode() resolves once the bitmap is ready, so the tween isn't
+      // competing with it. Raced against a timeout so a slow/erroring image
+      // can't hold the article hidden.
+      const imgs = targets.flatMap((el) => Array.from(el.querySelectorAll('img'))).slice(0, 6);
+      const decoded = Promise.all(imgs.map((im) => (im.decode ? im.decode().catch(() => {}) : Promise.resolve())));
+      Promise.race([decoded, new Promise((r) => setTimeout(r, 300))]).then(() => {
+        if (!settled) waitForCalm();
+      });
+      // Hard cap on how long the article may stay hidden.
+      timeoutHandle = setTimeout(revealNow, 650);
+    }, articleRef);
+    // revert() restores the original inline styles, so a mid-flight navigation
+    // can never strand a block at opacity 0. Cancel any pending start too.
+    return () => {
+      if (rafHandle !== null) cancelAnimationFrame(rafHandle);
+      if (timeoutHandle !== null) clearTimeout(timeoutHandle);
+      ctx.revert();
+    };
+  }, [projectId, editMode]);
+
   const quickAdd = (type, at) => flash(ops.addArticleBlock(type, at));
 
   const renderBlock = (blk, listIndex, realIndex) => {
@@ -1235,7 +1351,7 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
   return (
     <MediaLibraryContext.Provider value={openMediaLibrary}>
     <LightboxContext.Provider value={editMode ? null : onImageClick}>
-    <article className={`cs-article${editing ? ' cs-article--editing' : ''}`}>
+    <article ref={articleRef} className={`cs-article${editing ? ' cs-article--editing' : ''}`}>
       {!editMode && <FloatingBack />}
 
       {editMode && !authored && ops && reverted && (
