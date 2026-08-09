@@ -97,7 +97,12 @@ const MediaEntry = ({ entry, tier }) => {
         }
         wasInView.current = e.isIntersecting;
       }),
-      { threshold: 0.35 }
+      // 0.15, not 0.35: `inView` drives LazyVideo's priority (and therefore
+      // autoplay), so a high threshold left videos paused on their poster until
+      // a third of the figure was on screen — on a phone that reads as "I have
+      // to tap every video". A tall figure (portrait clip + mat + caption) can
+      // also cap its own max ratio below 0.35 and never fire at all.
+      { threshold: 0.15 }
     );
     io.observe(el);
     return () => io.disconnect();
@@ -1172,6 +1177,33 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
     restore();                       // before paint — no visible jump
     requestAnimationFrame(restore);  // again after chrome/media-merge reflow settles
   }, [editMode]);
+
+  // ── Open a newly-navigated case study at the top ─────────────────────────
+  // The next-case cards link to another /project/:id, which only swaps the
+  // route param — CaseStudy never unmounts, so `.case-study--article` keeps
+  // the scrollTop it had. Since those cards sit at the very bottom, the new
+  // study opened scrolled to its end. Reset on every project change.
+  // ScrollToTop in App.jsx doesn't cover this: it moves the *window*, and the
+  // article scrolls inside its own overflow container.
+  const prevProjectIdRef = useRef(projectId);
+  useLayoutEffect(() => {
+    if (prevProjectIdRef.current === projectId) return;
+    prevProjectIdRef.current = projectId;
+    const sc = document.querySelector('.case-study--article');
+    if (!sc) return;
+    const toTop = () => {
+      const prev = sc.style.scrollBehavior;
+      sc.style.scrollBehavior = 'auto'; // never animate this jump
+      sc.scrollTop = 0;
+      sc.style.scrollBehavior = prev;
+    };
+    toTop();
+    // The new study's blocks mount a tick later and can re-anchor scroll;
+    // re-assert once the layout has settled.
+    const raf = requestAnimationFrame(toTop);
+    const timer = setTimeout(toTop, 140);
+    return () => { cancelAnimationFrame(raf); clearTimeout(timer); };
+  }, [projectId]);
 
   const quickAdd = (type, at) => flash(ops.addArticleBlock(type, at));
 

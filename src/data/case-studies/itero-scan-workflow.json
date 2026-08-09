@@ -612,7 +612,7 @@
           "fit": "contain",
           "wrapperBg": true,
           "embedUrl": "",
-          "src": "/case-studies/itero-scan-workflow/vid-59beoz3v2zo.webm",
+          "src": "/case-studies/itero-scan-workflow/vid-59beoz3v2zo.mp4",
           "isVideo": true,
           "isGif": false,
           "embedType": ""
@@ -1520,7 +1520,7 @@
         "width": "wide",
         "media": [
           {
-            "src": "/case-studies/itero-scan-workflow/vid-59beoz3v2zo.webm",
+            "src": "/case-studies/itero-scan-workflow/vid-59beoz3v2zo.mp4",
             "caption": "After — multi-select on the chart, procedures assigned inline",
             "isVideo": true,
             "embedUrl": "",
@@ -1934,7 +1934,7 @@
     {
       "id": "ml-1helzno",
       "addedAt": 1785535312834,
-      "src": "/case-studies/itero-scan-workflow/vid-59beoz3v2zo.webm",
+      "src": "/case-studies/itero-scan-workflow/vid-59beoz3v2zo.mp4",
       "isVideo": true,
       "caption": ""
     },

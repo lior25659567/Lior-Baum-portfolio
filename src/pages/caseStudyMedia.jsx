@@ -165,7 +165,13 @@ export const LazyVideo = memo(({ src, poster, style, className, onClick, priorit
   const useMobile = (mobile || saveData || slow);
   const playbackSrc = useMobile ? (deriveMobileVideoSrc(src) || src) : src;
   const effectivePoster = poster || deriveVideoPoster(src) || undefined;
-  const preload = priority === 'high' ? 'auto' : 'metadata';
+  // Buffer as soon as the element is within the observer's rootMargin (400px on
+  // mobile), not only once it's the active/high item. Gating `auto` on
+  // priority==='high' meant a video had only its metadata when you reached it,
+  // so playback stalled on the poster and read as "broken — tap to start".
+  // `visible` is already intersection-gated, so this never fetches a video the
+  // viewer isn't approaching.
+  const preload = visible ? 'auto' : 'metadata';
   // iOS Safari is fussy about autoplay even with muted + playsInline: Low
   // Power Mode, transformed ancestors (we have one — the zoom-pan-pinch
   // scaler), and timing races with the autoplay policy check can all leave
