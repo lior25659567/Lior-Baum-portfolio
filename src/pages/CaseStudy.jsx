@@ -1601,6 +1601,14 @@ const CaseStudy = () => {
       return;
     }
 
+    // The deck is not mounted in article mode: there are no `.slide` elements
+    // to measure and `.case-study-slides-wrapper` does not exist yet, so a run
+    // here would attach no ResizeObserver. `isArticleMode` is in the dep array
+    // below so this re-runs the moment the deck appears (pressing P) — without
+    // it the artboard keeps the CSS default --slide-canvas-scale: 1 and renders
+    // the full 1920×1080 at 1:1, overflowing the viewport.
+    if (isArticleMode) return;
+
     const SLIDE_W = 1920;
     const SLIDE_H = 1080;
 
@@ -1652,7 +1660,7 @@ const CaseStudy = () => {
       window.removeEventListener('resize', scaleAll);
       if (vv) vv.removeEventListener('resize', scaleAll);
     };
-  }, [currentSlide, project, editMode]);
+  }, [currentSlide, project, editMode, isArticleMode]);
 
   /* Warm the browser cache for the next two slides' images when the current
      slide changes. Images go through `new Image()` (cheap); videos are too
@@ -2195,6 +2203,63 @@ const CaseStudy = () => {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [editMode, isArticleMode, openPresenterWindow]);
+
+  // Article-mode "P" switches to the slide deck — the presentation view.
+  // Pairs with the handler above, which owns P once you're already in slides,
+  // so the key escalates naturally: article → deck → presenter window.
+  useEffect(() => {
+    if (editMode || !isArticleMode || followMode) return;
+    let hintTimer = null;
+    const onKey = (e) => {
+      // Cmd/Ctrl+P must still reach the browser's print dialog.
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+      if (e.key !== 'p' && e.key !== 'P') return;
+      e.preventDefault();
+      if (isCompact) {
+        // isArticleMode is forced on at ≤1280px, so setViewMode('slides')
+        // would be a silent no-op. Say why instead of swallowing the key.
+        setPresenterHint('Presentation view needs a window wider than 1280px.');
+        if (hintTimer) clearTimeout(hintTimer);
+        hintTimer = setTimeout(() => setPresenterHint(''), 4000);
+        return;
+      }
+      setViewMode('slides'); // the URL-sync effect adds ?view=slides
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      if (hintTimer) clearTimeout(hintTimer);
+    };
+  }, [editMode, isArticleMode, followMode, isCompact]);
+
+  // ...and "A" brings you back to the article — the mirror of P. Escape does
+  // the same, since it's the conventional way out of a full-screen-ish view.
+  // Without a return key P would be a one-way door: the public (non-edit) view
+  // has no Slides/Article toggle — that control lives in the edit bar — and the
+  // URL sync uses `replace: true`, so browser Back leaves the case study
+  // altogether instead of stepping back to the article.
+  useEffect(() => {
+    if (editMode || isArticleMode || followMode) return;
+    const onKey = (e) => {
+      const isEsc = e.key === 'Escape';
+      const isA = e.key === 'a' || e.key === 'A';
+      if (!isEsc && !isA) return;
+      if (document.fullscreenElement) return;  // let the browser exit fullscreen
+      if (lightboxImage) return;               // Escape closes the lightbox first
+      if (isA) {
+        // Cmd/Ctrl+A is select-all; and never steal a letter key from a field.
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+        const t = e.target;
+        if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+      }
+      e.preventDefault();
+      setViewMode('article');
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [editMode, isArticleMode, followMode, lightboxImage]);
 
   const goToSlide = useCallback((direction) => {
     if (isScrollingRef.current) return;
