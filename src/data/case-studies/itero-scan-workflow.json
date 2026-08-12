@@ -1,5 +1,5 @@
 {
-  "dataVersion": 67,
+  "dataVersion": 68,
   "title": "Clinical Scanning\nWorkflow",
   "subtitle": "Redesigning the clinical scanning workflow for speed, clarity, and decision-making in real treatment conditions.",
   "category": "Clinical Workflow Redesign",
@@ -995,12 +995,12 @@
       {
         "id": "it-hero",
         "type": "figure",
-        "width": "full",
+        "width": "wide",
         "display": "carousel",
         "interval": 2000,
         "media": [
           {
-            "src": "/case-studies/itero-scan-workflow/img-ktwg83prko.webp",
+            "src": "/case-studies/itero-scan-workflow/img-gvjz781fw0.webp",
             "caption": "",
             "isVideo": false,
             "embedUrl": "",
@@ -1208,8 +1208,7 @@
         "ordered": false,
         "items": [
           "**RX → Scan** — setup blocked the clinician before any scan could begin.",
-          "**Scan → View** — tool access broke the clinician's rhythm mid-capture.",
-          "**View → submit** — no completion signal, so View felt unfinished."
+          "**Scan → View** — tool access broke the clinician's rhythm mid-capture."
         ]
       },
       {
@@ -1282,7 +1281,7 @@
             "embedUrl": "/iframes/claudecode-iframe.html",
             "size": "large",
             "shadow": false,
-            "border": false
+            "border": true
           }
         ]
       },
@@ -1318,9 +1317,7 @@
         "ordered": false,
         "items": [
           "**Nothing gets missed** — required fields can't be skipped, which reduces the incomplete cases labs were receiving.",
-          "**Lowest cognitive load per screen** — one thing to answer at a time.",
-          "**But it railroads.** Clinicians who wanted to jump ahead or revise couldn't, and chairside work is rarely linear.",
-          "**And it hides state.** You can't see what you've already set without stepping backwards through the flow."
+          "**Lowest cognitive load per screen** — one thing to answer at a time."
         ]
       },
       {
@@ -1358,9 +1355,7 @@
         "ordered": false,
         "items": [
           "**Short screen, full access** — no steps to traverse, and the whole case fits without scrolling.",
-          "**Scales cleanly** — new sections slot in without lengthening the visible page.",
-          "**But it trades clicks for height.** In testing, clinicians reopened the same section repeatedly rather than reading it once.",
-          "**And collapsed content is invisible content** — the same problem the modals had, in a quieter form."
+          "**Scales cleanly** — new sections slot in without lengthening the visible page."
         ]
       },
       {
@@ -1398,15 +1393,13 @@
         "ordered": false,
         "items": [
           "**Nothing is hidden** — the clinician can see and change any part of the case at any moment.",
-          "**Setup stops gating the scan** — with no steps to finish, configuration can continue alongside capture.",
-          "**But it's the riskiest structurally** — a dense screen with no walls is hard to keep legible as fields are added.",
-          "**And it drops the wizard's safety net** — nothing forces required fields, so completeness has to be handled another way."
+          "**Setup stops gating the scan** — with no steps to finish, configuration can continue alongside capture."
         ]
       },
       {
         "id": "it-d1-c-figs",
         "type": "figure",
-        "width": "wide",
+        "width": "prose",
         "display": "grid",
         "media": [
           {
@@ -1817,7 +1810,6 @@
         ],
         "differentlyTitle": "What I'd do differently",
         "differently": [
-          "Spend longer with clinicians before opening Figma — understand the world first, design second.",
           "Validate systems in context, never in isolation — show the whole pattern, not the parts.",
           "Add an AI assistant to the RX, drafting notes and procedure suggestions as the clinician works."
         ]
@@ -2040,6 +2032,13 @@
       "id": "ml-1vtnu26",
       "addedAt": 1785788778289,
       "src": "/case-studies/itero-scan-workflow/img-ktwg83prko.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-p9aixw",
+      "addedAt": 1785790055381,
+      "src": "/case-studies/itero-scan-workflow/img-gvjz781fw0.webp",
       "isVideo": false,
       "caption": ""
     }
