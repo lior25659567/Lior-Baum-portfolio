@@ -1,0 +1,85 @@
+/* Pixel design-system shell + reset.
+   The structural half of the original src/themes/pixel/tokens.css — the layout
+   the pixel pages need (field-canvas positioning, shell grid, content measure).
+   Task 1 ported only the token VARIABLES (pixel-tokens.css); this supplies the
+   layout that makes the heat-field hero render. Imported AFTER pixel-tokens.css
+   so the variables resolve. */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  /* clip (not hidden) stops the carousel's full-bleed breakout from adding a
+     horizontal scrollbar WITHOUT breaking position:sticky (the article's sticky
+     section labels). The pixel reference used hidden; clip is the safer superset. */
+  overflow-x: clip;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  line-height: var(--body-lh);
+  letter-spacing: var(--body-ls);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, canvas { display: block; max-width: 100%; }
+
+a { color: inherit; text-decoration: none; }
+a:hover { color: var(--blue); }
+
+:focus-visible {
+  outline: var(--focus-ring) solid var(--ink);
+  outline-offset: var(--focus-offset);
+}
+
+.slide.cs:focus-visible,
+.tt-teaser:focus-visible,
+.tt-pad button:focus-visible,
+.tt-close:focus-visible,
+.cta-btn:focus-visible {
+  outline-color: var(--neon);
+}
+
+.pixel-rule {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(to right,  var(--grid) 0 1px, transparent 1px var(--cell)),
+    repeating-linear-gradient(to bottom, var(--grid) 0 1px, transparent 1px var(--cell));
+}
+
+.pixel-field-band {
+  height: var(--field-band, 42vh);
+  pointer-events: none;
+}
+
+.pixel-field {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.pixel-content {
+  position: relative;
+  z-index: 2;
+  max-width: calc(var(--maxw) + var(--gutter) * 2);
+  margin: 0 auto;
+  padding: 128px var(--gutter) calc(var(--cell-layout) * 5);
+}
+
+.pixel-content.has-head { padding-top: calc(var(--cell-layout) * 4); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
