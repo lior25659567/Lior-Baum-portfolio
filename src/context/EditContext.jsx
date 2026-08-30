@@ -481,9 +481,12 @@ export const EditProvider = ({ children }) => {
   // Apply CSS variables when styles change
   useEffect(() => {
     const root = document.documentElement;
-    root.style.setProperty('--font-display', styles.fonts.display);
-    root.style.setProperty('--font-body', styles.fonts.body);
-    root.style.setProperty('--color-accent', styles.colors.accent);
+    // pixel-migration: pixel design system owns this token — do not inject inline
+    // root.style.setProperty('--font-display', styles.fonts.display);
+    // pixel-migration: pixel design system owns this token — do not inject inline
+    // root.style.setProperty('--font-body', styles.fonts.body);
+    // pixel-migration: pixel design system owns this token — do not inject inline
+    // root.style.setProperty('--color-accent', styles.colors.accent);
     root.style.setProperty('--spacing-section', styles.spacing.sectionPadding);
     root.style.setProperty('--container-max-width', styles.spacing.containerMaxWidth);
   }, [styles]);
