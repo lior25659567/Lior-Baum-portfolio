@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedButton from './AnimatedButton';
-import ThemeToggle from './ThemeToggle';
 import { useEdit } from '../context/EditContext';
 import './Navigation.css';
 
@@ -116,7 +115,6 @@ const Navigation = () => {
 
           {/* Desktop Right Section */}
           <div className="nav-right desktop-only">
-            <ThemeToggle />
             {editMode ? (
               <div className="cv-link-editor">
                 <AnimatedButton 
@@ -165,7 +163,6 @@ const Navigation = () => {
 
           {/* Mobile Right Section */}
           <div className="nav-mobile-right">
-            <ThemeToggle />
             {/* Hamburger Menu Button */}
             <button 
               className={`hamburger ${isMenuOpen ? 'active' : ''}`}

@@ -11,39 +11,34 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(() => {
-    // Check localStorage first, default to 'light'
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('theme');
-      return saved || 'light';
-    }
-    return 'light';
-  });
+  // Pixel design system is light-only. Always resolve to 'light' regardless of
+  // any previously stored preference (a returning visitor with
+  // localStorage.theme==='dark' still gets light).
+  const [theme] = useState('light');
 
   useEffect(() => {
     // Apply theme to document
     const root = document.documentElement;
-    root.setAttribute('data-theme', theme);
+    root.setAttribute('data-theme', 'light');
     // Declare the active scheme so mobile browsers stop auto-inverting our
     // light pages, and native UI (scrollbars, form controls) matches the theme.
-    root.style.colorScheme = theme;
-    localStorage.setItem('theme', theme);
-    // Keep the mobile address-bar color (theme-color) in sync with the theme.
-    // Values mirror --color-bg (--primitive-gray-50 / -900); read directly so a
-    // background fade-in transition can't capture a half-opaque value.
+    root.style.colorScheme = 'light';
+    localStorage.setItem('theme', 'light');
+    // Keep the mobile address-bar color (theme-color) in sync.
+    // Value mirrors --color-bg (--primitive-gray-50).
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', theme === 'dark' ? '#0a0a0a' : '#f7f9f4');
-  }, [theme]);
+    if (meta) meta.setAttribute('content', '#f7f9f4');
+  }, []);
 
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  };
+  // No-op: dark mode is permanently removed. Kept so callers don't break.
+  const toggleTheme = () => {};
+  const setTheme = () => {};
 
   const value = {
     theme,
     setTheme,
     toggleTheme,
-    isDark: theme === 'dark',
+    isDark: false,
   };
 
   return (
