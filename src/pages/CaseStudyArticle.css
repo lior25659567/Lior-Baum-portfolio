@@ -83,33 +83,37 @@
 /* ── 3. The article ────────────────────────────────────────────────────── */
 
 .cs-article {
-  --cs-prose: 720px;
-  --cs-wide: 1160px;
-  --cs-full: 1400px;
+  /* PIXEL prose measure: the reading column is 62ch (--measure); wide/full
+     tiers break out of that measure but stay bounded to the content grid. */
+  --cs-prose: var(--measure, 62ch);
+  --cs-wide: min(1160px, 92vw);
+  --cs-full: min(1400px, 96vw);
   --cs-pad: clamp(20px, 4vw, 40px);
-  /* Soft lavender "float" shadow shared by figures and the next-case cards
-     (matched from the royshlain reference). */
-  --cs-float: 0 4px 24px 6px rgba(171, 162, 189, 0.12);
-  /* The article reads in the SITE's typeface (Mona Sans — same as the home
-     page, project cards, and About page), not the deck's DM Sans. Primitives
-     aren't shadowed by .case-study, so this resolves correctly here. */
-  --font-body: var(--primitive-font-sans, 'Satoshi', 'Mona Sans', sans-serif);
-  --font-display: var(--primitive-font-sans, 'Satoshi', 'Mona Sans', sans-serif);
-  /* Primary text color — Figma article ink (#37352F). Light mode only;
-     dark mode keeps white below so text stays readable. */
-  --color-text: #37352f;
+  /* Pixel is hard-edged: no soft float shadow. Kept as a token (set to none)
+     so the many `box-shadow: var(--cs-float)` references resolve to nothing
+     instead of being edited one-by-one. */
+  --cs-float: none;
+  /* The article reads in the PIXEL typeface (Sneak) — this overrides the
+     `.case-study` Satoshi/DM Sans lock for the article ONLY. Slides stay
+     Satoshi/DM Sans via `.case-study .slide-inner` (higher specificity in
+     pixel-tokens.css), so this cannot leak into the deck. */
+  --font-body: 'Sneak', 'Neue Haas Unica', 'Switzer', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-display: 'Sneak', 'Neue Haas Unica', 'Switzer', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /* Ink text on paper. */
+  --color-text: var(--ink, #0a0a0a);
   width: 100%;
   max-width: calc(var(--cs-full) + 2 * var(--cs-pad));
   margin: 0 auto;
   padding: 3.5rem var(--cs-pad) 6rem;
   font-family: var(--font-body);
   color: var(--color-text);
+  letter-spacing: var(--body-ls, -0.015em);
 }
 
-/* Dark mode: don't apply the light-ink override — keep the theme's white text. */
+/* Dark mode: keep white ink; still no soft shadow (pixel is hard-edged). */
 :root[data-theme='dark'] .cs-article {
-  --color-text: var(--primitive-white);
-  --cs-float: 0 4px 24px 6px rgba(0, 0, 0, 0.35);
+  --color-text: var(--primitive-white, #fff);
+  --cs-float: none;
 }
 
 /* Edit mode keeps the sticky nav, so less top padding is needed. */
@@ -174,48 +178,45 @@ body.cs-article-nav .cs-article-back {
   max-width: var(--cs-prose);
 }
 
-/* ── Typography (Notion reference metrics) ── */
-
-/* Headings follow the site's heading voice (Mona Sans, light-medium weight,
-   tight tracking — like .section-heading on About / .section-title on home). */
-/* Fixed integer type scale (40/30/24/18/16/14) — the article deliberately
-   avoids the site's fluid clamp() tokens so sizes are whole pixels and
-   match the Figma text styles 1:1. */
-/* Reference: royshlain.com case study. Title is Bold (700) with light
-   tracking; section heads are Semibold (600) with tight 1.3 leading and no
-   negative tracking; sections breathe with a ~90px gap above each. */
+/* ── Typography (PIXEL reference metrics) ──
+   Sneak type, tight display tracking, hairline rhythm. Headings are
+   medium-weight with tight leading (--heading-lh/--heading-ls); body reads at
+   the pixel body scale with generous leading so 2000 words stay legible.
+   Sizes deliberately whole-px where they map to the pixel reader. */
 .cs-article-h1 {
   font-family: var(--font-display, inherit);
-  font-size: 40px;
-  font-weight: var(--fw-bold, 700);
-  line-height: 48px;
-  letter-spacing: -0.4px;
+  font-size: clamp(34px, 5vw, 60px);
+  font-weight: var(--fw-regular, 400);
+  line-height: 0.96;
+  letter-spacing: -0.035em;
   margin: 1.4rem auto 0.9rem;
 }
 
 .cs-article-h2 {
   font-family: var(--font-display, inherit);
-  font-size: 24px;
-  font-weight: var(--fw-semibold, 600);
-  line-height: 31px;
-  letter-spacing: 0;
+  font-size: clamp(24px, 2.4vw, 34px);
+  font-weight: var(--fw-medium, 500);
+  line-height: var(--heading-lh, 1.06);
+  letter-spacing: var(--heading-ls, -0.02em);
   margin: 4.25rem auto 1rem;
 }
 
 .cs-article-h3 {
-  font-size: 16px;
-  font-weight: var(--fw-semibold, 600);
-  line-height: 24px;
-  letter-spacing: 0;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(18px, 1.5vw, 22px);
+  font-weight: var(--fw-medium, 500);
+  line-height: 1.2;
+  letter-spacing: var(--heading-ls, -0.02em);
   margin: 2rem auto 0.6rem;
 }
 
-/* Body follows the site's description voice (.bio-text on About /
-   .project-content-desc on the home project cards): muted, relaxed leading. */
+/* Body: pixel body scale, relaxed leading (--body-lh), ink. Not uppercase,
+   not tracked — this is long-form reading. */
 .cs-article-p {
-  font-size: 16px;
-  font-weight: var(--fw-body, 400);
-  line-height: 25px;
+  font-size: var(--body-size, 17px);
+  font-weight: var(--fw-regular, 400);
+  line-height: var(--body-lh, 1.55);
+  letter-spacing: var(--body-ls, -0.015em);
   color: var(--color-text);
   margin: 0 auto 1rem;
   white-space: pre-line;
@@ -223,26 +224,28 @@ body.cs-article-nav .cs-article-back {
 
 .cs-article-p strong {
   color: var(--color-text);
-  font-weight: var(--fw-semibold, 600);
+  font-weight: var(--fw-medium, 500);
 }
 
 .cs-article-lede {
-  font-size: 24px;
-  font-weight: var(--fw-body, 400);
-  line-height: 33px;
+  font-size: clamp(19px, 1.6vw, 26px);
+  font-weight: var(--fw-regular, 400);
+  line-height: 1.36;
+  letter-spacing: -0.02em;
   color: var(--color-text);
   margin: 0.5rem auto;
   white-space: pre-line;
 }
 
+/* Eyebrow: pixel utility label — uppercase, 11px, wide tracking, muted. */
 .cs-article-eyebrow {
-  font-size: 14px;
+  font-size: var(--utility-size, 11px);
   font-weight: var(--fw-medium, 500);
-  line-height: 20px;
-  letter-spacing: 0.1px;
-  text-transform: none;
-  color: var(--color-accent);
-  margin: 4.25rem auto 0.4rem;
+  line-height: 1.4;
+  letter-spacing: var(--utility-ls, 0.09em);
+  text-transform: uppercase;
+  color: var(--muted, #8b8b8b);
+  margin: 4.25rem auto 0.6rem;
 }
 
 /* Eyebrow directly answers to its heading: tighten the pair. */
@@ -254,8 +257,9 @@ body.cs-article-nav .cs-article-back {
 .cs-article-list {
   padding-left: 1.5rem;
   margin: 0.65rem auto;
-  font-size: 16px;
-  line-height: 25px;
+  font-size: var(--body-size, 17px);
+  line-height: var(--body-lh, 1.55);
+  letter-spacing: var(--body-ls, -0.015em);
   color: var(--color-text);
   list-style: disc;
   display: block;
@@ -263,7 +267,7 @@ body.cs-article-nav .cs-article-back {
 
 .cs-article-list strong {
   color: var(--color-text);
-  font-weight: var(--fw-semibold, 600);
+  font-weight: var(--fw-medium, 500);
 }
 
 .cs-article-list--ordered {
@@ -271,13 +275,13 @@ body.cs-article-nav .cs-article-back {
 }
 
 .cs-article-list li {
-  margin: 0.65rem 0;
+  margin: 0.5rem 0;
   padding-left: 0.15rem;
 }
 
 .cs-article-hr {
   border: none;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
   margin: 2.4rem auto;
 }
 
@@ -287,32 +291,46 @@ body.cs-article-nav .cs-article-back {
   margin-top: 0.25rem;
 }
 
-/* ── Meta grid (Role / Timeline / Team / …) ── */
+/* ── Meta grid (Role / Timeline / Team / …) ── PIXEL "facts" strip:
+   one hairline-bounded row, uppercase utility labels above tabular values. */
 
 .cs-article-meta {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem 2rem;
-  margin: 1.6rem auto;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0;
+  margin: 1.6rem auto 2.4rem;
+  border-top: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-bottom: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
 }
 
 .cs-article-meta-item {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 0.3rem;
+  padding: 14px 18px 14px 0;
+}
+
+.cs-article-meta-item + .cs-article-meta-item {
+  border-left: 1px solid var(--rule-faint, rgba(10, 10, 10, 0.06));
+  padding-left: 18px;
 }
 
 .cs-article-meta-label {
-  font-size: 16px;
-  line-height: 25px;
-  font-weight: 600;
+  font-size: var(--utility-size, 11px);
+  line-height: 1.4;
+  letter-spacing: var(--utility-ls, 0.09em);
+  text-transform: uppercase;
+  font-weight: var(--fw-medium, 500);
+  color: var(--muted, #8b8b8b);
 }
 
 .cs-article-meta-value {
-  font-size: 16px;
-  line-height: 25px;
+  font-size: 15px;
+  line-height: 1.45;
+  letter-spacing: var(--body-ls, -0.015em);
   color: var(--color-text);
+  font-variant-numeric: tabular-nums;
   white-space: pre-line;
 }
 
@@ -327,9 +345,12 @@ body.cs-article-nav .cs-article-back {
 }
 
 .cs-article-labelrow-label {
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 25px;
+  font-size: var(--utility-size, 11px);
+  font-weight: var(--fw-medium, 500);
+  line-height: 1.5;
+  letter-spacing: var(--utility-ls, 0.09em);
+  text-transform: uppercase;
+  color: var(--muted, #8b8b8b);
 }
 
 .cs-article-labelrow-body .cs-article-p {
@@ -385,19 +406,22 @@ body.cs-article-nav .cs-article-back {
   margin-top: 0.55rem;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
-  text-align: center;
+  gap: 0.2rem;
+  text-align: left;
 }
 .cs-article-figure-cell-title {
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: var(--fw-semibold);
+  font-size: var(--utility-size, 11px);
+  line-height: 1.4;
+  letter-spacing: var(--utility-ls, 0.09em);
+  text-transform: uppercase;
+  font-weight: var(--fw-medium, 500);
   color: var(--color-text);
 }
 .cs-article-figure-cell-desc {
-  font-size: 14px;
-  line-height: 20px;
-  color: var(--color-text-muted);
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: var(--body-ls, -0.015em);
+  color: var(--muted, #8b8b8b);
 }
 /* Accepted / Rejected chip overlaid on an image — mirrors the Ideation
    (directions) slide: Accepted = accent-fill pill, Rejected = quiet glass chip. */
@@ -409,35 +433,35 @@ body.cs-article-nav .cs-article-back {
   pointer-events: none;
   display: inline-flex;
   align-items: center;
-  padding: 0.28rem 0.72rem;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 500;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius, 2px);
+  font-size: var(--utility-size, 11px);
+  font-weight: var(--fw-medium, 500);
+  letter-spacing: var(--utility-ls, 0.09em);
+  text-transform: uppercase;
   line-height: 1;
-  border: 1px solid var(--color-border-soft);
-  background: color-mix(in srgb, var(--color-bg) 82%, transparent);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  background: var(--bg, #fff);
   color: var(--color-text);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(6px);
 }
 .cs-article-figure-chip--accepted {
-  background: var(--color-accent);
+  background: var(--blue, #3b5bd9);
   color: #fff;
   border-color: transparent;
 }
-.cs-article-chip-btn--accepted { color: var(--color-accent); }
+.cs-article-chip-btn--accepted { color: var(--blue, #3b5bd9); }
 
 .cs-article-media {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 10px;
-  /* No border by default, and a drop-shadow (not box-shadow) so a transparent
-     PNG casts a shadow that follows its real shape rather than a rectangle. */
-  filter: drop-shadow(0 4px 18px rgba(171, 162, 189, 0.20));
+  /* Pixel: hard edge, hairline border, no shadow, near-zero radius. */
+  border-radius: var(--radius, 2px);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  background: var(--bg, #fff);
 }
 :root[data-theme='dark'] .cs-article-media {
-  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.5));
+  border-color: var(--color-border);
 }
 
 /* Read-view images open the shared slide lightbox on click — zoom-in cursor
@@ -453,8 +477,8 @@ body.cs-article-nav .cs-article-back {
 .cs-article-media-entry--bordered {
   padding: 24px;
   background: #fff;
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
   box-shadow: var(--cs-float);
 }
 .cs-article-media-entry--bordered .cs-article-media,
@@ -509,12 +533,10 @@ body.cs-article-nav .cs-article-back {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  border-radius: 10px;
+  border-radius: var(--radius, 2px);
   overflow: hidden;
-  /* No border by default — matches .cs-article-media. The hairline is added
-     back only inside a matted frame (below), where it's needed to separate the
-     embed from the white/cream mat. */
-  border: 0;
+  /* Pixel: hairline edge, hard corner, no shadow. */
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
   background: var(--color-bg-secondary);
   box-shadow: var(--cs-float);
 }
@@ -555,10 +577,10 @@ body.cs-article-nav .cs-article-back {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  border-radius: 10px;
+  border-radius: var(--radius, 2px);
   overflow: hidden;
   background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border-soft, var(--color-border));
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
   box-shadow: var(--cs-float);
 }
 
@@ -608,15 +630,13 @@ body.cs-article-nav .cs-article-back {
   width: 36px;
   height: 36px;
   padding: 0;
-  border: 1px solid var(--color-border-soft);
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--color-bg) 82%, transparent);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
+  background: var(--bg, #fff);
   color: var(--color-text);
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.15s ease, background 0.15s ease;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .cs-article-carousel-arrow svg {
@@ -662,62 +682,64 @@ body.cs-article-nav .cs-article-back {
 }
 
 .cs-article-figure figcaption {
-  font-size: 14px;
-  line-height: 20px;
-  text-align: center;
-  color: var(--color-text-muted);
+  font-size: var(--utility-size, 11px);
+  line-height: 1.4;
+  letter-spacing: var(--utility-ls, 0.09em);
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--muted, #8b8b8b);
 }
 
 /* ── Callout + quotes ── */
 
-/* Callout = the deck's view-mode highlight (.problem-highlight, Figma
-   1045:3526), exact: soft accent tint, ACCENT body text, 8px radius,
-   no border. */
-/* Callout — subtle left-accent-bar highlight (royshlain reference) in our
-   accent: a 3px orange bar, ~6% orange wash, rounded on the right only, ink text. */
+/* Callout = the author's own reasoning, set off by a rule not a tinted box.
+   Pixel has no fills: a 2px blue bar on the left, ink text, no radius. */
 .cs-article-callout {
   margin: 1.75rem auto;
-  padding: 1rem 1.25rem;
-  background: rgba(255, 88, 74, 0.06);
-  background: color-mix(in srgb, var(--color-accent) 6%, var(--color-bg));
+  padding: 0.35rem 0 0.35rem 1.25rem;
+  background: none;
   border: none;
-  border-left: 3px solid var(--color-accent);
-  border-radius: 0 8px 8px 0;
+  border-left: 2px solid var(--blue, #3b5bd9);
+  border-radius: 0;
 }
 
 .cs-article-callout .cs-article-p {
   margin: 0;
   max-width: none;
-  font-size: 16px;
-  line-height: 1.55;
+  font-size: var(--body-size, 17px);
+  line-height: 1.5;
+  letter-spacing: var(--body-ls, -0.015em);
   color: var(--color-text);
 }
 
 .cs-article-quote {
-  margin: 1.6rem auto;
+  margin: 1.8rem auto;
   padding: 0.2rem 0 0.2rem 1.3rem;
-  border-left: 3px solid var(--color-border);
+  border-left: 2px solid var(--rule, rgba(10, 10, 10, 0.12));
 }
 
 .cs-article-quote p {
-  font-size: 18px;
-  line-height: 28px;
-  font-style: italic;
-  margin: 0 0 0.4rem;
+  font-size: clamp(19px, 1.7vw, 24px);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  font-style: normal;
+  margin: 0 0 0.6rem;
   white-space: pre-line;
 }
 
 .cs-article-quote cite {
-  font-size: 14px;
-  line-height: 20px;
+  font-size: var(--utility-size, 11px);
+  line-height: 1.4;
+  letter-spacing: var(--utility-ls, 0.09em);
+  text-transform: uppercase;
   font-style: normal;
-  color: var(--color-text-muted);
+  color: var(--muted, #8b8b8b);
 }
 
 .cs-article-quote--large p {
-  font-size: 20px;
-  line-height: 36px;
-  font-weight: 500;
+  font-size: clamp(22px, 2vw, 30px);
+  line-height: 1.24;
+  font-weight: var(--fw-medium, 500);
 }
 
 /* ── Cards — mirrors the slide deck card language at rem scale ── */
@@ -734,29 +756,29 @@ body.cs-article-nav .cs-article-back {
   grid-column: 1 / -1;
 }
 
-/* Card = the deck's .issue-breakdown-card, exact: transparent bg, accent-
-   tinted border, radius-lg, big accent chip ABOVE a light heading, hover
-   lift + chip scale + heading tint. */
+/* Pixel card = a hard-edged bordered cell. No radius-lg, no float, no hover
+   lift; the accent shows in the number/value marks and a hairline-thin
+   border. Number/value marks are hard-edged, not circular pills. */
 .cs-article-card {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
-  padding: 1.5rem 1.25rem;
-  background: var(--primitive-white, #fff);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg, 16px);
-  transition: transform 0.25s ease, border-color 0.25s ease;
+  padding: 1.4rem 1.25rem;
+  background: var(--bg, #fff);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
+  transition: border-color 0.2s ease;
 }
 
-/* Dark theme: white cards would glare — use the elevated surface tone. */
 :root[data-theme='dark'] .cs-article-card {
   background: var(--color-bg-secondary);
+  border-color: var(--color-border);
 }
 
 .cs-article-card:hover {
-  transform: translateY(-4px);
+  border-color: var(--blue, #3b5bd9);
 }
 
 .cs-article-card-body {
@@ -768,60 +790,45 @@ body.cs-article-nav .cs-article-back {
   width: 100%;
 }
 
-/* Accent circle number chip — the deck's .issue-breakdown-number, exact */
+/* Number mark — a monospaced tabular index, muted, no chip. */
 .cs-article-card-num {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  min-width: 2.75rem;
-  min-height: 2.75rem;
-  border-radius: 50%;
-  background: var(--color-accent);
-  color: var(--color-accent-contrast);
-  font-size: 16px;
-  font-weight: 500;
+  display: block;
+  font-size: var(--utility-size, 11px);
+  font-weight: var(--fw-medium, 500);
+  letter-spacing: var(--utility-ls, 0.09em);
   line-height: 1;
-  flex-shrink: 0;
-  margin-bottom: 1rem;
-  transition: transform 0.25s ease;
+  color: var(--muted, #8b8b8b);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 0.9rem;
 }
 
-.cs-article-card:hover .cs-article-card-num {
-  transform: scale(1.08);
-}
-
-/* Accent value pill — the deck's .stat-value, exact */
+/* Value mark — a hard-edged accent tag, not a rounded pill. */
 .cs-article-card-value {
   align-self: flex-start;
-  padding: 0.5rem 1rem;
-  border-radius: 100px;
-  background: var(--color-accent);
-  color: var(--color-accent-contrast);
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--radius, 2px);
+  background: var(--blue, #3b5bd9);
+  color: #fff;
   font-family: inherit;
-  font-size: 20px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: var(--fw-medium, 500);
   line-height: 1;
-  letter-spacing: -0.4px;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
   margin-bottom: 1rem;
-  transition: transform 0.25s ease;
-}
-
-.cs-article-card:hover .cs-article-card-value {
-  transform: scale(1.05);
 }
 
 .cs-article-card-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  min-width: 2.75rem;
-  border-radius: 50%;
-  color: var(--color-text-muted);
-  background: var(--color-bg-secondary);
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  border-radius: var(--radius, 2px);
+  color: var(--muted, #8b8b8b);
+  background: none;
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
   flex-shrink: 0;
   margin-bottom: 1rem;
 }
@@ -832,33 +839,34 @@ body.cs-article-nav .cs-article-back {
 }
 
 .cs-article-card-icon--negative {
-  color: var(--color-accent);
-  background: var(--color-accent-soft);
+  color: var(--red, #e0492a);
+  border-color: color-mix(in srgb, var(--red, #e0492a) 40%, transparent);
 }
 
 .cs-article-card-icon--positive {
-  color: #10a37f;
-  background: rgba(16, 163, 127, 0.12);
+  color: var(--blue, #3b5bd9);
+  border-color: color-mix(in srgb, var(--blue, #3b5bd9) 40%, transparent);
 }
 
-/* Heading/desc — the deck's .issue-breakdown-heading/.issue-breakdown-desc:
-   larger LIGHT heading that tints accent on hover, muted description. */
+/* Heading/desc — medium-weight title, muted description. */
 .cs-article-card-title {
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 24px;
+  font-size: clamp(16px, 1.3vw, 19px);
+  font-weight: var(--fw-medium, 500);
+  line-height: 1.2;
+  letter-spacing: var(--heading-ls, -0.02em);
   margin: 0 0 0.5rem;
-  transition: color 0.25s ease;
+  transition: color 0.2s ease;
 }
 
 .cs-article-card:hover .cs-article-card-title {
-  color: var(--color-accent);
+  color: var(--blue, #3b5bd9);
 }
 
 .cs-article-card-desc {
   font-size: 14px;
-  line-height: 20px;
-  color: var(--color-text-muted);
+  line-height: 1.5;
+  letter-spacing: var(--body-ls, -0.015em);
+  color: var(--muted, #8b8b8b);
   margin: 0;
   white-space: pre-line;
 }
@@ -875,20 +883,22 @@ body.cs-article-nav .cs-article-back {
   position: relative;
   padding-left: 1.7rem;
   margin: 0.5rem 0;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: var(--body-size, 17px);
+  line-height: 1.5;
+  letter-spacing: var(--body-ls, -0.015em);
 }
 
 .cs-article-marklist li::before {
   position: absolute;
   left: 0;
   top: 0;
-  font-weight: 700;
+  font-weight: var(--fw-medium, 500);
 }
 
-.cs-article-marklist--check li::before,
-.cs-article-marklist--cross li::before,
-.cs-article-marklist--arrow li::before { content: '•'; color: var(--color-text-muted); }
+/* Pixel semantic marks: check = blue, cross = red, arrow = ink. */
+.cs-article-marklist--check li::before { content: '+'; color: var(--blue, #3b5bd9); }
+.cs-article-marklist--cross li::before { content: '×'; color: var(--red, #e0492a); }
+.cs-article-marklist--arrow li::before { content: '→'; color: var(--ink, #0a0a0a); }
 
 /* ── Chapter dividers ── */
 
@@ -898,31 +908,34 @@ body.cs-article-nav .cs-article-back {
 
 .cs-article-chapter-inner {
   padding-top: 2.25rem;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
 }
 
 .cs-article-chapter-number {
   display: block;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  color: var(--color-accent);
-  margin-bottom: 0.5rem;
+  font-size: var(--utility-size, 11px);
+  font-weight: var(--fw-medium, 500);
+  letter-spacing: var(--utility-ls, 0.09em);
+  text-transform: uppercase;
+  color: var(--blue, #3b5bd9);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 0.6rem;
 }
 
 .cs-article-chapter-title {
   font-family: var(--font-display, inherit);
-  font-size: clamp(1.55rem, 3vw, 2rem);
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  font-weight: var(--fw-medium, 500);
+  letter-spacing: var(--heading-ls, -0.02em);
+  line-height: 1.08;
   margin: 0 0 0.5rem;
 }
 
 .cs-article-chapter-subtitle {
-  font-size: 1rem;
-  line-height: 1.55;
-  color: var(--color-text-muted);
+  font-size: var(--body-size, 17px);
+  line-height: 1.5;
+  letter-spacing: var(--body-ls, -0.015em);
+  color: var(--muted, #8b8b8b);
   margin: 0;
   white-space: pre-line;
 }
@@ -938,14 +951,14 @@ body.cs-article-nav .cs-article-back {
   align-items: center;
   gap: 0.5rem;
   height: 44px;
-  max-width: 44px; /* a circle at rest; expands to a pill on hover */
+  max-width: 44px; /* a square at rest; expands to a pill on hover */
   padding: 0 13px; /* 13 + 16px icon + 13 ≈ 44px → arrow centered at rest */
   overflow: hidden;
   white-space: nowrap;
-  border-radius: 999px;
+  border-radius: var(--radius, 2px);
   border: 1px solid transparent;
   background: transparent;
-  color: var(--color-text-muted);
+  color: var(--muted, #8b8b8b);
   text-decoration: none;
   transition: max-width 0.3s cubic-bezier(0, 0, 0.2, 1),
     background 0.3s cubic-bezier(0, 0, 0.2, 1),
@@ -953,8 +966,10 @@ body.cs-article-nav .cs-article-back {
 }
 
 .cs-article-back-label {
-  font-size: 0.85rem;
-  font-weight: 550;
+  font-size: var(--utility-size, 11px);
+  font-weight: var(--fw-medium, 500);
+  letter-spacing: var(--utility-ls, 0.09em);
+  text-transform: uppercase;
   opacity: 0;
   transition: opacity 0.2s ease 0.05s;
 }
@@ -989,12 +1004,9 @@ body.cs-article-nav .cs-article-back {
   .cs-article-back:hover,
   .cs-article-back:focus-visible {
     max-width: 150px;
-    background: color-mix(in srgb, var(--color-bg) 82%, transparent);
-    border-color: var(--color-border);
+    background: var(--bg, #fff);
+    border-color: var(--rule, rgba(10, 10, 10, 0.12));
     color: var(--color-text);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
   }
   .cs-article-back:hover .cs-article-back-label,
   .cs-article-back:focus-visible .cs-article-back-label {
@@ -1016,11 +1028,13 @@ body.cs-article-nav .cs-article-back {
 .cs-article-end {
   text-align: center;
   padding-top: 2.5rem;
+  border-top: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  margin-top: 3rem;
 }
 
 .cs-article-end .cs-article-p {
   text-align: center;
-  color: var(--color-text-muted);
+  color: var(--muted, #8b8b8b);
 }
 
 .cs-article-contact {
@@ -1032,14 +1046,17 @@ body.cs-article-nav .cs-article-back {
 }
 
 .cs-article-contact-btn {
-  display: inline-block;
-  padding: 0.6rem 1.3rem;
-  border-radius: 999px;
-  background: var(--color-accent);
-  color: var(--color-accent-contrast);
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 1.2rem;
+  border-radius: var(--radius, 2px);
+  background: var(--blue, #3b5bd9);
+  color: #fff;
+  font-size: var(--utility-size, 11px);
+  line-height: 1.4;
+  letter-spacing: var(--utility-ls, 0.09em);
+  text-transform: uppercase;
+  font-weight: var(--fw-medium, 500);
   text-decoration: none;
   transition: opacity 0.15s ease;
 }
@@ -1047,8 +1064,10 @@ body.cs-article-nav .cs-article-back {
 .cs-article-contact-btn:hover { opacity: 0.88; }
 
 .cs-article-contact-link {
-  font-size: 0.92rem;
-  font-weight: 600;
+  font-size: var(--utility-size, 11px);
+  letter-spacing: var(--utility-ls, 0.09em);
+  text-transform: uppercase;
+  font-weight: var(--fw-medium, 500);
   color: var(--color-text);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -1066,22 +1085,21 @@ body.cs-article-nav .cs-article-back {
   gap: 1.1rem;
 }
 
-/* Reference (royshlain): a soft lavender-tinted FLOAT shadow at rest, which
-   tightens into a small glow on hover while the thumbnail scales up from its
-   bottom edge. 14px card radius, 10px thumbnail radius, faint ink border. */
+/* Pixel: hard-edged cards, hairline border, no float shadow. Hover tints the
+   border to accent and nudges the thumbnail up; no glow. */
 .cs-article-next-card {
   display: grid;
   grid-template-columns: 116px minmax(0, 1fr);
   align-items: center;
   gap: 1rem;
   padding: 12px;
-  border: 1px solid rgba(55, 53, 47, 0.14);
-  border-radius: 14px;
-  background: var(--primitive-white, #fff);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
+  background: var(--bg, #fff);
   text-decoration: none;
   color: var(--color-text);
-  box-shadow: var(--cs-float);
-  transition: box-shadow 0.2s cubic-bezier(0, 0, 0.2, 1), border-color 0.2s ease;
+  box-shadow: none;
+  transition: border-color 0.2s ease;
 }
 
 :root[data-theme='dark'] .cs-article-next-card {
@@ -1090,19 +1108,16 @@ body.cs-article-nav .cs-article-back {
 }
 
 .cs-article-next-card:hover {
-  box-shadow: 0 0 5px 1px rgba(171, 162, 189, 0.3);
-}
-
-:root[data-theme='dark'] .cs-article-next-card:hover {
-  box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.5);
+  border-color: var(--blue, #3b5bd9);
 }
 
 .cs-article-next-thumb {
   display: block;
   min-height: 72px; /* keep the thumbnail box sized even for a color-only placeholder */
-  border-radius: 10px;
+  border-radius: var(--radius, 2px);
   overflow: hidden;
   background: var(--color-bg-secondary);
+  border: 1px solid var(--rule-faint, rgba(10, 10, 10, 0.06));
 }
 
 .cs-article-next-thumb img {
@@ -1120,17 +1135,20 @@ body.cs-article-nav .cs-article-back {
 
 .cs-article-next-kicker {
   display: block;
-  font-size: 14px;
-  line-height: 18px;
-  color: var(--color-text-muted);
-  margin-bottom: 0.25rem;
+  font-size: var(--utility-size, 11px);
+  line-height: 1.4;
+  letter-spacing: var(--utility-ls, 0.09em);
+  text-transform: uppercase;
+  color: var(--muted, #8b8b8b);
+  margin-bottom: 0.35rem;
 }
 
 .cs-article-next-title {
   display: block;
   font-size: 16px;
-  font-weight: 600;
-  line-height: 20px;
+  font-weight: var(--fw-medium, 500);
+  line-height: 1.2;
+  letter-spacing: var(--heading-ls, -0.02em);
 }
 
 /* ── 4. Editor chrome ──────────────────────────────────────────────────── */
@@ -1761,20 +1779,22 @@ select.cs-article-block-typesel:hover {
    base .cs-article-quote so they win on equal specificity. */
 .cs-article-quote--card {
   padding: 1.4rem 1.6rem;
-  border: 1px solid var(--color-border);
-  border-radius: 18px;
-  background: var(--primitive-white, #fff);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-left: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
+  background: var(--bg, #fff);
   box-shadow: var(--cs-float);
 }
 :root[data-theme='dark'] .cs-article-quote--card {
   background: var(--color-bg-secondary);
+  border-color: var(--color-border);
 }
 .cs-article-quote-mark {
   display: block;
   font-size: 36px;
   line-height: 0.55;
-  font-weight: 700;
-  color: var(--color-text-muted);
+  font-weight: var(--fw-medium, 500);
+  color: var(--blue, #3b5bd9);
   margin-bottom: 0.4rem;
 }
 /* Card quote text is upright (not the italic of the inline blockquote) and a
@@ -1782,8 +1802,9 @@ select.cs-article-block-typesel:hover {
 .cs-article-quote--card p {
   font-style: normal;
   color: var(--color-text);
-  font-size: 16px;
-  line-height: 24px;
+  font-size: var(--body-size, 17px);
+  line-height: 1.4;
+  letter-spacing: var(--body-ls, -0.015em);
 }
 .cs-article-quote--card cite {
   display: block;
