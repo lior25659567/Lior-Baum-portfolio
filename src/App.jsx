@@ -1,11 +1,11 @@
 import { lazy, Suspense, useLayoutEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Outlet, useLocation } from 'react-router-dom';
 import { EditProvider } from './context/EditContext';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import EditPanel from './components/EditPanel';
 import RouteErrorBoundary from './components/RouteErrorBoundary';
-import Home from './pages/Home';
+import Index from './themes/pixel/pages/Index';
 import About from './pages/About';
 import './App.css';
 
@@ -51,7 +51,15 @@ function ScrollToTop() {
   return null;
 }
 
-function AppLayout() {
+// Pixel-theme layout: the page supplies ALL its own chrome (PixelShell renders
+// its own <main>, PixelNav, heat-field canvas, and PixelFooter). So this layout
+// renders nothing but the outlet — no legacy Navigation / <main> / Footer, which
+// would otherwise produce double nav/footer and an invalid nested <main>.
+const PixelChrome = () => <Outlet />;
+
+// Legacy layout: the original global chrome, unchanged. Wraps its routes in the
+// legacy Navigation + <main> + conditional Footer.
+const LegacyChrome = () => {
   const location = useLocation();
   const isAbout = location.pathname === '/about';
   // About and Playground render their OWN <Footer /> inside the page so it
@@ -61,13 +69,29 @@ function AppLayout() {
 
   return (
     <>
-      <ScrollToTop />
       <Navigation />
       <main>
-        <RouteErrorBoundary>
-          <Suspense fallback={<div style={{minHeight:'100vh',background:'var(--color-bg,#fff)'}} />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
+        <Outlet />
+      </main>
+      {!isAbout && !isPlayground && <Footer />}
+    </>
+  );
+};
+
+function AppLayout() {
+  return (
+    <>
+      <ScrollToTop />
+      <RouteErrorBoundary>
+        <Suspense fallback={<div style={{minHeight:'100vh',background:'var(--color-bg,#fff)'}} />}>
+          <Routes>
+            {/* Pixel-theme pages — self-chromed, no legacy wrapping. */}
+            <Route element={<PixelChrome />}>
+              <Route path="/" element={<Index />} />
+            </Route>
+
+            {/* Everything else — legacy Navigation / <main> / Footer chrome. */}
+            <Route element={<LegacyChrome />}>
               <Route path="/about" element={<About />} />
               <Route path="/playground" element={<Playground />} />
               <Route path="/project/:projectId" element={<CaseStudy />} />
@@ -76,11 +100,10 @@ function AppLayout() {
               <Route path="/cv" element={<CVBuilder />} />
               <Route path="/design-system" element={<DesignSystem />} />
               <Route path="/agents-hub" element={<AgentsHub />} />
-            </Routes>
-          </Suspense>
-        </RouteErrorBoundary>
-      </main>
-      {!isAbout && !isPlayground && <Footer />}
+            </Route>
+          </Routes>
+        </Suspense>
+      </RouteErrorBoundary>
       <EditPanel />
     </>
   );
