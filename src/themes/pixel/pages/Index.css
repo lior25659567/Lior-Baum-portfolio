@@ -1,0 +1,133 @@
+/* Index page. Hairlines and hard edges — no shadow, no gradient, no radius
+   above --radius. The motion budget is spent on the field, so nothing here
+   translates, scales, or fades in on scroll. */
+
+/* ── Hero ───────────────────────────────────────────────────────────────
+   The display line sits IN the field deliberately — it is solid enough to
+   read over painted cells. Body copy is not, so the hero bottom-aligns past
+   the fade boundary (heat reaches zero at 42% of viewport height). */
+.ix-hero {
+  min-height: 62vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin-bottom: 72px;
+}
+
+.ix-eyebrow {
+  margin: 0 0 18px;
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+  font-weight: var(--utility-weight);
+}
+
+.ix-display {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--display-size);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-ls);
+  line-height: var(--display-lh);
+}
+
+/* ── Section rule ───────────────────────────────────────────────────── */
+.ix-rule-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin: 0 0 24px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--utility-size);
+  font-weight: var(--utility-weight);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+}
+
+.ix-count { font-variant-numeric: tabular-nums; opacity: 0.55; }
+
+/* ── Point of view ──────────────────────────────────────────────────── */
+.ix-pov { margin-bottom: 96px; }
+
+.ix-lede {
+  max-width: var(--measure);
+  margin: 0 0 22px;
+  font-size: clamp(19px, 1.6vw, 26px);
+  line-height: 1.42;
+  letter-spacing: -0.02em;
+}
+
+.ix-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin: 0;
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+}
+.ix-links a { border-bottom: 1px solid var(--rule); padding-bottom: 2px; }
+.ix-links a:hover { color: var(--blue); border-bottom-color: currentColor; }
+
+/* ── Work grid ──────────────────────────────────────────────────────── */
+.ix-work { margin-bottom: 96px; }
+
+.ix-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  align-items: start;
+  gap: 48px 32px;
+}
+
+.ix-link { display: block; }
+/* tokens.css turns any hovered <a> blue; on a card-sized link that repaints the
+   description and labels too. Only the title should shift. */
+.ix-link:hover { color: inherit; }
+
+.ix-meta {
+  display: grid;
+  grid-template-columns: 3ch 1fr auto;
+  gap: 12px;
+  align-items: baseline;
+  margin-top: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.ix-index,
+.ix-year {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  opacity: 0.55;
+}
+
+.ix-title {
+  font-size: 17px;
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.015em;
+}
+
+.ix-desc {
+  margin: 12px 0 8px;
+  font-size: 15px;
+  line-height: 1.5;
+  max-width: 46ch;
+}
+
+.ix-labels {
+  margin: 0;
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+/* Hover shifts links to blue; the plate warms its own ramp (dither-plate.js).
+   Nothing moves. */
+.ix-link:hover .ix-title { color: var(--blue); }

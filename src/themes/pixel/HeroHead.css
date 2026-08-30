@@ -1,0 +1,161 @@
+/* Hero head. Geometry, weights and animation timings taken from the
+   reference's CSS. Note --cell-layout (14px), not --cell (9px): the field and
+   the background rule run on a 9px grid, while their LAYOUT math is on 14px. */
+
+.hhead {
+  position: relative;
+  z-index: 5;
+  background: var(--bg);
+  padding: 0 var(--gutter);
+  /* Full-bleed out of .pixel-content's measure — this is a band, not a column. */
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  width: 100vw;
+}
+
+/* Hairline under the band, drawn left to right. */
+.hhead::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 1px;
+  background: var(--rule);
+  transform-origin: left;
+  transform: scaleX(0);
+  animation: lineGrowX 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+}
+
+.hgrid {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: calc(var(--cell-layout) * 2) 0 calc(var(--cell-layout) * 2 + 2px);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: calc(var(--cell-layout) * 3);
+  align-items: stretch;
+}
+
+@media (min-width: 860px) {
+  .hgrid { grid-template-columns: 1.6fr 1fr; }
+  .hcol { padding-left: calc(var(--cell-layout) * 3); }
+}
+
+/* ── Display lockup ─────────────────────────────────────────────────────
+   Weight 400 and UPPERCASE — the reference's display line is regular, not
+   medium. Tracking -0.035em, leading 0.92. */
+.hl {
+  margin: 0;
+  align-self: start;
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  text-transform: uppercase;
+  font-size: clamp(32px, 5.2vw, 82px);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+
+/* ── Right column ───────────────────────────────────────────────────── */
+.hcol {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: calc(var(--cell-layout) * 2);
+}
+
+/* Vertical hairline, drawn top to bottom, overshooting the grid padding. */
+.hcol::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(var(--cell-layout) * -2);
+  bottom: calc(var(--cell-layout) * -2);
+  width: 1px;
+  background: var(--rule);
+  transform-origin: top;
+  transform: scaleY(0);
+  animation: lineGrowY 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
+}
+@media (max-width: 859px) {
+  .hcol::before { display: none; }
+  /* Justifying five words across a 334px column opens word gaps you could
+     drive through. Flush left below the two-column breakpoint. */
+  .hdesc span { text-align: left; text-align-last: left; }
+}
+
+.hdesc {
+  margin: 0;
+  font-weight: var(--fw-regular);
+  text-transform: uppercase;
+  font-size: clamp(13px, 1.45vw, 20px);
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+}
+
+/* Both lines are JUSTIFIED, including the last — that flush-both-edges block
+   is a signature of the layout, not a default. */
+.hdesc span {
+  display: block;
+  text-align: justify;
+  text-align-last: justify;
+  -webkit-text-align-last: justify;
+}
+
+/* With the logo hidden the tagline is the only child, so it should not be
+   pushed to one side by space-between. */
+.hfoot {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 12px;
+  perspective: 900px;
+  animation: heroIn 0.9s steps(6) 0.58s both;
+}
+
+.hfoot img { width: 34px; height: auto; display: block; flex: none; margin-top: 2px; }
+
+/* Hidden for now — the mark needs work before it earns a place here. Markup and
+   the steps(18) spin are kept intact; flip this back to inline-block to restore. */
+.wlogo { display: none; flex: none; transform-origin: 50% 50%; }
+.wlogo:hover { animation: wSpin 0.9s steps(18); }
+
+.htag { margin: 0; font-size: 13px; line-height: 1.45; text-align: left; }
+
+/* Desktop: the tagline sits flush right against the logo. This block must come
+   AFTER the base rule — same specificity, so source order decides. */
+@media (min-width: 860px) {
+  .htag { text-align: right; max-width: 34ch; }
+}
+
+/* ── Line masks ─────────────────────────────────────────────────────────
+   Each line is clipped and its inner span steps up from below. steps(6), not
+   an ease — the motion is quantised like everything else. */
+.ln {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.ln > span {
+  display: block;
+  transform: translateY(115%);
+  animation: heroLine 0.95s steps(6) both;
+}
+.hl .ln:nth-child(1) > span { animation-delay: 0.10s; }
+.hl .ln:nth-child(2) > span { animation-delay: 0.21s; }
+.hdesc .ln:nth-child(1) > span { animation-delay: 0.36s; }
+.hdesc .ln:nth-child(2) > span { animation-delay: 0.44s; }
+
+@keyframes heroLine  { from { transform: translateY(115%); } to { transform: translateY(0); } }
+@keyframes heroIn    { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes lineGrowX { to { transform: scaleX(1); } }
+@keyframes lineGrowY { to { transform: scaleY(1); } }
+@keyframes wSpin     { from { transform: rotateY(0); } to { transform: rotateY(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ln > span { transform: none; animation: none; }
+  .hhead::after { transform: scaleX(1); animation: none; }
+  .hcol::before { transform: scaleY(1); animation: none; }
+  .hfoot { animation: none; }
+  .wlogo:hover { animation: none; }
+}

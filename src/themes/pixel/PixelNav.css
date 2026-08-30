@@ -1,0 +1,62 @@
+/* Masthead nav — the top row of the head band, not a separate bar. */
+
+.pxnav {
+  position: relative;
+  z-index: 6;
+  background: var(--bg);
+  padding: 0 var(--gutter);
+  /* Full-bleed out of the content measure, like the head band below it. */
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  width: 100vw;
+}
+
+.pxnav-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: calc(var(--cell-layout)) 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--cell-layout);
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+}
+
+.pxnav-mark { white-space: nowrap; }
+
+.pxnav-links {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--cell-layout) * 1.5);
+  margin: 0;
+  padding: 0;
+}
+
+.pxnav-links a {
+  position: relative;
+  padding-bottom: 2px;
+}
+
+/* The current page is marked with a dashed rule rather than a solid underline —
+   the same pixel logic as the contact link. */
+.pxnav-links a[aria-current='page'] {
+  background: repeating-linear-gradient(90deg, var(--ink) 0 4px, transparent 4px 7px) left bottom / 100% 3px no-repeat;
+}
+
+.pxnav-links a:hover { color: var(--blue); }
+
+@media (max-width: 720px) {
+  .pxnav-inner { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .pxnav-links { gap: 0 calc(var(--cell-layout)); }
+}
+
+/* 11px uppercase gives a 15px-tall link — fine under a cursor, far too small
+   under a thumb. Pad the hit area rather than the type, so the row reads the
+   same but each target clears ~40px. */
+@media (pointer: coarse) {
+  .pxnav-links a, .pxnav-mark { display: inline-block; padding: 12px 0; }
+}

@@ -1,0 +1,72 @@
+.cmp-head { margin-bottom: calc(var(--cell-layout) * 2); }
+
+.cmp-eyebrow {
+  margin: 0 0 14px;
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cmp-title {
+  margin: 0 0 16px;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4.4vw, 62px);
+  font-weight: var(--fw-regular);
+  text-transform: uppercase;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
+}
+
+.cmp-lede { margin: 0 0 26px; max-width: var(--measure); }
+
+.cmp-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.cmp-tabs button {
+  appearance: none;
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  color: inherit;
+  font: inherit;
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+  padding: 7px 14px;
+  cursor: pointer;
+}
+.cmp-tabs button[aria-pressed='true'] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* ── Stage ──────────────────────────────────────────────────────────── */
+.cmp-stage { display: grid; gap: 20px; }
+.cmp-stage.is-split { grid-template-columns: 1fr; }
+@media (min-width: 1000px) { .cmp-stage.is-split { grid-template-columns: 1fr 1fr; } }
+
+.cmp-frame { margin: 0; min-width: 0; }
+
+.cmp-frame figcaption {
+  margin-bottom: 8px;
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Hairline frame, no shadow — the panes are specimens, not cards. */
+.cmp-frame iframe {
+  display: block;
+  width: 100%;
+  height: 72vh;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+}
+
+.cmp-note {
+  margin: calc(var(--cell-layout) * 3) 0 0;
+  padding-top: calc(var(--cell-layout));
+  border-top: 1px solid var(--rule);
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cmp-note code { font-family: var(--font-mono); text-transform: none; letter-spacing: 0; }

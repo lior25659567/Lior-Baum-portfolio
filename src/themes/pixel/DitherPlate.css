@@ -1,0 +1,27 @@
+.plate { margin: 0; }
+
+.plate-canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--plate-ratio, 4 / 3);
+  /* Hairlines and hard edges — no shadow, no radius above --radius. */
+  border: 1px solid var(--rule);
+  background: var(--bg);
+}
+
+.plate-caption {
+  margin-top: 10px;
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.plate-grid {
+  display: grid;
+  /* Plates may declare different ratios; without this a tall plate stretches
+     its whole row and the shorter ones float in dead space. */
+  align-items: start;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 28px;
+}

@@ -1,0 +1,265 @@
+/* Contact CTA + the playing footer.
+   Geometry from the reference: .cta padding calc(--cell * 7); the footer is a
+   calc(--cell * 9) skyline strip that expands to min(52vh, 390px) in .55s. */
+
+/* ── CTA ────────────────────────────────────────────────────────────── */
+.cta {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  /* No top padding: the marquee is the first thing in the section and sits
+     flush against what precedes it. The breathing room belongs below it. */
+  padding: 0 var(--gutter) calc(var(--cell-layout) * 7);
+  text-align: center;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  width: 100vw;
+}
+
+.pixel-type {
+  display: block;
+  width: 100vw;
+  /* tokens.css resets `canvas { max-width: 100% }`, which would cap this at the
+     padded parent and leave the marquee short of both edges. */
+  max-width: none;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
+.cta-type { margin-bottom: calc(var(--cell-layout) * 2); }
+
+/* ONE button treatment, exactly as the reference applies it to
+   `.btn, .cta .ctabtn, .tt-again, .tt-teaser` — same padding, size, weight and
+   pixel-stepped clip-path. The corners are cut from the grid, not rounded. */
+.cta-btn,
+.tt-teaser,
+.tt-again {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  text-decoration: none;
+  font: inherit;
+  font-size: clamp(15px, 1.2vw, 18px);
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.01em;
+  padding: 16px 36px;
+  background: var(--ink);
+  color: #fff;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background 0.2s;
+  clip-path: polygon(
+    10px 0, calc(100% - 10px) 0, calc(100% - 10px) 5px, calc(100% - 5px) 5px,
+    calc(100% - 5px) 10px, 100% 10px, 100% calc(100% - 10px),
+    calc(100% - 5px) calc(100% - 10px), calc(100% - 5px) calc(100% - 5px),
+    calc(100% - 10px) calc(100% - 5px), calc(100% - 10px) 100%, 10px 100%,
+    10px calc(100% - 5px), 5px calc(100% - 5px), 5px calc(100% - 10px),
+    0 calc(100% - 10px), 0 10px, 5px 10px, 5px 5px, 10px 5px, 10px 0
+  );
+}
+
+/* Hover: the plate turns blue and ink cells dissolve across it. */
+.cta-btn:hover,
+.tt-teaser:hover,
+.tt-again:hover { background: var(--blue); color: #fff; }
+
+.cta-btn .lbl, .tt-teaser .lbl, .tt-again .lbl { position: relative; z-index: 2; }
+
+/* The fill is a grid of cells switching on individually — a pixel dissolve,
+   not a colour fade. Most cells are transparent so the BLUE plate stays
+   visible underneath; only a minority carry an accent colour. Both the colour
+   and the delay are assigned per cell in the component. */
+.pxfx { position: absolute; inset: 0; z-index: 1; display: grid; pointer-events: none; }
+.pxfx i { opacity: 0; }
+/* No transition: the arrangement itself is re-rolled ~7 times a second, so a
+   fade would smear one roll into the next. */
+.cta-btn:hover .pxfx i,
+.tt-teaser:hover .pxfx i,
+.tt-again:hover .pxfx i { opacity: 1; }
+
+.cta-meta {
+  margin: 34px auto 0;
+  font-size: clamp(15px, 1.2vw, 19px);
+  line-height: 1.6;
+  max-width: 46ch;
+  color: var(--muted);
+  text-wrap: balance;
+}
+
+.cta-contact { margin: 22px auto 0; font-size: clamp(15px, 1.2vw, 19px); color: var(--muted); }
+
+/* Underline drawn as dashes, growing in — the rule is pixels, not a line. */
+.cta-contact a {
+  color: var(--ink);
+  text-decoration: none;
+  padding-bottom: 2px;
+  background: repeating-linear-gradient(90deg, var(--ink) 0 4px, transparent 4px 7px) left bottom / 0% 3px no-repeat;
+  transition: background-size 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cta-contact a:hover { background-size: 100% 3px; }
+
+@media (pointer: coarse) {
+  .cta-contact a { display: inline-block; padding: 10px 0; }
+}
+
+/* ── Footer strip ───────────────────────────────────────────────────── */
+.pxfoot {
+  position: relative;
+  z-index: 2;
+  height: calc(var(--cell-layout) * 9);
+  /* Not a white plate, but not transparent either: the footer paints the SAME
+     background rule as the page so the grid continues through it, while still
+     being opaque enough to keep the hero field's brush from bleeding into the
+     board (the field canvas is fixed at z-1, under this). */
+  background-color: var(--bg);
+  background-image:
+    repeating-linear-gradient(to right,  var(--grid) 0 1px, transparent 1px var(--cell)),
+    repeating-linear-gradient(to bottom, var(--grid) 0 1px, transparent 1px var(--cell));
+  overflow: hidden;
+  cursor: pointer;
+  transition: height 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  width: 100vw;
+}
+.pxfoot.playing { height: min(52vh, 390px); cursor: default; }
+
+.pxfoot-city {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: calc(var(--cell-layout) * 9);
+  z-index: 2;
+  display: block;
+  pointer-events: none;
+  transition: height 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* On play the skyline canvas fills the footer and becomes the board surface. */
+.pxfoot.playing .pxfoot-city { top: 0; bottom: auto; height: min(52vh, 390px); }
+
+.pxfoot-copy {
+  position: absolute;
+  left: var(--gutter);
+  bottom: 10px;
+  margin: 0;
+  z-index: 4;
+  mix-blend-mode: difference;
+  color: #fff;
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+/* ── Teaser ─────────────────────────────────────────────────────────── */
+.tt-teaser {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 7;
+  /* Smaller than the CTA button — it is a control, not the call to action. */
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  transition: opacity 0.35s, transform 0.35s, background 0.2s;
+}
+.pxfoot.playing .tt-teaser {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.86);
+}
+
+.tt-blocks { display: inline-block; margin-left: 9px; vertical-align: -3px; }
+.tt-blocks canvas { display: block; width: 20px; height: 16px; }
+
+/* ── Game chrome ────────────────────────────────────────────────────── */
+.tt {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  font-family: var(--font-mono);
+}
+.tt[hidden] { display: none; }
+
+.tt-score {
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  font-size: clamp(15px, 2vw, 22px);
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+
+.tt-pad {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 44px);
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.tt-pad button, .tt-close {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  /* The .tt wrapper is pointer-events:none so the canvas beneath stays
+     interactive; every control has to opt back in. */
+  pointer-events: auto;
+}
+.tt-pad button:hover, .tt-close:hover { background: var(--ink); color: #fff; }
+.tt-pad button svg, .tt-close svg { width: 18px; height: 18px; display: block; }
+
+.tt-close {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  width: 38px;
+  height: 38px;
+  z-index: 6;
+}
+
+/* ── Game over ──────────────────────────────────────────────────────── */
+.tt-over {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.86);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+.tt-over .ttl {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3.2vw, 34px);
+  font-weight: var(--fw-regular);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .pxfoot, .pxfoot-city, .tt-teaser { transition: none; }
+}

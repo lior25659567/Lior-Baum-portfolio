@@ -1,0 +1,131 @@
+/* Playground. The live module first, then the experiment records. */
+
+.pg-head { margin-bottom: calc(var(--cell-layout) * 4); }
+
+.pg-eyebrow {
+  margin: 0 0 16px;
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+}
+
+.pg-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(34px, 5.6vw, 82px);
+  font-weight: var(--fw-regular);
+  text-transform: uppercase;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
+}
+
+.pg-rule-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin: 0 0 22px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--utility-size);
+  font-weight: var(--fw-regular);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+}
+.pg-hint { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.pg-live, .pg-experiments { margin-bottom: calc(var(--cell-layout) * 5); }
+
+/* ── Live module ────────────────────────────────────────────────────── */
+.pg-module {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: calc(var(--cell-layout) * 2);
+}
+@media (min-width: 900px) { .pg-module { grid-template-columns: minmax(0, 1.7fr) minmax(230px, 1fr); } }
+
+.pg-stage { min-width: 0; }
+
+.pg-controls { display: flex; flex-direction: column; gap: 18px; }
+.pg-control { display: flex; flex-direction: column; gap: 8px; }
+
+.pg-control-label {
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.pg-btns { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+.pg-btns button {
+  appearance: none;
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  color: inherit;
+  font: inherit;
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+  padding: 6px 11px;
+  cursor: pointer;
+}
+.pg-btns button:hover { border-color: var(--ink); }
+.pg-btns button[aria-pressed='true'] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+.pg-seed {
+  font-family: var(--font-mono);
+  font-size: var(--utility-size);
+  color: var(--muted);
+}
+
+/* ── Experiment records ─────────────────────────────────────────────── */
+.pg-cards { list-style: none; margin: 0; padding: 0; }
+
+.pg-card {
+  display: grid;
+  grid-template-columns: 3ch minmax(0, 1fr);
+  gap: 0 20px;
+  padding: 24px 0;
+  border-top: 1px solid var(--rule);
+}
+.pg-card:last-child { border-bottom: 1px solid var(--rule); }
+
+.pg-card-i {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  color: var(--muted);
+  padding-top: 4px;
+}
+
+.pg-card-body { min-width: 0; max-width: 62ch; }
+
+.pg-card-title {
+  margin: 0 0 6px;
+  font-size: clamp(19px, 1.9vw, 26px);
+  font-weight: var(--fw-medium);
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+}
+
+.pg-card-meta {
+  margin: 0 0 10px;
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* The source keeps paragraph breaks as newlines inside one string. */
+.pg-card-text { margin: 0 0 12px; font-size: 15px; line-height: 1.6; white-space: pre-line; }
+
+.pg-card-link {
+  margin: 4px 0 0;
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+}
+.pg-card-link a { border-bottom: 1px solid var(--rule); padding-bottom: 2px; }
+.pg-card-link a:hover { color: var(--blue); border-bottom-color: currentColor; }

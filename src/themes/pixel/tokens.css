@@ -1,0 +1,283 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   SNEAK — the reference's typeface, now licensed and local
+   ═══════════════════════════════════════════════════════════════════════
+   Served from /public/fonts so Vite exposes it at /fonts/*. The stacks below
+   already list 'Sneak' first, so declaring the faces is all that is needed —
+   every element switches over at once. Only 400 and 500 exist here; the
+   reference also ships a 300, so nothing may ask for Light. */
+@font-face {
+  font-family: 'Sneak';
+  src: url('/fonts/Sneak-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sneak';
+  src: url('/fonts/Sneak-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PIXEL THEME — tokens
+   ═══════════════════════════════════════════════════════════════════════
+
+   These live on plain `:root` deliberately, and that is SAFE here:
+   pixel.html is a separate Vite entry with its own document. Neither
+   ThemeContext (which owns `data-theme`) nor EditContext (which injects
+   --font-display / --font-body / --color-accent as INLINE styles on :root)
+   is mounted in this tree, so nothing can overwrite these.
+
+   See docs/theme-audit.md §4 for the two collisions this avoids.
+
+   Nothing in this file is visible to the default design system. The default
+   site loads src/index.css from index.html and never loads this file.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Heat ramp — 6 stops, index IS the heat value ────────────────────
+     Measured off the reference. Index 0 is transparent so the background
+     rule shows through the gutter; the quantiser skips it entirely. */
+  --heat-0: transparent;      /* background shows through */
+  --heat-1: #1c2541;          /* navy                     */
+  --heat-2: #3b5bd9;          /* blue  — the primary      */
+  --heat-3: #f5c518;          /* yellow                   */
+  --heat-4: #e0492a;          /* red                      */
+  --heat-5: #d8ff00;          /* neon                     */
+
+  /* Named aliases, exactly as the reference declares them. */
+  --blue: #3b5bd9;
+  --yellow: #f5c518;
+  --red: #e0492a;
+  --neon: #d8ff00;
+  --violet: #6c4cf1;
+
+  /* ── Cell geometry ───────────────────────────────────────────────────
+     SINGLE SOURCE OF TRUTH. The background rule and every canvas read
+     --cell. Two sources of truth means the rule and the painted cells
+     drift apart by a pixel and everything looks subtly wrong with no
+     obvious cause. Never hardcode 9px anywhere. */
+  /* MEASURED from the reference's own control markup:
+       Cell   L=22  M=14  S=9   (S carries class="on" — it is the default)
+       Brush  L=16  M=10  S=7   (M is the default)
+     This also explains their --cell:14px token: that is Cell M, while the
+     field ships on Cell S. */
+  --cell: 9px;                /* 8px painted fill + 1px gutter — Cell S */
+  /* The reference runs its LAYOUT math on a 14px module while its hero field
+     runs at cell=9. Two different jobs, so two tokens — --cell stays the field
+     and the background rule; --cell-layout is spacing. */
+  --cell-layout: 14px;
+  --cell-l: 22px;
+  --cell-m: 14px;
+  --cell-s: 9px;
+
+  /* Brush radius, in cells. */
+  --brush: 7;
+  --brush-l: 16;
+  --brush-m: 10;
+  --brush-s: 7;
+
+  /* ── Surface ─────────────────────────────────────────────────────────
+     Flat white. No gradient, no tint, no dark mode in this theme. */
+  --bg: #FFFFFF;               /* their --paper */
+  --ink: #0A0A0A;              /* their --ink — NOT the navy heat stop */
+  --rule-faint: rgba(10, 10, 10, 0.06); /* their --line-2 — hairlines in lists */
+  /* The background GRID is fainter than a hairline. The reference strokes it at
+     #fafafa, which on white is about 2% black — a third of --line-2. Using the
+     hairline token for it made the whole page read as graph paper. */
+  --grid: rgba(10, 10, 10, 0.022);
+  --rule: rgba(10, 10, 10, 0.12);       /* their --line                    */
+
+  /* ── Field fade per page ─────────────────────────────────────────────
+     Fraction of viewport height at which heat reaches zero. The field must
+     clear the text, not fight it. */
+  --fade-index: 0.42;
+  --fade-case: 0.26;
+  --fade-about: 0.22;
+  --fade-playground: 0.20;
+
+  /* ── Type ────────────────────────────────────────────────────────────
+     MEASURED from the reference site's own @font-face block:
+
+       @font-face{font-family:"Sneak"; src:"Sneak-Light.woff";   font-weight:300}
+       @font-face{font-family:"Sneak"; src:"Sneak-Regular.woff2";font-weight:400}
+       @font-face{font-family:"Sneak"; src:"Sneak-Medium.woff2"; font-weight:500}
+       body{font-family:"Sneak","Helvetica Neue",Helvetica,Arial,sans-serif}
+
+     The face is SNEAK by TIGHTYPE (Fabian Fohrer, 2016) — a neo-grotesque
+     with a distinctive top-heavy, reversed `s`. It is a COMMERCIAL licence;
+     tightype.com sells it. Their font files are NOT copied here.
+
+     The stack degrades in order of closeness:
+       Sneak            — if/when licensed, drop the files in and it just works
+       Neue Haas Unica  — Adobe Fonts; named as the closest match to Sneak
+       Switzer          — free (Fontshare), the closest free Helvetica-register face
+       Helvetica Neue…  — exactly the fallback the reference itself declares */
+  --font-display: 'Sneak', 'Neue Haas Unica', 'Switzer', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body: 'Sneak', 'Neue Haas Unica', 'Switzer', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /* Matches the reference's own --mono token. */
+  --font-mono: 'SFMono-Regular', ui-monospace, Menlo, Consolas, monospace;
+
+  /* The reference loads THREE weights only — 300 / 400 / 500. There is no 600
+     and no 700. (A `600` does appear in their canvas wordmark code, but 600 is
+     not among the loaded faces, so the browser synthesises it.) */
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+
+  /* Behaviour, not face. These are the spec'd relationships. */
+  --display-size: clamp(56px, 11.5vw, 168px);
+  /* 500, not 600 — the reference's heaviest loaded cut is Medium. */
+  --display-weight: var(--fw-medium);
+  --display-ls: -0.035em;
+  --display-lh: 0.92;
+
+  --heading-lh: 1.06;
+  --heading-ls: -0.02em;
+
+  --body-size: clamp(16px, 1.1vw, 19px);
+  --body-lh: 1.55;
+  --body-ls: -0.015em;
+  --measure: 62ch;
+
+  --utility-size: 11px;
+  --utility-ls: 0.09em;
+  --utility-weight: var(--fw-regular);
+
+  /* ── Geometry ────────────────────────────────────────────────────────
+     Hairlines and hard edges. Radius never exceeds 2px in this system. */
+  --radius: 2px;
+  /* Layout tokens taken from the reference. */
+  --gutter: 56px;
+  --maxw: 1176px;
+  --muted: #8b8b8b;
+
+  /* ── Motion ──────────────────────────────────────────────────────────
+     The motion budget is spent on the field. Nothing translates, scales
+     or fades in on scroll. */
+  --hover-ms: 300ms;
+  --focus-ring: 2px;
+  --focus-offset: 3px;
+}
+
+/* At 4K the 9px module puts >100k cells on screen and the field costs ~10ms a
+   frame — still inside 30fps, but well past the 6ms budget, and the headroom is
+   gone the moment plates are on screen too. Raise the module rather than drop
+   frames: Cell M keeps the same look at a distance and cuts the count by ~2.4x.
+   The Cell control still overrides this, since it writes --cell inline on the
+   root and inline beats a media query. */
+@media (min-width: 2400px) {
+  :root { --cell: var(--cell-m); }
+}
+
+/* The reference drops its gutter to 28px on small screens; at 56px a 390px
+   phone loses nearly a third of its width to margins. */
+@media (max-width: 760px) {
+  :root { --gutter: 28px; }
+}
+
+/* ── Reset ───────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  /* The carousel breaks full-bleed out of the content measure; without this
+     that breakout would add a horizontal scrollbar. */
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  line-height: var(--body-lh);
+  letter-spacing: var(--body-ls);
+  font-variant-numeric: tabular-nums;   /* dates, results, step numbers */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* No shadows, no gradients, no radius above 2px — anywhere in this theme. */
+img, canvas { display: block; max-width: 100%; }
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover { color: var(--blue); }
+
+:focus-visible {
+  outline: var(--focus-ring) solid var(--ink);
+  outline-offset: var(--focus-offset);
+}
+
+/* Ink reads on the paper and on the warm end of the ramp, but not on navy or
+   over dark card media — which is exactly where the work cards sit. Neon is the
+   one stop in the palette that holds against both. */
+.slide.cs:focus-visible,
+.tt-teaser:focus-visible,
+.tt-pad button:focus-visible,
+.tt-close:focus-visible,
+.cta-btn:focus-visible {
+  outline-color: var(--neon);
+}
+
+/* ── The cell grid ───────────────────────────────────────────────────────
+   A faint rule at the same pitch as --cell, sitting behind everything. The
+   painted cells leave a 1px gutter and this shows through it. */
+.pixel-rule {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(to right,  var(--grid) 0 1px, transparent 1px var(--cell)),
+    repeating-linear-gradient(to bottom, var(--grid) 0 1px, transparent 1px var(--cell));
+}
+
+/* A layout SPACER, not a container. It reserves the field's height in normal
+   flow and — because it scrolls with the document — its live position is what
+   the field masks itself to. The canvas itself stays fixed to the viewport so
+   the brush can carry on past the band with no seam. */
+.pixel-field-band {
+  height: var(--field-band, 42vh);
+  pointer-events: none;
+}
+
+/* NOTE: width/height are REQUIRED here. <canvas> is a replaced element, so
+   `inset: 0` alone does NOT stretch it — `width: auto` resolves to the
+   intrinsic 300x150 and the field silently renders into a tiny canvas. */
+.pixel-field {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+  pointer-events: none;
+}
+.pixel-content {
+  position: relative;
+  z-index: 2;
+  /* Same measure as the nav, the hero grid and the carousel track, so every
+     section on the page starts on one line. --maxw is the content width; the
+     gutter sits outside it, which is how .hhead and .track are built. */
+  max-width: calc(var(--maxw) + var(--gutter) * 2);
+  margin: 0 auto;
+  /* Trailing space so the footer strip clears the fixed controls bar. */
+  padding: 128px var(--gutter) calc(var(--cell-layout) * 5);
+}
+
+/* The field band occupies real space above this element, so the content only
+   needs its own gutter — no fade arithmetic. */
+.pixel-content.has-head { padding-top: calc(var(--cell-layout) * 4); }
+
+
+@media (prefers-reduced-motion: reduce) {
+  /* Field still renders; drift freezes. Handled in JS — this is the
+     declarative half. */
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

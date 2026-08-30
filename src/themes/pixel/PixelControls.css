@@ -1,0 +1,49 @@
+/* The bar spans the full width but is mostly empty space. Without
+   pointer-events:none it swallows every click along the bottom of the page —
+   which silently blocked the footer's play button. Only the buttons take
+   input. */
+.pixel-controls {
+  pointer-events: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 3;
+  display: flex;
+  gap: 32px;
+  padding: 18px 24px;
+  mix-blend-mode: difference;
+  color: #FFFFFF;
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+}
+
+.pixel-control { display: flex; align-items: center; gap: 10px; }
+.pixel-control-label { opacity: 0.6; }
+
+.pixel-control-btn {
+  pointer-events: auto;
+  appearance: none;
+  background: none;
+  border: 1px solid currentColor;
+  border-radius: var(--radius);
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  padding: 3px 9px;
+  cursor: pointer;
+}
+
+.pixel-control-btn[aria-pressed='true'] {
+  /* Explicit white, NOT currentColor. With `color: #000` on the same rule,
+     currentColor would resolve to black too — a black box with black text,
+     which mix-blend-mode: difference turns into white-on-white and the
+     pressed button vanishes. White box + black text inverts to a black box
+     with a white label, which is what "pressed" should look like. */
+  background: #FFFFFF;
+  color: #000000;
+}
+
+/* Same reasoning as the nav: enlarge the hit area on touch, not the label. */
+@media (pointer: coarse) {
+  .pixel-control-btn { padding: 10px 14px; }
+}

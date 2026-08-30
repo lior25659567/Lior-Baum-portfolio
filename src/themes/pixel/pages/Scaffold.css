@@ -1,0 +1,112 @@
+/* Phase 1 scaffold page. Hairlines and hard edges only — no shadow, no
+   gradient, no radius above --radius (2px). */
+
+/* .pixel-content layout lives in tokens.css — it belongs to the shell. */
+
+/* The display line sits IN the field deliberately — it is solid enough to
+   read over painted cells. Body copy is not, so the hero bottom-aligns past
+   the fade boundary (heat reaches zero at 42% of viewport height) and the
+   lede starts below it. The field must clear the text, not fight it. */
+.scaffold-hero {
+  min-height: 52vh;
+  margin-bottom: 96px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.scaffold-display {
+  margin: 0 0 24px;
+  font-family: var(--font-display);
+  font-size: var(--display-size);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-ls);
+  line-height: var(--display-lh);
+}
+
+.scaffold-lede {
+  margin: 0 0 16px;
+  max-width: var(--measure);
+}
+
+.scaffold-body { margin: 0 0 24px; max-width: var(--measure); }
+
+.scaffold-meta,
+.scaffold-label {
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+  font-weight: var(--utility-weight);
+}
+
+.scaffold-meta { margin: 0; opacity: 0.55; }
+
+.scaffold-label {
+  margin: 0 0 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.scaffold-block { margin-bottom: 72px; }
+
+/* ── Ramp ───────────────────────────────────────────────────────────── */
+.scaffold-ramp { list-style: none; margin: 0; padding: 0; }
+
+.scaffold-ramp-row {
+  display: grid;
+  grid-template-columns: var(--cell) 2ch 14ch 11ch 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule-faint);
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+}
+
+.scaffold-swatch {
+  /* Exactly one painted cell: --cell minus the 1px gutter. */
+  width: calc(var(--cell) - 1px);
+  height: calc(var(--cell) - 1px);
+  /* Index 0 is transparent — the outline is how you see it is there at all. */
+  outline: 1px solid var(--rule);
+}
+
+.scaffold-ramp-hex,
+.scaffold-ramp-i { font-family: var(--font-mono); }
+.scaffold-ramp-note { opacity: 0.55; }
+
+/* ── Cell demo ──────────────────────────────────────────────────────── */
+.scaffold-cell-demo {
+  height: calc(var(--cell) * 12);
+  border: 1px solid var(--rule);
+  /* Painted cells: fill leaves the 1px gutter, and --rule-faint shows through
+     it — the same relationship the canvas will draw. */
+  background-image:
+    repeating-linear-gradient(to right,  var(--heat-1) 0 calc(var(--cell) - 1px), transparent 0 var(--cell)),
+    repeating-linear-gradient(to bottom, var(--heat-1) 0 calc(var(--cell) - 1px), transparent 0 var(--cell));
+  background-blend-mode: multiply;
+}
+
+/* ── Lists ──────────────────────────────────────────────────────────── */
+.scaffold-list {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  max-width: var(--measure);
+}
+
+.scaffold-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule-faint);
+  font-size: var(--utility-size);
+  letter-spacing: var(--utility-ls);
+  text-transform: uppercase;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  text-transform: none;
+  letter-spacing: 0;
+}
