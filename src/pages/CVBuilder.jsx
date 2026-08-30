@@ -361,8 +361,8 @@ const usePageFit = (ref) => {
 
 // Map of theme -> { bg, ink, accent } used to tint the style-picker thumbnails.
 const STYLE_THUMB_COLORS = {
-  default:       { bg: '#FFFFFF', ink: '#1A1A1A', accent: '#FF584A' },
-  minimal:       { bg: '#FFFFFF', ink: '#1A1A1A', accent: '#888888' },
+  default:       { bg: '#FFFFFF', ink: '#0A0A0A', accent: '#3B5BD9' },
+  minimal:       { bg: '#FFFFFF', ink: '#0A0A0A', accent: '#888888' },
   editorial:     { bg: '#F5F1E8', ink: '#1A1915', accent: '#D97757' },
   classic:       { bg: '#FAF8F2', ink: '#1A1A2E', accent: '#8B2635' },
   modernist:     { bg: '#F2EFE8', ink: '#0F0F0F', accent: '#FF4B2B' },
