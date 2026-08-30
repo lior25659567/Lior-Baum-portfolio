@@ -9,6 +9,7 @@ import {
   hasText, clean, oneLine, listOf, isVideoSrc, normalizeMedia,
   splitBold, articleBlockCategories, deriveArticleFromSlides, CONVERTIBLE_BLOCK_TYPES,
 } from '../data/articleBlocks';
+import PixelNav from '../themes/pixel/PixelNav';
 import './CaseStudyArticle.css';
 
 // Lets module-level block renderers (e.g. FigureBlock) reach the media-library
@@ -1352,6 +1353,8 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
     <MediaLibraryContext.Provider value={openMediaLibrary}>
     <LightboxContext.Provider value={editMode ? null : onImageClick}>
     <article ref={articleRef} className={`cs-article${editing ? ' cs-article--editing' : ''}`}>
+      {!editing && <PixelNav />}
+      {!editing && <div className="pixel-rule" aria-hidden="true" />}
       {!editMode && <FloatingBack />}
 
       {editMode && !authored && ops && reverted && (

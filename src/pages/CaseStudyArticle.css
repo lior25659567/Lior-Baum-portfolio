@@ -24,6 +24,9 @@
   touch-action: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  /* Transparent so the fixed .pixel-rule graph-paper grid shows through.
+     The body background (--bg, white) paints the page colour. */
+  background: transparent;
 }
 
 .case-study.case-study--article .case-nav {
@@ -121,15 +124,11 @@
   padding-top: 1.5rem;
 }
 
-/* Public article view shows the fixed site header (like the reference case
-   study) — clear its height so the first block isn't tucked under it, and
-   drop the floating back arrow below the header so they don't overlap. */
+/* Public article view: PixelNav is now rendered inside the article (flow,
+   not fixed) — no extra top padding required. FloatingBack stays at its
+   default position since there is no fixed bar to clear. */
 body.cs-article-nav .cs-article {
-  padding-top: 5.5rem;
-}
-
-body.cs-article-nav .cs-article-back {
-  top: max(74px, calc(env(safe-area-inset-top) + 62px));
+  padding-top: 0;
 }
 
 /* Block wrappers are full-width; inner elements center themselves. */
