@@ -6,12 +6,12 @@ import Footer from './components/Footer';
 import EditPanel from './components/EditPanel';
 import RouteErrorBoundary from './components/RouteErrorBoundary';
 import Index from './themes/pixel/pages/Index';
-import About from './pages/About';
+import About from './themes/pixel/pages/About';
 import './App.css';
 
 // Heavy routes — lazy-loaded so the home page doesn't wait on them
 const CaseStudy = lazy(() => import('./pages/CaseStudy'));
-const Playground = lazy(() => import('./pages/Playground'));
+const Playground = lazy(() => import('./themes/pixel/pages/Playground'));
 const SlideDocumentation = lazy(() => import('./pages/SlideDocumentation'));
 const CVBuilder = lazy(() => import('./pages/CVBuilder'));
 const DesignSystem = lazy(() => import('./pages/DesignSystem'));
@@ -58,25 +58,16 @@ function ScrollToTop() {
 const PixelChrome = () => <Outlet />;
 
 // Legacy layout: the original global chrome, unchanged. Wraps its routes in the
-// legacy Navigation + <main> + conditional Footer.
-const LegacyChrome = () => {
-  const location = useLocation();
-  const isAbout = location.pathname === '/about';
-  // About and Playground render their OWN <Footer /> inside the page so it
-  // mounts fresh on each visit and its scroll-reveal animation replays.
-  // The global footer here would be a persistent, already-settled duplicate.
-  const isPlayground = location.pathname === '/playground';
-
-  return (
-    <>
-      <Navigation />
-      <main>
-        <Outlet />
-      </main>
-      {!isAbout && !isPlayground && <Footer />}
-    </>
-  );
-};
+// legacy Navigation + <main> + Footer.
+const LegacyChrome = () => (
+  <>
+    <Navigation />
+    <main>
+      <Outlet />
+    </main>
+    <Footer />
+  </>
+);
 
 function AppLayout() {
   return (
@@ -88,12 +79,12 @@ function AppLayout() {
             {/* Pixel-theme pages — self-chromed, no legacy wrapping. */}
             <Route element={<PixelChrome />}>
               <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/playground" element={<Playground />} />
             </Route>
 
             {/* Everything else — legacy Navigation / <main> / Footer chrome. */}
             <Route element={<LegacyChrome />}>
-              <Route path="/about" element={<About />} />
-              <Route path="/playground" element={<Playground />} />
               <Route path="/project/:projectId" element={<CaseStudy />} />
               <Route path="/present/:projectId" element={<PresenterView />} />
               <Route path="/docs/slides" element={<SlideDocumentation />} />
