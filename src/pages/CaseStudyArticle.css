@@ -47,15 +47,17 @@
 
 /* ── 2. View-mode toggle (edit mode only, lives inside .case-nav) ─────── */
 
+/* PIXEL: hard-edged segmented control — 1px border, 2px radius, no soft
+   shadow, ink/paper color scheme. Active segment fills with blue. */
 .cs-view-toggle {
   display: flex;
   align-items: center;
   gap: 2px;
   padding: 2px;
   margin-right: 1rem;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background: var(--color-bg-secondary);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
+  background: var(--bg, #fff);
   flex-shrink: 0;
 }
 
@@ -63,24 +65,24 @@
   border: none;
   background: transparent;
   padding: 0.28rem 0.7rem;
-  border-radius: 999px;
+  border-radius: var(--radius, 2px);
   font-family: inherit;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.01em;
-  color: var(--color-text-muted);
+  color: var(--muted, #8b8b8b);
   cursor: pointer;
   transition: color 0.15s ease, background 0.15s ease;
   white-space: nowrap;
 }
 
 .cs-view-btn:not(.is-active):hover {
-  color: var(--color-text);
+  color: var(--ink, #0a0a0a);
 }
 
 .cs-view-btn.is-active {
-  background: var(--color-accent);
-  color: var(--color-accent-contrast);
+  background: var(--blue, #3b5bd9);
+  color: #fff;
 }
 
 /* ── 3. The article ────────────────────────────────────────────────────── */
@@ -508,8 +510,10 @@ body.cs-article-nav .cs-article {
   border: 1px solid var(--color-border);
   cursor: pointer;
 }
+/* Active swatch: square neon outline (no radius override — round stays round,
+   as a tiny functional color dot; only the ACTIVE ring is pixel). */
 .cs-article-mat-swatch.is-active {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--blue, #3b5bd9);
   outline-offset: 1px;
 }
 
@@ -1152,21 +1156,23 @@ body.cs-article-nav .cs-article {
 
 /* ── 4. Editor chrome ──────────────────────────────────────────────────── */
 
+/* PIXEL block editing: no radius, ink dashed outline on hover (rule-faint at
+   rest → rule-strength on focus), consistent with hard-edge language. */
 .cs-article-block--editing {
-  border-radius: 8px;
+  border-radius: 0;
   padding: 0.15rem 0;
 }
 
 .cs-article-block--editing:hover,
 .cs-article-block--editing:focus-within {
-  outline: 1px dashed rgba(255, 88, 74, 0.45);
-  outline: 1px dashed color-mix(in srgb, var(--color-accent) 45%, transparent);
+  outline: 1px dashed var(--rule, rgba(10, 10, 10, 0.12));
   outline-offset: 4px;
 }
 
 /* Floating "Bold" affordance — appears above an editable prose field while text
    is selected (article edit mode). Portaled to <body>, so it uses the :root
-   tokens (which resolve globally), not the .cs-article-scoped overrides. */
+   tokens (which resolve globally), not the .cs-article-scoped overrides.
+   PIXEL: hard 2px radius, 1px rule border, ink/paper — no soft shadow. */
 .editable-bold-btn {
   position: fixed;
   z-index: 3000;
@@ -1176,24 +1182,24 @@ body.cs-article-nav .cs-article {
   width: 30px;
   height: 30px;
   padding: 0;
-  border-radius: 8px;
-  border: 1px solid var(--color-border, rgba(55, 53, 47, 0.16));
-  background: var(--color-bg-secondary, #fff);
-  color: var(--color-text, #37352f);
+  border-radius: var(--radius, 2px);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  background: var(--bg, #fff);
+  color: var(--ink, #0a0a0a);
   font: 600 15px/1 var(--primitive-font-sans, 'Satoshi', system-ui, sans-serif);
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
-  transition: transform 0.1s ease, background 0.12s ease, color 0.12s ease;
+  box-shadow: none;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
 }
 .editable-bold-btn:hover {
-  background: var(--color-accent, #ff584a);
-  border-color: transparent;
-  color: var(--color-accent-contrast, #fff);
-  transform: translateY(-1px);
+  background: var(--blue, #3b5bd9);
+  border-color: var(--blue, #3b5bd9);
+  color: #fff;
 }
 .editable-bold-btn strong { font-weight: 700; }
 
-/* Control pill — top-right of the block, shown on hover/focus */
+/* Block controls bar — top-right of the block, shown on hover/focus.
+   PIXEL: hard 2px radius, 1px rule border, paper bg, NO soft shadow. */
 .cs-article-block-controls {
   position: absolute;
   top: -0.9rem;
@@ -1203,10 +1209,10 @@ body.cs-article-nav .cs-article {
   align-items: center;
   gap: 2px;
   padding: 2px 4px;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background: var(--color-bg-secondary);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
+  background: var(--bg, #fff);
+  box-shadow: none;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.15s ease;
@@ -1222,17 +1228,17 @@ body.cs-article-nav .cs-article {
   font-size: 0.68rem;
   font-weight: 650;
   letter-spacing: 0.03em;
-  color: var(--color-text-muted);
+  color: var(--muted, #8b8b8b);
   padding: 0 0.45rem;
   text-transform: lowercase;
 }
 
-/* In edit mode the block-type chip is a converter dropdown — change a block's
-   type (Cards → Bullets, etc.) and its content migrates. */
+/* Block-type converter dropdown — PIXEL: 2px radius, rule border, ink on
+   hover. */
 select.cs-article-block-typesel {
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  background: var(--color-bg);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
+  background: var(--bg, #fff);
   cursor: pointer;
   padding: 1px 0.3rem;
   max-width: 140px;
@@ -1240,11 +1246,12 @@ select.cs-article-block-typesel {
   text-transform: none;
 }
 select.cs-article-block-typesel:hover {
-  color: var(--color-text);
-  border-color: var(--color-text-muted);
+  color: var(--ink, #0a0a0a);
+  border-color: var(--ink, #0a0a0a);
 }
 
-/* Per-block JSON editor modal. */
+/* Per-block JSON editor modal.
+   PIXEL: 2px radius on textarea, rule border, ink focus outline (neon). */
 .cs-article-json-modal {
   width: min(640px, 92vw);
 }
@@ -1254,10 +1261,10 @@ select.cs-article-block-typesel:hover {
   resize: vertical;
   box-sizing: border-box;
   padding: 0.75rem;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background: var(--color-bg);
-  color: var(--color-text);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
+  background: var(--bg, #fff);
+  color: var(--ink, #0a0a0a);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 12.5px;
   line-height: 1.5;
@@ -1265,12 +1272,13 @@ select.cs-article-block-typesel:hover {
   tab-size: 2;
 }
 .cs-article-json-textarea:focus {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 1px;
+  outline: 2px solid var(--neon, #d8ff00);
+  outline-offset: 0;
+  border-color: var(--ink, #0a0a0a);
 }
 .cs-article-json-error {
   margin: 0.5rem 0 0;
-  color: var(--color-accent);
+  color: var(--red, #e0492a);
   font-size: 0.8rem;
 }
 .cs-article-json-actions {
@@ -1280,23 +1288,28 @@ select.cs-article-block-typesel:hover {
   margin-top: 0.75rem;
 }
 
+/* Block control buttons (move/duplicate/delete) — PIXEL: square 2px radius,
+   no border at rest, 1px rule border on hover, no soft shadow. Danger =
+   blue→ink accent; delete stays recognizably red-ish via muted. */
 .cs-article-ctl-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 26px;
   height: 26px;
-  border: none;
-  border-radius: 50%;
+  border: 1px solid transparent;
+  border-radius: var(--radius, 2px);
   background: transparent;
-  color: var(--color-text);
+  color: var(--muted, #8b8b8b);
   font-size: 0.8rem;
   cursor: pointer;
-  transition: background 0.12s ease;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
 }
 
 .cs-article-ctl-btn:hover:not(:disabled) {
-  background: var(--color-border);
+  background: transparent;
+  border-color: var(--rule, rgba(10, 10, 10, 0.12));
+  color: var(--ink, #0a0a0a);
 }
 
 .cs-article-ctl-btn:disabled {
@@ -1305,13 +1318,15 @@ select.cs-article-block-typesel:hover {
 }
 
 .cs-article-ctl-btn--danger:hover:not(:disabled) {
-  background: var(--color-accent-soft);
-  color: var(--color-accent);
+  border-color: var(--red, #e0492a);
+  color: var(--red, #e0492a);
+  background: transparent;
 }
 
-/* Insert zone — sits between blocks. Resting state: hairline with a gently
-   pulsing "+" dot (the signifier that content can go HERE). On hover/focus it
-   expands into one-click chips for the common block types. */
+/* Insert zone — sits between blocks. Resting state: a small "+" dot (muted).
+   On hover/focus: expands to quick-add chips.
+   PIXEL: dot stays round (it's a tiny functional marker), chips get 2px
+   radius + hard border, no soft glow. Line color = rule instead of accent. */
 .cs-article-insertzone {
   position: relative;
   width: 100%;
@@ -1336,9 +1351,11 @@ select.cs-article-block-typesel:hover {
 
 .cs-article-insertzone:hover .cs-article-insertzone-line,
 .cs-article-insertzone:focus-within .cs-article-insertzone-line {
-  background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  background: var(--rule, rgba(10, 10, 10, 0.12));
 }
 
+/* Dot: keep 50% radius (it's a tiny 22px indicator, not a card). Muted ink,
+   no glow animation — a simple static + marker. */
 .cs-article-insertzone-dot {
   position: relative;
   z-index: 1;
@@ -1346,25 +1363,25 @@ select.cs-article-block-typesel:hover {
   height: 22px;
   display: grid;
   place-items: center;
-  border: none;
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
   border-radius: 50%;
-  background: var(--color-accent-soft);
-  color: var(--color-accent);
+  background: var(--bg, #fff);
+  color: var(--muted, #8b8b8b);
   font-size: 0.95rem;
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
-  opacity: 0.55;
+  opacity: 0.7;
   animation: csInsertPulse 2.2s ease-in-out infinite;
 }
 
 @keyframes csInsertPulse {
-  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 35%, transparent); }
-  50% { box-shadow: 0 0 0 7px transparent; }
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cs-article-insertzone-dot { animation: none; }
+  .cs-article-insertzone-dot { animation: none; opacity: 0.7; }
 }
 
 .cs-article-insertzone-chips {
@@ -1387,73 +1404,80 @@ select.cs-article-block-typesel:hover {
   display: none;
 }
 
+/* PIXEL: hard-edged chips, 2px radius, 1px rule border, ink text, no shadow,
+   hover = blue border + blue text (not a fill). */
 .cs-article-quickchip {
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background: var(--color-bg);
-  color: var(--color-text);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
+  background: var(--bg, #fff);
+  color: var(--ink, #0a0a0a);
   font-family: inherit;
   font-size: 0.74rem;
   font-weight: 600;
   padding: 0.28rem 0.7rem;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, transform 0.12s ease;
+  box-shadow: none;
+  transition: border-color 0.12s ease, color 0.12s ease;
 }
 
 .cs-article-quickchip:hover {
-  border-color: var(--color-accent);
-  background: var(--color-accent-soft);
-  color: var(--color-accent);
-  transform: translateY(-1px);
+  border-color: var(--blue, #3b5bd9);
+  color: var(--blue, #3b5bd9);
+  background: var(--bg, #fff);
 }
 
 .cs-article-quickchip--more {
-  color: var(--color-text-muted);
+  color: var(--muted, #8b8b8b);
 }
 
-/* New-block feedback: the freshly added block glows and fades. */
+/* New-block feedback: freshly added block pulses with a neon outline then
+   fades. PIXEL: outline-based flash, no radius, no glow shadow. */
 .cs-article-block--flash {
   animation: csBlockFlash 1.5s ease-out;
 }
 
 @keyframes csBlockFlash {
   0% {
-    background: var(--color-accent-soft);
-    box-shadow: 0 0 0 4px var(--color-accent-soft);
-    border-radius: 10px;
+    outline: 2px solid var(--neon, #d8ff00);
+    outline-offset: 3px;
+  }
+  70% {
+    outline: 2px solid color-mix(in srgb, var(--neon, #d8ff00) 30%, transparent);
+    outline-offset: 3px;
   }
   100% {
-    background: transparent;
-    box-shadow: 0 0 0 4px transparent;
-    border-radius: 10px;
+    outline: 2px solid transparent;
+    outline-offset: 3px;
   }
 }
 
-/* Mini buttons + per-item toolbars */
+/* Mini buttons + per-item toolbars.
+   PIXEL: 2px radius, 1px rule border, muted ink, no shadow. Active =
+   blue fill (ink). */
 .cs-article-mini-btn {
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background: var(--color-bg-secondary);
-  color: var(--color-text-muted);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
+  background: var(--bg, #fff);
+  color: var(--muted, #8b8b8b);
   font-size: 0.7rem;
   font-weight: 600;
   padding: 0.2rem 0.55rem;
   cursor: pointer;
-  transition: color 0.12s ease, border-color 0.12s ease;
+  transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
   flex-shrink: 0;
 }
 
 .cs-article-mini-btn:hover {
-  color: var(--color-text);
-  border-color: var(--color-text-muted);
+  color: var(--ink, #0a0a0a);
+  border-color: var(--ink, #0a0a0a);
+  background: var(--bg, #fff);
 }
 
 .cs-article-mini-btn.is-active {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-accent-contrast);
+  background: var(--blue, #3b5bd9);
+  border-color: var(--blue, #3b5bd9);
+  color: #fff;
 }
 
 .cs-article-item-toolbar {
@@ -1499,37 +1523,38 @@ select.cs-article-block-typesel:hover {
   right: 0;
 }
 
-/* Figure editing — the empty slot is a big, obviously-clickable dropzone
-   with a slow breathing border so an unfilled media block is impossible
-   to miss. */
+/* Figure editing upload slot — a large obviously-clickable dropzone.
+   PIXEL: 2px radius, 1px dashed rule border (breathing = opacity, not color),
+   ink/muted text. Hover = blue border + blue text. */
 .cs-article-upload-slot {
   width: 100%;
   min-height: 200px;
-  border: 2px dashed color-mix(in srgb, var(--color-accent) 40%, transparent);
-  border-radius: 12px;
-  background: var(--color-bg-secondary);
-  color: var(--color-text-muted);
+  border: 1px dashed var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
+  background: var(--bg, #fff);
+  color: var(--muted, #8b8b8b);
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  transition: border-color 0.15s ease, color 0.15s ease;
   animation: csSlotBreathe 2.6s ease-in-out infinite;
 }
 
 @keyframes csSlotBreathe {
-  0%, 100% { border-color: color-mix(in srgb, var(--color-accent) 40%, transparent); }
-  50% { border-color: color-mix(in srgb, var(--color-accent) 75%, transparent); }
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cs-article-upload-slot { animation: none; }
+  .cs-article-upload-slot { animation: none; opacity: 1; }
 }
 
 .cs-article-upload-slot:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-  background: var(--color-accent-soft);
+  border-color: var(--blue, #3b5bd9);
+  color: var(--blue, #3b5bd9);
+  background: var(--bg, #fff);
   animation: none;
+  opacity: 1;
 }
 
 .cs-article-figure-tools {
@@ -1539,19 +1564,22 @@ select.cs-article-block-typesel:hover {
   margin-top: 0.4rem;
 }
 
+/* PIXEL: 2px radius, rule border. */
 .cs-article-embed-input {
   flex: 1;
   min-width: 0;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background: var(--color-bg);
-  color: var(--color-text);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
+  background: var(--bg, #fff);
+  color: var(--ink, #0a0a0a);
   font-family: inherit;
   font-size: 0.78rem;
   padding: 0.3rem 0.6rem;
 }
 
-/* Seed bar (edit mode, un-authored article) */
+/* Seed bar (edit mode, un-authored article).
+   PIXEL: 2px radius, hairline rule border, 2px blue left accent rule (not 3px),
+   paper bg instead of secondary bg. */
 .cs-article-seedbar {
   display: flex;
   align-items: center;
@@ -1559,39 +1587,42 @@ select.cs-article-block-typesel:hover {
   gap: 0.8rem;
   margin: 0 auto 2rem;
   padding: 0.85rem 1.1rem;
-  border: 1px solid var(--color-border);
-  border-left: 3px solid var(--color-accent);
-  border-radius: 10px;
-  background: var(--color-bg-secondary);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-left: 2px solid var(--blue, #3b5bd9);
+  border-radius: var(--radius, 2px);
+  background: var(--bg, #fff);
   font-size: 0.9rem;
   line-height: 1.5;
 }
 
+/* PIXEL: 2px radius, rule border, ink text at rest. Primary = blue fill. */
 .cs-article-seed-btn {
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background: var(--color-bg);
-  color: var(--color-text);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
+  background: var(--bg, #fff);
+  color: var(--ink, #0a0a0a);
   font-size: 0.82rem;
   font-weight: 650;
   padding: 0.4rem 1rem;
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: border-color 0.15s ease, color 0.15s ease;
 }
 
 .cs-article-seed-btn:hover {
-  border-color: var(--color-text-muted);
+  border-color: var(--ink, #0a0a0a);
+  color: var(--ink, #0a0a0a);
 }
 
 .cs-article-seed-btn--primary {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-accent-contrast);
+  background: var(--blue, #3b5bd9);
+  border-color: var(--blue, #3b5bd9);
+  color: #fff;
 }
 
 .cs-article-seed-btn--primary:hover {
-  opacity: 0.9;
-  border-color: var(--color-accent);
+  opacity: 0.88;
+  border-color: var(--blue, #3b5bd9);
+  color: #fff;
 }
 
 .cs-article-addblock-row {
@@ -1610,8 +1641,8 @@ select.cs-article-block-typesel:hover {
   margin: 0.6rem auto 0;
 }
 
-/* Bottom-of-editor utility row: re-seed / revert. Deliberately muted — these
-   are rare, destructive-ish actions, not part of the writing flow. */
+/* Bottom-of-editor utility row: re-seed / revert.
+   PIXEL: dashed rule border (not theme border), muted. */
 .cs-article-toolsrow {
   display: flex;
   align-items: center;
@@ -1620,7 +1651,7 @@ select.cs-article-block-typesel:hover {
   gap: 0.6rem;
   margin-top: 1.4rem;
   padding-top: 1.1rem;
-  border-top: 1px dashed var(--color-border);
+  border-top: 1px dashed var(--rule, rgba(10, 10, 10, 0.12));
 }
 
 .cs-article-toolsrow-label {
@@ -1628,10 +1659,11 @@ select.cs-article-block-typesel:hover {
   font-weight: 650;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-text-muted);
+  color: var(--muted, #8b8b8b);
   margin-right: 0.3rem;
 }
 
+/* PIXEL: 2px radius, 1px dashed rule border. */
 .cs-article-emptystate {
   display: flex;
   align-items: center;
@@ -1640,23 +1672,25 @@ select.cs-article-block-typesel:hover {
   flex-wrap: wrap;
   margin: 3rem auto;
   padding: 2rem;
-  border: 1.5px dashed var(--color-border);
-  border-radius: 14px;
-  color: var(--color-text-muted);
+  border: 1px dashed var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
+  color: var(--muted, #8b8b8b);
 }
 
 .cs-article-emptystate p {
   margin: 0;
 }
 
-/* Add-block picker (reuses the deck's modal overlay backdrop) */
+/* Add-block picker (reuses the deck's modal overlay backdrop).
+   PIXEL: 2px radius on the panel + each button, rule border, paper bg,
+   no shadow. Button hover = blue border only (no lift, no fill). */
 .cs-article-picker {
   width: min(560px, 92vw);
   max-height: 80vh;
   overflow-y: auto;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
+  background: var(--bg, #fff);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
   padding: 1.1rem 1.2rem 1.3rem;
 }
 
@@ -1667,14 +1701,15 @@ select.cs-article-block-typesel:hover {
   font-size: 1rem;
   font-weight: 700;
   margin-bottom: 0.8rem;
+  color: var(--ink, #0a0a0a);
 }
 
 .cs-article-picker-category {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: var(--utility-size, 11px);
+  font-weight: 600;
+  letter-spacing: var(--utility-ls, 0.09em);
   text-transform: uppercase;
-  color: var(--color-text-muted);
+  color: var(--muted, #8b8b8b);
   margin: 1rem 0 0.5rem;
 }
 
@@ -1690,39 +1725,39 @@ select.cs-article-block-typesel:hover {
   align-items: flex-start;
   gap: 0.15rem;
   padding: 0.65rem 0.8rem;
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  background: var(--color-bg-secondary);
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  border-radius: var(--radius, 2px);
+  background: var(--bg, #fff);
   cursor: pointer;
   text-align: left;
-  transition: border-color 0.12s ease, transform 0.12s ease;
+  transition: border-color 0.12s ease;
 }
 
 .cs-article-picker-btn:hover {
-  border-color: var(--color-accent);
-  transform: translateY(-1px);
+  border-color: var(--blue, #3b5bd9);
 }
 
 .cs-article-picker-label {
   font-size: 0.88rem;
-  font-weight: 650;
-  color: var(--color-text);
+  font-weight: 600;
+  color: var(--ink, #0a0a0a);
 }
 
 .cs-article-picker-hint {
   font-size: 0.75rem;
-  color: var(--color-text-muted);
+  color: var(--muted, #8b8b8b);
 }
 
 /* Article-scoped editable-field skin: text looks like TEXT, not a form.
-   Fields inherit the prose typography and sit flush; a soft tint on hover
-   says "you can edit me", a ring on focus says "you are editing me". */
+   Fields inherit the prose typography and sit flush; hover shows a rule
+   hairline ("you can edit me"); focus shows an ink border ("you are editing").
+   PIXEL: 2px radius, no soft glow, hard 1px border on hover/focus. */
 .cs-article .editable-field {
   display: block;
   width: 100%;
   background: transparent;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius, 2px);
   color: inherit;
   font: inherit;
   line-height: inherit;
@@ -1730,19 +1765,20 @@ select.cs-article-block-typesel:hover {
   text-align: inherit;
   padding: 0.06em 0.3em;
   margin: -0.06em -0.3em;
-  transition: background 0.12s ease, box-shadow 0.12s ease;
+  transition: background 0.12s ease, outline-color 0.12s ease;
 }
 
 .cs-article .editable-field:hover {
-  background: var(--color-bg-secondary);
-  box-shadow: inset 0 0 0 1px var(--color-border);
+  background: transparent;
+  outline: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+  outline-offset: 0;
   cursor: text;
 }
 
 .cs-article .editable-field:focus {
-  outline: none;
-  background: var(--color-bg-secondary);
-  box-shadow: 0 0 0 2px var(--color-accent-soft), inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 45%, transparent);
+  outline: 1px solid var(--ink, #0a0a0a);
+  outline-offset: 0;
+  background: transparent;
 }
 
 .cs-article .editable-field::placeholder {
