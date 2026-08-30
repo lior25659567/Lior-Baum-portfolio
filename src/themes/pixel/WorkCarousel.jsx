@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { mountCardMosaic } from './card-mosaic.js';
 import './WorkCarousel.css';
 
@@ -84,7 +85,7 @@ const WorkCarousel = ({ items, title = 'Selected work', hint }) => {
       <div className="track-wrap" ref={wrapRef}>
         <div className="track" ref={trackRef}>
           {items.map((p) => (
-            <a className="slide cs" href={`#/work/${p.id}`} key={p.id}>
+            <Link className="slide cs" to={`/project/${p.id}`} key={p.id}>
               <div className="csm">
                 <img src={p.image} alt={p.title} loading="lazy" />
                 <span className="reveal-cta" aria-hidden="true" />
@@ -92,7 +93,7 @@ const WorkCarousel = ({ items, title = 'Selected work', hint }) => {
               </div>
               <p className="t">{p.title}</p>
               <p className="d">{p.description}</p>
-            </a>
+            </Link>
           ))}
         </div>
 

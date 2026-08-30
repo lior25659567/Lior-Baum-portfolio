@@ -6,12 +6,9 @@ import './PixelNav.css';
  * gutter and the same 11px uppercase utility tier, so the two read as one
  * block rather than a bar bolted on top of a header. */
 const LINKS = [
-  { to: '/', label: 'Index' },
-  { to: '/about', label: 'About' },
+  { to: '/', label: 'Work' },
   { to: '/playground', label: 'Playground' },
-  { to: '/type', label: 'Type' },
-  { to: '/scaffold', label: 'System' },
-  { to: '/compare', label: 'Compare' },
+  { to: '/about', label: 'About' },
 ];
 
 const PixelNav = () => {
@@ -27,7 +24,7 @@ const PixelNav = () => {
           {LINKS.map(({ to, label }) => {
             // A case study is still "work", so keep Index marked while reading one.
             const active = to === '/'
-              ? pathname === '/' || pathname.startsWith('/work/')
+              ? pathname === '/' || pathname.startsWith('/project/')
               : pathname === to;
             return (
               <li key={to}>
