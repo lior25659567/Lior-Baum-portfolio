@@ -55,7 +55,7 @@ const DEFAULT_CV = {
   email: 'Lior2565967@gmail.com',
   phone: '050-555-0409',
   location: '',
-  portfolio: 'https://liorbaum.netlify.app/',
+  portfolio: 'https://baumlior.com/',
   linkedin: 'linkedin.com/in/liorbaum',
   summary: 'Product Designer with ~3 years designing end-to-end workflows in clinical healthtech and B2B SaaS — iTero™ (Align Technology), a data-privacy platform, and a physical therapy product. Cuts complex, multi-step processes down to flows users already recognize; now bringing that to B2B SaaS product teams.',
   experience: [
@@ -647,7 +647,16 @@ const CVBuilder = () => {
                 {exp.period && <span className="cv-doc-period-badge">{exp.period}</span>}
                 {exp.bullets.filter(b => b).length > 0 && (
                   <ul className="cv-doc-bullets">
-                    {exp.bullets.filter(b => b).map((b, j) => <li key={j}>{b}</li>)}
+                    {exp.bullets.filter(b => b).map((b, j) => (
+                      <li key={j}>
+                        {b.split('\n').map((line, i) => (
+                          <Fragment key={i}>
+                            {line}
+                            {i < b.split('\n').length - 1 && <br />}
+                          </Fragment>
+                        ))}
+                      </li>
+                    ))}
                   </ul>
                 )}
               </div>
@@ -851,7 +860,7 @@ const CVBuilder = () => {
               <div className="cv-field-row">
                 <div className="cv-field">
                   <label>Portfolio URL</label>
-                  <input value={cv.portfolio} onChange={e => update('portfolio', e.target.value)} placeholder="https://liorbaum.netlify.app/" />
+                  <input value={cv.portfolio} onChange={e => update('portfolio', e.target.value)} placeholder="https://baumlior.com/" />
                 </div>
                 <div className="cv-field">
                   <label>LinkedIn</label>
@@ -914,7 +923,7 @@ const CVBuilder = () => {
                     <label>Key Achievements</label>
                     {exp.bullets.map((bullet, j) => (
                       <div key={j} className="cv-bullet-row">
-                        <input value={bullet} onChange={e => updateBullet(i, j, e.target.value)} placeholder="Led redesign of X, resulting in Y% improvement in Z" />
+                        <textarea value={bullet} onChange={e => updateBullet(i, j, e.target.value)} placeholder="Led redesign of X, resulting in Y% improvement in Z" rows={2} />
                         <button className="cv-bullet-remove" onClick={() => removeBullet(i, j)} disabled={exp.bullets.length <= 1}>×</button>
                       </div>
                     ))}
@@ -1471,7 +1480,16 @@ const EditorialCV = ({ cv, theme, innerRef, overflowing }) => {
               )}
               {bullets(exp).length > 0 && (
                 <ul className="ed-bullets">
-                  {bullets(exp).map((b, j) => <li key={j}>{b}</li>)}
+                  {bullets(exp).map((b, j) => (
+                    <li key={j}>
+                      {b.split('\n').map((line, i) => (
+                        <Fragment key={i}>
+                          {line}
+                          {i < b.split('\n').length - 1 && <br />}
+                        </Fragment>
+                      ))}
+                    </li>
+                  ))}
                 </ul>
               )}
             </div>
@@ -1735,7 +1753,16 @@ const SidebarCV = ({ cv, theme, innerRef, overflowing }) => {
                   )}
                   {bullets(exp).length > 0 && (
                     <ul className="ed-bullets">
-                      {bullets(exp).map((b, j) => <li key={j}>{b}</li>)}
+                      {bullets(exp).map((b, j) => (
+                        <li key={j}>
+                          {b.split('\n').map((line, i) => (
+                            <Fragment key={i}>
+                              {line}
+                              {i < b.split('\n').length - 1 && <br />}
+                            </Fragment>
+                          ))}
+                        </li>
+                      ))}
                     </ul>
                   )}
                 </div>
