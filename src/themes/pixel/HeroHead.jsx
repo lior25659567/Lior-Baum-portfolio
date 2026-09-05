@@ -7,23 +7,28 @@ import './HeroHead.css';
  * justified two-line positioning statement above a logo + tagline footer.
  * Every line is wrapped in .ln > span so it can be masked and stepped up.
  *
- * The COPY is Lior's. The two-line splits are editorial — they are where the
- * lines break, not data — so they live here rather than in home-content.json.
+ * The two-line splits are editorial — they are where the lines break, so the
+ * caller owns them. `name` / `desc` accept either plain strings or nodes: a
+ * node is rendered AS the masked inner span (so `.ln > span` still matches it
+ * and the step-up animation is unchanged), which is how the Index page passes
+ * inline-editable fields through in edit mode.
  */
+const Line = ({ children }) => (
+  <span className="ln">
+    {typeof children === 'string' ? <span>{children}</span> : children}
+  </span>
+);
+
 const HeroHead = ({ name = ['Lior', 'Baum.'], desc, tagline }) => (
   <div className="hhead">
     <div className="hgrid">
       <h1 className="hl">
-        {name.map((line, i) => (
-          <span className="ln" key={i}><span>{line}</span></span>
-        ))}
+        {name.map((line, i) => <Line key={i}>{line}</Line>)}
       </h1>
 
       <div className="hcol">
         <p className="hdesc">
-          {desc.map((line, i) => (
-            <span className="ln" key={i}><span>{line}</span></span>
-          ))}
+          {desc.map((line, i) => <Line key={i}>{line}</Line>)}
         </p>
 
         <div className="hfoot">

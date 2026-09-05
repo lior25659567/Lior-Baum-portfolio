@@ -10,6 +10,7 @@ import {
   splitBold, articleBlockCategories, deriveArticleFromSlides, CONVERTIBLE_BLOCK_TYPES,
 } from '../data/articleBlocks';
 import PixelNav from '../themes/pixel/PixelNav';
+import { useHeatField } from '../themes/pixel/useHeatField.js';
 import './CaseStudyArticle.css';
 
 // Lets module-level block renderers (e.g. FigureBlock) reach the media-library
@@ -18,6 +19,102 @@ const MediaLibraryContext = createContext(null);
 // Provides onImageClick(src) → opens the shared slide lightbox. Null in edit
 // mode (images carry replace controls then) so it only fires in the read view.
 const LightboxContext = createContext(null);
+
+// Background choices shared by the image mat and the quote card. Four values
+// that sit inside the pixel palette rather than beside it: paper, the cream
+// already used by the slide mats, a light wash of the blue accent, and ink for
+// a reversed card. Stored as a key ('white' is the default and writes no class).
+const MAT_COLORS = [
+  ['white', '#FFFFFF', 'Paper'],
+  ['cream', '#F1F0ED', 'Cream'],
+  ['grey', '#F2F2F2', 'Grey'],
+  ['blue', '#EDF0FB', 'Blue tint'],
+  ['ink', '#0A0A0A', 'Ink (reversed)'],
+];
+
+// Background and border are INDEPENDENT settings: an image can have a mat with
+// no frame, a frame with no mat, both, or neither. Legacy entries stored the
+// background in `borderColor`, which only rendered while `border` was on — read
+// that as the fallback so existing images keep the mat they already have.
+const matOf = (entry) => (
+  entry.mat !== undefined ? entry.mat : (entry.border ? (entry.borderColor || 'white') : '')
+);
+
+// Corner radius cycles through the scale. Keys ARE the pixel values, so the
+// stored data reads for itself and a new step is one entry here plus one CSS
+// rule. '' is a square corner and writes no class — pixel is hard-edged by
+// default, so every radius is opt-in per image / quote / callout.
+// '0' is an explicit square corner, not the same thing as "unset": a quote
+// card's default is the theme's 2px, so picking 0 has to be able to say so.
+const RADII = ['0', '4', '8', '16', '24'];
+const nextRadius = (r) => RADII[(RADII.indexOf(String(r ?? '')) + 1) % RADII.length] ?? '';
+const radiusLabel = (r) => (r ? `radius ${r}` : 'radius');
+
+/* The homepage hero's animated pixel field, mounted inside a figure so an
+   image can sit on top of it. `useBand: false` makes the canvas itself the
+   field's extent — band masking is measured in viewport coordinates and only
+   makes sense for the hero's fixed canvas. Rendered only while the figure is
+   on screen: this is a rAF animation, and a long article can hold a dozen. */
+/* 0.35 of the homepage hero's drift. The hero is the first thing you see and
+   can afford to move; inside an article the same speed pulls the eye off the
+   sentence you are reading. Same field, a third of the travel. */
+const ARTICLE_FIELD_SPEED = 0.35;
+
+const FieldCanvas = () => {
+  const { canvasRef } = useHeatField({ useBand: false, speed: ARTICLE_FIELD_SPEED });
+  return <canvas className="cs-article-field" ref={canvasRef} aria-hidden="true" />;
+};
+
+const PixelFieldLayer = () => {
+  // The layer owns its own visibility gate. MediaEntry's `inView` cannot be
+  // reused: that observer is only attached for videos and embeds (see the
+  // `if (!video && !embed) return` guard), so for a plain image it never fires.
+  const slotRef = useRef(null);
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const el = slotRef.current;
+    if (!el) return undefined;
+    const io = new IntersectionObserver(([e]) => setOn(e.isIntersecting), { threshold: 0.02 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <span ref={slotRef} className="cs-article-field-slot" aria-hidden="true">
+      {on && <FieldCanvas />}
+    </span>
+  );
+};
+
+/* Background / border / radius — the same three controls on images, quote
+   cards and callouts, so a page built from all three stays one system. Emits
+   data only ({ mat, border, radius }); each block maps that to its own classes. */
+const BoxOptions = ({ value, onChange, allowNone = true }) => (
+  <>
+    <span className="cs-article-mat-swatches" title="Background">
+      {allowNone && (
+        <button type="button"
+          className={`cs-article-mat-swatch cs-article-mat-swatch--none${value.mat ? '' : ' is-active'}`}
+          title="No background" aria-label="No background"
+          onClick={() => onChange({ mat: '' })} />
+      )}
+      {MAT_COLORS.map(([key, col, label]) => (
+        <button key={key} type="button"
+          className={`cs-article-mat-swatch${value.mat === key ? ' is-active' : ''}`}
+          style={{ background: col }} title={label} aria-label={label}
+          onClick={() => onChange({ mat: key })} />
+      ))}
+    </span>
+    <button type="button" className={`cs-article-mini-btn${value.border ? ' is-active' : ''}`}
+      title="Frame the box with a border"
+      onClick={() => onChange({ border: !value.border })}>border</button>
+    <button type="button" className={`cs-article-mini-btn${value.radius ? ' is-active' : ''}`}
+      title="Corner radius"
+      onClick={() => onChange({ radius: nextRadius(value.radius) })}>{radiusLabel(value.radius)}</button>
+    <button type="button" className={`cs-article-mini-btn${value.field ? ' is-active' : ''}`}
+      title="Animated pixel field behind this block (the homepage hero effect, slowed)"
+      onClick={() => onChange({ field: !value.field })}>pixel field</button>
+  </>
+);
 
 // Readable labels for the block-type converter dropdown (block controls).
 const BLOCK_TYPE_LABELS = {
@@ -112,7 +209,8 @@ const MediaEntry = ({ entry, tier }) => {
   if (!src && !embed) return null;
   const resp = !video && src && !src.startsWith('data:') ? buildResponsiveWebp(src) : null;
   return (
-    <div ref={ref} className={`cs-article-media-entry${entry.border ? ' cs-article-media-entry--bordered' : ''}${entry.border && entry.borderColor === 'cream' ? ' cs-article-media-entry--matcream' : ''}${entry.shadow === false ? ' cs-article-media-entry--noshadow' : ''}`}>
+    <div ref={ref} className={`cs-article-media-entry${entry.border ? ' cs-article-media-entry--bordered' : ''}${matOf(entry) ? ` cs-article-media-entry--matted cs-article-media-entry--mat${matOf(entry)}` : ''}${entry.field ? ' cs-article-media-entry--field' : ''}${entry.radius ? ` cs-article-media-entry--r-${entry.radius}` : ''}${entry.shadow ? ' cs-article-media-entry--shadow' : ''}`}>
+      {entry.field && <PixelFieldLayer />}
       {embed ? (
         <div className="cs-article-embed" onMouseLeave={() => setEmbedActive(false)}>
           <iframe
@@ -564,24 +662,13 @@ const FigureBlock = ({ block, editing, onPatch }) => {
                   defaultValue={entry.embedUrl || ''}
                   onBlur={(e) => setEntry(i, { embedUrl: e.target.value.trim() })}
                 />
-                <button type="button" className={`cs-article-mini-btn${entry.border ? ' is-active' : ''}`}
-                  title="Toggle a framed border on this image"
-                  onClick={() => setEntry(i, { border: !entry.border })}>border</button>
-                {entry.border && (
-                  <span className="cs-article-mat-swatches" title="Mat color">
-                    {[['white', '#ffffff'], ['cream', '#F1F0ED']].map(([key, col]) => (
-                      <button key={key} type="button"
-                        className={`cs-article-mat-swatch${(entry.borderColor === 'cream' ? 'cream' : 'white') === key ? ' is-active' : ''}`}
-                        style={{ background: col }}
-                        title={key === 'white' ? 'White mat' : 'Cream mat (#F1F0ED)'}
-                        aria-label={key === 'white' ? 'White mat' : 'Cream mat'}
-                        onClick={() => setEntry(i, { borderColor: key })} />
-                    ))}
-                  </span>
-                )}
-                <button type="button" className={`cs-article-mini-btn${entry.shadow !== false ? ' is-active' : ''}`}
-                  title="Toggle the drop shadow on this image"
-                  onClick={() => setEntry(i, { shadow: entry.shadow === false })}>shadow</button>
+                <BoxOptions
+                  value={{ mat: matOf(entry), border: !!entry.border, radius: entry.radius || '', field: !!entry.field }}
+                  onChange={(patch) => setEntry(i, patch)}
+                />
+                <button type="button" className={`cs-article-mini-btn${entry.shadow ? ' is-active' : ''}`}
+                  title="Drop shadow on this image"
+                  onClick={() => setEntry(i, { shadow: !entry.shadow })}>shadow</button>
                 <button type="button" className={`cs-article-mini-btn${entry.status ? ` is-active cs-article-chip-btn--${entry.status}` : ''}`}
                   title="Add / toggle an Accepted–Rejected chip on this image (like the Ideation slide)"
                   onClick={() => setEntry(i, { status: entry.status === 'accepted' ? 'rejected' : (entry.status === 'rejected' ? '' : 'accepted') })}>
@@ -671,13 +758,24 @@ const QuoteBlock = ({ block, editing, onPatch }) => {
   const write = (next) => onPatch({ quotes: next });
   const setQuote = (i, patch) => write(items.map((q, j) => (j === i ? { ...q, ...patch } : q)));
 
+  // Cards were always framed, so an undefined `border` reads as true — existing
+  // quote cards keep their frame and the toggle starts in the right state.
+  const quoteBox = {
+    mat: block.tint || 'white',
+    border: block.border !== undefined ? block.border : true,
+    radius: block.radius || '',
+    field: !!block.field,
+  };
+  const setQuoteBox = (patch) => onPatch('mat' in patch ? { tint: patch.mat } : patch);
+
   const list = editing ? items : items.filter((q) => hasText(q.text) || hasText(q.author) || hasText(q.role));
   if (!list.length && !editing) return null;
   const useGrid = list.length > 1;
 
   const renderQuote = (q, i) => (
     <blockquote key={i}
-      className={`cs-article-quote cs-article-quote--large cs-article-quote--w-${width}${isCard ? ' cs-article-quote--card' : ''}${isCard && block.shadow === false ? ' cs-article-quote--noshadow' : ''}`}>
+      className={`cs-article-quote cs-article-quote--large cs-article-quote--w-${width}${isCard ? ' cs-article-quote--card' : ''}${isCard && quoteBox.mat && quoteBox.mat !== 'white' ? ` cs-article-quote--tint-${quoteBox.mat}` : ''}${isCard && quoteBox.border ? ' cs-article-quote--bordered' : ''}${isCard && quoteBox.radius ? ` cs-article-quote--r-${quoteBox.radius}` : ''}${isCard && quoteBox.field ? ' cs-article-quote--field' : ''}${isCard && block.shadow ? ' cs-article-quote--shadow' : ''}`}>
+      {isCard && quoteBox.field && <PixelFieldLayer />}
       {isCard && <span className="cs-article-quote-mark" aria-hidden="true">{'“'}</span>}
       <p>
         {editing
@@ -714,10 +812,11 @@ const QuoteBlock = ({ block, editing, onPatch }) => {
           <button type="button" className={`cs-article-mini-btn${isCard ? ' is-active' : ''}`}
             title="Show as card(s) — white rounded card + quote mark, like the slides"
             onClick={() => onPatch({ variant: isCard ? '' : 'card' })}>quote card</button>
+          {isCard && <BoxOptions value={quoteBox} onChange={setQuoteBox} allowNone={false} />}
           {isCard && (
-            <button type="button" className={`cs-article-mini-btn${block.shadow !== false ? ' is-active' : ''}`}
-              title="Toggle the card shadow"
-              onClick={() => onPatch({ shadow: block.shadow === false })}>shadow</button>
+            <button type="button" className={`cs-article-mini-btn${block.shadow ? ' is-active' : ''}`}
+              title="Drop shadow on the quote cards"
+              onClick={() => onPatch({ shadow: !block.shadow })}>shadow</button>
           )}
           <button type="button" className="cs-article-mini-btn"
             onClick={() => write([...items, { text: '', author: '', role: '' }])}>+ quote</button>
@@ -737,13 +836,34 @@ const QuoteBlock = ({ block, editing, onPatch }) => {
   );
 };
 
-const CalloutBlock = ({ block, editing, onPatch }) => (
-  <div className="cs-article-callout">
-    {editing
-      ? <p className="cs-article-p"><EditableField value={block.text} onChange={(v) => onPatch({ text: v })} multiline allowBold placeholder="Callout text — **bold** supported" /></p>
-      : <Prose text={block.text} />}
-  </div>
-);
+const CalloutBlock = ({ block, editing, onPatch }) => {
+  // Same three settings as images and quote cards. Default is the bare
+  // blue-rule callout: no mat, no frame, no radius.
+  const box = { mat: block.mat || '', border: !!block.border, radius: block.radius || '', field: !!block.field };
+  const cls = [
+    'cs-article-callout',
+    box.mat ? `cs-article-callout--matted cs-article-callout--mat-${box.mat}` : '',
+    box.border ? 'cs-article-callout--bordered' : '',
+    box.radius ? `cs-article-callout--r-${box.radius}` : '',
+    box.field ? 'cs-article-callout--field' : '',
+  ].filter(Boolean).join(' ');
+
+  return (
+    <>
+      <div className={cls}>
+        {box.field && <PixelFieldLayer />}
+        {editing
+          ? <p className="cs-article-p"><EditableField value={block.text} onChange={(v) => onPatch({ text: v })} multiline allowBold placeholder="Callout text — **bold** supported" /></p>
+          : <Prose text={block.text} />}
+      </div>
+      {editing && (
+        <div className="cs-article-item-toolbar">
+          <BoxOptions value={box} onChange={onPatch} />
+        </div>
+      )}
+    </>
+  );
+};
 
 const CHECKLIST_GROUPS = [
   { titleField: 'workedTitle', itemsField: 'worked', mark: 'check', defaultTitle: 'What worked' },
@@ -1120,6 +1240,16 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
   const heroFirst = blocks[0]?.type === 'figure';
   const heroBlock = heroFirst ? blocks[0] : null;
   const bodyBlocks = heroFirst ? blocks.slice(1) : blocks;
+  // The meta grid belongs to the header — the reference sets Role/Timeline
+  // directly under the title, above the hero. It is rendered there and skipped
+  // in the body run, carrying its REAL index so every editor mutation (patch,
+  // move, delete, convert) still addresses the right block.
+  const metaIndex = blocks.findIndex((blk) => blk.type === 'metaGrid');
+  const metaBlock = metaIndex >= 0 ? blocks[metaIndex] : null;
+  // A divider straight after it closes the header, so it travels WITH the meta
+  // rather than being left behind above the body.
+  const metaRuleIndex = metaBlock && blocks[metaIndex + 1]?.type === 'divider' ? metaIndex + 1 : -1;
+  const metaRuleBlock = metaRuleIndex >= 0 ? blocks[metaRuleIndex] : null;
 
   // Flash = feedback for "where did my new block go": highlight + scroll.
   const [flashId, setFlashId] = useState(null);
@@ -1227,7 +1357,7 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
     const ctx = gsap.context(() => {
       // One flat query so the nodes come back in document order — that keeps
       // the stagger correct whether or not the study leads with a hero block
-      // (a hero renders BEFORE the <header>, a normal study after it).
+      // (the hero renders just AFTER the <header>, ahead of the body blocks).
       let seenLede = false;
       const targets = Array.from(root.querySelectorAll(
         ':scope > .cs-article-block, :scope > .cs-article-header .cs-article-h1, :scope > .cs-article-header .cs-article-lede'
@@ -1354,7 +1484,6 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
     <LightboxContext.Provider value={editMode ? null : onImageClick}>
     <article ref={articleRef} className={`cs-article${editing ? ' cs-article--editing' : ''}`}>
       {!editing && <PixelNav />}
-      {!editing && <div className="pixel-rule" aria-hidden="true" />}
       {!editMode && <FloatingBack />}
 
       {editMode && !authored && ops && reverted && (
@@ -1368,8 +1497,6 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
           </button>
         </div>
       )}
-
-      {heroBlock && renderBlock(heroBlock, 0, 0)}
 
       <header className="cs-article-header">
         <h1 className="cs-article-h1">
@@ -1386,12 +1513,21 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
         )}
       </header>
 
+      {/* Title → lede → meta → hero, the order the reference uses
+          (wild.as/labs). Rendering the hero above the header pushed the title
+          AND the lede below the fold at every desktop height: the reader met
+          the artifact before the claim. */}
+      {metaBlock && renderBlock(metaBlock, metaIndex, metaIndex)}
+      {metaRuleBlock && renderBlock(metaRuleBlock, metaRuleIndex, metaRuleIndex)}
+
+      {heroBlock && renderBlock(heroBlock, 0, 0)}
+
       {editing && <InsertZone at={heroFirst ? 0 : -1} onAdd={quickAdd} onMore={(i) => setPickerAt(i)} />}
       {bodyBlocks.map((blk, i) => {
         const realIndex = heroFirst ? i + 1 : i;
         return (
           <Fragment key={blk.id || `w${realIndex}`}>
-            {renderBlock(blk, i, realIndex)}
+            {realIndex === metaIndex || realIndex === metaRuleIndex ? null : renderBlock(blk, i, realIndex)}
             {editing && <InsertZone at={realIndex} onAdd={quickAdd} onMore={(idx) => setPickerAt(idx)} />}
           </Fragment>
         );

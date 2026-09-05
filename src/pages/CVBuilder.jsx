@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect, Fragment } from 'react';
+import PixelNav from '../themes/pixel/PixelNav';
 import './CVBuilder.css';
 
 // SVG Icons for contact
@@ -778,7 +779,12 @@ const CVBuilder = () => {
   };
 
   return (
-    <div className="cv-builder">
+    <>
+      {/* In flow, not fixed — the builder's sticky offsets are measured from the
+          top of the page, so the nav has to occupy real height. It is a <nav>,
+          which the @media print block already hides. */}
+      <PixelNav />
+      <div className="cv-builder">
       {/* Editor Panel */}
       <div className="cv-editor no-print">
         <div className="cv-editor-header">
@@ -1388,6 +1394,7 @@ const CVBuilder = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

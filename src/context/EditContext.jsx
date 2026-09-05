@@ -178,6 +178,16 @@ const defaultContent = {
 // to the current defaults. The runtime applies those as inline CSS vars
 // (--font-display / --font-body / --color-accent) which otherwise override
 // index.css — so without this, a cached style blob keeps showing old fonts.
+// Bumping this makes a newly published home-content.json win over the PROJECT
+// LIST held in an older cached `siteContent`. The pixel home page reads its
+// cards from this context, so without the gate a stale local edit copy keeps
+// showing case studies that have since been renamed, added or removed — which
+// is exactly what it did: a cache written before the studies were renamed kept
+// rendering "iTero Toolbar / iTero Scan Workflow / WizeCare" over the four
+// published ones. Only `projects` is invalidated; every other cached edit
+// (hero copy, about, playground) survives untouched.
+const CONTENT_VERSION = 'projects-2';
+
 const DS_VERSION = 'satoshi-1';
 
 // Default styles
@@ -293,13 +303,17 @@ function mergeContent(saved) {
   // Fall back to defaults when saved skills are empty or all placeholders
   if (isPlaceholderSkills(mergedAbout.skills)) mergedAbout.skills = effectiveDefaultContent.about.skills;
   if (!mergedAbout.experience?.length) mergedAbout.experience = effectiveDefaultContent.about.experience;
+  // A project list cached by an older version is dropped in favour of the
+  // published one; anything this version wrote is still trusted.
+  const savedProjects = saved.contentVersion === CONTENT_VERSION ? saved.projects : undefined;
   return {
     ...effectiveDefaultContent,
     ...saved,
+    contentVersion: CONTENT_VERSION,
     hero: { ...effectiveDefaultContent.hero, ...saved.hero },
     footer: { ...effectiveDefaultContent.footer, ...saved.footer },
     about: mergedAbout,
-    projects: { ...effectiveDefaultContent.projects, ...saved.projects },
+    projects: { ...effectiveDefaultContent.projects, ...savedProjects },
     playground: { ...effectiveDefaultContent.playground, ...saved.playground },
   };
 }
@@ -523,9 +537,12 @@ export const EditProvider = ({ children }) => {
     }));
   };
 
+  // `effectiveDefault*`, not `default*`: the latter is the hardcoded stub from
+  // before any content was published, so resetting to it wiped the real site
+  // back to three placeholder projects.
   const resetToDefaults = () => {
-    setContent(defaultContent);
-    setStyles(defaultStyles);
+    setContent(effectiveDefaultContent);
+    setStyles(effectiveDefaultStyles);
     localStorage.removeItem('siteContent');
     localStorage.removeItem('siteStyles');
     deleteData('siteContent');
@@ -537,6 +554,21 @@ export const EditProvider = ({ children }) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content, styles }),
+    });
+    const json = await res.json().catch(() => ({ ok: false, error: `HTTP ${res.status} (no API on this host)` }));
+    if (!json.ok) throw new Error(json.error || 'Save failed');
+    return json;
+  };
+
+  // Writes src/data/about-content.json — the file that wins over
+  // home-content.json for the About section on the next load. Callers pass the
+  // whole payload (`{ profileImage, about }`) so the portrait path is carried
+  // through by whoever owns it, not re-derived here.
+  const saveAboutContent = async (payload) => {
+    const res = await fetch('/api/save-about-content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
     });
     const json = await res.json().catch(() => ({ ok: false, error: `HTTP ${res.status} (no API on this host)` }));
     if (!json.ok) throw new Error(json.error || 'Save failed');
@@ -567,6 +599,7 @@ export const EditProvider = ({ children }) => {
       updateStyles,
       resetToDefaults,
       saveHomeToCode,
+      saveAboutContent,
       gitPush,
       defaultContent,
       defaultStyles,

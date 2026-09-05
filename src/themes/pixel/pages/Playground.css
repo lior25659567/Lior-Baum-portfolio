@@ -129,3 +129,14 @@
 }
 .pg-card-link a { border-bottom: 1px solid var(--rule); padding-bottom: 2px; }
 .pg-card-link a:hover { color: var(--blue); border-bottom-color: currentColor; }
+
+/* Edit mode: label and URL are two fields on one row rather than one rendered
+   anchor, so an empty link can be filled in without inventing a URL first. */
+.pg-card-link.is-editing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+  margin-top: 10px;
+}
+.pg-card-link .pg-card-url { text-transform: none; letter-spacing: 0; color: var(--muted); }

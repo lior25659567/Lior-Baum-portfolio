@@ -81,14 +81,18 @@ function AppLayout() {
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
               <Route path="/playground" element={<Playground />} />
+              {/* The CV builder renders its own PixelNav; the presenter view is
+                  a full-screen presentation surface and wants no chrome at all.
+                  Both were carrying an invisible legacy nav plus a 529px legacy
+                  footer below the fold while wrapped in LegacyChrome. */}
+              <Route path="/cv" element={<CVBuilder />} />
+              <Route path="/present/:projectId" element={<PresenterView />} />
             </Route>
 
             {/* Everything else — legacy Navigation / <main> / Footer chrome. */}
             <Route element={<LegacyChrome />}>
               <Route path="/project/:projectId" element={<CaseStudy />} />
-              <Route path="/present/:projectId" element={<PresenterView />} />
               <Route path="/docs/slides" element={<SlideDocumentation />} />
-              <Route path="/cv" element={<CVBuilder />} />
               <Route path="/design-system" element={<DesignSystem />} />
               <Route path="/agents-hub" element={<AgentsHub />} />
             </Route>

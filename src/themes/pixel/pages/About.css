@@ -123,3 +123,11 @@
 @media (min-width: 760px) { .ab-co { text-align: right; } }
 
 .ab-desc { margin: 8px 0 0; font-size: 15px; line-height: 1.55; max-width: 62ch; color: #2a2a2a; }
+
+/* Chips carry an inline remove control in edit mode (PixelRemoveBtn renders
+   nothing otherwise), so the li centres its children on one line either way. */
+.ab-words li { display: inline-flex; align-items: center; }
+
+/* Portrait controls (edit mode only). */
+.ab-plate-edit { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.ab-plate-edit .px-add { margin-top: 0; }

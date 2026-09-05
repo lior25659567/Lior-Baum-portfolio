@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import homeContent from '../../data/home-content.json';
+import { useEdit } from '../../context/EditContext';
 import './PixelNav.css';
 
 /* Masthead nav. It sits in the same white band as the hero head, on the same
@@ -13,7 +13,10 @@ const LINKS = [
 
 const PixelNav = () => {
   const { pathname } = useLocation();
-  const cv = homeContent.content.hero?.cvLink;
+  // From EditContext, not the JSON directly, so editing the CV link in the
+  // edit panel updates the nav without a reload.
+  const { content } = useEdit();
+  const cv = content.hero?.cvLink;
 
   return (
     <nav className="pxnav" aria-label="Primary">

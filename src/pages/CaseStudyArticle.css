@@ -24,9 +24,10 @@
   touch-action: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-  /* Transparent so the fixed .pixel-rule graph-paper grid shows through.
-     The body background (--bg, white) paints the page colour. */
-  background: transparent;
+  /* Plain paper. The .pixel-rule graph-paper grid this used to show through
+     is no longer rendered for the article — a reading page wants a quiet
+     ground, and the grid competed with the body copy. */
+  background: var(--bg, #fff);
 }
 
 .case-study.case-study--article .case-nav {
@@ -699,10 +700,9 @@ body.cs-article-nav .cs-article {
    Pixel has no fills: a 2px blue bar on the left, ink text, no radius. */
 .cs-article-callout {
   margin: 1.75rem auto;
-  padding: 0.35rem 0 0.35rem 1.25rem;
+  padding: 0;
   background: none;
   border: none;
-  border-left: 2px solid var(--blue, #3b5bd9);
   border-radius: 0;
 }
 
@@ -1922,3 +1922,1071 @@ select.cs-article-block-typesel:hover {
   .cs-view-toggle { margin-right: 0.5rem; }
   .cs-view-btn { padding: 0.24rem 0.55rem; font-size: 0.68rem; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   5. REFERENCE LAYOUT — measured from wild.as/labs
+   ═══════════════════════════════════════════════════════════════════════
+   Structure and type are taken from
+   https://wild.as/labs/building-a-reliable-asset-pipeline — measured off the
+   live page with a headless browser, not eyeballed. It uses SNEAK, the same
+   typeface as this theme, so the metrics transfer exactly.
+
+   MEASURED SPEC (computed values off the live page)
+
+   Container    max-width 1354px; gutters 24px (<768) / 48px (>=768)
+                → content box 1258px at >=1440. Media fills it.
+
+   Tiers, all CENTRED in the container:
+                media  100%            (1258 @1440)
+                title  74.72%, max 940 (940 @1440, 824 @1200, 500 @768)
+                text   57.7%           (385 @768,  462 @900,  535 @1024)
+                       40.9%, max 515  (451 @1200, 515 @1440+)   ← from 1200px
+
+   Type              <768px                    >=768px
+     H1        32 / 44.2 / -0.3px / 400   70 / 79.8 / -0.7px / 400 · CENTRED
+     H2        40 / 52   / -0.4px / 400   40 / 52   / -0.4px / 400
+     H3        20 / 28   /  0     / 500   20 / 28   /  0     / 500
+     Body      18 / 32   / -0.2px / 400   18 / 32   / -0.2px / 400  ← never scales
+     Meta      14 / 20   /  0     / 400   16 / 20   /  0     / 400
+     Micro     11 / 16   / +0.4px / 500   11 / 16   / +0.4px / 500
+
+   Rhythm       h1 mb 54 · meta mb 24 (<768) / 68 (>=768) · h2 mb 40
+                paragraph margin 18 · media mb 40 (<768) / 80 (>=768)
+
+   ONE BREAKPOINT: 768px. Body copy is a fixed 18/32 at every width — the
+   column changes, the type does not. That is the opposite of what this file
+   did before (clamp()-scaled type from 19px to 26px), and it is why the
+   reference reads the same on a phone and a 27" display.
+
+   NOTE — the reference really does set mobile H1 (32px) SMALLER than H2
+   (40px). Reproduced exactly as measured. One line un-does it if the title
+   should dominate instead: `.cs-article-h1 { font-size: 40px }` below.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.cs-article {
+  --wa-gutter: 24px;
+  --wa-title: 100%;
+  --wa-text: 100%;
+
+  width: 100%;
+  max-width: calc(1258px + 2 * var(--wa-gutter));
+  margin-inline: auto;
+  padding-left: var(--wa-gutter);
+  padding-right: var(--wa-gutter);
+}
+
+@media (min-width: 768px) {
+  .cs-article {
+    --wa-gutter: 48px;
+    --wa-title: min(940px, 74.72%);
+    --wa-text: 57.7%;
+  }
+}
+
+/* The text column narrows from 7/12 to 5/12 here — the reference's second
+   step. Everything else is already at its cap. */
+@media (min-width: 1200px) {
+  .cs-article {
+    --wa-text: min(515px, 40.9%);
+  }
+}
+
+/* PixelNav renders INSIDE .cs-article (it takes its width from the same
+   container), so top padding here would push the NAV down the page rather
+   than open space above the title. The masthead stays flush to the top and
+   the space goes below it, on the header — matching the reference's
+   nav-bottom → title-top distance of ~170px. */
+.case-study:not(.edit-mode) .cs-article {
+  padding-top: 0;
+  padding-bottom: 96px;
+}
+
+.case-study:not(.edit-mode) .cs-article-header {
+  padding-top: 56px;
+}
+
+@media (min-width: 768px) {
+  .case-study:not(.edit-mode) .cs-article {
+    padding-bottom: 160px;
+  }
+
+  .case-study:not(.edit-mode) .cs-article-header {
+    padding-top: 170px;
+  }
+}
+
+/* ── Tier: TEXT (centred column, text set flush left inside it) ─────────
+   Scoped with the CHILD combinator on purpose. A tier class NESTED inside
+   another tier — a <p> inside a callout, a quote inside a grid — must fill
+   its parent, not re-resolve the column percentage against it. Without the
+   `>` it did exactly that: 40.9% of a 450px callout put those paragraphs at
+   L630 while every other line sat at L463. Same class of bug, one level down. */
+.cs-article > :is(.cs-article-block, .cs-article-header) > :is(
+  .cs-article-h2,
+  .cs-article-h3,
+  .cs-article-p,
+  .cs-article-eyebrow,
+  .cs-article-list,
+  .cs-article-marklist,
+  .cs-article-callout,
+  .cs-article-quote,
+  .cs-article-quotes-grid,
+  .cs-article-labelrow,
+  .cs-article-hr,
+  .cs-article-psi,
+  .cs-article-reflect-group,
+  .cs-article-contact,
+  .cs-article-next-grid,
+  .cs-article-chapter-inner,
+  .cs-article-cards
+) {
+  /* `width: auto` is load-bearing: with `width: 100%` the auto margins
+     compute to 0 and nothing centres. */
+  width: auto;
+  max-width: var(--wa-text);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
+/* ── Tier: TITLE (centred block, centred text from 768px) ─────────────── */
+.cs-article > :is(.cs-article-block, .cs-article-header) > .cs-article-h1 {
+  width: auto;
+  max-width: var(--wa-title);
+  margin: 0 auto 54px;
+  font-size: 32px;
+  line-height: 44.2px;
+  letter-spacing: -0.3px;
+  font-weight: 400;
+  text-align: left;
+}
+
+/* The lede and the meta grid ride with the title block, but the lede is
+   capped to the text measure — 940px of 18px copy would run ~104 characters
+   a line. */
+.cs-article > :is(.cs-article-block, .cs-article-header) > :is(.cs-article-lede, .cs-article-meta) {
+  width: auto;
+  max-width: var(--wa-text);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
+.cs-article .cs-article-lede {
+  font-size: 18px;
+  line-height: 32px;
+  letter-spacing: -0.2px;
+  font-weight: 400;
+  margin-bottom: 24px;
+}
+
+.cs-article .cs-article-meta {
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 768px) {
+  .cs-article > :is(.cs-article-block, .cs-article-header) > .cs-article-h1 {
+    font-size: 70px;
+    line-height: 79.8px;
+    letter-spacing: -0.7px;
+    text-align: center;
+  }
+
+  .cs-article > :is(.cs-article-block, .cs-article-header) > .cs-article-lede {
+    text-align: center;
+  }
+
+  .cs-article > :is(.cs-article-block, .cs-article-header) > .cs-article-meta {
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 68px;
+  }
+}
+
+/* ── Tier: MEDIA (fills the container) ───────────────────────────────── */
+.cs-article > .cs-article-block > .cs-article-figure {
+  width: auto;
+  max-width: 100%;
+  margin: 20px auto 40px;
+}
+
+@media (min-width: 768px) {
+  .cs-article > .cs-article-block > .cs-article-figure {
+    margin: 20px auto 80px;
+  }
+}
+
+/* ── Type scale ──────────────────────────────────────────────────────── */
+.cs-article .cs-article-h2 {
+  font-size: 40px;
+  line-height: 52px;
+  letter-spacing: -0.4px;
+  font-weight: 400;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+@media (min-width: 768px) {
+  .cs-article .cs-article-h2 { margin-top: 80px; }
+}
+
+.cs-article .cs-article-h3 {
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0;
+  font-weight: 500;
+  margin-top: 40px;
+  margin-bottom: 18px;
+}
+
+.cs-article .cs-article-p,
+.cs-article .cs-article-list li,
+.cs-article .cs-article-marklist li,
+.cs-article .cs-article-callout,
+.cs-article .cs-article-quote {
+  font-size: 18px;
+  line-height: 32px;
+  letter-spacing: -0.2px;
+  font-weight: 400;
+}
+
+.cs-article .cs-article-p {
+  margin-top: 18px;
+  margin-bottom: 18px;
+}
+
+/* Micro label — the reference's smallest tier, used for section eyebrows. */
+.cs-article .cs-article-eyebrow {
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.4px;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* ── Touch: the carousel had no usable controls ─────────────────────────
+   The prev/next arrows are `opacity: 0` until `.cs-article-carousel:hover`,
+   and a touch device never hovers — so on every phone and tablet the hero
+   carousel's controls were invisible, leaving 7px dots as the only signifier
+   that more images existed. Reveal the arrows and give both controls a real
+   target where there is no hover.
+
+   The dot's HIT area grows via ::after while the dot itself stays 7px — the
+   visual rhythm is unchanged. The gap widens in step so neighbouring targets
+   sit edge to edge instead of overlapping (overlapping targets mis-fire). */
+@media (hover: none), (pointer: coarse) {
+  .cs-article-carousel-arrow {
+    opacity: 1;
+    width: 44px;
+    height: 44px;
+  }
+
+  .cs-article-carousel-dots { gap: 1.15rem; }
+
+  .cs-article-carousel-dot { position: relative; }
+
+  .cs-article-carousel-dot::after {
+    content: '';
+    position: absolute;
+    inset: -9px;          /* 7px dot → 25px target, clearing the 24px minimum */
+  }
+}
+
+/* ── Remaining tiers pinned to the measured scale ──────────────────────
+   Everything the reference does not have a direct equivalent for still has
+   to land ON the scale (40 / 20 / 18 / 16 / 14 / 11) rather than on the old
+   viewport-scaled clamps, or the page reads as two type systems stacked. */
+
+/* Research quotes — one step above body, on the H3 metrics. A `--large`
+   pull quote takes the H2 tier; both stay on-scale. */
+.cs-article .cs-article-quote p {
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+.cs-article .cs-article-quote--large p {
+  font-size: 40px;
+  line-height: 52px;
+  letter-spacing: -0.4px;
+  font-weight: 400;
+}
+
+/* Cards are secondary to the running text: meta tier for the title, small
+   tier for the description. */
+.cs-article .cs-article-card-title {
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+.cs-article .cs-article-card-desc {
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+/* Captions sit in the micro tier, exactly like the reference's smallest label. */
+.cs-article .cs-article-figure figcaption {
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.4px;
+  font-weight: 500;
+}
+
+/* ── The document scrolls the article, not a fixed box ──────────────────
+   `.case-study` is the SLIDE DECK's viewport lock: position: fixed, inset 0,
+   height 100dvh, with `body.case-study-active { overflow: hidden }`. That is
+   exactly right for a fixed 1920×1080 canvas and exactly wrong for 15,000px
+   of prose — the article was scrolling inside a nested box, which costs the
+   mobile URL-bar collapse, native scroll restoration, and makes window-level
+   scroll APIs no-ops.
+
+   Scoped to `body.cs-article-nav`, which CaseStudy.jsx sets ONLY for the
+   public article view (`isArticleMode && !editMode`) — so the deck and the
+   block editor keep the fixed container and their scroll-anchoring logic.
+   Doubled up on `.case-study-active` to win over index.css regardless of
+   stylesheet order. */
+body.case-study-active.cs-article-nav {
+  overflow: visible;
+}
+
+body.cs-article-nav .case-study.case-study--article {
+  position: static;
+  /* `width: 100vw` would include the scrollbar and force a horizontal one. */
+  width: auto;
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+}
+
+/* Below 720px PixelNav wraps to two lines (see PixelNav.css), and the second
+   line lands exactly under the fixed back button at top:20/left:20 — the
+   arrow drew on top of "WORK". The right side of both nav lines is empty, so
+   move the button there rather than dropping the affordance. */
+@media (max-width: 767px) {
+  body.cs-article-nav .cs-article-back {
+    left: auto;
+    right: 20px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   6. WIDTHS · META ROW · IMAGE CHROME
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Content widths ────────────────────────────────────────────────────
+   Raised to match liorbaum.netlify.app/project/patient-report, measured at
+   1440 and 1920:
+
+       text   720px      (was 515)
+       wide  1160px
+       full  container   → 1360 @1440, 1400 @1920
+       container 1480px  (1400 + 2 × 40px gutter)
+
+   The two-step text column (57.7% → 40.9% at 1200px) is collapsed to a
+   single step: with a 720px cap the second step would top out at 573px and
+   never reach the target. */
+.cs-article {
+  --wa-gutter: 24px;
+  --wa-wide: min(1160px, 100%);
+
+  max-width: calc(1400px + 2 * var(--wa-gutter));
+}
+
+@media (min-width: 768px) {
+  .cs-article {
+    --wa-gutter: 40px;
+    --wa-text: min(720px, 57.7%);
+    --wa-title: min(940px, 74.72%);
+  }
+}
+
+@media (min-width: 1200px) {
+  .cs-article {
+    --wa-text: min(720px, 57.7%);
+  }
+}
+
+/* ── Figure size options ───────────────────────────────────────────────
+   RESTORED. The tier rule in section 5 set every figure to `max-width: 100%`
+   at (0,3,0), which outranked the `--prose` / `--wide` / `--full` modifiers
+   at (0,1,0) — so the per-image size control in the editor had no visible
+   effect. Re-stated here at matching specificity so the option works again. */
+.cs-article > .cs-article-block > .cs-article-figure--prose { max-width: var(--wa-text); }
+.cs-article > .cs-article-block > .cs-article-figure--wide  { max-width: var(--wa-wide); }
+.cs-article > .cs-article-block > .cs-article-figure--full  { max-width: 100%; }
+
+/* ── Project meta as an inline post-meta row ───────────────────────────
+   Matches the reference's markup pattern —
+     <span><strong>Posted:</strong> May 15th, 2026</span>
+   — so Role / Timeline / Team / Tools read as one centred line of
+   label-value pairs instead of a bordered four-column table. */
+.cs-article .cs-article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 6px 28px;
+  border-top: none;
+  border-bottom: none;
+  margin-top: 0;
+}
+
+.cs-article .cs-article-meta-item {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 6px;
+  padding: 0;
+}
+
+.cs-article .cs-article-meta-item + .cs-article-meta-item {
+  border-left: none;
+  padding-left: 0;
+}
+
+.cs-article .cs-article-meta-label,
+.cs-article .cs-article-meta-value {
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0;
+}
+
+.cs-article .cs-article-meta-label {
+  text-transform: none;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+/* The colon belongs to the presentation, not the data — and only in view
+   mode, so an empty label field in the editor doesn't show a stray ":". */
+.case-study:not(.edit-mode) .cs-article .cs-article-meta-label::after {
+  content: ':';
+}
+
+.cs-article .cs-article-meta-value {
+  font-weight: 400;
+  white-space: normal;
+}
+
+@media (min-width: 768px) {
+  .cs-article .cs-article-meta {
+    justify-content: center;
+  }
+
+  .cs-article .cs-article-meta-label,
+  .cs-article .cs-article-meta-value {
+    font-size: 16px;
+    line-height: 20px;
+  }
+}
+
+/* ── Image chrome ──────────────────────────────────────────────────────
+   No border by default. The hairline is an OPT-IN: the "bordered" mat in the
+   per-image tools still draws it, and inside that mat the image keeps its own
+   edge so a white image stays delineated from a white mat (the original
+   intent of the rule this replaces). */
+.cs-article .cs-article-media {
+  border: none;
+}
+
+.cs-article .cs-article-media-entry--bordered .cs-article-media {
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+}
+
+.cs-article .cs-article-carousel-frame {
+  border: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   7. HEADING GROUPS · META ROW FIT
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── The eyebrow belongs to its heading, not to the section above ───────
+   A heading block is `<p class="cs-article-eyebrow">The Problem</p>` followed
+   by its `<h2>`. The h2 carried the 80px section gap as `margin-top`, which
+   put that 80px BETWEEN the eyebrow and the heading it labels — so the label
+   floated closer to the previous section's copy than to its own title.
+
+   Move the section gap onto the eyebrow and zero the heading's top margin
+   when it directly follows one. A heading with no eyebrow keeps its own 80px,
+   so section rhythm is unchanged either way. */
+.cs-article .cs-article-eyebrow {
+  margin-top: 40px;
+  margin-bottom: 6px;
+}
+
+.cs-article .cs-article-eyebrow + .cs-article-h2,
+.cs-article .cs-article-eyebrow + .cs-article-h3 {
+  margin-top: 0;
+}
+
+@media (min-width: 768px) {
+  .cs-article .cs-article-eyebrow {
+    margin-top: 80px;
+  }
+}
+
+/* ── Meta row: one line ────────────────────────────────────────────────
+   Four label/value pairs need 781px; the text column is 720, so the row wrapped
+   onto two lines. Promote the meta to the TITLE tier (940) — it belongs to the
+   header block anyway — and it lands on one row with headroom to spare. Left as
+   `flex-wrap: wrap` rather than `nowrap`, so a fifth pair wraps instead of
+   overflowing the page. */
+.cs-article > :is(.cs-article-block, .cs-article-header) > .cs-article-meta {
+  max-width: var(--wa-title);
+}
+
+.cs-article .cs-article-meta {
+  column-gap: 24px;
+}
+
+/* ── Meta sits with the image above it ─────────────────────────────────
+   The hero carries an 80px bottom margin for the body sections that normally
+   follow it. When the very next block is the meta grid, that reads as a
+   disconnect — the meta is part of the header, not a new section. */
+.cs-article > .cs-article-block--figure:has(+ .cs-article-block--metaGrid) .cs-article-figure {
+  margin-bottom: 24px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   8. QUOTE CARDS · BACKGROUND + RADIUS OPTIONS
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Quote cards, smaller ──────────────────────────────────────────────
+   Card quotes carry `--large` in the markup, and section 5 mapped `--large`
+   to the H2 tier (40/52). In a 2-column grid inside the 720px text column
+   each card is ~350px wide, so 40px type filled the card with three or four
+   words a line. `--large` now only means large on a standalone pull quote;
+   a card reads at the small tier, which is what a supporting research quote
+   should be next to 18px body copy. */
+.cs-article .cs-article-quote--large:not(.cs-article-quote--card) p {
+  font-size: 40px;
+  line-height: 52px;
+  letter-spacing: -0.4px;
+  font-weight: 400;
+}
+
+.cs-article .cs-article-quote--card {
+  padding: 18px 20px;
+}
+
+.cs-article .cs-article-quote--card p {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -0.1px;
+  font-weight: 400;
+}
+
+.cs-article .cs-article-quote--card cite {
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0;
+  margin-top: 12px;
+}
+
+.cs-article .cs-article-quote--card .cs-article-quote-mark {
+  font-size: 24px;
+  margin-bottom: 2px;
+}
+
+.cs-article .cs-article-quotes-grid {
+  gap: 12px;
+}
+
+/* ── Background options (quote cards) ──────────────────────────────────
+   `white` is the default and writes no class. Ink reverses the type so the
+   card stays legible. */
+.cs-article .cs-article-quote--tint-cream { background: #F1F0ED; }
+.cs-article .cs-article-quote--tint-grey  { background: #F2F2F2; }
+.cs-article .cs-article-quote--tint-blue  { background: #EDF0FB; border-color: rgba(59, 91, 217, 0.22); }
+
+.cs-article .cs-article-quote--tint-ink {
+  background: var(--ink, #0a0a0a);
+  border-color: var(--ink, #0a0a0a);
+}
+.cs-article .cs-article-quote--tint-ink p,
+.cs-article .cs-article-quote--tint-ink cite {
+  color: #fff;
+}
+.cs-article .cs-article-quote--tint-ink .cs-article-quote-mark {
+  color: var(--neon, #d8ff00);
+}
+
+/* ── Radius options ───────────────────────────────────────────────────
+   Opt-in per block / per image. The default stays the theme's 2px hard edge. */
+.cs-article .cs-article-quote--r-md { border-radius: 8px; }
+.cs-article .cs-article-quote--r-lg { border-radius: 16px; }
+
+/* ── Image: mat colours + radius ──────────────────────────────────────
+   `--matcream` already existed; blue and ink join it, and radius applies to
+   the mat and the image together so a bordered image rounds as one object.
+   `overflow: hidden` keeps the image's square corners from poking out of a
+   rounded mat. */
+.cs-article .cs-article-media-entry--matblue { background: #EDF0FB; }
+.cs-article .cs-article-media-entry--matink  { background: var(--ink, #0a0a0a); }
+
+.cs-article .cs-article-media-entry--r-md,
+.cs-article .cs-article-media-entry--r-md .cs-article-media,
+.cs-article .cs-article-media-entry--r-md .cs-article-embed {
+  border-radius: 8px;
+}
+
+.cs-article .cs-article-media-entry--r-lg,
+.cs-article .cs-article-media-entry--r-lg .cs-article-media,
+.cs-article .cs-article-media-entry--r-lg .cs-article-embed {
+  border-radius: 16px;
+}
+
+/* A radius on an unmatted image has nothing to clip against, so give the
+   entry the clip itself. */
+.cs-article .cs-article-media-entry--r-md:not(.cs-article-media-entry--bordered),
+.cs-article .cs-article-media-entry--r-lg:not(.cs-article-media-entry--bordered) {
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   9. IMAGE BACKGROUND AND BORDER ARE INDEPENDENT
+   ═══════════════════════════════════════════════════════════════════════
+   They used to be one setting: the background lived on `--bordered` (which
+   painted white and added 24px of padding), and the colour swatches only
+   appeared once the border was switched on. So a mat forced a frame, and a
+   frame forced a mat.
+
+   Split in two:
+     --bordered   the 1px frame, nothing else
+     --matted     the padded background, nothing else
+   Either, both, or neither. */
+
+.cs-article .cs-article-media-entry--bordered {
+  padding: 0;
+  background: transparent;
+}
+
+.cs-article .cs-article-media-entry--matted {
+  padding: 24px;
+}
+
+.cs-article .cs-article-media-entry--matwhite { background: #FFFFFF; }
+.cs-article .cs-article-media-entry--matcream { background: #F1F0ED; }
+.cs-article .cs-article-media-entry--matgrey  { background: #F2F2F2; }
+.cs-article .cs-article-media-entry--matblue  { background: #EDF0FB; }
+.cs-article .cs-article-media-entry--matink   { background: var(--ink, #0a0a0a); }
+
+/* The old dark-mode rule re-painted any bordered entry; keep it to matted ones
+   so a frame-only image stays transparent there too. */
+:root[data-theme='dark'] .cs-article .cs-article-media-entry--bordered:not(.cs-article-media-entry--matted) {
+  background: transparent;
+}
+
+/* The image's own hairline exists to separate it from a MAT (a white shot on a
+   white mat would otherwise dissolve), so it follows the mat, not the frame.
+   With a frame and no mat the frame already wraps the image directly. */
+.cs-article .cs-article-media-entry--bordered .cs-article-media {
+  border: none;
+}
+
+.cs-article .cs-article-media-entry--matted .cs-article-media {
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+}
+
+/* "No background" swatch — a slashed chip, so clearing the mat is a visible
+   choice in the same row rather than a hidden default. */
+.cs-article-mat-swatch--none {
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.cs-article-mat-swatch--none::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top right,
+    transparent calc(50% - 0.5px),
+    var(--red, #e0492a) calc(50% - 0.5px),
+    var(--red, #e0492a) calc(50% + 0.5px),
+    transparent calc(50% + 0.5px)
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   10. THE BORDER FRAMES THE BOX — and quotes + callouts get the same set
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── The frame goes on the wrapper, never on the media ─────────────────
+   The image was carrying its own 1px edge inside a mat. With the frame now a
+   separate setting that draws on `.cs-article-media-entry`, a second line on
+   the <img> read as a double border at every radius — and it could not follow
+   the wrapper's corner radius. One box, one frame. */
+.cs-article .cs-article-media-entry--matted .cs-article-media,
+.cs-article .cs-article-media-entry--bordered .cs-article-media {
+  border: none;
+}
+
+/* Border colour travels as a variable so a tint can restyle the frame without
+   fighting the `border` shorthand on source order. */
+.cs-article .cs-article-quote--tint-blue { --cs-box-border: rgba(59, 91, 217, 0.22); }
+.cs-article .cs-article-quote--tint-ink  { --cs-box-border: var(--ink, #0a0a0a); }
+.cs-article .cs-article-callout--mat-blue { --cs-box-border: rgba(59, 91, 217, 0.22); }
+.cs-article .cs-article-callout--mat-ink  { --cs-box-border: var(--ink, #0a0a0a); }
+
+/* ── Quote cards: the frame is its own setting ─────────────────────────
+   `--card` used to hard-code a border, so a card was always framed. It now
+   supplies the padding, the quote mark and the default paper; the frame is
+   opt-out like everywhere else. */
+.cs-article .cs-article-quote--card {
+  border: none;
+}
+
+.cs-article .cs-article-quote--bordered {
+  border: 1px solid var(--cs-box-border, var(--rule, rgba(10, 10, 10, 0.12)));
+}
+
+/* ── Callouts: same three settings ─────────────────────────────────────
+   The default is unchanged — a bare blue rule on the left. A mat adds padding
+   on every side; the accent edge survives all of it, because that rule is what
+   makes a callout a callout. */
+.cs-article .cs-article-callout--matted {
+  padding: 18px 20px 18px 22px;
+}
+
+.cs-article .cs-article-callout--mat-white { background: #FFFFFF; }
+.cs-article .cs-article-callout--mat-cream { background: #F1F0ED; }
+.cs-article .cs-article-callout--mat-grey  { background: #F2F2F2; }
+.cs-article .cs-article-callout--mat-blue  { background: #EDF0FB; }
+.cs-article .cs-article-callout--mat-ink   { background: var(--ink, #0a0a0a); }
+
+.cs-article .cs-article-callout--mat-ink .cs-article-p,
+.cs-article .cs-article-callout--mat-ink p,
+.cs-article .cs-article-callout--mat-ink strong {
+  color: #fff;
+}
+
+.cs-article .cs-article-callout--bordered {
+  border: 1px solid var(--cs-box-border, var(--rule, rgba(10, 10, 10, 0.12)));
+}
+
+.cs-article .cs-article-callout--r-md { border-radius: 8px; }
+.cs-article .cs-article-callout--r-lg { border-radius: 16px; }
+
+/* Default corner for a mat or a frame, stated LAST so the explicit `--r-*`
+   settings below it always win. (This is what the mat was silently overriding:
+   it declared its own radius after the radius rules, so the image radius
+   control had no effect.) */
+.cs-article .cs-article-media-entry--matted,
+.cs-article .cs-article-media-entry--bordered {
+  border-radius: var(--radius, 2px);
+}
+
+.cs-article .cs-article-media-entry--r-md,
+.cs-article .cs-article-media-entry--r-md .cs-article-media,
+.cs-article .cs-article-media-entry--r-md .cs-article-embed {
+  border-radius: 8px;
+}
+
+.cs-article .cs-article-media-entry--r-lg,
+.cs-article .cs-article-media-entry--r-lg .cs-article-media,
+.cs-article .cs-article-media-entry--r-lg .cs-article-embed {
+  border-radius: 16px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   11. PIXEL FIELD BEHIND A FIGURE
+   ═══════════════════════════════════════════════════════════════════════
+   The homepage hero's animated field, used as a figure background with the
+   image on top. It needs room to read, so the option carries its own padding
+   the way a mat does — otherwise the image covers the canvas edge to edge and
+   there is nothing to see. Pairs with a mat colour (the field paints over it),
+   a border and a radius like any other box. */
+.cs-article .cs-article-media-entry--field {
+  position: relative;
+  /* No side padding: the field runs the full width of the figure, so it reads
+     as a BAND the image sits in rather than a frame drawn around it. */
+  padding: 44px 0;
+  overflow: hidden;
+}
+
+.cs-article .cs-article-field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* tokens.css caps canvases at max-width:100%; this one is already boxed by
+     `inset`, and the cap makes it collapse on some layouts. */
+  max-width: none;
+  pointer-events: none;
+}
+
+/* Everything the entry holds sits above the field. */
+.cs-article .cs-article-media-entry--field > *:not(.cs-article-field-slot) {
+  position: relative;
+  z-index: 1;
+}
+
+/* The slot is the observed element: it exists whether or not the field is
+   mounted, so the layer can start and stop itself on scroll. */
+.cs-article .cs-article-field-slot {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   12. CHIPS · WORKING SHADOW · FIELD MEETING THE IMAGE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Accepted / Rejected chips are pills ───────────────────────────────
+   These are status tokens, not structural boxes — the one place a full round
+   is right in a hard-edged system, because it separates them from everything
+   else on the image. */
+.cs-article .cs-article-figure-chip {
+  border-radius: 999px;
+  padding: 0.32rem 0.75rem;
+}
+
+/* ── The shadow toggle actually casts a shadow now ─────────────────────
+   It never did: every `box-shadow: var(--cs-float)` in this file resolved to
+   `none`, because the pixel pass set `--cs-float: none` to strip the old soft
+   floats. So the button flipped a class that removed a shadow which was
+   already absent.
+
+   Flipped to opt-IN, which also means nothing changes on existing images: the
+   default (no shadow) is what they render today, and only an explicit press
+   paints one. */
+.cs-article .cs-article-media-entry--shadow,
+.cs-article .cs-article-media-entry--shadow .cs-article-media,
+.cs-article .cs-article-media-entry--shadow .cs-article-embed {
+  box-shadow: 0 18px 40px -18px rgba(10, 10, 10, 0.32);
+}
+
+/* A matted or framed entry casts from the box; a bare image casts from itself,
+   so only one of the two should paint or the shadow doubles. */
+.cs-article .cs-article-media-entry--shadow:is(.cs-article-media-entry--matted, .cs-article-media-entry--bordered, .cs-article-media-entry--field) .cs-article-media,
+.cs-article .cs-article-media-entry--shadow:is(.cs-article-media-entry--matted, .cs-article-media-entry--bordered, .cs-article-media-entry--field) .cs-article-embed {
+  box-shadow: none;
+}
+
+.cs-article .cs-article-quote--shadow {
+  box-shadow: 0 18px 40px -18px rgba(10, 10, 10, 0.32);
+}
+
+/* ── Where the field meets the image ───────────────────────────────────
+   A hard cut between live pixels and a photograph reads as two images stacked.
+   The field now dissolves as it approaches the image — dense at the outer
+   edge, gone by the time it reaches the artwork — so the image looks like it
+   surfaced out of the field. That is the same move the homepage hero makes at
+   the bottom of its band, just mirrored on both ends. */
+.cs-article .cs-article-field {
+  /* Solid across the whole band; only the top and bottom EDGES dissolve, so
+     the field melts into the page instead of ending on a ruled line. The
+     previous gradient did the opposite — transparent everywhere except a thin
+     strip at each edge — which is why the field looked empty. */
+  -webkit-mask-image: linear-gradient(
+    to bottom, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%
+  );
+}
+
+/* On a field, the image keeps a hairline so it stays a distinct object against
+   the live pixels behind it. */
+.cs-article .cs-article-media-entry--field .cs-article-media {
+  border: 1px solid var(--rule, rgba(10, 10, 10, 0.12));
+}
+
+/* ── The image is smaller than the field it sits on ────────────────────
+   Sized to the full width of the entry, the image covered the canvas and the
+   field survived only as two thin bands top and bottom. Inset it instead: the
+   field runs the full width underneath and reads as the surface the image is
+   resting on, visible on all four sides. */
+.cs-article .cs-article-media-entry--field {
+  --cs-field-media: 82%;
+}
+
+.cs-article .cs-article-media-entry--field .cs-article-media,
+.cs-article .cs-article-media-entry--field .cs-article-embed {
+  width: var(--cs-field-media);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* A percentage inset is too aggressive on a phone — 82% of 342px leaves an
+   unreadable image. Hold a fixed 20px of field on each side instead. */
+@media (max-width: 767px) {
+  .cs-article .cs-article-media-entry--field {
+    --cs-field-media: calc(100% - 40px);
+    padding: 28px 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   13. THE FIELD, QUIETER — AND ON QUOTES AND CALLOUTS
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Opacity is the volume knob. At full strength the field competes with the
+   artwork it is supposed to be supporting; behind TEXT it competes with the
+   words, so that gets turned down further. Motion is slowed separately, in
+   ARTICLE_FIELD_SPEED (CaseStudyArticle.jsx). */
+.cs-article {
+  --cs-field-alpha: 0.5;
+  --cs-field-alpha-text: 0.16;
+}
+
+.cs-article .cs-article-field {
+  opacity: var(--cs-field-alpha);
+}
+
+/* ── Quote cards ───────────────────────────────────────────────────────
+   The card keeps its own background; the field lays over it and under the
+   type. Quieter than on an image — this one sits behind reading matter. */
+.cs-article .cs-article-quote--field {
+  position: relative;
+  overflow: hidden;
+}
+
+.cs-article .cs-article-quote--field .cs-article-field {
+  opacity: var(--cs-field-alpha-text);
+}
+
+.cs-article .cs-article-quote--field > *:not(.cs-article-field-slot) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Callouts ──────────────────────────────────────────────────────────
+   A bare callout has no padding, so the field would sit edge to edge under
+   the text with nothing to breathe. The option brings its own padding, the
+   way the mat does. */
+.cs-article .cs-article-callout--field {
+  position: relative;
+  overflow: hidden;
+  padding: 18px 20px;
+}
+
+.cs-article .cs-article-callout--field .cs-article-field {
+  opacity: var(--cs-field-alpha-text);
+}
+
+.cs-article .cs-article-callout--field > *:not(.cs-article-field-slot) {
+  position: relative;
+  z-index: 1;
+}
+
+/* The attribution is set in muted grey, which is the one thing on a quote card
+   that a field behind it can swallow. Over a field it takes the ink colour. */
+.cs-article .cs-article-quote--field cite {
+  color: var(--color-text);
+  opacity: 0.75;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   14. FIGURE CAPTIONS
+   ═══════════════════════════════════════════════════════════════════════
+   Centred under the media, and set as a sentence rather than an uppercase
+   label. The 11px / +0.4px tracking only made sense while it was SHOUTED —
+   as sentence case that combination reads as a squint. Moved to the scale's
+   small tier (14/20, already used by the meta row) with tracking reset. */
+.cs-article .cs-article-figure figcaption,
+.cs-article .cs-article-figure-cell-caption {
+  text-align: center;
+}
+
+.cs-article .cs-article-figure figcaption {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+/* The grid caption is a title + caption pair; centre both and un-shout the
+   title so a multi-image figure matches a single one. */
+.cs-article .cs-article-figure-cell-caption {
+  align-items: center;
+}
+
+.cs-article .cs-article-figure-cell-title {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   15. META DIVIDER · QUOTE ATTRIBUTION · RADIUS SCALE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* The divider that used to close the header is now skipped in the renderer
+   alongside the meta hoist (see metaRuleIndex in CaseStudyArticle.jsx) — one
+   mechanism, not two. */
+
+/* ── The attribution is a name, not a label ────────────────────────────
+   `cite` inherits the uppercase micro-label treatment, which turned
+   "— Orthodontics" into "— ORTHODONTICS". A source is a proper noun; set it
+   as one. */
+.cs-article .cs-article-quote cite,
+.cs-article .cs-article-quote--card cite {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ── Radius scale ──────────────────────────────────────────────────────
+   Keys are the pixel values (see RADII in CaseStudyArticle.jsx). Adding a step
+   is one entry there and one line here. */
+.cs-article .cs-article-media-entry--r-4,
+.cs-article .cs-article-media-entry--r-4 .cs-article-media,
+.cs-article .cs-article-media-entry--r-4 .cs-article-embed { border-radius: 4px; }
+
+.cs-article .cs-article-media-entry--r-8,
+.cs-article .cs-article-media-entry--r-8 .cs-article-media,
+.cs-article .cs-article-media-entry--r-8 .cs-article-embed { border-radius: 8px; }
+
+.cs-article .cs-article-media-entry--r-16,
+.cs-article .cs-article-media-entry--r-16 .cs-article-media,
+.cs-article .cs-article-media-entry--r-16 .cs-article-embed { border-radius: 16px; }
+
+.cs-article .cs-article-media-entry--r-24,
+.cs-article .cs-article-media-entry--r-24 .cs-article-media,
+.cs-article .cs-article-media-entry--r-24 .cs-article-embed { border-radius: 24px; }
+
+.cs-article .cs-article-quote--r-4  { border-radius: 4px; }
+.cs-article .cs-article-quote--r-8  { border-radius: 8px; }
+.cs-article .cs-article-quote--r-16 { border-radius: 16px; }
+.cs-article .cs-article-quote--r-24 { border-radius: 24px; }
+
+.cs-article .cs-article-callout--r-4  { border-radius: 4px; }
+.cs-article .cs-article-callout--r-8  { border-radius: 8px; }
+.cs-article .cs-article-callout--r-16 { border-radius: 16px; }
+.cs-article .cs-article-callout--r-24 { border-radius: 24px; }
+
+/* Anything saved under the old md/lg keys keeps working. */
+.cs-article .cs-article-media-entry--r-md,
+.cs-article .cs-article-media-entry--r-md .cs-article-media,
+.cs-article .cs-article-media-entry--r-md .cs-article-embed,
+.cs-article .cs-article-quote--r-md,
+.cs-article .cs-article-callout--r-md { border-radius: 8px; }
+
+.cs-article .cs-article-media-entry--r-lg,
+.cs-article .cs-article-media-entry--r-lg .cs-article-media,
+.cs-article .cs-article-media-entry--r-lg .cs-article-embed,
+.cs-article .cs-article-quote--r-lg,
+.cs-article .cs-article-callout--r-lg { border-radius: 16px; }
+
+/* An explicit square corner — distinct from "unset", which inherits the
+   theme's 2px hard edge on a quote card. */
+.cs-article .cs-article-media-entry--r-0,
+.cs-article .cs-article-media-entry--r-0 .cs-article-media,
+.cs-article .cs-article-media-entry--r-0 .cs-article-embed,
+.cs-article .cs-article-quote--r-0,
+.cs-article .cs-article-callout--r-0 { border-radius: 0; }

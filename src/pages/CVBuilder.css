@@ -7,14 +7,15 @@
   grid-template-columns: 440px 1fr;
   min-height: 100vh;
   background: var(--color-bg);
-  padding-top: 4rem;
+  /* No top padding: PixelNav sits in flow above this grid. The old 4rem was
+     reserving space for the legacy fixed nav, which this page no longer has. */
 }
 
 /* ========== Editor Panel ========== */
 .cv-editor {
   position: sticky;
-  top: 4rem;
-  height: calc(100vh - 4rem);
+  top: 0;
+  height: 100vh;
   overflow-y: auto;
   background: var(--color-bg);
   border-right: 1px solid var(--rule);
@@ -1343,7 +1344,6 @@
 @media (max-width: 960px) {
   .cv-builder {
     grid-template-columns: 1fr;
-    padding-top: 3.5rem;
   }
 
   .cv-editor {

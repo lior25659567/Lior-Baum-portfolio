@@ -141,7 +141,10 @@ const hsh = (a, b) => {
 };
 const RESIZE_DEBOUNCE_MS = 120;
 
-export function mountHeatField(canvas, { fade = 1, seed = 20260828, bandEl = null, invertFade = false } = {}) {
+/* `speed` scales the two drifts (the field's downward travel and the zone
+   wander). 1 is the homepage hero; below 1 the same field simply moves more
+   slowly — nothing about the pattern, palette or brush changes. */
+export function mountHeatField(canvas, { fade = 1, seed = 20260828, bandEl = null, invertFade = false, speed = 1 } = {}) {
   const ctx = canvas.getContext('2d', { alpha: true });
   const simplex = makeSimplex(seed);
   const zoneNoise = makeSimplex(seed ^ 0x5bf03635);
@@ -517,7 +520,7 @@ export function mountHeatField(canvas, { fade = 1, seed = 20260828, bandEl = nul
     accumulator %= FRAME_MS;
 
     if (!reduceMotion) {
-      const seconds = (steps * FRAME_MS) / 1000;
+      const seconds = ((steps * FRAME_MS) / 1000) * speed;
       driftY += DRIFT_CELLS_PER_SEC * seconds;   // straight down; dx is zero
       zoneY += ZONE_DRIFT * seconds;
     }
@@ -595,8 +598,8 @@ export function mountHeatField(canvas, { fade = 1, seed = 20260828, bandEl = nul
     _step(frames = 1) {
       for (let n = 0; n < frames; n++) {
         if (!reduceMotion) {
-          driftY += DRIFT_CELLS_PER_SEC * (FRAME_MS / 1000);
-          zoneY += ZONE_DRIFT * (FRAME_MS / 1000);
+          driftY += DRIFT_CELLS_PER_SEC * (FRAME_MS / 1000) * speed;
+          zoneY += ZONE_DRIFT * (FRAME_MS / 1000) * speed;
         }
         render();
       }

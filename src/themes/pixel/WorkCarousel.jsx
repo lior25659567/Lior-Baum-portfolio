@@ -1,6 +1,8 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { mountCardMosaic } from './card-mosaic.js';
+import { useEdit } from '../../context/EditContext';
+import { PixelEditable } from './PixelEdit.jsx';
 import './WorkCarousel.css';
 
 const ArrowIcon = ({ dir }) => (
@@ -20,8 +22,14 @@ const ArrowIcon = ({ dir }) => (
  * There is deliberately no drag-to-scrub: it fought the card links, needed
  * pointer capture to work at all (which swallowed the arrow clicks), and the
  * arrows are the intended control. Horizontal wheel/trackpad still works.
+ *
+ * Edit mode (Cmd+E): the card is a <div>, not a <Link> — otherwise clicking a
+ * title to place the caret navigates to the case study. `title` accepts a node
+ * so the caller can pass its own editable heading; `onItemChange(i, key, val)`
+ * writes card copy back to EditContext.
  */
-const WorkCarousel = ({ items, title = 'Selected work', hint }) => {
+const WorkCarousel = ({ items, title = 'Selected work', hint, onItemChange }) => {
+  const { editMode } = useEdit();
   const wrapRef = useRef(null);
   const trackRef = useRef(null);
   const xRef = useRef(0);
@@ -75,6 +83,33 @@ const WorkCarousel = ({ items, title = 'Selected work', hint }) => {
     return () => wrap.removeEventListener('wheel', wheel);
   }, [apply]);
 
+  const card = (p, i) => (
+    <>
+      <div className="csm">
+        <img src={p.image} alt={p.title} loading="lazy" />
+        <span className="reveal-cta" aria-hidden="true" />
+        <span className="rc-clip"><span className="rc-i">View case study</span></span>
+      </div>
+      {onItemChange ? (
+        <>
+          <PixelEditable
+            tag="p" className="t" value={p.title || ''}
+            onChange={(v) => onItemChange(i, 'title', v)} placeholder="Project title"
+          />
+          <PixelEditable
+            tag="p" className="d" value={p.description || ''} multiline
+            onChange={(v) => onItemChange(i, 'description', v)} placeholder="One line on what it is"
+          />
+        </>
+      ) : (
+        <>
+          <p className="t">{p.title}</p>
+          <p className="d">{p.description}</p>
+        </>
+      )}
+    </>
+  );
+
   return (
     <section className="caro" id="work">
       <div className="ch">
@@ -84,16 +119,10 @@ const WorkCarousel = ({ items, title = 'Selected work', hint }) => {
 
       <div className="track-wrap" ref={wrapRef}>
         <div className="track" ref={trackRef}>
-          {items.map((p) => (
-            <Link className="slide cs" to={`/project/${p.id}`} key={p.id}>
-              <div className="csm">
-                <img src={p.image} alt={p.title} loading="lazy" />
-                <span className="reveal-cta" aria-hidden="true" />
-                <span className="rc-clip"><span className="rc-i">View case study</span></span>
-              </div>
-              <p className="t">{p.title}</p>
-              <p className="d">{p.description}</p>
-            </Link>
+          {items.map((p, i) => (
+            editMode
+              ? <div className="slide cs" key={p.id}>{card(p, i)}</div>
+              : <Link className="slide cs" to={`/project/${p.id}`} key={p.id}>{card(p, i)}</Link>
           ))}
         </div>
 

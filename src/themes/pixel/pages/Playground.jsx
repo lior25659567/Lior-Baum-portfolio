@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import homeContent from '../../../data/home-content.json';
 import PixelShell from '../PixelShell.jsx';
 import DitherPlate from '../DitherPlate.jsx';
 import { MOTIF_NAMES } from '../motifs.js';
+import { PixelEditable, PixelAddBtn, PixelRemoveBtn, PixelPublishBar } from '../PixelEdit.jsx';
+import { useEdit } from '../../../context/EditContext';
 import './Playground.css';
 
 /* Playground — a live module exposing the plate's own controls, then the
@@ -70,14 +71,26 @@ const LiveModule = () => {
 };
 
 const Playground = () => {
-  const pg = homeContent.content.playground;
-  const items = pg?.items || [];
+  const { content, editMode, updateContent, updateNestedContent, saveHomeToCode } = useEdit();
+  const pg = content.playground || {};
+  const items = pg.items || [];
+
+  const setPg = (key, value) => updateContent('playground', key, value);
+  const setItem = (i, key, value) => updateNestedContent('playground', i, key, value);
+  const setPara = (i, j, value) =>
+    setItem(i, 'paragraphs', (items[i].paragraphs || []).map((p, jx) => (jx === j ? value : p)));
 
   return (
     <PixelShell fade={1} band="20vh">
       <header className="pg-head">
-        <p className="pg-eyebrow">{pg?.sectionLabel || 'Playground'}</p>
-        <h1 className="pg-title">{pg?.sectionTitle || 'Experiments'}</h1>
+        <PixelEditable
+          tag="p" className="pg-eyebrow" value={pg.sectionLabel ?? 'Playground'}
+          onChange={(v) => setPg('sectionLabel', v)} placeholder="Label"
+        />
+        <PixelEditable
+          tag="h1" className="pg-title" value={pg.sectionTitle ?? 'Experiments'}
+          onChange={(v) => setPg('sectionTitle', v)} placeholder="Title"
+        />
       </header>
 
       <section className="pg-live">
@@ -99,12 +112,55 @@ const Playground = () => {
             <li className="pg-card" key={item.id}>
               <span className="pg-card-i">{String(i + 1).padStart(2, '0')}</span>
               <div className="pg-card-body">
-                <h3 className="pg-card-title">{item.title?.trim()}</h3>
-                {item.meta ? <p className="pg-card-meta">{item.meta}</p> : null}
+                <h3 className="pg-card-title">
+                  <PixelEditable
+                    value={item.title?.trim() ?? ''}
+                    onChange={(v) => setItem(i, 'title', v)} placeholder="Project name"
+                  />
+                  <PixelRemoveBtn
+                    onClick={() => setPg('items', items.filter((_, ix) => ix !== i))}
+                    title="Remove experiment"
+                  />
+                </h3>
+                {item.meta || editMode ? (
+                  <PixelEditable
+                    tag="p" className="pg-card-meta" value={item.meta ?? ''}
+                    onChange={(v) => setItem(i, 'meta', v)} placeholder="2025 · Side bet"
+                  />
+                ) : null}
                 {(item.paragraphs || []).map((para, j) => (
-                  <p className="pg-card-text" key={j}>{para}</p>
+                  <p className="pg-card-text" key={j}>
+                    <PixelEditable
+                      tag="span" value={para} multiline
+                      onChange={(v) => setPara(i, j, v)} placeholder="Write a paragraph…"
+                    />
+                    <PixelRemoveBtn
+                      onClick={() => setItem(i, 'paragraphs', (item.paragraphs || []).filter((_, jx) => jx !== j))}
+                      title="Remove paragraph"
+                    />
+                  </p>
                 ))}
-                {item.link?.url ? (
+                <PixelAddBtn onClick={() => setItem(i, 'paragraphs', [...(item.paragraphs || []), ''])}>
+                  + Paragraph
+                </PixelAddBtn>
+
+                {/* View mode shows the link only when there is a URL to open.
+                    Edit mode always shows both halves, so an empty link can be
+                    filled in without first inventing a URL elsewhere. */}
+                {editMode ? (
+                  <p className="pg-card-link is-editing">
+                    <PixelEditable
+                      value={item.link?.label ?? ''}
+                      onChange={(v) => setItem(i, 'link', { ...(item.link || {}), label: v })}
+                      placeholder="Link label"
+                    />
+                    <PixelEditable
+                      className="pg-card-url" value={item.link?.url ?? ''}
+                      onChange={(v) => setItem(i, 'link', { ...(item.link || {}), url: v })}
+                      placeholder="https://…"
+                    />
+                  </p>
+                ) : item.link?.url ? (
                   <p className="pg-card-link">
                     <a href={item.link.url} target="_blank" rel="noreferrer">
                       {item.link.label || 'Open'} ↗
@@ -115,7 +171,18 @@ const Playground = () => {
             </li>
           ))}
         </ol>
+
+        <PixelAddBtn
+          onClick={() => setPg('items', [
+            ...items,
+            { id: `pg-${Date.now()}`, title: '', meta: '', paragraphs: [''], link: { url: '', label: '' }, hero: null, gallery: [] },
+          ])}
+        >
+          + Experiment
+        </PixelAddBtn>
       </section>
+
+      <PixelPublishBar save={saveHomeToCode} />
     </PixelShell>
   );
 };
