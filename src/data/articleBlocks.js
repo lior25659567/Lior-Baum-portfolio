@@ -80,6 +80,7 @@ const BLOCK_DEFAULTS = {
   }),
   cards: () => ({
     variant: 'numbered',
+    badge: 'filled',
     columns: 2,
     items: [{ number: '1', tone: 'neutral', title: 'Card title', description: 'Card description' }],
   }),

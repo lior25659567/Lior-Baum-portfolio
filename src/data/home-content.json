@@ -171,6 +171,23 @@
           ]
         },
         {
+          "id": "privacy-center-builder",
+          "title": "Privacy Center Builder",
+          "category": "Product Design · Scaling a B2B editor across products.",
+          "image": "/home/img-privacy-center-builder.webp",
+          "year": "2025",
+          "mediaMode": "template",
+          "iframeSrc": "",
+          "cardBg": "gradient",
+          "imageFit": "contain",
+          "description": "Rebuilt BigID's privacy form builder around direct editing — and turned it into a shared editor pattern for other BigID builders.",
+          "labels": [
+            "Product Design",
+            "Interaction Design",
+            "Design Systems"
+          ]
+        },
+        {
           "id": "itero-scan-workflow",
           "title": "iTero Scan Workflow",
           "category": "Product Design · Redesigning a complex clinical flow.",

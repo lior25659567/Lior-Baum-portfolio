@@ -5,6 +5,8 @@ import { savedCaseStudies } from '../data/case-studies/index.js';
 import { contactDefaults } from '../data/caseStudyData';
 import { buildResponsiveWebp, LazyVideo, pickMediaFile } from './caseStudyMedia';
 import EditableField from '../components/EditableField';
+import { AnnotationLayer, AnnotationEditor, AnnotationNotes } from '../components/ImageAnnotations';
+import { CARD_ICONS, CARD_ICON_KEYS, TONE_DEFAULT_ICON } from '../components/CardIcons';
 import {
   hasText, clean, oneLine, listOf, isVideoSrc, normalizeMedia,
   splitBold, articleBlockCategories, deriveArticleFromSlides, CONVERTIBLE_BLOCK_TYPES,
@@ -67,7 +69,7 @@ const Prose = ({ text, className = 'cs-article-p' }) => {
 
 /* ── Media entry (shared by view + edit figure) ───────────────────────── */
 
-const MediaEntry = ({ entry, tier }) => {
+const MediaEntry = ({ entry, tier, annotating = false, onAnnotationsChange, onAnnotateDone }) => {
   const ref = useRef(null);
   const onImageClick = useContext(LightboxContext);
   const src = clean(entry.src);
@@ -131,25 +133,35 @@ const MediaEntry = ({ entry, tier }) => {
             />
           )}
         </div>
-      ) : video ? (
-        <LazyVideo src={src} priority={inView ? 'high' : 'lazy'} controls className="cs-article-media" />
       ) : (
-        <img
-          src={src}
-          alt={clean(entry.caption) || ''}
-          loading="lazy"
-          decoding="async"
-          className={`cs-article-media${onImageClick ? ' cs-article-media--zoom' : ''}`}
-          {...(resp ? { srcSet: resp.srcSet, sizes: FIGURE_SIZES[tier] || FIGURE_SIZES.wide } : {})}
-          {...(onImageClick ? {
-            onClick: () => onImageClick(src),
-            onKeyDown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onImageClick(src); } },
-            role: 'button',
-            tabIndex: 0,
-            title: 'Click to enlarge',
-          } : {})}
-        />
+        <div className="cs-annot-stage">
+          {video ? (
+            <LazyVideo src={src} priority={inView ? 'high' : 'lazy'} controls className="cs-article-media" />
+          ) : (
+            <img
+              src={src}
+              alt={clean(entry.caption) || ''}
+              loading="lazy"
+              decoding="async"
+              className={`cs-article-media${onImageClick ? ' cs-article-media--zoom' : ''}`}
+              {...(resp ? { srcSet: resp.srcSet, sizes: FIGURE_SIZES[tier] || FIGURE_SIZES.wide } : {})}
+              {...(onImageClick ? {
+                onClick: () => onImageClick(src),
+                onKeyDown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onImageClick(src); } },
+                role: 'button',
+                tabIndex: 0,
+                title: 'Click to enlarge',
+              } : {})}
+            />
+          )}
+          {annotating ? (
+            <AnnotationEditor annotations={entry.annotations} onChange={onAnnotationsChange} onDone={onAnnotateDone} />
+          ) : (
+            listOf(entry.annotations).length > 0 && <AnnotationLayer annotations={entry.annotations} />
+          )}
+        </div>
       )}
+      {!annotating && !embed && <AnnotationNotes annotations={entry.annotations} />}
     </div>
   );
 };
@@ -205,22 +217,65 @@ const ArticleCarousel = ({ entries, tier, interval }) => {
 
 /* ── Block renderers ──────────────────────────────────────────────────── */
 
+// Heading sizes = the article's fixed type scale (40/30/24/18/16). The three
+// larger steps render as <h2>, the two smaller as <h3>, so picking a size
+// keeps the outline sensible. Unset size falls back to the level's default.
+const HEADING_SIZES = [
+  { key: 'xl', label: 'Display', px: 40, level: 2 },
+  { key: 'lg', label: 'H1', px: 30, level: 2 },
+  { key: 'md', label: 'H2', px: 24, level: 2 },
+  { key: 'sm', label: 'H3', px: 18, level: 3 },
+  { key: 'xs', label: 'H4', px: 16, level: 3 },
+];
+const HEADING_ALIGNS = [
+  { key: 'left', label: 'Left' },
+  { key: 'center', label: 'Center' },
+];
+
 const HeadingBlock = ({ block, editing, onPatch }) => {
-  const Tag = Number(block.level) === 3 ? 'h3' : 'h2';
+  const level = Number(block.level) === 3 ? 3 : 2;
+  const size = HEADING_SIZES.find((sz) => sz.key === block.size)?.key || (level === 3 ? 'xs' : 'md');
+  const align = block.align === 'center' ? 'center' : 'left';
+  const Tag = level === 3 ? 'h3' : 'h2';
+  const mods = `${block.size ? ` cs-article-heading--${size}` : ''}${align === 'center' ? ' cs-article-heading--center' : ''}`;
   return (
     <>
       {(hasText(block.eyebrow) || editing) && (
-        <p className="cs-article-eyebrow">
+        <p className={`cs-article-eyebrow${align === 'center' ? ' cs-article-heading--center' : ''}`}>
           {editing
             ? <EditableField value={block.eyebrow} onChange={(v) => onPatch({ eyebrow: v })} placeholder="Eyebrow (optional)" />
             : block.eyebrow}
         </p>
       )}
-      <Tag className={Number(block.level) === 3 ? 'cs-article-h3' : 'cs-article-h2'}>
+      <Tag className={`${level === 3 ? 'cs-article-h3' : 'cs-article-h2'}${mods}`}>
         {editing
           ? <EditableField value={block.text} onChange={(v) => onPatch({ text: v })} multiline placeholder="Heading" />
           : oneLine(block.text)}
       </Tag>
+      {editing && (
+        <div className="cs-article-item-toolbar cs-article-heading-toolbar">
+          <span className="cs-article-seg" role="group" aria-label="Heading size">
+            <span className="cs-article-seg-label">Size</span>
+            {HEADING_SIZES.map((sz) => (
+              <button key={sz.key} type="button" title={`${sz.label} — ${sz.px}px`}
+                className={`cs-article-mini-btn${size === sz.key ? ' is-active' : ''}`}
+                onClick={() => onPatch({ size: sz.key, level: sz.level })}>
+                {sz.label} <span className="cs-article-heading-px">{sz.px}</span>
+              </button>
+            ))}
+          </span>
+          <span className="cs-article-seg" role="group" aria-label="Heading alignment">
+            <span className="cs-article-seg-label">Align</span>
+            {HEADING_ALIGNS.map((al) => (
+              <button key={al.key} type="button"
+                className={`cs-article-mini-btn${align === al.key ? ' is-active' : ''}`}
+                onClick={() => onPatch({ align: al.key })}>
+                {al.label}
+              </button>
+            ))}
+          </span>
+        </div>
+      )}
     </>
   );
 };
@@ -392,46 +447,64 @@ const ProblemSolutionImpactBlock = ({ block, editing, onPatch }) => {
   );
 };
 
-const TONE_ICONS = {
-  negative: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" />
-    </svg>
-  ),
-  positive: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" />
-    </svg>
-  ),
-  neutral: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="1" />
-    </svg>
-  ),
+const CARD_TONES = ['neutral', 'negative', 'positive'];
+const CARD_VARIANTS = ['numbered', 'icon', 'stat', 'plain'];
+const CARD_VARIANT_LABELS = { numbered: 'Numbers', icon: 'Icons', stat: 'Stats', plain: 'No badge' };
+// Badge look for number chips and icons. Unset = each variant's original
+// look: a filled number chip, a soft icon circle.
+const BADGE_STYLES = ['filled', 'soft', 'outline', 'square', 'bare'];
+// Badge color per card — the same palette for number chips and icons.
+const CARD_COLORS = ['accent', 'ink', 'gray', 'success', 'error'];
+const CARD_COLOR_LABELS = { accent: 'Accent', ink: 'Ink', gray: 'Gray', success: 'Green', error: 'Red' };
+// Cards saved before per-card colors keep their look.
+const LEGACY_ICON_COLOR = { neutral: 'gray', negative: 'accent', positive: 'success' };
+const badgeColorOf = (item, tone, variant) => (CARD_COLORS.includes(item.color)
+  ? item.color
+  : variant === 'icon' ? LEGACY_ICON_COLOR[tone] : 'accent');
+
+const CardIcon = ({ item, tone, color }) => {
+  const key = item.icon || TONE_DEFAULT_ICON[tone];
+  if (key === 'none') return null;
+  return <span className={`cs-article-card-icon cs-article-badge-c--${color}`}>{CARD_ICONS[key] || CARD_ICONS.dot}</span>;
 };
 
-const CARD_TONES = ['neutral', 'negative', 'positive'];
-const CARD_VARIANTS = ['numbered', 'icon', 'stat'];
-
 const CardsBlock = ({ block, editing, onPatch, onConvert }) => {
+  // Which card's icon picker is open (index); -1 = none.
+  const [pickerFor, setPickerFor] = useState(-1);
   const items = listOf(block.items);
   const variant = CARD_VARIANTS.includes(block.variant) ? block.variant : 'numbered';
-  const cols = Math.min(Math.max(Number(block.columns) || 2, 1), 3);
+  const badge = BADGE_STYLES.includes(block.badge) ? block.badge : (variant === 'icon' ? 'soft' : 'filled');
+  const hasBadge = variant === 'numbered' || variant === 'icon';
+  const cols = Math.min(Math.max(Number(block.columns) || 2, 1), 4);
   const setItem = (i, patch) => onPatch({ items: items.map((it, j) => (j === i ? { ...it, ...patch } : it)) });
+  // Switching Numbers ↔ Icons keeps the badge look: the current badge style and
+  // each card's current color are saved explicitly, so nothing shifts.
+  const switchVariant = (v) => {
+    if (v === variant) return;
+    const carry = hasBadge && (v === 'numbered' || v === 'icon');
+    onPatch({
+      variant: v,
+      ...(carry ? {
+        badge,
+        items: items.map((it) => ({ ...it, color: badgeColorOf(it, CARD_TONES.includes(it.tone) ? it.tone : 'neutral', variant) })),
+      } : {}),
+    });
+  };
   if (!items.length && !editing) return null;
   return (
     <>
-      <div className={`cs-article-cards cs-article-cards--${variant}`} style={{ '--cs-cards-cols': cols }}>
+      <div className={`cs-article-cards cs-article-cards--${variant} cs-article-cards--cols-${cols}${hasBadge ? ` cs-article-cards--badge-${badge}` : ''}`} style={{ '--cs-cards-cols': cols }}>
         {items.map((item, i) => {
           const tone = CARD_TONES.includes(item.tone) ? item.tone : 'neutral';
+          const color = badgeColorOf(item, tone, variant);
           return (
             <div className={`cs-article-card cs-article-card--${tone}`} key={i}>
               {variant === 'numbered' && hasText(item.number) && (
-                <span className="cs-article-card-num">
+                <span className={`cs-article-card-num cs-article-badge-c--${color}`}>
                   {editing ? <EditableField value={item.number} onChange={(v) => setItem(i, { number: v })} placeholder="1" /> : clean(item.number)}
                 </span>
               )}
-              {variant === 'icon' && <span className={`cs-article-card-icon cs-article-card-icon--${tone}`}>{TONE_ICONS[tone]}</span>}
+              {variant === 'icon' && <CardIcon item={item} tone={tone} color={color} />}
               {variant === 'stat' && (hasText(item.value) || editing) && (
                 <span className="cs-article-card-value">
                   {editing ? <EditableField value={item.value} onChange={(v) => setItem(i, { value: v })} placeholder="75%" /> : clean(item.value)}
@@ -460,13 +533,41 @@ const CardsBlock = ({ block, editing, onPatch, onConvert }) => {
                       </button>
                     )}
                     {variant === 'icon' && (
-                      <button type="button" className="cs-article-mini-btn" title="Cycle tone"
-                        onClick={() => setItem(i, { tone: CARD_TONES[(CARD_TONES.indexOf(tone) + 1) % CARD_TONES.length] })}>
-                        {tone}
-                      </button>
+                      <>
+                        <button type="button" className={`cs-article-mini-btn${pickerFor === i ? ' is-active' : ''}`}
+                          title="Choose this card's icon, or remove it"
+                          onClick={() => setPickerFor(pickerFor === i ? -1 : i)}>
+                          icon: {item.icon || TONE_DEFAULT_ICON[tone]} ▾
+                        </button>
+                      </>
+                    )}
+                    {hasBadge && (
+                      <span className="cs-article-card-swatches" role="group" aria-label="Badge color">
+                        {CARD_COLORS.map((c) => (
+                          <button key={c} type="button" title={CARD_COLOR_LABELS[c]} aria-label={`${CARD_COLOR_LABELS[c]} badge`}
+                            className={`cs-article-card-swatch cs-article-badge-c--${c}${color === c ? ' is-active' : ''}`}
+                            onClick={() => setItem(i, { color: c })} />
+                        ))}
+                      </span>
                     )}
                     <button type="button" className="cs-article-mini-btn" title="Remove card"
                       onClick={() => onPatch({ items: items.filter((_, j) => j !== i) })}>✕</button>
+                  </div>
+                )}
+                {editing && variant === 'icon' && pickerFor === i && (
+                  <div className="cs-article-icon-picker" role="listbox" aria-label="Card icon">
+                    {CARD_ICON_KEYS.map((k) => (
+                      <button key={k} type="button" title={k} aria-label={k}
+                        className={`cs-article-icon-opt${(item.icon || TONE_DEFAULT_ICON[tone]) === k ? ' is-active' : ''}`}
+                        onClick={() => { setItem(i, { icon: k }); setPickerFor(-1); }}>
+                        {CARD_ICONS[k]}
+                      </button>
+                    ))}
+                    <button type="button" title="Remove icons from every card in this block" aria-label="No icon"
+                      className={`cs-article-icon-opt cs-article-icon-opt--none${item.icon === 'none' ? ' is-active' : ''}`}
+                      onClick={() => { onPatch({ items: items.map((it) => ({ ...it, icon: 'none' })) }); setPickerFor(-1); }}>
+                      none (all)
+                    </button>
                   </div>
                 )}
               </div>
@@ -475,19 +576,43 @@ const CardsBlock = ({ block, editing, onPatch, onConvert }) => {
         })}
       </div>
       {editing && (
-        <div className="cs-article-item-toolbar">
+        <div className="cs-article-item-toolbar cs-article-cards-toolbar">
           <button type="button" className="cs-article-mini-btn"
             onClick={() => onPatch({ items: [...items, { number: String(items.length + 1), tone: 'neutral', title: '', description: '', value: '' }] })}>
             + card
           </button>
-          <button type="button" className="cs-article-mini-btn" title="Cycle variant"
-            onClick={() => onPatch({ variant: CARD_VARIANTS[(CARD_VARIANTS.indexOf(variant) + 1) % CARD_VARIANTS.length] })}>
-            {variant}
-          </button>
-          <button type="button" className="cs-article-mini-btn" title="Columns"
-            onClick={() => onPatch({ columns: (cols % 3) + 1 })}>
-            {cols} col
-          </button>
+          <span className="cs-article-seg" role="group" aria-label="Card style">
+            <span className="cs-article-seg-label">Style</span>
+            {CARD_VARIANTS.map((v) => (
+              <button key={v} type="button" className={`cs-article-mini-btn${variant === v ? ' is-active' : ''}`}
+                onClick={() => switchVariant(v)}>
+                {CARD_VARIANT_LABELS[v]}
+              </button>
+            ))}
+          </span>
+          {hasBadge && (
+            <span className="cs-article-seg" role="group" aria-label="Badge style">
+              <span className="cs-article-seg-label">Badge</span>
+              {BADGE_STYLES.map((b) => (
+                <button key={b} type="button" title={`${b} badge`}
+                  className={`cs-article-badge-opt cs-article-cards--badge-${b}${badge === b ? ' is-active' : ''}`}
+                  onClick={() => onPatch({ badge: b })}>
+                  <span className="cs-article-badge-pair">
+                    <span className="cs-article-card-num cs-article-badge-c--accent">1</span>
+                    <span className="cs-article-card-icon cs-article-badge-c--accent">{CARD_ICONS.star}</span>
+                  </span>
+                  <span className="cs-article-badge-name">{b}</span>
+                </button>
+              ))}
+            </span>
+          )}
+          <span className="cs-article-seg" role="group" aria-label="Columns">
+            <span className="cs-article-seg-label">Columns</span>
+            {[1, 2, 3, 4].map((c) => (
+              <button key={c} type="button" className={`cs-article-mini-btn${cols === c ? ' is-active' : ''}`}
+                onClick={() => onPatch({ columns: c })}>{c}</button>
+            ))}
+          </span>
           <button type="button" className="cs-article-mini-btn"
             title="Turn these cards into a bullet list — each card title becomes the bullet's bold lead-in"
             onClick={() => onConvert && onConvert('bullets')}>→ bullets</button>
@@ -499,6 +624,8 @@ const CardsBlock = ({ block, editing, onPatch, onConvert }) => {
 
 const FigureBlock = ({ block, editing, onPatch }) => {
   const openLibrary = useContext(MediaLibraryContext);
+  // Which media entry (index) is in annotation mode; -1 = none. One at a time.
+  const [annotatingIdx, setAnnotatingIdx] = useState(-1);
   const media = listOf(block.media);
   const width = ['prose', 'wide', 'full'].includes(block.width) ? block.width : 'wide';
   const gridCols = Math.min(Math.max(Number(block.gridCols) || 2, 1), 6);
@@ -531,7 +658,13 @@ const FigureBlock = ({ block, editing, onPatch }) => {
               </span>
             )}
             {(hasText(entry.src) || hasText(entry.embedUrl))
-              ? <MediaEntry entry={entry} tier={width} />
+              ? <MediaEntry
+                  entry={entry}
+                  tier={width}
+                  annotating={editing && annotatingIdx === i}
+                  onAnnotationsChange={(list) => setEntry(i, { annotations: list })}
+                  onAnnotateDone={() => setAnnotatingIdx(-1)}
+                />
               : editing && (
                 <>
                   <button type="button" className="cs-article-upload-slot" onClick={() => pickMediaFile((m) => setEntry(i, m))}>
@@ -563,6 +696,13 @@ const FigureBlock = ({ block, editing, onPatch }) => {
                   defaultValue={entry.embedUrl || ''}
                   onBlur={(e) => setEntry(i, { embedUrl: e.target.value.trim() })}
                 />
+                {hasText(entry.src) && !hasText(entry.embedUrl) && block.display !== 'carousel' && (
+                  <button type="button" className={`cs-article-mini-btn${annotatingIdx === i ? ' is-active' : ''}`}
+                    title="Draw arrows, boxes, pen strokes and text on this image"
+                    onClick={() => setAnnotatingIdx(annotatingIdx === i ? -1 : i)}>
+                    {annotatingIdx === i ? 'done' : `annotate${listOf(entry.annotations).length ? ` (${listOf(entry.annotations).length})` : ''}`}
+                  </button>
+                )}
                 <button type="button" className={`cs-article-mini-btn${entry.border ? ' is-active' : ''}`}
                   title="Toggle a framed border on this image"
                   onClick={() => setEntry(i, { border: !entry.border })}>border</button>

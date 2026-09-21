@@ -1,0 +1,1336 @@
+{
+  "dataVersion": 6,
+  "title": "Privacy Center\nBuilder",
+  "subtitle": "Turning a limiting editor into a scalable editing pattern used across BigID products.",
+  "category": "Product Design · B2B SaaS",
+  "year": "2025",
+  "color": "#6B3FD4",
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Privacy Center\nBuilder",
+      "description": "Turning a limiting editor into a scalable editing pattern that's now used across several BigID products.",
+      "metaItems": [
+        {
+          "label": "Role",
+          "value": "Product Designer"
+        },
+        {
+          "label": "Team",
+          "value": "Shir Voldman · Lior Baum"
+        },
+        {
+          "label": "Company",
+          "value": "BigID · B2B SaaS"
+        },
+        {
+          "label": "Scope",
+          "value": "End to end"
+        }
+      ],
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/new-editor-tour.mp4",
+          "caption": "",
+          "isVideo": true,
+          "embedType": ""
+        }
+      ],
+      "gridCols": 1,
+      "imageDisplayMode": "grid",
+      "splitRatio": 40
+    },
+    {
+      "type": "problem",
+      "label": "The Challenge",
+      "title": "A form builder that stopped scaling",
+      "content": "Enterprise privacy teams use it to create consumer privacy request pages. As their needs grew, the tool didn't scale with them.",
+      "issuesTitle": "Missing capabilities included",
+      "issues": [
+        "Conditional logic between fields",
+        "Brand customization",
+        "Version history",
+        "Field reordering"
+      ],
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/before-original-editor.webp",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "splitList",
+      "label": "The User & The Solution",
+      "title": "Who it's for, and what we set out to build",
+      "layoutVariant": "list",
+      "items": [
+        {
+          "title": "The user",
+          "description": "Privacy operations teams at enterprise companies — non-technical users who still need to configure complex workflows."
+        },
+        {
+          "title": "The solution",
+          "description": "An intuitive editing experience on a scalable framework — new capabilities without added complexity."
+        },
+        {
+          "title": "The bigger goal",
+          "description": "A reusable pattern that can raise the editing experience across the product's other editors."
+        }
+      ]
+    },
+    {
+      "type": "problem",
+      "label": "What Didn't Work",
+      "title": "The structure wasn't built to scale",
+      "content": "Each new capability increased complexity and reduced clarity. The old builder worked — but editing felt like guesswork.",
+      "issuesTitle": "Where it broke down",
+      "issues": [
+        "A builder blended with settings",
+        "Fields toggled from a static list, apart from the preview",
+        "Properties hidden in dialogs"
+      ],
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/old-builder-annotated.webp",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "problem",
+      "label": "Research",
+      "title": "How leading editors solve it",
+      "content": "Website builders, form, document and design editors all shared the same core principles.",
+      "issuesTitle": "Core principles",
+      "issues": [
+        "Direct content editing",
+        "Clear separation between editing and settings",
+        "Familiar interaction patterns",
+        "Instant visual feedback"
+      ],
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/research-editors.mp4",
+          "caption": "",
+          "isVideo": true,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "problem",
+      "label": "Design · 1",
+      "title": "Interactive preview for direct editing",
+      "content": "The preview became the form itself — click a field to select it, click a title to rename it in place.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/interactive-preview.webp",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/direct-editing.mp4",
+          "caption": "",
+          "isVideo": true,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "carousel",
+      "imageCarouselInterval": 3500
+    },
+    {
+      "type": "media",
+      "label": "Interaction States",
+      "title": "Final four states, based on usability testing",
+      "caption": "Default, hover, selected, and selected + hover — plus inline editing and fields with logic.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/interaction-states.webp",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        },
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/interaction-states-spec.webp",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ]
+    },
+    {
+      "type": "problem",
+      "label": "Design · 2",
+      "title": "Persistent properties panel for context",
+      "issues": [
+        "Fewer clicks to change a property",
+        "The selected field stays highlighted, so you never lose context"
+      ],
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/properties-panel.webp",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "problem",
+      "label": "Design · 3",
+      "title": "Navigation panel for structure",
+      "content": "A collapsible Form steps panel shows the form's structure and jumps to any step.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/navigation-panel.mp4",
+          "caption": "",
+          "isVideo": true,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "problem",
+      "label": "Design · 4",
+      "title": "Theme controls for branding",
+      "issues": [
+        "Brand changes update the preview in real time"
+      ],
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/theme-controls.mp4",
+          "caption": "",
+          "isVideo": true,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "problem",
+      "label": "Design · 5",
+      "title": "Consistent settings pattern",
+      "issues": [
+        "A dedicated settings dialog keeps editing simple, with quick access to advanced settings"
+      ],
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/settings-dialog.mp4",
+          "caption": "",
+          "isVideo": true,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "directions",
+      "label": "Prototype & Validation",
+      "title": "Where should navigation and actions live?",
+      "description": "We prototyped the key layout decisions and watched where users looked, clicked, and expected actions.",
+      "directionCount": 3,
+      "dir1Status": "rejected",
+      "dir1Desc": "Option #1 — floating buttons opening a left panel. Users looked for theme in the top-right, and the theme panel blocked navigation.",
+      "dir1Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/option-1-fabs.webp",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "dir2Status": "rejected",
+      "dir2Desc": "Option #2 — a horizontal toolbar. Users read it as text formatting, and it took space from the form.",
+      "dir2Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/option-2-toolbar.webp",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "dir3Status": "accepted",
+      "dir3Desc": "Option #3 — navigation on the left, open by default; theme as a global action that slides over the properties pane.",
+      "dir3Image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/option-3-final.mp4",
+          "caption": "",
+          "isVideo": true,
+          "embedType": ""
+        }
+      ]
+    },
+    {
+      "type": "problem",
+      "label": "Scaling",
+      "title": "A reusable editing framework",
+      "content": "With the design system team, we defined shared patterns that every builder reuses, for consistency.",
+      "issuesTitle": "The shared layout",
+      "issues": [
+        "Global header and actions",
+        "Collapsible left panel",
+        "Main canvas",
+        "Contextual properties panel"
+      ],
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/editor-layout-anatomy.webp",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ],
+      "splitRatio": 40,
+      "gridCols": 1,
+      "imageDisplayMode": "grid"
+    },
+    {
+      "type": "media",
+      "label": "Scaling",
+      "title": "Same editor, different products",
+      "caption": "Assessments, privacy notices and report templates on the same editor framework.",
+      "image": [
+        {
+          "position": "center center",
+          "size": "large",
+          "fit": "contain",
+          "wrapperBg": true,
+          "embedUrl": "",
+          "src": "/case-studies/privacy-center-builder/same-editor-products-desktop.webp",
+          "caption": "",
+          "isVideo": false,
+          "embedType": ""
+        }
+      ]
+    },
+    {
+      "type": "outcomes",
+      "label": "Impact",
+      "title": "Impact",
+      "outcomes": [
+        {
+          "title": "Increased adoption",
+          "description": "More users finished creating and customizing forms, with fewer drop-offs."
+        },
+        {
+          "title": "Reduced dev effort",
+          "description": "Several editing patterns merged into one reusable framework."
+        },
+        {
+          "title": "Consistent experience",
+          "description": "Users move between products without relearning editing."
+        },
+        {
+          "title": "New wins",
+          "description": "The editor scaled to support new customer requirements."
+        }
+      ],
+      "showNumbers": false,
+      "cardVariant": "default",
+      "gridColumns": 4,
+      "splitRatio": 40
+    },
+    {
+      "type": "end",
+      "title": "Thank You",
+      "subtitle": "Designed together with Shir Voldman.",
+      "cta": "Get in touch",
+      "splitRatio": 40
+    }
+  ],
+  "article": {
+    "articleVersion": 1,
+    "title": "Privacy Center Builder",
+    "lede": "Turning a limiting editor into a scalable editing pattern that's now used across several BigID products.",
+    "blocks": [
+      {
+        "id": "pcb-hero",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/upgraded-editor-onboarding.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": ""
+          }
+        ]
+      },
+      {
+        "id": "pcb-meta",
+        "type": "metaGrid",
+        "items": [
+          {
+            "label": "Role",
+            "value": "Product Designer"
+          },
+          {
+            "label": "Company",
+            "value": "BigID · B2B SaaS"
+          },
+          {
+            "label": "Team",
+            "value": "Shir Voldman · Lior Baum"
+          },
+          {
+            "label": "Tools",
+            "value": "Figma"
+          }
+        ]
+      },
+      {
+        "id": "pcb-div-1",
+        "type": "divider"
+      },
+      {
+        "id": "pcb-psi",
+        "type": "problemSolutionImpact",
+        "items": [
+          {
+            "label": "Problem",
+            "text": "Enterprise privacy teams needed conditional logic, branding, version history and field reordering. The old editor could take each one, but every addition made it more crowded and harder to use."
+          },
+          {
+            "label": "Solution",
+            "text": "We rebuilt the builder around direct editing — click the form to change it — with a fixed properties panel, a navigation panel for structure, and theme and settings kept out of the way."
+          },
+          {
+            "label": "Impact",
+            "text": "More users finished building and customizing their forms. The same editor layout now runs other BigID builders, which cut dev effort and means users don't relearn editing in each product."
+          }
+        ]
+      },
+      {
+        "id": "pcb-div-2",
+        "type": "divider"
+      },
+      {
+        "id": "pcb-fromto",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/before-original-editor.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "title": "From this"
+          },
+          {
+            "src": "/case-studies/privacy-center-builder/new-editor-tour.mp4",
+            "caption": "",
+            "isVideo": true,
+            "embedUrl": "",
+            "title": "To this ✨"
+          }
+        ]
+      },
+      {
+        "id": "pcb-ch-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "",
+        "text": "The challenge"
+      },
+      {
+        "id": "pcb-ch-p1",
+        "type": "paragraph",
+        "text": "A form builder enterprise privacy teams use to create the pages where consumers file privacy requests."
+      },
+      {
+        "id": "pcb-ch-p2",
+        "type": "paragraph",
+        "text": "As their needs grew, the tool didn't **scale** with them."
+      },
+      {
+        "id": "pcb-ch-b",
+        "type": "bullets",
+        "title": "Missing capabilities included:",
+        "ordered": false,
+        "items": [
+          "Conditional logic between fields",
+          "Brand customization",
+          "Version history",
+          "Field reordering"
+        ]
+      },
+      {
+        "id": "pcb-ch-p3",
+        "type": "paragraph",
+        "text": "Users had **limited flexibility**, and it was **hard to add new features to the editor.**"
+      },
+      {
+        "id": "pcb-us-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "",
+        "text": "The user"
+      },
+      {
+        "id": "pcb-us-p",
+        "type": "paragraph",
+        "text": "Privacy operations teams at enterprise companies."
+      },
+      {
+        "id": "pcb-us-callout",
+        "type": "callout",
+        "text": "**Non-technical users who still need to configure complex workflows.**"
+      },
+      {
+        "id": "pcb-so-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "",
+        "text": "The solution"
+      },
+      {
+        "id": "pcb-so-b",
+        "type": "bullets",
+        "title": "",
+        "ordered": false,
+        "items": [
+          "An intuitive editing experience built on a scalable framework — new capabilities can be added without adding complexity.",
+          "A reusable pattern that can raise the editing experience across the product's other editors."
+        ]
+      },
+      {
+        "id": "pcb-dw-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "",
+        "text": "What didn't work?"
+      },
+      {
+        "id": "pcb-dw-p1",
+        "type": "paragraph",
+        "text": "As we explored solutions, it became clear this wasn't just about missing features."
+      },
+      {
+        "id": "pcb-dw-p2",
+        "type": "paragraph",
+        "text": "The editor's structure **wasn't built to scale.** New capabilities could be added, but each one increased complexity, reduced clarity, and made the editor harder to navigate."
+      },
+      {
+        "id": "pcb-dw-p3",
+        "type": "paragraph",
+        "text": "**The old builder worked — but editing in it felt like guesswork.**"
+      },
+      {
+        "id": "pcb-dw-fig",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/old-builder.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "annotations": [
+              {
+                "id": "ob-box-tabs",
+                "kind": "box",
+                "x": 0.058,
+                "y": 0.11,
+                "w": 0.132,
+                "h": 0.38,
+                "color": "error"
+              },
+              {
+                "id": "ob-box-fields",
+                "kind": "box",
+                "x": 0.205,
+                "y": 0.56,
+                "w": 0.255,
+                "h": 0.43,
+                "color": "error"
+              },
+              {
+                "id": "ob-box-menu",
+                "kind": "box",
+                "x": 0.428,
+                "y": 0.855,
+                "w": 0.022,
+                "h": 0.05,
+                "color": "error"
+              },
+              {
+                "id": "ob-note-tabs",
+                "kind": "text",
+                "style": "note",
+                "x": 0.215,
+                "y": 0.015,
+                "w": 0.27,
+                "text": "A builder that's blended with settings",
+                "color": "error"
+              },
+              {
+                "id": "ob-arrow-tabs",
+                "kind": "arrow",
+                "x1": 0.235,
+                "y1": 0.085,
+                "x2": 0.195,
+                "y2": 0.15,
+                "color": "error",
+                "cx": 0.2,
+                "cy": 0.09
+              },
+              {
+                "id": "ob-note-fields",
+                "kind": "text",
+                "style": "note",
+                "x": 0.56,
+                "y": 0.015,
+                "w": 0.34,
+                "text": "Fields toggled on/off from a static list — disconnected from the form preview itself",
+                "color": "error"
+              },
+              {
+                "id": "ob-arrow-fields",
+                "kind": "arrow",
+                "x1": 0.6,
+                "y1": 0.13,
+                "x2": 0.42,
+                "y2": 0.55,
+                "color": "error",
+                "cx": 0.56,
+                "cy": 0.42
+              },
+              {
+                "id": "ob-note-menu",
+                "kind": "text",
+                "style": "note",
+                "x": 0.5,
+                "y": 0.74,
+                "w": 0.16,
+                "text": "Properties hidden in dialogs",
+                "color": "error"
+              },
+              {
+                "id": "ob-arrow-menu",
+                "kind": "arrow",
+                "x1": 0.52,
+                "y1": 0.85,
+                "x2": 0.455,
+                "y2": 0.88,
+                "color": "error",
+                "cx": 0.5,
+                "cy": 0.9
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "pcb-rs-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "",
+        "text": "Research"
+      },
+      {
+        "id": "pcb-rs-p1",
+        "type": "paragraph",
+        "text": "We looked at how leading editing tools solve similar problems across products — from website builders to form, document and design editors."
+      },
+      {
+        "id": "pcb-rs-p2",
+        "type": "paragraph",
+        "text": "They all shared the same core principles:"
+      },
+      {
+        "id": "pcb-rs-b",
+        "type": "bullets",
+        "title": "",
+        "ordered": true,
+        "items": [
+          "Direct content editing",
+          "Clear separation between editing and settings",
+          "Familiar interaction patterns",
+          "Instant visual feedback"
+        ]
+      },
+      {
+        "id": "pcb-rs-fig",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/research-editors.mp4",
+            "caption": "",
+            "isVideo": true,
+            "embedUrl": ""
+          }
+        ]
+      },
+      {
+        "id": "pcb-ds-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "",
+        "text": "Design"
+      },
+      {
+        "id": "pcb-ds-p",
+        "type": "paragraph",
+        "text": "We restructured the builder around a familiar editing model:"
+      },
+      {
+        "id": "pcb-d1-h",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "1. Interactive preview for direct editing"
+      },
+      {
+        "id": "pcb-d1-img",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/interactive-preview.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": ""
+          }
+        ]
+      },
+      {
+        "id": "pcb-d1-vid",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/direct-editing.mp4",
+            "caption": "",
+            "isVideo": true,
+            "embedUrl": ""
+          }
+        ]
+      },
+      {
+        "id": "pcb-d1-states",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/interaction-states.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "title": "Interaction states"
+          },
+          {
+            "src": "/case-studies/privacy-center-builder/interaction-states-spec.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "title": "Final four states, based on usability testing"
+          }
+        ]
+      },
+      {
+        "id": "pcb-d2-h",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "2. Persistent properties panel for context"
+      },
+      {
+        "id": "pcb-d2-b",
+        "type": "bullets",
+        "title": "",
+        "ordered": false,
+        "items": [
+          "Fewer clicks to change a property",
+          "The selected field stays highlighted, so you never lose context"
+        ]
+      },
+      {
+        "id": "pcb-d2-fig",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/properties-panel.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": ""
+          }
+        ]
+      },
+      {
+        "id": "pcb-d3-h",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "3. Navigation panel for structure"
+      },
+      {
+        "id": "pcb-d3-fig",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/navigation-panel.mp4",
+            "caption": "",
+            "isVideo": true,
+            "embedUrl": ""
+          }
+        ]
+      },
+      {
+        "id": "pcb-d4-h",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "4. Theme controls for branding"
+      },
+      {
+        "id": "pcb-d4-b",
+        "type": "bullets",
+        "title": "",
+        "ordered": false,
+        "items": [
+          "Brand changes update the preview in real time"
+        ]
+      },
+      {
+        "id": "pcb-d4-fig",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/theme-controls.mp4",
+            "caption": "",
+            "isVideo": true,
+            "embedUrl": ""
+          }
+        ]
+      },
+      {
+        "id": "pcb-d5-h",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "5. Consistent settings pattern"
+      },
+      {
+        "id": "pcb-d5-b",
+        "type": "bullets",
+        "title": "",
+        "ordered": false,
+        "items": [
+          "A dedicated settings dialog keeps editing simple, with quick access to advanced settings"
+        ]
+      },
+      {
+        "id": "pcb-d5-fig",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/settings-dialog.mp4",
+            "caption": "",
+            "isVideo": true,
+            "embedUrl": ""
+          }
+        ]
+      },
+      {
+        "id": "pcb-pv-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "",
+        "text": "Prototype and Validation"
+      },
+      {
+        "id": "pcb-pv-p1",
+        "type": "paragraph",
+        "text": "By watching where users looked, what they clicked, and where they expected actions to be, we found the patterns that shaped the final experience."
+      },
+      {
+        "id": "pcb-pv-p2",
+        "type": "paragraph",
+        "text": "We built interactive prototypes to validate the key interaction and layout decisions, then tested them with users."
+      },
+      {
+        "id": "pcb-pv-p3",
+        "type": "paragraph",
+        "text": "**For example — where should navigation and actions live?**"
+      },
+      {
+        "id": "pcb-o1-h",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "❌ Option #1"
+      },
+      {
+        "id": "pcb-o1-p",
+        "type": "paragraph",
+        "text": "Navigation & theme as floating buttons, opening a left panel"
+      },
+      {
+        "id": "pcb-o1-fig",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/option-1-fabs.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "status": "rejected",
+            "annotations": [
+              {
+                "id": "o1-note-looked",
+                "kind": "text",
+                "style": "note",
+                "x": 0.42,
+                "y": 0.6,
+                "w": 0.22,
+                "text": "Users looked for the theme button in the top-right settings area",
+                "color": "error"
+              },
+              {
+                "id": "o1-arrow-looked",
+                "kind": "arrow",
+                "x1": 0.53,
+                "y1": 0.595,
+                "x2": 0.555,
+                "y2": 0.145,
+                "color": "error",
+                "cx": 0.63,
+                "cy": 0.36
+              },
+              {
+                "id": "o1-note-here",
+                "kind": "text",
+                "style": "note",
+                "x": 0.8,
+                "y": 0.36,
+                "w": 0.15,
+                "text": "But it was here",
+                "color": "error"
+              },
+              {
+                "id": "o1-arrow-here",
+                "kind": "arrow",
+                "x1": 0.8,
+                "y1": 0.39,
+                "x2": 0.727,
+                "y2": 0.252,
+                "color": "error",
+                "cx": 0.745,
+                "cy": 0.37
+              },
+              {
+                "id": "o1-note-blocked",
+                "kind": "text",
+                "style": "note",
+                "x": 0.012,
+                "y": 0.7,
+                "w": 0.13,
+                "text": "The theme panel blocked navigation until it was closed",
+                "color": "error"
+              },
+              {
+                "id": "o1-arrow-blocked",
+                "kind": "arrow",
+                "x1": 0.1,
+                "y1": 0.695,
+                "x2": 0.1,
+                "y2": 0.2,
+                "color": "error",
+                "cx": 0.19,
+                "cy": 0.45
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "pcb-o2-h",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "❌ Option #2"
+      },
+      {
+        "id": "pcb-o2-p",
+        "type": "paragraph",
+        "text": "Horizontal toolbar"
+      },
+      {
+        "id": "pcb-o2-fig",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/option-2-toolbar.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "",
+            "status": "rejected",
+            "annotations": [
+              {
+                "id": "o2-note-missed",
+                "kind": "text",
+                "style": "note",
+                "x": 0.04,
+                "y": 0.5,
+                "w": 0.16,
+                "text": "Users overlooked the bar, mistaking it for text-editor controls",
+                "color": "error"
+              },
+              {
+                "id": "o2-arrow-missed",
+                "kind": "arrow",
+                "x1": 0.1,
+                "y1": 0.49,
+                "x2": 0.065,
+                "y2": 0.265,
+                "color": "error",
+                "cx": 0.06,
+                "cy": 0.4
+              },
+              {
+                "id": "o2-note-space",
+                "kind": "text",
+                "style": "note",
+                "x": 0.535,
+                "y": 0.52,
+                "w": 0.125,
+                "text": "The taller header left less room for the form",
+                "color": "error"
+              },
+              {
+                "id": "o2-arrow-space",
+                "kind": "arrow",
+                "x1": 0.6,
+                "y1": 0.51,
+                "x2": 0.5,
+                "y2": 0.265,
+                "color": "error",
+                "cx": 0.6,
+                "cy": 0.33
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "pcb-o3-h",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "✅ Option #3"
+      },
+      {
+        "id": "pcb-o3-p",
+        "type": "paragraph",
+        "text": "Navigation as a floating button, theme as a global action, right panel"
+      },
+      {
+        "id": "pcb-o3-fig",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/option-3-final.mp4",
+            "caption": "",
+            "isVideo": true,
+            "embedUrl": "",
+            "status": "accepted",
+            "annotations": [
+              {
+                "id": "o3-note-nav",
+                "kind": "text",
+                "style": "note",
+                "x": 0.015,
+                "y": 0.5,
+                "w": 0.17,
+                "text": "Left panel for navigation only, open by default",
+                "color": "success"
+              },
+              {
+                "id": "o3-arrow-nav",
+                "kind": "arrow",
+                "x1": 0.1,
+                "y1": 0.49,
+                "x2": 0.12,
+                "y2": 0.31,
+                "color": "success",
+                "cx": 0.16,
+                "cy": 0.42
+              },
+              {
+                "id": "o3-note-theme",
+                "kind": "text",
+                "style": "note",
+                "x": 0.815,
+                "y": 0.2,
+                "w": 0.17,
+                "text": "Theme lives in the global document actions",
+                "color": "success"
+              },
+              {
+                "id": "o3-arrow-theme",
+                "kind": "arrow",
+                "x1": 0.84,
+                "y1": 0.195,
+                "x2": 0.797,
+                "y2": 0.13,
+                "color": "success",
+                "cx": 0.8,
+                "cy": 0.18
+              },
+              {
+                "id": "o3-note-close",
+                "kind": "text",
+                "style": "note",
+                "x": 0.815,
+                "y": 0.7,
+                "w": 0.17,
+                "text": "Closes with the X or when you select an element",
+                "color": "success"
+              },
+              {
+                "id": "o3-note-layer",
+                "kind": "text",
+                "style": "note",
+                "x": 0.815,
+                "y": 0.83,
+                "w": 0.17,
+                "text": "Opens as a layer over the properties pane, keeping page and element editing apart",
+                "color": "success"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "pcb-sc-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "",
+        "text": "Scaling"
+      },
+      {
+        "id": "pcb-sc-p1",
+        "type": "paragraph",
+        "text": "The goal wasn't a single builder — it was a reusable editing framework that scales across the platform."
+      },
+      {
+        "id": "pcb-sc-p2",
+        "type": "paragraph",
+        "text": "With the design system team, we defined **shared patterns** that every builder reuses, for **consistency**."
+      },
+      {
+        "id": "pcb-sc-fig",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/editor-layout-anatomy.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": ""
+          }
+        ]
+      },
+      {
+        "id": "pcb-sc2-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "",
+        "text": "Same editor, different products"
+      },
+      {
+        "id": "pcb-sc2-fig",
+        "type": "figure",
+        "width": "wide",
+        "display": "grid",
+        "media": [
+          {
+            "src": "/case-studies/privacy-center-builder/same-editor-products-desktop.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": ""
+          }
+        ]
+      },
+      {
+        "id": "pcb-im-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "",
+        "text": "Impact"
+      },
+      {
+        "id": "pcb-im-cards",
+        "type": "cards",
+        "variant": "icon",
+        "badge": "bare",
+        "columns": 4,
+        "items": [
+          {
+            "number": "1",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
+            "title": "Increased adoption",
+            "description": "More users finished creating and customizing their forms, with fewer drop-offs while editing."
+          },
+          {
+            "number": "2",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
+            "title": "Reduced dev effort",
+            "description": "Dev time went down by merging several editing patterns into one reusable framework."
+          },
+          {
+            "number": "3",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
+            "title": "Consistent experience",
+            "description": "Users move between products without relearning how editing works."
+          },
+          {
+            "number": "4",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
+            "title": "New wins",
+            "description": "The redesigned editor scaled well to support new customer requirements."
+          }
+        ]
+      }
+    ],
+    "hideContact": true
+  }
+}

@@ -1,0 +1,475 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   ImageAnnotations — overlay drawn on article figure media (see
+   ImageAnnotations.jsx). --annot-u = 1% of the media width (set inline from
+   a ResizeObserver) so text and markers scale with the image.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.cs-annot-stage {
+  position: relative;
+}
+
+.cs-annot-layer,
+.cs-annot-editor {
+  position: absolute;
+  inset: 0;
+}
+
+/* Public view: desktop only, and never intercepts clicks (lightbox, video controls). */
+.cs-annot-layer {
+  display: none;
+  pointer-events: none;
+}
+@media (min-width: 1024px) {
+  .cs-annot-layer { display: block; }
+}
+/* Carousels cycle media underneath — not supported in v1. */
+.cs-article-carousel-item .cs-annot-layer { display: none; }
+
+.cs-annot-svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.cs-annot-hit {
+  fill: none;
+  stroke: transparent;
+}
+.cs-annot-selection {
+  fill: none;
+  stroke: var(--color-info);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+
+/* ── Text templates ───────────────────────────────────────────── */
+.cs-annot-text,
+.cs-annot-marker {
+  position: absolute;
+  font-family: var(--font-body);
+  font-size: max(10px, calc(var(--annot-u) * 1.3));
+  line-height: 1.3;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.cs-annot-text--pill {
+  width: max-content;
+  padding: 0.35em 0.85em;
+  border-radius: 999px;
+  background: var(--annot-color);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(20, 20, 20, 0.15);
+}
+
+.cs-annot-text--card {
+  padding: 0.75em 0.95em;
+  border-radius: 0.6em;
+  border-left: 0.3em solid var(--annot-color);
+  background: #fff;
+  color: #22211f;
+  box-shadow: 0 6px 24px rgba(20, 20, 20, 0.14);
+}
+.cs-annot-card-title { display: block; font-weight: 600; }
+.cs-annot-card-body { display: block; margin-top: 0.2em; opacity: 0.72; }
+
+.cs-annot-text--plain {
+  color: var(--annot-color);
+  font-weight: 600;
+}
+
+.cs-annot-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1em;
+  height: 2.1em;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--annot-color);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(20, 20, 20, 0.2);
+}
+
+/* ✓ / ✕ callout labels — design-system success/error, centred on their
+   point so a callout arrow can start underneath and emerge from the edge. */
+.cs-annot-text--positive,
+.cs-annot-text--negative {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  width: max-content;
+  padding: 0.38em 0.9em 0.38em 0.4em;
+  transform: translate(-50%, -50%);
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(20, 20, 20, 0.14);
+}
+.cs-annot-text--positive {
+  color: var(--color-success);
+  background: linear-gradient(var(--color-success-soft), var(--color-success-soft)), #fff;
+}
+.cs-annot-text--negative {
+  color: var(--color-error);
+  background: linear-gradient(var(--color-error-soft), var(--color-error-soft)), #fff;
+}
+.cs-annot-tone-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.45em;
+  height: 1.45em;
+  border-radius: 50%;
+  background: currentColor;
+}
+.cs-annot-tone-icon svg {
+  width: 0.85em;
+  height: 0.85em;
+  stroke: #fff;
+  stroke-width: 3;
+}
+
+/* A white pill/marker needs dark text. */
+.cs-annot-text--pill[data-color='white'],
+.cs-annot-marker[data-color='white'] {
+  color: #22211f;
+}
+
+/* ── Editor (edit mode only) ─────────────────────────────────── */
+.cs-annot-editor {
+  z-index: 5;
+  cursor: crosshair;
+  touch-action: none;
+  outline: 1.5px dashed var(--color-info);
+  outline-offset: 2px;
+}
+.cs-annot-editor.is-tool-select { cursor: default; }
+
+/* Drawing tools draw over existing annotations; only Select can grab them. */
+.cs-annot-editor:not(.is-tool-select) [data-annot-id],
+.cs-annot-editor:not(.is-tool-select) [data-annot-id] * { pointer-events: none; }
+.cs-annot-editor.is-tool-select .cs-annot-shape > * { pointer-events: visiblePainted; cursor: move; }
+.cs-annot-editor.is-tool-select .cs-annot-hit { pointer-events: stroke; }
+.cs-annot-editor.is-tool-select .cs-annot-text,
+.cs-annot-editor.is-tool-select .cs-annot-marker { cursor: move; user-select: none; }
+
+.cs-annot-text.is-selected,
+.cs-annot-marker.is-selected {
+  outline: 1.5px dashed var(--color-info);
+  outline-offset: 3px;
+}
+.cs-annot-editable {
+  min-width: 1ch;
+  outline: none;
+  cursor: text;
+  user-select: text;
+}
+
+.cs-annot-handle {
+  position: absolute;
+  z-index: 2;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  background: #fff;
+  border: 1.5px solid var(--color-info);
+  border-radius: 2px;
+  cursor: nwse-resize;
+}
+.cs-annot-handle--width {
+  left: 100%;
+  top: 50%;
+  cursor: ew-resize;
+}
+/* Arrow bend handle: round, sits on the curve's midpoint. */
+.cs-annot-handle--bend {
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: var(--color-info);
+  border-color: #fff;
+  cursor: grab;
+}
+
+.cs-annot-toolbar {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  z-index: 30;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(20, 20, 20, 0.08);
+}
+/* Tool groups — Draw / Text / Callout, each captioned so options are easy to find. */
+.cs-annot-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding-right: 8px;
+  border-right: 1px solid var(--color-border);
+}
+.cs-annot-group-label {
+  margin: 0 4px 0 2px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.cs-annot-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 9px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.cs-annot-tool svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.cs-annot-tool:hover {
+  background: var(--color-bg-secondary);
+}
+.cs-annot-tool.is-active {
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+.cs-annot-tool--positive:not(.is-active) svg { color: var(--color-success); }
+.cs-annot-tool--negative:not(.is-active) svg { color: var(--color-error); }
+
+.cs-annot-swatches {
+  display: inline-flex;
+  gap: 5px;
+  padding: 0 4px;
+}
+.cs-annot-swatch {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.cs-annot-swatch.is-active {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+/* Delete chip on the selected annotation (Delete/Backspace works too). */
+.cs-annot-del {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin: -24px 0 0 4px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-error);
+  color: #fff;
+  font-size: 11px;
+  font-family: var(--font-body);
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(20, 20, 20, 0.25);
+  cursor: pointer;
+}
+.cs-annot-text > .cs-annot-del,
+.cs-annot-marker > .cs-annot-del {
+  top: 0;
+  right: 0;
+  margin: -12px -12px 0 0;
+}
+
+/* Options for the selected item (box border/fill, callout icon) — own row. */
+.cs-annot-context {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+  padding-top: 6px;
+  border-top: 1px solid var(--color-border);
+}
+.cs-annot-context .cs-annot-group-label:not(:first-child) {
+  margin-left: 10px;
+}
+
+/* Boxes are selectable anywhere inside, not just on their border. */
+.cs-annot-editor.is-tool-select .cs-annot-hit--area {
+  pointer-events: all;
+}
+
+/* Text on a highlight box — chip in the box color, inside the top-left corner. */
+.cs-annot-boxlabel {
+  position: absolute;
+  margin: 0.55em 0 0 0.55em;
+  padding: 0.28em 0.65em;
+  border-radius: 0.45em;
+  background: var(--annot-color);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: max(10px, calc(var(--annot-u) * 1.15));
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  box-shadow: 0 2px 8px rgba(20, 20, 20, 0.15);
+}
+.cs-annot-boxlabel[data-color='white'] {
+  color: #22211f;
+}
+.cs-annot-editor.is-tool-select .cs-annot-boxlabel {
+  cursor: move;
+  user-select: none;
+}
+
+/* Box background swatches (toolbar context row) */
+.cs-annot-fills {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.cs-annot-fill {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  background: #fff;
+  cursor: pointer;
+}
+.cs-annot-fill > span {
+  position: absolute;
+  inset: 0;
+}
+/* "None" = diagonal strike */
+.cs-annot-fill--none::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -3px;
+  right: -3px;
+  height: 1.5px;
+  background: var(--color-error);
+  transform: rotate(-45deg);
+}
+.cs-annot-fill.is-active {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+/* Note — the case-study callout: white box, text + border in the chosen
+   color, hard ink offset shadow. */
+.cs-annot-text--note {
+  padding: 0.55em 0.8em;
+  border: 1.5px solid var(--annot-color);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--annot-color);
+  font-weight: 600;
+  box-shadow: 3px 3px 0 #22211f;
+}
+.cs-annot-text--note[data-color='white'] {
+  color: #22211f;
+}
+
+/* Small-screen fallback: the image's notes as a list below it. */
+.cs-annot-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.cs-annot-notes li {
+  position: relative;
+  padding-left: 1.1rem;
+  color: var(--color-text);
+}
+.cs-annot-notes li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--annot-color);
+}
+.cs-annot-notes li.cs-annot-note--positive::before,
+.cs-annot-notes li.cs-annot-note--negative::before {
+  top: 0;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+  font-weight: 700;
+}
+.cs-annot-notes li.cs-annot-note--positive::before { content: '✓'; color: var(--color-success); }
+.cs-annot-notes li.cs-annot-note--negative::before { content: '✕'; color: var(--color-error); }
+@media (min-width: 1024px) {
+  .cs-annot-notes { display: none; }
+}
+
+/* Note look options — background, shadow, border (toolbar "Note" row). */
+.cs-annot-text--note[data-bg='tint'] {
+  background: color-mix(in srgb, var(--annot-color) 14%, #fff);
+}
+.cs-annot-text--note[data-bg='none'] {
+  background: transparent;
+}
+.cs-annot-text--note[data-shadow='off'] {
+  box-shadow: none;
+}
+.cs-annot-text--note[data-border='off'] {
+  border-color: transparent;
+}
+
+/* Box text styles — filled chip (default above), note box, or text only. */
+.cs-annot-boxlabel--note {
+  background: #fff;
+  color: var(--annot-color);
+  border: 1.5px solid var(--annot-color);
+  border-radius: 4px;
+  box-shadow: 3px 3px 0 #22211f;
+}
+.cs-annot-boxlabel--plain {
+  padding: 0;
+  background: none;
+  color: var(--annot-color);
+  box-shadow: none;
+}
+.cs-annot-boxlabel--note[data-color='white'],
+.cs-annot-boxlabel--plain[data-color='white'] {
+  color: #fff;
+}
+.cs-annot-boxlabel--note[data-color='white'] {
+  color: #22211f;
+}
