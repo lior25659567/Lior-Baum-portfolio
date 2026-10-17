@@ -165,7 +165,7 @@
           "imageFit": "contain",
           "description": "Rebuilt the patient-report editor with procedure templates, modular content blocks, and image annotation.",
           "labels": [
-            "UI Design",
+            "UX Research",
             "Interaction Design",
             "Information Architecture"
           ],
@@ -201,7 +201,7 @@
           "cardBg": "gradient",
           "description": "Redesigned the clinical scan workflow to remove the blocking popups between clinicians and starting a scan.",
           "labels": [
-            "UX Research",
+            "Usability Testing",
             "Workflow Design",
             "AI Prototyping"
           ],
@@ -252,7 +252,9 @@
       ],
       "hideFilter": true,
       "hideContentYear": true,
-      "hideCardYear": false
+      "hideCardYear": false,
+      "cardBgStyle": "gradient",
+      "hideImageShadow": true
     },
     "playground": {
       "sectionLabel": "Playground",
@@ -487,7 +489,7 @@
     }
   },
   "styles": {
-    "dsVersion": "serif-original-1",
+    "dsVersion": "satoshi-1",
     "fonts": {
       "display": "'Crimson Text', Georgia, serif",
       "body": "'Satoshi', 'Mona Sans', system-ui, sans-serif"
