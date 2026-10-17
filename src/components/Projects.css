@@ -173,22 +173,10 @@
   background: var(--color-bg);
   display: flex;
   flex-direction: column;
-  /* A light lavender float at rest that deepens on hover — no lift — while
-     the image zooms. */
-  box-shadow: 0 3px 16px 1px rgba(171, 162, 189, 0.1);
-  transition: box-shadow 0.25s cubic-bezier(0, 0, 0.2, 1), border-color 0.2s ease-out;
-}
-
-.project-card.work-grid-project:hover {
-  box-shadow: 0 10px 44px 12px rgba(171, 162, 189, 0.26);
-}
-
-[data-theme="dark"] .project-card.work-grid-project {
-  box-shadow: 0 3px 16px 1px rgba(0, 0, 0, 0.26);
-}
-
-[data-theme="dark"] .project-card.work-grid-project:hover {
-  box-shadow: 0 10px 44px 12px rgba(0, 0, 0, 0.5);
+  /* Flat: no float at rest or on hover (the image zoom is the hover cue), so
+     the card matches the article hero's shadow-less mat. */
+  box-shadow: none;
+  transition: border-color 0.2s ease-out;
 }
 
 /* Full-card link */

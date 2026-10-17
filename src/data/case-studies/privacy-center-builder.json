@@ -1,5 +1,5 @@
 {
-  "dataVersion": 9,
+  "dataVersion": 10,
   "title": "Privacy Center\nBuilder",
   "subtitle": "Turning a limiting editor into a scalable editing pattern used across BigID products.",
   "category": "Product Design · B2B SaaS",
@@ -442,14 +442,15 @@
       {
         "id": "pcb-hero",
         "type": "figure",
-        "width": "wide",
+        "width": "full",
         "display": "grid",
         "media": [
           {
             "src": "/case-studies/privacy-center-builder/article-hero.webp",
             "caption": "",
             "isVideo": false,
-            "embedUrl": ""
+            "embedUrl": "",
+            "shadow": false
           }
         ]
       },
@@ -572,7 +573,7 @@
       {
         "id": "pcb-us-callout",
         "type": "callout",
-        "text": "**Non-technical users who still need to configure complex workflows.**"
+        "text": "Non-technical users who still need to configure complex workflows."
       },
       {
         "id": "pcb-so-h",
@@ -1452,6 +1453,13 @@
       "id": "ml-1el02p1",
       "addedAt": 1790014812701,
       "src": "/case-studies/privacy-center-builder/interaction-states-bigid.webp",
+      "isVideo": false,
+      "caption": ""
+    },
+    {
+      "id": "ml-1i6lj2v",
+      "addedAt": 1792267463956,
+      "src": "/case-studies/privacy-center-builder/article-hero.webp",
       "isVideo": false,
       "caption": ""
     }

@@ -1,5 +1,5 @@
 {
-  "dataVersion": 75,
+  "dataVersion": 76,
   "title": "Clinical Scanning\nWorkflow",
   "subtitle": "Redesigning the clinical scanning workflow for speed, clarity, and decision-making in real treatment conditions.",
   "category": "Clinical Workflow Redesign",
@@ -995,12 +995,13 @@
       {
         "id": "it-hero",
         "type": "figure",
-        "width": "wide",
+        "width": "full",
         "display": "carousel",
         "interval": 2000,
         "media": [
           {
             "src": "/case-studies/itero-scan-workflow/article-hero.webp",
+            "shadow": false,
             "caption": "",
             "isVideo": false,
             "embedUrl": "",

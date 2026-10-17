@@ -1,5 +1,5 @@
 {
-  "dataVersion": 20,
+  "dataVersion": 21,
   "title": "WizeCare",
   "slides": [
     {
@@ -537,7 +537,7 @@
       {
         "id": "bmsc4ynd1ok7t72",
         "type": "figure",
-        "width": "wide",
+        "width": "full",
         "display": "carousel",
         "interval": 1500,
         "media": [
@@ -546,7 +546,8 @@
             "caption": "",
             "isVideo": false,
             "embedUrl": "",
-            "size": "large"
+            "size": "large",
+            "shadow": false
           }
         ]
       },

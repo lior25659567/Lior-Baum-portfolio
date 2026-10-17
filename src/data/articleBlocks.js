@@ -595,15 +595,17 @@ export const deriveArticleFromSlides = (project) => {
   // Hero: a figure block at position 0 renders above the title (see renderer).
   // An intro carousel keeps cycling as the hero.
   const heroEntries = normalizeMedia(intro?.image);
+  // Heroes are full-width (the renderer also defaults an unset hero width to
+  // 'full' and drops the image shadow).
   if (heroEntries.length > 1 && isCarouselSlide(intro)) {
     blocks.push(block('figure', {
-      width: 'wide',
+      width: 'full',
       display: 'carousel',
       interval: Number(intro.imageCarouselInterval) || 3500,
       media: heroEntries,
     }));
   } else if (heroEntries[0]) {
-    blocks.push(block('figure', { width: 'wide', media: [heroEntries[0]] }));
+    blocks.push(block('figure', { width: 'full', media: [heroEntries[0]] }));
   }
 
   // Meta grid from intro.metaItems (fallback: client/focus pairs).

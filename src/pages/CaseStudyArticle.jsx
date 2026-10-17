@@ -683,13 +683,14 @@ const FigureBlock = ({ block, editing, onPatch, isHero = false }) => {
   // Which media entry (index) is in annotation mode; -1 = none. One at a time.
   const [annotatingIdx, setAnnotatingIdx] = useState(-1);
   const media = listOf(block.media);
-  // The hero figure (first block) sits on the study's home-card gradient by
-  // default — every study, authored or derived from slides — so a plain
-  // screenshot dropped in matches its card with no setup. Only a default: an
-  // entry that says border:false / another mat keeps what it says, and the
-  // edit toggles write explicit values back (setEntry patches the raw media).
-  const withDefaults = (m) => (isHero ? { border: true, borderColor: 'card', ...m } : m);
-  const width = ['prose', 'wide', 'full'].includes(block.width) ? block.width : 'wide';
+  // The hero figure (first block) is full-width and sits flat (no shadow) on the
+  // study's home-card gradient by default — every study, authored or derived
+  // from slides — so a plain screenshot dropped in matches its card with no
+  // setup. Only defaults: an entry that says border:false / another mat /
+  // shadow:true keeps what it says, and the edit toggles write explicit values
+  // back (setEntry patches the raw media).
+  const withDefaults = (m) => (isHero ? { border: true, borderColor: 'card', shadow: false, ...m } : m);
+  const width = ['prose', 'wide', 'full'].includes(block.width) ? block.width : (isHero ? 'full' : 'wide');
   const gridCols = Math.min(Math.max(Number(block.gridCols) || 2, 1), 6);
   const setEntry = (i, patch) => onPatch({ media: media.map((m, j) => (j === i ? { ...m, ...patch } : m)) });
   const pickFromLibrary = (i) => openLibrary((item) => setEntry(i, { src: item.src || '', isVideo: !!item.isVideo, embedUrl: item.embedUrl || '' }));
@@ -1623,7 +1624,7 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
           so the title can take more air under a full-bleed hero (CSS). */}
       <header
         className="cs-article-header"
-        data-hero={heroBlock ? (['prose', 'wide', 'full'].includes(heroBlock.width) ? heroBlock.width : 'wide') : undefined}
+        data-hero={heroBlock ? (['prose', 'wide', 'full'].includes(heroBlock.width) ? heroBlock.width : 'full') : undefined}
       >
         <h1 className="cs-article-h1">
           {editing

@@ -1,5 +1,5 @@
 {
-  "dataVersion": 9,
+  "dataVersion": 10,
   "title": "Design System\nin Claude Code",
   "subtitle": "An AI-first design system — shared by designers, developers, and AI.",
   "category": "Design Systems / AI Tooling",
@@ -304,7 +304,8 @@
             "isVideo": false,
             "embedUrl": "",
             "size": "large",
-            "isGif": false
+            "isGif": false,
+            "shadow": false
           }
         ]
       },
