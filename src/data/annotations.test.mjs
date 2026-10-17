@@ -255,16 +255,18 @@ test('annotationNotes lists readable text top-to-bottom for the mobile fallback'
 
 import { NOTE_BGS, BOX_LABEL_STYLES } from './annotations.js';
 
-test('notes keep shadow/background/border options; defaults are omitted', () => {
+test('notes keep shadow/background/border options; defaults are omitted (shadow is OFF by default)', () => {
   assert.deepEqual(NOTE_BGS, ['white', 'tint', 'none']);
-  const [custom, plain, bad] = normalizeAnnotations([
-    { id: 'a', kind: 'text', style: 'note', x: 0.1, y: 0.1, text: 'x', shadow: false, bg: 'none', border: false },
-    { id: 'b', kind: 'text', style: 'note', x: 0.1, y: 0.1, text: 'x', shadow: true, bg: 'white', border: true },
-    { id: 'c', kind: 'text', style: 'pill', x: 0.1, y: 0.1, text: 'x', shadow: false, bg: 'none' },
+  const [custom, plain, bad, legacyOff] = normalizeAnnotations([
+    { id: 'a', kind: 'text', style: 'note', x: 0.1, y: 0.1, text: 'x', shadow: true, bg: 'none', border: false },
+    { id: 'b', kind: 'text', style: 'note', x: 0.1, y: 0.1, text: 'x', bg: 'white', border: true },
+    { id: 'c', kind: 'text', style: 'pill', x: 0.1, y: 0.1, text: 'x', shadow: true, bg: 'none' },
+    { id: 'd', kind: 'text', style: 'note', x: 0.1, y: 0.1, text: 'x', shadow: false },
   ]);
-  assert.deepEqual([custom.shadow, custom.bg, custom.border], [false, 'none', false]);
+  assert.deepEqual([custom.shadow, custom.bg, custom.border], [true, 'none', false]);
   assert.deepEqual(['shadow' in plain, 'bg' in plain, 'border' in plain], [false, false, false]);
   assert.deepEqual(['shadow' in bad, 'bg' in bad], [false, false]);
+  assert.equal('shadow' in legacyOff, false);
 });
 
 test('box text style is kept when not the default', () => {
@@ -275,4 +277,36 @@ test('box text style is kept when not the default', () => {
   ]);
   assert.equal(a.labelStyle, 'note');
   assert.equal('labelStyle' in b, false);
+});
+
+/* ── Brand palette (maps green/red onto the brand chip colors) ───────── */
+
+import { paletteColor } from './annotations.js';
+
+test('brand palette maps success → accent and error → ink; others unchanged', () => {
+  assert.equal(paletteColor('success', 'brand'), 'accent');
+  assert.equal(paletteColor('error', 'brand'), 'ink');
+  assert.equal(paletteColor('info', 'brand'), 'info');
+  assert.equal(paletteColor('success'), 'success');
+  assert.equal(resolveColor('error', 'brand'), '#22211f');
+  assert.equal(resolveColor('success', 'brand'), 'var(--color-accent)');
+  assert.equal(resolveColor('success'), 'var(--color-success)');
+});
+
+test('annotationNotes reports palette-mapped colors', () => {
+  const [n] = annotationNotes([{ id: 'a', kind: 'text', style: 'note', x: 0.1, y: 0.1, text: 'Works', color: 'success' }], 'brand');
+  assert.equal(n.color, 'accent');
+});
+
+/* ── Fixed green/red swatches (not remapped by the brand palette) ────── */
+
+import { SWATCH_COLORS } from './annotations.js';
+
+test('fixed green/red stay green/red under the brand palette; semantic ones remap', () => {
+  assert.deepEqual(SWATCH_COLORS, ['accent', 'ink', 'green', 'red', 'info', 'warning', 'white']);
+  assert.equal(resolveColor('green', 'brand'), 'var(--color-success)');
+  assert.equal(resolveColor('red', 'brand'), 'var(--color-error)');
+  assert.equal(resolveColor('success', 'brand'), 'var(--color-accent)');
+  const [a] = normalizeAnnotations([{ id: 'g', kind: 'box', x: 0.1, y: 0.1, w: 0.2, h: 0.2, color: 'green' }]);
+  assert.equal(a.color, 'green');
 });

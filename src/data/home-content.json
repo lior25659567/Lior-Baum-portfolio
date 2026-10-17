@@ -165,10 +165,11 @@
           "imageFit": "contain",
           "description": "Rebuilt the patient-report editor with procedure templates, modular content blocks, and image annotation.",
           "labels": [
-            "Product Design",
+            "UI Design",
             "Interaction Design",
-            "Design Systems"
-          ]
+            "Information Architecture"
+          ],
+          "labelsVersion": 3
         },
         {
           "id": "privacy-center-builder",
@@ -183,9 +184,10 @@
           "description": "Rebuilt BigID's privacy form builder around direct editing — and turned it into a shared editor pattern for other BigID builders.",
           "labels": [
             "Product Design",
-            "Interaction Design",
-            "Design Systems"
-          ]
+            "Prototyping",
+            "Usability Testing"
+          ],
+          "labelsVersion": 3
         },
         {
           "id": "itero-scan-workflow",
@@ -199,10 +201,11 @@
           "cardBg": "gradient",
           "description": "Redesigned the clinical scan workflow to remove the blocking popups between clinicians and starting a scan.",
           "labels": [
-            "Product Design",
-            "Interaction Design",
-            "UX Research"
-          ]
+            "UX Research",
+            "Workflow Design",
+            "AI Prototyping"
+          ],
+          "labelsVersion": 3
         },
         {
           "id": "design-system",
@@ -220,7 +223,8 @@
             "Design Systems",
             "Design Engineering",
             "AI Tooling"
-          ]
+          ],
+          "labelsVersion": 3
         },
         {
           "id": "wizecare",
@@ -234,10 +238,11 @@
           "imageFit": "contain",
           "description": "Redesigned a physiotherapy platform’s daily workflows — patient lookup, care plans, protocol building — around one card pattern.",
           "labels": [
-            "Product Design",
-            "UX Research",
-            "Usability Testing"
-          ]
+            "UX Design",
+            "Field Research",
+            "User Flows"
+          ],
+          "labelsVersion": 3
         }
       ],
       "removedIds": [

@@ -1,6 +1,7 @@
 import { memo, useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useEdit } from '../context/EditContext';
+import { widont } from '../utils/typography';
 
 // Editable field component — module-level for stable React identity across renders.
 // This prevents unmount/remount cycles that destroy input state, cursor position,
@@ -124,11 +125,13 @@ const EditableField = memo(function EditableField({ value, onChange, multiline =
   if (!editMode) {
     // Render with line breaks preserved. `dir="auto"` lets the browser pick
     // direction from the first strong character, so Hebrew renders RTL while
-    // English stays LTR (mixed decks keep working).
+    // English stays LTR (mixed decks keep working). Each line gets `widont`
+    // (no one-word last line) — per line, so deliberate breaks stay put.
+    const readValue = typeof stringValue === 'string' ? stringValue.split('\n').map((line) => widont(line)).join('\n') : stringValue;
     if (isTextarea || (stringValue && stringValue.includes('\n'))) {
-      return <span className={className} dir="auto" style={{ whiteSpace: 'pre-line' }}>{stringValue}</span>;
+      return <span className={className} dir="auto" style={{ whiteSpace: 'pre-line' }}>{readValue}</span>;
     }
-    return stringValue ? <span dir="auto">{stringValue}</span> : stringValue;
+    return stringValue ? <span dir="auto">{readValue}</span> : stringValue;
   }
 
   const selProps = allowBold

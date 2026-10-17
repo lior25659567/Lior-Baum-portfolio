@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
-  COLOR_TOKENS, DEFAULT_TEXT, DEFAULT_TEXT_W, TONE_STYLES, BOX_BORDERS, BOX_FILLS, NOTE_BGS, BOX_LABEL_STYLES, boxFillPaint, resolveColor, normalizeAnnotations, newAnnotationId,
+  SWATCH_COLORS, DEFAULT_TEXT, DEFAULT_TEXT_W, TONE_STYLES, BOX_BORDERS, BOX_FILLS, NOTE_BGS, BOX_LABEL_STYLES, boxFillPaint, resolveColor, normalizeAnnotations, newAnnotationId,
   arrowGeometry, curvedArrowGeometry, arrowMid, straightenArrow, pointsToPath, annotationBounds,
   moveAnnotation, resizeAnnotation, draftPreview, finalizeDraft, finalizeCallout, nextMarkerNumber, clamp01,
   annotationNotes,
 } from '../data/annotations';
 import { CARD_ICONS } from './CardIcons';
+import { widont } from '../utils/typography';
 import './ImageAnnotations.css';
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -46,8 +47,8 @@ const unitStyle = (w) => ({ '--annot-u': `${w / 100}px` });
 
 const BOX_BORDER_GRAY = 'var(--color-text-muted)';
 
-const SvgShape = ({ a, W, H, sw, selected, onDown }) => {
-  const color = resolveColor(a.color);
+const SvgShape = ({ a, W, H, sw, selected, onDown, palette }) => {
+  const color = resolveColor(a.color, palette);
   const hitWidth = Math.max(12, sw * 5);
   const asw = arrowStrokeFor(W);
   let visual;
@@ -115,7 +116,7 @@ const DeleteChip = ({ onDelete, style }) => (
   </button>
 );
 
-const TextItem = ({ a, selected, editing, onDown, onHandleDown, onCommit, onDelete }) => {
+const TextItem = ({ a, selected, editing, onDown, onHandleDown, onCommit, onDelete, palette }) => {
   const ref = useRef(null);
   // Entering edit: focus the contentEditable and select its text so typing replaces it.
   useEffect(() => {
@@ -134,7 +135,7 @@ const TextItem = ({ a, selected, editing, onDown, onHandleDown, onCommit, onDele
   const style = {
     left: `${a.x * 100}%`,
     top: `${a.y * 100}%`,
-    '--annot-color': resolveColor(a.color),
+    '--annot-color': resolveColor(a.color, palette),
     ...(isMarker ? {} : { [singleLine ? 'maxWidth' : 'width']: `${a.w * 100}%` }),
   };
   const cls = isMarker ? 'cs-annot-marker' : `cs-annot-text cs-annot-text--${a.style}`;
@@ -175,7 +176,7 @@ const TextItem = ({ a, selected, editing, onDown, onHandleDown, onCommit, onDele
       data-annot-id={a.id}
       data-color={a.color}
       data-bg={a.bg || undefined}
-      data-shadow={a.shadow === false ? 'off' : undefined}
+      data-shadow={a.shadow === true ? 'on' : undefined}
       data-border={a.border === false ? 'off' : undefined}
       onPointerDown={onDown && !editing ? (e) => onDown(e, a) : undefined}
     >
@@ -190,7 +191,7 @@ const TextItem = ({ a, selected, editing, onDown, onHandleDown, onCommit, onDele
 };
 
 // Text on a highlight box — a chip in the box's color, inside its top-left corner.
-const BoxLabel = ({ a, editing, onDown, onCommit }) => {
+const BoxLabel = ({ a, editing, onDown, onCommit, palette }) => {
   const ref = useRef(null);
   useEffect(() => {
     const el = ref.current;
@@ -207,7 +208,7 @@ const BoxLabel = ({ a, editing, onDown, onCommit }) => {
       className={`cs-annot-boxlabel cs-annot-boxlabel--${a.labelStyle || 'filled'}${editing ? ' is-editing' : ''}`}
       data-annot-id={a.id}
       data-color={a.color}
-      style={{ left: `${a.x * 100}%`, top: `${a.y * 100}%`, maxWidth: `${a.w * 100}%`, '--annot-color': resolveColor(a.color) }}
+      style={{ left: `${a.x * 100}%`, top: `${a.y * 100}%`, maxWidth: `${a.w * 100}%`, '--annot-color': resolveColor(a.color, palette) }}
       onPointerDown={onDown && !editing ? (e) => onDown(e, a) : undefined}
     >
       {editing ? (
@@ -235,18 +236,18 @@ const BoxLabel = ({ a, editing, onDown, onCommit }) => {
 
 // Everything drawn for a list of annotations: one SVG for shapes, then HTML
 // text items on top. Interaction props are only passed by the editor.
-const Shapes = ({ items, size, selectedId = null, editingId = null, onItemDown, onHandleDown, onTextCommit, onDelete }) => {
+const Shapes = ({ items, size, selectedId = null, editingId = null, onItemDown, onHandleDown, onTextCommit, onDelete, palette }) => {
   const { w: W, h: H } = size;
   const sw = strokeFor(W);
   return (
     <>
       <svg className="cs-annot-svg" width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
         {items.map((a) => (
-          <SvgShape key={a.id} a={a} W={W} H={H} sw={sw} selected={a.id === selectedId} onDown={onItemDown} />
+          <SvgShape key={a.id} a={a} W={W} H={H} sw={sw} selected={a.id === selectedId} onDown={onItemDown} palette={palette} />
         ))}
       </svg>
       {items.filter((a) => a.kind === 'box' && (a.label || a.id === editingId)).map((a) => (
-        <BoxLabel key={`${a.id}-label`} a={a} editing={a.id === editingId} onDown={onItemDown} onCommit={onTextCommit} />
+        <BoxLabel key={`${a.id}-label`} a={a} editing={a.id === editingId} onDown={onItemDown} onCommit={onTextCommit} palette={palette} />
       ))}
       {items.filter((a) => a.kind === 'text' || a.kind === 'marker').map((a) => (
         <TextItem
@@ -258,6 +259,7 @@ const Shapes = ({ items, size, selectedId = null, editingId = null, onItemDown, 
           onHandleDown={onHandleDown}
           onCommit={onTextCommit}
           onDelete={onDelete}
+          palette={palette}
         />
       ))}
     </>
@@ -266,27 +268,27 @@ const Shapes = ({ items, size, selectedId = null, editingId = null, onItemDown, 
 
 // Small screens hide the overlay, so the text written on the image is listed
 // under it instead — nothing said on an image is lost on a phone.
-export const AnnotationNotes = ({ annotations }) => {
-  const notes = useMemo(() => annotationNotes(annotations), [annotations]);
+export const AnnotationNotes = ({ annotations, palette }) => {
+  const notes = useMemo(() => annotationNotes(annotations, palette), [annotations, palette]);
   if (!notes.length) return null;
   return (
-    <ul className="cs-annot-notes">
+    <ul className="cs-annot-notes" data-palette={palette === 'brand' ? 'brand' : undefined}>
       {notes.map((n) => (
         <li key={n.id} className={n.tone ? `cs-annot-note--${n.tone}` : ''} style={{ '--annot-color': resolveColor(n.color) }}>
-          {n.text}
+          {widont(n.text)}
         </li>
       ))}
     </ul>
   );
 };
 
-export const AnnotationLayer = ({ annotations }) => {
+export const AnnotationLayer = ({ annotations, palette }) => {
   const ref = useRef(null);
   const size = useBoxSize(ref);
   const items = useMemo(() => normalizeAnnotations(annotations), [annotations]);
   return (
-    <div ref={ref} className="cs-annot-layer" style={unitStyle(size.w)}>
-      {size.w > 0 && <Shapes items={items} size={size} />}
+    <div ref={ref} className="cs-annot-layer" data-palette={palette === 'brand' ? 'brand' : undefined} style={unitStyle(size.w)}>
+      {size.w > 0 && <Shapes items={items} size={size} palette={palette} />}
     </div>
   );
 };
@@ -325,6 +327,11 @@ const TOOL_GROUPS = [
 ];
 const TEXT_TOOLS = ['pill', 'card', 'plain', 'note', 'marker'];
 const BOX_BORDER_LABELS = { color: 'Color', gray: 'Gray', none: 'No border' };
+const TONES = [
+  ['success', 'Positive', 'Positive meaning — green, or accent on a brand image (flips a ✕ label to ✓)'],
+  ['error', 'Negative', 'Negative meaning — red, or ink on a brand image (flips a ✓ label to ✕)'],
+];
+const SWATCH_LABELS = { accent: 'Accent', ink: 'Ink', green: 'Green', red: 'Red', info: 'Blue', warning: 'Yellow', white: 'White' };
 const NOTE_BG_LABELS = { white: 'White', tint: 'Tint', none: 'None' };
 const BOX_LABEL_STYLE_LABELS = { filled: 'Filled', note: 'Note', plain: 'Text only' };
 const BOX_FILL_LABELS = {
@@ -372,7 +379,7 @@ const ShapeHandles = ({ a, onHandleDown, onDelete }) => {
   return null; // text + marker render their own chip
 };
 
-export const AnnotationEditor = ({ annotations, onChange, onDone }) => {
+export const AnnotationEditor = ({ annotations, onChange, onDone, palette }) => {
   const surfaceRef = useRef(null);
   const size = useBoxSize(surfaceRef);
   const [items, setItems] = useState(() => normalizeAnnotations(annotations));
@@ -382,7 +389,7 @@ export const AnnotationEditor = ({ annotations, onChange, onDone }) => {
   // Look for the next box drawn — follows whatever was last picked.
   const [boxStyle, setBoxStyle] = useState({ border: 'color', fill: 'none' });
   // Look for the next note placed — follows whatever was last picked.
-  const [noteStyle, setNoteStyle] = useState({ bg: 'white', shadow: true, border: true });
+  const [noteStyle, setNoteStyle] = useState({ bg: 'white', shadow: false, border: true });
   const [selectedId, setSelectedId] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [draft, setDraft] = useState(null);
@@ -603,6 +610,18 @@ export const AnnotationEditor = ({ annotations, onChange, onDone }) => {
     if (selectedId) commit(itemsRef.current.map((a) => (a.id === selectedId ? { ...a, color: c } : a)));
   };
 
+  // Positive / negative meaning — follows the image's palette (green/red or
+  // brand). On a ✓/✕ label it also flips the label's icon and style.
+  const pickTone = (c) => {
+    setColor(c);
+    if (!selectedId) return;
+    commit(itemsRef.current.map((a) => {
+      if (a.id !== selectedId) return a;
+      const flip = a.kind === 'text' && TONE_STYLES.includes(a.style) ? { style: c === 'success' ? 'positive' : 'negative' } : {};
+      return { ...a, color: c, ...flip };
+    }));
+  };
+
   const selected = items.find((a) => a.id === selectedId) || null;
   const selectedTone = selected && selected.kind === 'text' && TONE_STYLES.includes(selected.style);
   // Box options show while the Box tool is armed (they set the next box) or a box is selected.
@@ -618,7 +637,7 @@ export const AnnotationEditor = ({ annotations, onChange, onDone }) => {
   // Note options show while the Note tool is armed (they set the next note) or a note is selected.
   const showNoteOptions = tool === 'note' || selectedNote;
   const noteLook = selectedNote
-    ? { bg: selected.bg || 'white', shadow: selected.shadow !== false, border: selected.border !== false }
+    ? { bg: selected.bg || 'white', shadow: selected.shadow === true, border: selected.border !== false }
     : noteStyle;
   const setNoteLook = (patch) => {
     setNoteStyle((prev) => ({ ...prev, ...patch }));
@@ -653,15 +672,31 @@ export const AnnotationEditor = ({ annotations, onChange, onDone }) => {
             ))}
           </span>
         ))}
-        <span className="cs-annot-swatches">
-          {COLOR_TOKENS.map((c) => (
+        <span className="cs-annot-group-label">Meaning</span>
+        <span className="cs-annot-tones" role="group" aria-label="Meaning">
+          {TONES.map(([c, label, hint]) => (
             <button
               key={c}
               type="button"
-              title={c}
+              title={hint}
+              className={`cs-annot-tool cs-annot-tone${(selected ? selected.color : color) === c ? ' is-active' : ''}`}
+              style={{ '--tone': resolveColor(c, palette) }}
+              onClick={() => pickTone(c)}
+            >
+              {CARD_ICONS[c === 'success' ? 'check' : 'x']}
+              <span>{label}</span>
+            </button>
+          ))}
+        </span>
+        <span className="cs-annot-swatches">
+          {SWATCH_COLORS.map((c) => (
+            <button
+              key={c}
+              type="button"
+              title={`${SWATCH_LABELS[c]} (fixed color)`}
               aria-label={`${c} color`}
               className={`cs-annot-swatch${(selected ? selected.color : color) === c ? ' is-active' : ''}`}
-              style={{ background: resolveColor(c) }}
+              style={{ background: resolveColor(c, palette) }}
               onClick={() => pickColor(c)}
             />
           ))}
@@ -744,6 +779,7 @@ export const AnnotationEditor = ({ annotations, onChange, onDone }) => {
       <div
         ref={surfaceRef}
         className={`cs-annot-editor is-tool-${tool}`}
+        data-palette={palette === 'brand' ? 'brand' : undefined}
         style={unitStyle(size.w)}
         onPointerDown={onSurfaceDown}
         onPointerMove={onSurfaceMove}
@@ -760,6 +796,7 @@ export const AnnotationEditor = ({ annotations, onChange, onDone }) => {
             onHandleDown={onHandleDown}
             onTextCommit={onTextCommit}
             onDelete={tool === 'select' ? removeSelected : undefined}
+            palette={palette}
           />
         )}
         {selected && tool === 'select' && <ShapeHandles a={selected} onHandleDown={onHandleDown} onDelete={removeSelected} />}

@@ -85,7 +85,7 @@ const defaultProjects = [
   },
 ];
 
-const ProjectCard = ({ project, index, total, editMode, canonicalImage, hideCardYear, onImageChange, onRemove, onUpdate, onMoveUp, onMoveDown }) => {
+const ProjectCard = ({ project, index, total, editMode, canonicalImage, hideCardYear, solidCardBg, onImageChange, onRemove, onUpdate, onMoveUp, onMoveDown }) => {
   // When the section-level hideCardYear flag is on, collapse the year to an
   // empty string so decorative strings like "$ build --year 2024" become
   // "$ build --year " and "Display · 2024" becomes "Display · ". The
@@ -214,6 +214,33 @@ const ProjectCard = ({ project, index, total, editMode, canonicalImage, hideCard
     }, el);
     return () => ctx.revert();
   }, [mediaMode]);
+
+  /* GSAP: keep the gradient-card ramp moving — sway its angle and slide its
+     stops (CSS vars --ga/--g0/--g1 read by
+     .project-media[data-card-bg="gradient"] in Projects.css) */
+  useEffect(() => {
+    if (cardBg !== 'gradient' || mediaMode !== 'template' || solidCardBg) return;
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const el = cardRef.current;
+    if (!el) return;
+    const media = el.querySelector('.project-media');
+    if (!media) return;
+    const drift = (name, min, max, unit, i) => gsap.to(media, {
+      [name]: () => `${gsap.utils.random(min, max)}${unit}`,
+      duration: () => gsap.utils.random(4, 7),
+      repeat: -1,
+      yoyo: true,
+      repeatRefresh: true,
+      ease: 'sine.inOut',
+      delay: i * 0.4,
+    });
+    const ctx = gsap.context(() => {
+      drift('--ga', 80, 170, 'deg', 0); // direction
+      drift('--g0', 22, 52, '%', 1);   // where orange ends
+      drift('--g1', 80, 108, '%', 2);    // where the second colour is full
+    }, el);
+    return () => ctx.revert();
+  }, [cardBg, mediaMode, solidCardBg]);
 
   /* GSAP: magnetic parallax, stencil gradient drift, ledger line draw, flux blobs, trace reveal,
      orbit rings, spotlight cursor, monolith bob, terminal typing, crystal facets */
@@ -862,6 +889,7 @@ const ProjectCard = ({ project, index, total, editMode, canonicalImage, hideCard
         data-has-iframe={iframeSrc ? 'true' : undefined}
         data-fill-media={(iframeSrc || project.image) ? 'true' : undefined}
         data-card-bg={cardBg === 'gradient' ? 'gradient' : undefined}
+        data-card-tone={cardBg === 'gradient' ? (index || 0) % 5 : undefined}
       >
         {mediaMode === 'animated' && (
           <div className="project-media-fx" aria-hidden="true">
@@ -1829,6 +1857,9 @@ const Projects = () => {
         content.projects?.hideFilter ? 'projects--hide-filter' : '',
         content.projects?.hideCardYear ? 'projects--hide-card-year' : '',
         content.projects?.hideContentYear ? 'projects--hide-content-year' : '',
+        content.projects?.cardBgStyle === 'solid' ? 'projects--card-bg-solid' : '',
+        content.projects?.cardBgStyle === 'orange' ? 'projects--card-bg-orange' : '',
+        content.projects?.hideImageShadow ? 'projects--no-image-shadow' : '',
       ].filter(Boolean).join(' ')}
       id="projects"
     >
@@ -1876,6 +1907,26 @@ const Projects = () => {
               />
               <span>Year below title</span>
             </label>
+            <span className="projects-edit-toolbar-label projects-edit-toolbar-label--group">Card background</span>
+            {[['gradient', 'Gradient'], ['solid', 'Badge colour'], ['orange', 'Orange only']].map(([value, label]) => (
+              <label key={value} className="projects-edit-toolbar-check">
+                <input
+                  type="radio"
+                  name="projects-card-bg-style"
+                  checked={(content.projects?.cardBgStyle || 'gradient') === value}
+                  onChange={() => setContent(prev => ({ ...prev, projects: { ...prev.projects, cardBgStyle: value } }))}
+                />
+                <span>{label}</span>
+              </label>
+            ))}
+            <label className="projects-edit-toolbar-check">
+              <input
+                type="checkbox"
+                checked={!content.projects?.hideImageShadow}
+                onChange={(e) => setContent(prev => ({ ...prev, projects: { ...prev.projects, hideImageShadow: !e.target.checked } }))}
+              />
+              <span>Image shadow</span>
+            </label>
           </div>
         )}
 
@@ -1912,6 +1963,7 @@ const Projects = () => {
                   editMode={editMode}
                   canonicalImage={homeProjectImages?.[project.id]}
                   hideCardYear={!!content.projects?.hideCardYear}
+                  solidCardBg={content.projects?.cardBgStyle === 'solid'}
                   onImageChange={handleImageChange}
                   onUpdate={handleUpdateProject}
                   onRemove={handleRemoveProject}

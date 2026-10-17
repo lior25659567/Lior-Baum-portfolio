@@ -1,0 +1,613 @@
+{
+  "media": {
+    "/case-studies/itero-scan-workflow/img-ojnudsaui8.webp": [
+      {
+        "id": "auto-isw-form-box",
+        "kind": "box",
+        "x": 0.405,
+        "y": 0.005,
+        "w": 0.49,
+        "h": 0.35,
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-form-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.025,
+        "y": 0.03,
+        "w": 0.26,
+        "text": "A long form had to be done before scanning — with the patient watching",
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-form-arrow",
+        "kind": "arrow",
+        "x1": 0.285,
+        "y1": 0.08,
+        "x2": 0.402,
+        "y2": 0.1,
+        "color": "error",
+        "cx": 0.35,
+        "cy": 0.07
+      },
+      {
+        "id": "auto-isw-proc-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.025,
+        "y": 0.19,
+        "w": 0.26,
+        "text": "Clinicians changed the procedure several times — each change meant starting over",
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-proc-arrow",
+        "kind": "arrow",
+        "x1": 0.285,
+        "y1": 0.24,
+        "x2": 0.415,
+        "y2": 0.27,
+        "color": "error",
+        "cx": 0.36,
+        "cy": 0.235
+      },
+      {
+        "id": "auto-isw-modal-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.12,
+        "y": 0.865,
+        "w": 0.22,
+        "text": "Every tooth opened a modal — no multi-select, no view of what was set",
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-modal-arrow",
+        "kind": "arrow",
+        "x1": 0.34,
+        "y1": 0.905,
+        "x2": 0.515,
+        "y2": 0.765,
+        "color": "error",
+        "cx": 0.46,
+        "cy": 0.9
+      }
+    ],
+    "/case-studies/itero-scan-workflow/img-cy7ucjs8u0.webp": [
+      {
+        "id": "auto-isw-dialog-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.765,
+        "y": 0.42,
+        "w": 0.22,
+        "text": "Eight teeth meant eight dialogs — click, confirm, close, repeat",
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-dialog-arrow",
+        "kind": "arrow",
+        "x1": 0.93,
+        "y1": 0.42,
+        "x2": 0.862,
+        "y2": 0.2,
+        "color": "error",
+        "cx": 0.95,
+        "cy": 0.25
+      },
+      {
+        "id": "auto-isw-link-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.765,
+        "y": 0.7,
+        "w": 0.22,
+        "text": "No visual link between a tooth and what was assigned to it",
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-link-arrow",
+        "kind": "arrow",
+        "x1": 0.765,
+        "y1": 0.78,
+        "x2": 0.7,
+        "y2": 0.8,
+        "color": "error",
+        "cx": 0.74,
+        "cy": 0.84
+      }
+    ],
+    "/case-studies/itero-scan-workflow/img-73988r6wpso.webp": [
+      {
+        "id": "auto-isw-tbtop-box",
+        "kind": "box",
+        "x": 0.418,
+        "y": 0.005,
+        "w": 0.17,
+        "h": 0.06,
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-tbright-box",
+        "kind": "box",
+        "x": 0.912,
+        "y": 0.005,
+        "w": 0.083,
+        "h": 0.06,
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-tbleft-box",
+        "kind": "box",
+        "x": 0.066,
+        "y": 0.605,
+        "w": 0.048,
+        "h": 0.305,
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-style-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.15,
+        "y": 0.68,
+        "w": 0.2,
+        "text": "Icons drawn in different eras, at different weights",
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-style-arrow",
+        "kind": "arrow",
+        "x1": 0.15,
+        "y1": 0.73,
+        "x2": 0.117,
+        "y2": 0.75,
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-style-arrow2",
+        "kind": "arrow",
+        "x1": 0.25,
+        "y1": 0.68,
+        "x2": 0.415,
+        "y2": 0.035,
+        "color": "error",
+        "cx": 0.22,
+        "cy": 0.05
+      },
+      {
+        "id": "auto-isw-home-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.66,
+        "y": 0.6,
+        "w": 0.26,
+        "text": "No fixed home — finding a tool mid‑scan meant scanning the whole screen",
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-home-arrow",
+        "kind": "arrow",
+        "x1": 0.8,
+        "y1": 0.6,
+        "x2": 0.908,
+        "y2": 0.035,
+        "color": "error",
+        "cx": 0.78,
+        "cy": 0.04
+      }
+    ],
+    "/case-studies/itero-scan-workflow/img-bw1g0xceg.webp": [
+      {
+        "id": "auto-isw-flow-rx-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.04,
+        "y": 0.68,
+        "w": 0.24,
+        "text": "Rx → Scan: setup blocked the clinician before any scan could begin",
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-flow-rx-arrow",
+        "kind": "arrow",
+        "x1": 0.2,
+        "y1": 0.68,
+        "x2": 0.248,
+        "y2": 0.405,
+        "cx": 0.23,
+        "cy": 0.56,
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-flow-view-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.46,
+        "y": 0.7,
+        "w": 0.24,
+        "text": "Scan → View: tool access broke the clinician's rhythm mid-capture",
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-flow-view-arrow",
+        "kind": "arrow",
+        "x1": 0.6,
+        "y1": 0.7,
+        "x2": 0.49,
+        "y2": 0.405,
+        "cx": 0.585,
+        "cy": 0.46,
+        "color": "error"
+      }
+    ],
+    "/case-studies/itero-scan-workflow/img-1hrv6w761k.webp": [
+      {
+        "id": "auto-isw-wiz-step-box",
+        "kind": "box",
+        "x": 0.375,
+        "y": 0.0,
+        "w": 0.265,
+        "h": 0.05,
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-wiz-step-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.42,
+        "y": 0.068,
+        "w": 0.23,
+        "text": "One thing to answer at a time",
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-wiz-req-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.55,
+        "y": 0.7,
+        "w": 0.24,
+        "text": "Required fields can't be skipped — fewer incomplete cases reach the lab",
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-wiz-req-arrow",
+        "kind": "arrow",
+        "x1": 0.79,
+        "y1": 0.77,
+        "x2": 0.948,
+        "y2": 0.95,
+        "cx": 0.9,
+        "cy": 0.78,
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-wiz-rail-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.06,
+        "y": 0.68,
+        "w": 0.26,
+        "text": "Organised, but clinicians felt railroaded by the fixed order",
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-wiz-rail-arrow",
+        "kind": "arrow",
+        "x1": 0.1,
+        "y1": 0.8,
+        "x2": 0.05,
+        "y2": 0.945,
+        "cx": 0.06,
+        "cy": 0.84,
+        "color": "error"
+      }
+    ],
+    "/case-studies/itero-scan-workflow/img-14c9uopols.webp": [
+      {
+        "id": "auto-isw-acc-access-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.02,
+        "y": 0.07,
+        "w": 0.18,
+        "text": "Short screen, full access — no steps to traverse",
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-acc-access-arrow",
+        "kind": "arrow",
+        "x1": 0.2,
+        "y1": 0.12,
+        "x2": 0.222,
+        "y2": 0.108,
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-acc-scale-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.02,
+        "y": 0.3,
+        "w": 0.18,
+        "text": "New sections slot in without lengthening the page",
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-acc-scale-arrow",
+        "kind": "arrow",
+        "x1": 0.2,
+        "y1": 0.34,
+        "x2": 0.222,
+        "y2": 0.235,
+        "cx": 0.22,
+        "cy": 0.3,
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-acc-tap-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.8,
+        "y": 0.2,
+        "w": 0.18,
+        "text": "Tap to open, read, close, repeat",
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-acc-tap-arrow",
+        "kind": "arrow",
+        "x1": 0.82,
+        "y1": 0.2,
+        "x2": 0.765,
+        "y2": 0.17,
+        "cx": 0.79,
+        "cy": 0.16,
+        "color": "error"
+      }
+    ],
+    "/case-studies/itero-scan-workflow/img-23dgjitb5o.webp": [
+      {
+        "id": "auto-isw-single-scan-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.56,
+        "y": 0.065,
+        "w": 0.34,
+        "text": "Setup no longer gates the scan — it continues alongside capture",
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-single-scan-arrow",
+        "kind": "arrow",
+        "x1": 0.56,
+        "y1": 0.09,
+        "x2": 0.505,
+        "y2": 0.04,
+        "cx": 0.52,
+        "cy": 0.09,
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-single-hidden-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.3,
+        "y": 0.21,
+        "w": 0.38,
+        "text": "Nothing is hidden — any part of the case can be changed at any moment",
+        "color": "success"
+      }
+    ],
+    "/case-studies/itero-scan-workflow/img-e18ubxd5eo.webp": [
+      {
+        "id": "auto-isw-tb-bottom-box",
+        "kind": "box",
+        "x": 0.42,
+        "y": 0.925,
+        "w": 0.16,
+        "h": 0.055,
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-tb-bottom-pro-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.12,
+        "y": 0.8,
+        "w": 0.22,
+        "text": "Closest to the hand, and the most conventional position",
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-tb-bottom-pro-arrow",
+        "kind": "arrow",
+        "x1": 0.34,
+        "y1": 0.85,
+        "x2": 0.416,
+        "y2": 0.945,
+        "cx": 0.39,
+        "cy": 0.86,
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-tb-bottom-con-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.64,
+        "y": 0.76,
+        "w": 0.26,
+        "text": "Sat across the occlusal area clinicians inspect most — and some had to stretch to reach it",
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-tb-bottom-con-arrow",
+        "kind": "arrow",
+        "x1": 0.64,
+        "y1": 0.86,
+        "x2": 0.584,
+        "y2": 0.945,
+        "cx": 0.6,
+        "cy": 0.87,
+        "color": "error"
+      }
+    ],
+    "/case-studies/itero-scan-workflow/img-aqspm4gaww.webp": [
+      {
+        "id": "auto-isw-tb-rail-box",
+        "kind": "box",
+        "x": 0.962,
+        "y": 0.36,
+        "w": 0.031,
+        "h": 0.275,
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-tb-rail-pro-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.72,
+        "y": 0.74,
+        "w": 0.22,
+        "text": "Always visible, off the model — grows downward without limit",
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-tb-rail-pro-arrow",
+        "kind": "arrow",
+        "x1": 0.9,
+        "y1": 0.74,
+        "x2": 0.965,
+        "y2": 0.645,
+        "cx": 0.95,
+        "cy": 0.72,
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-tb-rail-con-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.72,
+        "y": 0.12,
+        "w": 0.22,
+        "text": "Same zone as controls already in use — it competed for space and attention",
+        "color": "error"
+      },
+      {
+        "id": "auto-isw-tb-rail-con-arrow",
+        "kind": "arrow",
+        "x1": 0.9,
+        "y1": 0.27,
+        "x2": 0.965,
+        "y2": 0.355,
+        "cx": 0.95,
+        "cy": 0.28,
+        "color": "error"
+      }
+    ],
+    "/case-studies/itero-scan-workflow/img-59lf56vcn4.webp": [
+      {
+        "id": "auto-isw-tb-top-box",
+        "kind": "box",
+        "x": 0.838,
+        "y": 0.062,
+        "w": 0.155,
+        "h": 0.055,
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-tb-top-pro-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.74,
+        "y": 0.2,
+        "w": 0.24,
+        "text": "Out of the scan area, clear of existing controls, within reach without looking away",
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-tb-top-pro-arrow",
+        "kind": "arrow",
+        "x1": 0.88,
+        "y1": 0.2,
+        "x2": 0.9,
+        "y2": 0.125,
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-tb-top-con-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.74,
+        "y": 0.4,
+        "w": 0.24,
+        "text": "The trade-off: least conventional, and furthest from the hand",
+        "color": "error"
+      }
+    ],
+    "/case-studies/itero-scan-workflow/img-2x1frtk9p0.webp": [
+      {
+        "id": "auto-isw-vt-select-box",
+        "kind": "box",
+        "x": 0.036,
+        "y": 0.27,
+        "w": 0.254,
+        "h": 0.16,
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-vt-detect-box",
+        "kind": "box",
+        "x": 0.348,
+        "y": 0.56,
+        "w": 0.306,
+        "h": 0.155,
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-vt-trim-box",
+        "kind": "box",
+        "x": 0.711,
+        "y": 0.27,
+        "w": 0.257,
+        "h": 0.16,
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-vt-primary-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.03,
+        "y": 0.72,
+        "w": 0.27,
+        "text": "Each tool is a named panel with one clear primary action",
+        "color": "success"
+      },
+      {
+        "id": "auto-isw-vt-same-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.7,
+        "y": 0.72,
+        "w": 0.27,
+        "text": "Same structure across every tool — nothing to memorise",
+        "color": "success"
+      }
+    ]
+  },
+  "trim": {
+    "it-prob-b": [
+      "**Setup blocked the scan**",
+      "**Every tooth opened a modal**",
+      "**Procedure locked in too early**",
+      "**Tools had no home**"
+    ],
+    "it-tb-b": [
+      "**No shared visual language**",
+      "**No dedicated place for tools**"
+    ]
+  },
+  "_note": "Pass 2 (2026-09-21) also changed article structure, which this plan cannot replay: split it-d2-grid into it-d2-a/b/c-fig (one figure under each option heading), removed it-d2-a/b/c-p, it-d1-a/b/c-b and it-flow-b (their points are now the notes), and cleared the it-d1-a/b/c-figs captions. Restore those from git if a Save to Code reverts them."
+}

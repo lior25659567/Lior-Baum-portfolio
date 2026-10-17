@@ -123,6 +123,7 @@ const normalizeBlockContent = (block) => {
   let text = '';
   switch (block.type) {
     case 'cards':
+      title = clean(block.title);
       listOf(block.items).forEach((it) => rows.push({ head: clean(it.title), body: clean(it.description || it.value) }));
       break;
     case 'bullets':
@@ -188,7 +189,7 @@ const buildBlockFields = (toType, { title, rows, text }) => {
     }
     case 'cards':
       return {
-        variant: 'numbered', columns: 2,
+        title, variant: 'numbered', columns: 2,
         items: (rows.length ? rows : lines().map((l) => ({ head: l, body: '' }))).map((r, i) => ({
           number: String(i + 1), tone: 'neutral', title: r.head || '', description: r.body || '',
         })),

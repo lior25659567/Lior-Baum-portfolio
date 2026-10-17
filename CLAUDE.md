@@ -600,6 +600,15 @@ Cross-study consistency — run MANUALLY (never inside `fix`; it reads every stu
    `cases/reviews/PORTFOLIO-CONSISTENCY.md`."
 3. Show the report in the terminal.
 
+## Trigger: "annotate <slug>" / "use the annotation(s)"
+Add text-driven notes, boxes and arrows to a case study's article images — pointing at the
+exact UI the article text describes — and trim the bullets they replace. **Run the
+`annotate-case-study` skill** (`.claude/skills/annotate-case-study/SKILL.md`); it holds the
+full workflow, the safe apply/remove script (`auto-` ids only), and the saved plans for studies
+already annotated (Patient Report, iTero Scan Workflow). No slug given → ask which study, or
+offer all studies with articles (one sub-agent each). Always review screenshots before
+bumping `dataVersion`, and warn that the bump replaces unsaved edit-mode changes in the browser.
+
 ## The 10 canonical case-study beats (for judging completeness)
 1. Cover  2. Problem Statement  3. Research Overview  4. Key Insights
 5. Design Exploration  6. Iteration Evidence  7. Final Solution

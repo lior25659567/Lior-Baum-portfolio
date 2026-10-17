@@ -76,6 +76,31 @@ function migrateProjectSlugs(content) {
   };
 }
 
+/* Project-card labels are curated in home-content.json, but a browser's saved
+   edit-mode copy wins over the file — so a relabel there never reached a
+   browser that had one. Each file item carries `labelsVersion`; a saved copy
+   with an older (or no) version takes the file's labels. The migrated copy
+   carries the version forward, so labels edited in edit mode afterwards stick
+   (and Save to Code writes the version back into the file). */
+const homeProjectLabels = {};
+try {
+  for (const it of (savedHomeData?.content?.projects?.items || [])) {
+    if (it?.id && Array.isArray(it.labels) && it.labelsVersion) homeProjectLabels[it.id] = it;
+  }
+} catch { /* no saved home data */ }
+function migrateProjectLabels(content) {
+  const items = content?.projects?.items;
+  if (!Array.isArray(items)) return content;
+  let changed = false;
+  const next = items.map((it) => {
+    const src = it && homeProjectLabels[it.id];
+    if (!src || (it.labelsVersion || 0) >= src.labelsVersion) return it;
+    changed = true;
+    return { ...it, labels: [...src.labels], labelsVersion: src.labelsVersion };
+  });
+  return changed ? { ...content, projects: { ...content.projects, items: next } } : content;
+}
+
 // Default site content
 const defaultContent = {
   hero: {
@@ -316,7 +341,7 @@ export const EditProvider = ({ children }) => {
     try {
       const saved = localStorage.getItem('siteContent');
       return saved
-        ? migrateProjectSlugs(migrateCaseStudyImagePathsToWebp(mergeContent(JSON.parse(saved))))
+        ? migrateProjectLabels(migrateProjectSlugs(migrateCaseStudyImagePathsToWebp(mergeContent(JSON.parse(saved)))))
         : effectiveDefaultContent;
     } catch { return effectiveDefaultContent; }
   });
@@ -336,7 +361,7 @@ export const EditProvider = ({ children }) => {
         getData('siteStyles'),
       ]);
       if (cancelled) return;
-      if (savedContent) setContent(migrateProjectSlugs(migrateCaseStudyImagePathsToWebp(mergeContent(savedContent))));
+      if (savedContent) setContent(migrateProjectLabels(migrateProjectSlugs(migrateCaseStudyImagePathsToWebp(mergeContent(savedContent)))));
       if (savedStyles) setStyles(prev => ({ ...prev, ...migrateStyles(savedStyles) }));
       hydrated.current = true;
     })();

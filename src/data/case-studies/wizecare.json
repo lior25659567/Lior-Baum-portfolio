@@ -1,5 +1,5 @@
 {
-  "dataVersion": 17,
+  "dataVersion": 19,
   "title": "WizeCare",
   "slides": [
     {
@@ -594,8 +594,8 @@
         "id": "bmsc4ynd1onhl82",
         "type": "heading",
         "level": 2,
-        "eyebrow": "The Context",
-        "text": "Physiotherapists spend too much of their day fighting admin, not treating patients"
+        "eyebrow": "",
+        "text": "Context: physiotherapists spent too much of their day on admin"
       },
       {
         "id": "bmsc4ynd1ooe3nz",
@@ -605,7 +605,7 @@
       {
         "id": "bmsc4ynd1opj1rj",
         "type": "figure",
-        "width": "wide",
+        "width": "prose",
         "media": [
           {
             "src": "/case-studies/wizecare/img-39wooi4v0w.webp",
@@ -625,8 +625,8 @@
         "id": "bmsc4ynd1ord6io",
         "type": "heading",
         "level": 2,
-        "eyebrow": "The Problem",
-        "text": "Three places it broke down"
+        "eyebrow": "",
+        "text": "The problem: three places the workflow broke down"
       },
       {
         "id": "bmsc4ynd1osqbfe",
@@ -663,8 +663,8 @@
         "id": "bmsc4ynd1oulj9r",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Problem Discovery",
-        "text": "Clinicians had stopped seeing the friction — so I stopped asking and started watching"
+        "eyebrow": "",
+        "text": "Problem discovery: watching clinicians work instead of asking them"
       },
       {
         "id": "bmsc4ynd1ov9mdb",
@@ -702,8 +702,8 @@
         "id": "bmsc4ynd1p0r46d",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Design Goals",
-        "text": "What I set out to fix — and why"
+        "eyebrow": "",
+        "text": "Design goals: what the redesign had to fix, and why"
       },
       {
         "id": "bmsc4ynd1p1zlil",
@@ -745,8 +745,8 @@
         "id": "bmsc4ynd1p4fyb4",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Patient Screen",
-        "text": "Everything a clinician needs, in one place"
+        "eyebrow": "",
+        "text": "Patient screen: everything a clinician needs in one place"
       },
       {
         "id": "bmsc4ynd1p5zy61",
@@ -763,7 +763,7 @@
       {
         "id": "bmsc4ynd1p7msdm",
         "type": "figure",
-        "width": "wide",
+        "width": "prose",
         "display": "carousel",
         "interval": 1500,
         "media": [
@@ -798,7 +798,7 @@
       {
         "id": "bmsc4ynd1patucf",
         "type": "figure",
-        "width": "wide",
+        "width": "prose",
         "display": "carousel",
         "interval": 1500,
         "media": [
@@ -827,8 +827,8 @@
         "id": "bmsc4ynd1pde0zk",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Care Plan Editing",
-        "text": "Editing a plan shouldn't need a map — so I flattened it into one screen"
+        "eyebrow": "",
+        "text": "Care plan editing: flattened into one screen"
       },
       {
         "id": "bmsc4ynd1peqj68",
@@ -845,7 +845,7 @@
       {
         "id": "bmsc4ynd1pgvan8",
         "type": "figure",
-        "width": "wide",
+        "width": "prose",
         "display": "carousel",
         "interval": 1500,
         "media": [
@@ -894,7 +894,7 @@
       {
         "id": "bmsc4ynd1pjxka4",
         "type": "figure",
-        "width": "wide",
+        "width": "prose",
         "display": "carousel",
         "interval": 1500,
         "media": [
@@ -944,8 +944,8 @@
         "id": "bmsc4ynd1pn3ggu",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Protocol Builder",
-        "text": "Protocol Builder — why I replaced templates with a drag-and-drop Kanban"
+        "eyebrow": "",
+        "text": "Protocol builder: a drag-and-drop board instead of templates"
       },
       {
         "id": "bmsc4ynd1po6gor",
@@ -962,7 +962,7 @@
       {
         "id": "bmsc4ynd1pqyhdm",
         "type": "figure",
-        "width": "wide",
+        "width": "prose",
         "display": "carousel",
         "interval": 1500,
         "media": [
@@ -1011,7 +1011,7 @@
       {
         "id": "bmsc4ynd1ptt9g2",
         "type": "figure",
-        "width": "wide",
+        "width": "prose",
         "media": [
           {
             "src": "",
@@ -1031,8 +1031,8 @@
         "id": "bmsc4ynd1pv4ybc",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Outcomes",
-        "text": "What changed: faster days, fewer mistakes, more people actually using it"
+        "eyebrow": "",
+        "text": "Outcomes: faster days, fewer mistakes, higher adoption"
       },
       {
         "id": "bmsc4ynd1pwd0h7",
@@ -1058,8 +1058,8 @@
         "id": "bmsc4ynd1pxvqx7",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Reflection",
-        "text": "What I'd do differently"
+        "eyebrow": "",
+        "text": "Reflection: what I'd do differently"
       },
       {
         "id": "bmsc4ynd1pyh6qv",

@@ -1,5 +1,5 @@
 {
-  "dataVersion": 6,
+  "dataVersion": 8,
   "title": "Design System\nin Claude Code",
   "subtitle": "An AI-first design system — shared by designers, developers, and AI.",
   "category": "Design Systems / AI Tooling",
@@ -360,8 +360,8 @@
         "id": "ds-prob-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "The Problem",
-        "text": "A designer could specify a component. Only an engineer could ship one."
+        "eyebrow": "",
+        "text": "The problem: designers could specify components, but only engineers could ship them"
       },
       {
         "id": "ds-prob-p",
@@ -389,8 +389,8 @@
         "id": "ds-goal-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "The Goal",
-        "text": "Give designers a real share of the code"
+        "eyebrow": "",
+        "text": "The goal: give designers a real share of the code"
       },
       {
         "id": "ds-goal-p",
@@ -429,8 +429,8 @@
         "id": "ds-tok-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Foundation",
-        "text": "Two environments, one set of values"
+        "eyebrow": "",
+        "text": "Foundation: one set of token values across two environments"
       },
       {
         "id": "ds-tok-p",
@@ -458,8 +458,8 @@
         "id": "ds-ai-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "How It Works",
-        "text": "The rules are what make the output shippable"
+        "eyebrow": "",
+        "text": "How it works: the rules that make the output shippable"
       },
       {
         "id": "ds-ai-p",
@@ -503,8 +503,8 @@
         "id": "ds-sys-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "The Library",
-        "text": "Every state rendered, versioned, and testable"
+        "eyebrow": "",
+        "text": "The library: every state rendered, versioned and testable"
       },
       {
         "id": "ds-sys-p",
@@ -526,7 +526,7 @@
       {
         "id": "ds-sys-vid",
         "type": "figure",
-        "width": "wide",
+        "width": "prose",
         "media": [
           {
             "src": "https://res.cloudinary.com/dl064p341/video/upload/v1782064129/example_of_storybook_design_system_eyyqjx.mov",
@@ -541,8 +541,8 @@
         "id": "ds-pages-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Pages & Themes",
-        "text": "Same components, every surface"
+        "eyebrow": "",
+        "text": "Pages and themes: the same components on every surface"
       },
       {
         "id": "ds-pages-p",
@@ -552,7 +552,7 @@
       {
         "id": "ds-pages-fig",
         "type": "figure",
-        "width": "wide",
+        "width": "prose",
         "display": "carousel",
         "interval": 1500,
         "media": [
@@ -590,8 +590,8 @@
         "id": "ds-out-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Outcomes",
-        "text": "What changed"
+        "eyebrow": "",
+        "text": "Outcomes: what changed"
       },
       {
         "id": "ds-out-b",
@@ -611,8 +611,8 @@
         "id": "ds-ref-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Reflection",
-        "text": "How my role changed"
+        "eyebrow": "",
+        "text": "Reflection: how my role changed"
       },
       {
         "id": "ds-ref-c",

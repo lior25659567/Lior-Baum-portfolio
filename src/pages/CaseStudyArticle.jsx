@@ -1,12 +1,14 @@
 import { Fragment, createContext, useContext, useMemo, useRef, useState, useEffect, useLayoutEffect } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
+import { entranceTargets, useArticleScrollMotion, useHeroScrollMotion } from './articleMotion';
 import { savedCaseStudies } from '../data/case-studies/index.js';
 import { contactDefaults } from '../data/caseStudyData';
 import { buildResponsiveWebp, LazyVideo, pickMediaFile } from './caseStudyMedia';
 import EditableField from '../components/EditableField';
 import { AnnotationLayer, AnnotationEditor, AnnotationNotes } from '../components/ImageAnnotations';
 import { CARD_ICONS, CARD_ICON_KEYS, TONE_DEFAULT_ICON } from '../components/CardIcons';
+import { widont } from '../utils/typography';
 import {
   hasText, clean, oneLine, listOf, isVideoSrc, normalizeMedia,
   splitBold, articleBlockCategories, deriveArticleFromSlides, CONVERTIBLE_BLOCK_TYPES,
@@ -46,14 +48,15 @@ const BLOCK_TYPE_LABELS = {
 // ─────────────────────────────────────────────────────────────────────────
 
 const FIGURE_SIZES = {
-  prose: '(min-width: 820px) 720px, 94vw',
+  prose: '(min-width: 1020px) 920px, 94vw',
   wide: '(min-width: 1240px) 1160px, 94vw',
   full: '(min-width: 1480px) 1400px, 96vw',
 };
 
 /* ── Rich text (**bold** markdown-lite) ───────────────────────────────── */
 
-const Rich = ({ text }) => splitBold(text).map((seg, i) =>
+// Read-view text never ends on a one-word line: `widont` ties the last two words.
+const Rich = ({ text }) => splitBold(widont(text)).map((seg, i) =>
   seg.bold ? <strong key={i}>{seg.text}</strong> : <span key={i}>{seg.text}</span>
 );
 
@@ -68,6 +71,17 @@ const Prose = ({ text, className = 'cs-article-p' }) => {
 };
 
 /* ── Media entry (shared by view + edit figure) ───────────────────────── */
+
+// One color scheme per image drives BOTH its Accepted/Rejected chip and its
+// annotations: 'brand' (accent / ink) or 'semantic' (green / red). Unset:
+// green/red when the image has annotations, brand when it only has a chip —
+// each image's old default. Reads the older per-part fields too.
+const mediaPalette = (entry) => {
+  if (entry.palette === 'brand' || entry.palette === 'semantic') return entry.palette;
+  if (entry.annotationPalette === 'brand') return 'brand';
+  if (entry.chipColors === 'semantic') return 'semantic';
+  return listOf(entry.annotations).length ? 'semantic' : 'brand';
+};
 
 const MediaEntry = ({ entry, tier, annotating = false, onAnnotationsChange, onAnnotateDone }) => {
   const ref = useRef(null);
@@ -112,6 +126,7 @@ const MediaEntry = ({ entry, tier, annotating = false, onAnnotationsChange, onAn
   }, [video, embed]);
   if (!src && !embed) return null;
   const resp = !video && src && !src.startsWith('data:') ? buildResponsiveWebp(src) : null;
+  const annotPalette = mediaPalette(entry) === 'brand' ? 'brand' : undefined;
   return (
     <div ref={ref} className={`cs-article-media-entry${entry.border ? ' cs-article-media-entry--bordered' : ''}${entry.border && entry.borderColor === 'cream' ? ' cs-article-media-entry--matcream' : ''}${entry.shadow === false ? ' cs-article-media-entry--noshadow' : ''}`}>
       {embed ? (
@@ -155,13 +170,13 @@ const MediaEntry = ({ entry, tier, annotating = false, onAnnotationsChange, onAn
             />
           )}
           {annotating ? (
-            <AnnotationEditor annotations={entry.annotations} onChange={onAnnotationsChange} onDone={onAnnotateDone} />
+            <AnnotationEditor annotations={entry.annotations} onChange={onAnnotationsChange} onDone={onAnnotateDone} palette={annotPalette} />
           ) : (
-            listOf(entry.annotations).length > 0 && <AnnotationLayer annotations={entry.annotations} />
+            listOf(entry.annotations).length > 0 && <AnnotationLayer annotations={entry.annotations} palette={annotPalette} />
           )}
         </div>
       )}
-      {!annotating && !embed && <AnnotationNotes annotations={entry.annotations} />}
+      {!annotating && !embed && <AnnotationNotes annotations={entry.annotations} palette={annotPalette} />}
     </div>
   );
 };
@@ -250,7 +265,7 @@ const HeadingBlock = ({ block, editing, onPatch }) => {
       <Tag className={`${level === 3 ? 'cs-article-h3' : 'cs-article-h2'}${mods}`}>
         {editing
           ? <EditableField value={block.text} onChange={(v) => onPatch({ text: v })} multiline placeholder="Heading" />
-          : oneLine(block.text)}
+          : widont(oneLine(block.text))}
       </Tag>
       {editing && (
         <div className="cs-article-item-toolbar cs-article-heading-toolbar">
@@ -493,6 +508,13 @@ const CardsBlock = ({ block, editing, onPatch, onConvert }) => {
   if (!items.length && !editing) return null;
   return (
     <>
+      {(hasText(block.title) || editing) && (
+        <h3 className="cs-article-h3">
+          {editing
+            ? <EditableField value={block.title} onChange={(v) => onPatch({ title: v })} placeholder="Cards title (optional)" />
+            : widont(clean(block.title))}
+        </h3>
+      )}
       <div className={`cs-article-cards cs-article-cards--${variant} cs-article-cards--cols-${cols}${hasBadge ? ` cs-article-cards--badge-${badge}` : ''}`} style={{ '--cs-cards-cols': cols }}>
         {items.map((item, i) => {
           const tone = CARD_TONES.includes(item.tone) ? item.tone : 'neutral';
@@ -513,7 +535,7 @@ const CardsBlock = ({ block, editing, onPatch, onConvert }) => {
               <div className="cs-article-card-body">
                 {(hasText(item.title) || editing) && (
                   <p className="cs-article-card-title">
-                    {editing ? <EditableField value={item.title} onChange={(v) => setItem(i, { title: v })} placeholder="Title" /> : clean(item.title)}
+                    {editing ? <EditableField value={item.title} onChange={(v) => setItem(i, { title: v })} placeholder="Title" /> : widont(clean(item.title))}
                   </p>
                 )}
                 {(hasText(item.description) || editing) && (
@@ -641,7 +663,7 @@ const FigureBlock = ({ block, editing, onPatch }) => {
       <figure className={`cs-article-figure cs-article-figure--${width}`}>
         <ArticleCarousel entries={visible} tier={width} interval={block.interval} />
         {visible.some((m) => hasText(m.caption)) && (
-          <figcaption>{clean(visible.find((m) => hasText(m.caption))?.caption)}</figcaption>
+          <figcaption>{widont(clean(visible.find((m) => hasText(m.caption))?.caption))}</figcaption>
         )}
       </figure>
     );
@@ -653,8 +675,8 @@ const FigureBlock = ({ block, editing, onPatch }) => {
         {visible.map((entry, i) => (
           <div className="cs-article-figure-cell" key={i}>
             {(entry.status === 'accepted' || entry.status === 'rejected') && (
-              <span className={`cs-article-figure-chip cs-article-figure-chip--${entry.status}`}>
-                {entry.status === 'accepted' ? 'Accepted' : 'Rejected'}
+              <span className={`cs-article-figure-chip cs-article-figure-chip--${entry.status}${mediaPalette(entry) === 'semantic' ? ' cs-article-figure-chip--semantic' : ''}`}>
+                {clean(entry.statusLabel) || (entry.status === 'accepted' ? 'Accepted' : 'Rejected')}
               </span>
             )}
             {(hasText(entry.src) || hasText(entry.embedUrl))
@@ -703,6 +725,24 @@ const FigureBlock = ({ block, editing, onPatch }) => {
                     {annotatingIdx === i ? 'done' : `annotate${listOf(entry.annotations).length ? ` (${listOf(entry.annotations).length})` : ''}`}
                   </button>
                 )}
+                {(entry.status || listOf(entry.annotations).length > 0) && (
+                  <span className="cs-article-chip-colors" role="group" aria-label="Image colors">
+                    <button type="button" className={`cs-article-mini-btn${mediaPalette(entry) === 'brand' ? ' is-active' : ''}`}
+                      title="Brand colors for this image's chip and annotations — accent for accepted/positive, ink for rejected/negative"
+                      onClick={() => setEntry(i, { palette: 'brand', chipColors: undefined, annotationPalette: undefined })}>
+                      <span className="cs-article-chip-dot cs-article-chip-dot--brand" />
+                      <span className="cs-article-chip-dot cs-article-chip-dot--ink" />
+                      brand
+                    </button>
+                    <button type="button" className={`cs-article-mini-btn${mediaPalette(entry) === 'semantic' ? ' is-active' : ''}`}
+                      title="Green / red for this image's chip and annotations"
+                      onClick={() => setEntry(i, { palette: 'semantic', chipColors: undefined, annotationPalette: undefined })}>
+                      <span className="cs-article-chip-dot cs-article-chip-dot--ok" />
+                      <span className="cs-article-chip-dot cs-article-chip-dot--no" />
+                      green/red
+                    </button>
+                  </span>
+                )}
                 <button type="button" className={`cs-article-mini-btn${entry.border ? ' is-active' : ''}`}
                   title="Toggle a framed border on this image"
                   onClick={() => setEntry(i, { border: !entry.border })}>border</button>
@@ -726,6 +766,19 @@ const FigureBlock = ({ block, editing, onPatch }) => {
                   onClick={() => setEntry(i, { status: entry.status === 'accepted' ? 'rejected' : (entry.status === 'rejected' ? '' : 'accepted') })}>
                   {entry.status || '+ chip'}
                 </button>
+                {entry.status && (
+                  <input
+                    key={`chip-text-${entry.status}`}
+                    type="text"
+                    className="cs-article-embed-input cs-article-chip-text"
+                    aria-label="Chip text"
+                    title="Chip text — leave empty for the default"
+                    placeholder={entry.status === 'accepted' ? 'Accepted' : 'Rejected'}
+                    defaultValue={entry.statusLabel || ''}
+                    onBlur={(e) => setEntry(i, { statusLabel: e.target.value.trim() || undefined })}
+                    onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+                  />
+                )}
                 {media.length > 1 && (
                   <button type="button" className="cs-article-mini-btn" title="Remove entry"
                     onClick={() => onPatch({ media: media.filter((_, j) => j !== i) })}>✕</button>
@@ -741,8 +794,8 @@ const FigureBlock = ({ block, editing, onPatch }) => {
                   </>
                 ) : (
                   <>
-                    {hasText(entry.title) && <strong className="cs-article-figure-cell-title">{clean(entry.title)}</strong>}
-                    {hasText(entry.caption) && <span className="cs-article-figure-cell-desc">{clean(entry.caption)}</span>}
+                    {hasText(entry.title) && <strong className="cs-article-figure-cell-title">{widont(clean(entry.title))}</strong>}
+                    {hasText(entry.caption) && <span className="cs-article-figure-cell-desc">{widont(clean(entry.caption))}</span>}
                   </>
                 )}
               </div>
@@ -754,7 +807,7 @@ const FigureBlock = ({ block, editing, onPatch }) => {
         <figcaption>
           {editing
             ? <EditableField value={media[0]?.caption || ''} onChange={(v) => setEntry(0, { caption: v })} placeholder="Caption (optional)" />
-            : clean(visible.find((m) => hasText(m.caption))?.caption)}
+            : widont(clean(visible.find((m) => hasText(m.caption))?.caption))}
         </figcaption>
       )}
       {editing && (
@@ -821,7 +874,7 @@ const QuoteBlock = ({ block, editing, onPatch }) => {
       <p>
         {editing
           ? <EditableField value={q.text} onChange={(v) => setQuote(i, { text: v })} multiline placeholder="Quote text" />
-          : clean(q.text)}
+          : widont(clean(q.text))}
       </p>
       {(hasText(q.author) || hasText(q.role) || editing) && (
         <cite>
@@ -939,11 +992,11 @@ const ChapterBlock = ({ block, editing, onPatch }) => (
       </span>
     )}
     <h2 className="cs-article-chapter-title">
-      {editing ? <EditableField value={block.title} onChange={(v) => onPatch({ title: v })} placeholder="Chapter title" /> : oneLine(block.title)}
+      {editing ? <EditableField value={block.title} onChange={(v) => onPatch({ title: v })} placeholder="Chapter title" /> : widont(oneLine(block.title))}
     </h2>
     {(hasText(block.subtitle) || editing) && (
       <p className="cs-article-chapter-subtitle">
-        {editing ? <EditableField value={block.subtitle} onChange={(v) => onPatch({ subtitle: v })} multiline placeholder="Subtitle (optional)" /> : clean(block.subtitle)}
+        {editing ? <EditableField value={block.subtitle} onChange={(v) => onPatch({ subtitle: v })} multiline placeholder="Subtitle (optional)" /> : widont(clean(block.subtitle))}
       </p>
     )}
   </div>
@@ -1352,30 +1405,29 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
   // the container is already at the top before the stagger plays — otherwise
   // the animation would run against content the viewer can't see.
   //
+  // Keyed on the rendered CONTENT (title + block ids), not projectId: after a
+  // next-case click the URL changes ~200ms before the new study mounts, so a
+  // projectId-keyed run animated the outgoing study's nodes and the incoming
+  // one appeared unanimated. The async IndexedDB copy landing with the same
+  // content leaves the key unchanged, so it doesn't replay.
+  //
   // Skipped in edit mode: the editor's insert zones and control pills change
   // the layout, and re-animating blocks while the designer is working is noise.
   const articleRef = useRef(null);
+  const blockKey = blocks.map((b) => b.id || b.type).join(',');
+  const contentKey = `${article?.title || ''}|${blockKey}`;
   useLayoutEffect(() => {
     if (editMode) return;
     if (typeof window === 'undefined') return;
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) return;
     const root = articleRef.current;
-    if (!root) return;
+    // Nothing rendered yet (data still loading) — nothing to animate.
+    if (!root || !blockKey) return;
     let rafHandle = null;
     let timeoutHandle = null;
     const ctx = gsap.context(() => {
-      // One flat query so the nodes come back in document order — that keeps
-      // the stagger correct whether or not the study leads with a hero block
-      // (a hero renders BEFORE the <header>, a normal study after it).
-      let seenLede = false;
-      const targets = Array.from(root.querySelectorAll(
-        ':scope > .cs-article-block, :scope > .cs-article-header .cs-article-h1, :scope > .cs-article-header .cs-article-lede'
-      )).filter((el) => {
-        if (!el.classList.contains('cs-article-lede')) return true;
-        if (seenLede) return false; // Prose can emit several <p class="cs-article-lede">
-        seenLede = true;
-        return true;
-      }).slice(0, 5);
+      // Shared with the scroll motion below, which leaves these alone.
+      const targets = entranceTargets(root);
       if (!targets.length) return;
 
       // Hide immediately, before the browser paints, so nothing flashes in at
@@ -1459,9 +1511,15 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
       if (timeoutHandle !== null) clearTimeout(timeoutHandle);
       ctx.revert();
     };
-  }, [projectId, editMode]);
+  }, [contentKey, blockKey, editMode]);
 
-  const quickAdd = (type, at) => flash(ops.addArticleBlock(type, at));
+  // ── Scroll-in motion for everything below the fold ──────────────────────
+  // Declared after the entrance stagger so its targets are already claimed.
+  useArticleScrollMotion(articleRef, { enabled: !editMode, resetKey: contentKey });
+  // The hero image eases away on scroll and reverses when scrolled back to.
+  useHeroScrollMotion(articleRef, { enabled: !editMode, resetKey: contentKey });
+
+  const quickAdd =(type, at) => flash(ops.addArticleBlock(type, at));
 
   const renderBlock = (blk, listIndex, realIndex) => {
     const Renderer = BLOCK_RENDERERS[blk.type];
@@ -1512,7 +1570,7 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
         <h1 className="cs-article-h1">
           {editing
             ? <EditableField value={article?.title} onChange={(v) => ops.updateArticle({ title: v })} multiline placeholder="Article title" />
-            : oneLine(article?.title) || oneLine(project?.title)}
+            : widont(oneLine(article?.title) || oneLine(project?.title))}
         </h1>
         {editing ? (
           <p className="cs-article-lede">

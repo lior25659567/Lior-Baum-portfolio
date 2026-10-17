@@ -321,6 +321,15 @@ html {
   html { font-size: 14px; }
 }
 
+/* Rule: no text block ends on a line holding one lonely word — at any screen
+   size, anywhere on the site. `pretty` lets the browser rebalance the last
+   lines of every paragraph, heading, caption and card (inherited by all
+   text). The case-study article adds a hard guarantee for browsers without
+   it (widont, src/utils/typography.js). */
+body {
+  text-wrap: pretty;
+}
+
 body {
   font-family: var(--font-body);
   font-size: clamp(0.9375rem, 1.1vw, 1rem);
@@ -448,10 +457,11 @@ img {
    ───────────────────────────────────────────────────────────────────────── */
 @media (max-width: 767.98px) {
   :root {
-    --text-caption: clamp(0.8125rem, 2.4vw, 0.9375rem); /* ≥13px floor, up to 15px */
-    --text-body-sm: clamp(0.875rem, 2.6vw, 1rem);        /* ≥14px floor */
-    --text-body: clamp(0.9375rem, 2.8vw, 1rem);          /* 15–16px */
-    --text-eyebrow: 0.9375rem;                            /* 15px uppercase eyebrow */
+    --text-caption: clamp(0.875rem, 2.4vw, 1rem);        /* ≥15px floor (rem = 17px here) */
+    --text-body-sm: clamp(0.9375rem, 2.6vw, 1.0625rem);  /* ≥16px floor */
+    --text-body: clamp(1rem, 2.8vw, 1.0625rem);          /* 17–18px */
+    --text-eyebrow: 0.9375rem;                            /* 16px uppercase eyebrow */
+    --text-label: 0.75rem;                                /* ≈13px chip / eyebrow tier */
     --text-h1: clamp(2rem, 8vw, 2.5rem);                  /* 32–40px */
     --text-h2: clamp(1.625rem, 6vw, 2rem);                /* 26–32px */
     --text-h3: clamp(1.25rem, 5vw, 1.5rem);               /* 20–24px */
@@ -465,7 +475,10 @@ img {
     --spacing-2xl: 4rem;   /* 64 */
   }
 
-  html { font-size: 15px; }
+  /* Mobile root size. Almost every size on the site is in rem, so this is
+     the one lever that scales all mobile type (and rem spacing) together.
+     Was 15px, which left small text at 11–13px on phones. */
+  html { font-size: 17px; }
 }
 
 /* Shared section label utility */

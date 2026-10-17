@@ -383,7 +383,7 @@
 }
 
 /* Note — the case-study callout: white box, text + border in the chosen
-   color, hard ink offset shadow. */
+   color. Flat by default; the hard ink offset shadow is an option. */
 .cs-annot-text--note {
   padding: 0.55em 0.8em;
   border: 1.5px solid var(--annot-color);
@@ -391,7 +391,6 @@
   background: #fff;
   color: var(--annot-color);
   font-weight: 600;
-  box-shadow: 3px 3px 0 #22211f;
 }
 .cs-annot-text--note[data-color='white'] {
   color: #22211f;
@@ -445,8 +444,8 @@
 .cs-annot-text--note[data-bg='none'] {
   background: transparent;
 }
-.cs-annot-text--note[data-shadow='off'] {
-  box-shadow: none;
+.cs-annot-text--note[data-shadow='on'] {
+  box-shadow: 3px 3px 0 #22211f;
 }
 .cs-annot-text--note[data-border='off'] {
   border-color: transparent;
@@ -458,7 +457,7 @@
   color: var(--annot-color);
   border: 1.5px solid var(--annot-color);
   border-radius: 4px;
-  box-shadow: 3px 3px 0 #22211f;
+  box-shadow: none;
 }
 .cs-annot-boxlabel--plain {
   padding: 0;
@@ -472,4 +471,32 @@
 }
 .cs-annot-boxlabel--note[data-color='white'] {
   color: #22211f;
+}
+
+/* Brand palette (per image, "notes: brand" in the figure tools): the ✓/✕
+   labels and the mobile list follow the brand chips — accent / ink — instead
+   of green / red. Notes, arrows and boxes are remapped in JS. */
+[data-palette='brand'] .cs-annot-text--positive {
+  color: var(--color-accent);
+  background: linear-gradient(var(--color-accent-soft), var(--color-accent-soft)), #fff;
+}
+[data-palette='brand'] .cs-annot-text--negative {
+  color: #22211f;
+  background: #fff;
+}
+.cs-annot-notes[data-palette='brand'] li.cs-annot-note--positive::before { color: var(--color-accent); }
+.cs-annot-notes[data-palette='brand'] li.cs-annot-note--negative::before { color: #22211f; }
+
+/* Meaning buttons (Positive / Negative) — icon in the palette's color. */
+.cs-annot-tones {
+  display: inline-flex;
+  gap: 3px;
+}
+.cs-annot-tone:not(.is-active) svg {
+  color: var(--tone);
+  stroke-width: 3;
+}
+.cs-annot-tone.is-active {
+  background: var(--tone);
+  color: #fff;
 }

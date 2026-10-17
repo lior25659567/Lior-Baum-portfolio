@@ -1,0 +1,245 @@
+{
+  "media": {
+    "/case-studies/patient-report/img-i06atssrj0.webp": [
+      {
+        "id": "auto-pr-pdf-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.02,
+        "y": 0.05,
+        "w": 0.2,
+        "text": "The PDF patients took home was never designed for them",
+        "color": "error"
+      },
+      {
+        "id": "auto-pr-pdf-arrow",
+        "kind": "arrow",
+        "x1": 0.22,
+        "y1": 0.1,
+        "x2": 0.37,
+        "y2": 0.14,
+        "color": "error",
+        "cx": 0.3,
+        "cy": 0.08
+      },
+      {
+        "id": "auto-pr-blank-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.02,
+        "y": 0.23,
+        "w": 0.2,
+        "text": "Every report started from a blank page — about 10 minutes each",
+        "color": "error"
+      },
+      {
+        "id": "auto-pr-blank-arrow",
+        "kind": "arrow",
+        "x1": 0.14,
+        "y1": 0.345,
+        "x2": 0.2,
+        "y2": 0.455,
+        "color": "error",
+        "cx": 0.2,
+        "cy": 0.37
+      },
+      {
+        "id": "auto-pr-blank-box",
+        "kind": "box",
+        "x": 0.165,
+        "y": 0.445,
+        "w": 0.39,
+        "h": 0.07,
+        "color": "error"
+      },
+      {
+        "id": "auto-pr-details-box",
+        "kind": "box",
+        "x": 0.895,
+        "y": 0.54,
+        "w": 0.1,
+        "h": 0.165,
+        "color": "error"
+      },
+      {
+        "id": "auto-pr-details-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.62,
+        "y": 0.52,
+        "w": 0.22,
+        "text": "A fixed details panel took 25% of the screen",
+        "color": "error"
+      },
+      {
+        "id": "auto-pr-details-arrow",
+        "kind": "arrow",
+        "x1": 0.84,
+        "y1": 0.56,
+        "x2": 0.89,
+        "y2": 0.6,
+        "color": "error",
+        "cx": 0.87,
+        "cy": 0.55
+      },
+      {
+        "id": "auto-pr-share-box",
+        "kind": "box",
+        "x": 0.895,
+        "y": 0.9,
+        "w": 0.1,
+        "h": 0.095,
+        "color": "error"
+      },
+      {
+        "id": "auto-pr-share-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.6,
+        "y": 0.885,
+        "w": 0.22,
+        "text": "Sharing split into three separate buttons",
+        "color": "error"
+      },
+      {
+        "id": "auto-pr-share-arrow",
+        "kind": "arrow",
+        "x1": 0.82,
+        "y1": 0.93,
+        "x2": 0.89,
+        "y2": 0.945,
+        "color": "error"
+      }
+    ],
+    "/case-studies/patient-report/img-onhducg7s.webp": [
+      {
+        "id": "auto-ws-panel-box",
+        "kind": "box",
+        "x": 0.012,
+        "y": 0.395,
+        "w": 0.31,
+        "h": 0.455,
+        "color": "error"
+      },
+      {
+        "id": "auto-ws-edit-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.45,
+        "y": 0.56,
+        "w": 0.3,
+        "text": "1. Edit text, tooth tags and notes in the side panel…",
+        "color": "error"
+      },
+      {
+        "id": "auto-ws-edit-arrow",
+        "kind": "arrow",
+        "x1": 0.45,
+        "y1": 0.595,
+        "x2": 0.33,
+        "y2": 0.6,
+        "color": "error",
+        "cx": 0.39,
+        "cy": 0.62
+      },
+      {
+        "id": "auto-ws-check-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.55,
+        "y": 0.69,
+        "w": 0.32,
+        "text": "2. …then check the canvas to see what changed",
+        "color": "error"
+      },
+      {
+        "id": "auto-ws-check-arrow",
+        "kind": "arrow",
+        "x1": 0.7,
+        "y1": 0.685,
+        "x2": 0.67,
+        "y2": 0.47,
+        "color": "error",
+        "cx": 0.74,
+        "cy": 0.58
+      },
+      {
+        "id": "auto-ws-teeth-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.42,
+        "y": 0.83,
+        "w": 0.36,
+        "text": "Tagging a tooth: pick the target first, then the tool",
+        "color": "error"
+      },
+      {
+        "id": "auto-ws-teeth-arrow",
+        "kind": "arrow",
+        "x1": 0.42,
+        "y1": 0.86,
+        "x2": 0.1,
+        "y2": 0.63,
+        "color": "error",
+        "cx": 0.2,
+        "cy": 0.84
+      }
+    ],
+    "/case-studies/patient-report/img-6rtq9b9u0.webp": [
+      {
+        "id": "auto-wc-inline-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.46,
+        "y": 0.485,
+        "w": 0.3,
+        "text": "Edit right on the block you're changing",
+        "color": "success"
+      },
+      {
+        "id": "auto-wc-inline-arrow",
+        "kind": "arrow",
+        "x1": 0.46,
+        "y1": 0.52,
+        "x2": 0.405,
+        "y2": 0.53,
+        "color": "success",
+        "cx": 0.43,
+        "cy": 0.56
+      },
+      {
+        "id": "auto-wc-library-note",
+        "kind": "text",
+        "style": "note",
+        "x": 0.012,
+        "y": 0.3,
+        "w": 0.19,
+        "text": "The sidebar becomes a block library — for adding new content",
+        "color": "success"
+      },
+      {
+        "id": "auto-wc-library-arrow",
+        "kind": "arrow",
+        "x1": 0.1,
+        "y1": 0.295,
+        "x2": 0.1,
+        "y2": 0.24,
+        "color": "success"
+      }
+    ]
+  },
+  "trim": {
+    "art-prob-b": [
+      "**Every report started from nothing**",
+      "**The canvas was locked to 25%**",
+      "**The PDF wasn't written for patients**"
+    ],
+    "art-d1-a-b": [
+      "**But you change one place and check another.**",
+      "**And it doesn't scale to annotation.**"
+    ],
+    "art-d1-b-b": [
+      "**No context switching**"
+    ]
+  }
+}

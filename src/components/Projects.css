@@ -80,15 +80,21 @@
   user-select: none;
 }
 
-.projects-edit-toolbar-check input[type="checkbox"] {
+.projects-edit-toolbar-check input[type="checkbox"],
+.projects-edit-toolbar-check input[type="radio"] {
   accent-color: var(--color-accent);
   width: 15px;
   height: 15px;
   margin: 0;
 }
 
-.projects-edit-toolbar-check input[type="checkbox"]:checked + span {
+.projects-edit-toolbar-check input[type="checkbox"]:checked + span,
+.projects-edit-toolbar-check input[type="radio"]:checked + span {
   color: var(--color-text);
+}
+
+.projects-edit-toolbar-label--group {
+  margin-left: 0.75rem;
 }
 
 /* Section visibility modifiers — drive from content.projects flags. */
@@ -270,34 +276,104 @@
 /* Gradient-background variant — image floats centered on the warm orange
    gradient (matches the embedded case-study iframe look) with padding */
 .project-media[data-media-mode="template"][data-card-bg="gradient"] {
-  --frame-pad: 9%;
-  /* exact colors from the report2-iframe gradient */
+  --frame-pad: 4.5%;
+  /* Two-colour gradient: the primary orange runs into a second colour
+     (--card-mix, set per data-card-tone below), so every case study pairs
+     orange with a different partner — blue, purple, green, … */
+  --card-orange: #FF8A3D; /* true orange — the coral primary reads red when used as a fill */
+  --card-mix: #4A8CFF;
+  /* Linear ramp, orange → second colour, blended directly (OKLAB) so only the
+     two colours show — no third hue in between. Orange holds solid up to --g0 and the second colour is only
+     fully reached at --g1, so orange owns most of the card. Angle and stop positions are driven
+     by GSAP in Projects.jsx; these are the resting values (also the
+     reduced-motion look). */
+  --ga: 120deg;
+  --g0: 38%;
+  --g1: 92%;
   --card-gradient: linear-gradient(
-    105deg,
-    #FFE8D0 0%,
-    #FFD0A8 38%,
-    #FFAD78 68%,
-    #FF8C50 100%
+    var(--ga) in oklab,
+    color-mix(in srgb, var(--card-orange) 42%, #fff) var(--g0),
+    color-mix(in srgb, var(--card-mix) 58%, #fff) var(--g1)
   );
   /* override the data-fill-media edge-to-edge rule so the gradient frame shows */
   padding: var(--frame-pad) !important;
   background: var(--card-gradient) !important;
-  /* slight oversize so the whole gradient stays visible but still drifts */
-  background-size: 135% 135% !important;
-  background-position: 0% 0%;
-  animation: cardGradientShift 8s ease-in-out infinite;
 }
 
-@keyframes cardGradientShift {
-  0%   { background-position: 0% 0%; }
-  50%  { background-position: 100% 100%; }
-  100% { background-position: 0% 0%; }
+/* Per-card tones — orange + a different second colour */
+.project-media[data-card-bg="gradient"][data-card-tone="0"] { --card-mix: #4A8CFF; } /* blue */
+.project-media[data-card-bg="gradient"][data-card-tone="1"] { --card-mix: #8B5CF6; } /* purple */
+.project-media[data-card-bg="gradient"][data-card-tone="2"] { --card-mix: #2FBF8F; }  /* green */
+.project-media[data-card-bg="gradient"][data-card-tone="3"] { --card-mix: #FF5CA8; } /* pink */
+.project-media[data-card-bg="gradient"][data-card-tone="4"] { --card-mix: #22B8CF; } /* teal */
+
+/* Section option "Card background: Orange only" (content.projects.cardBgStyle
+   === 'orange') — one colour, two shades, a different gradient shape per
+   card. Reuses the GSAP-driven --ga/--g0/--g1 so each one still moves. */
+.projects--card-bg-orange .project-media[data-media-mode="template"][data-card-bg="gradient"] {
+  --o-light: color-mix(in srgb, var(--card-orange) 26%, #fff);
+  --o-deep: color-mix(in srgb, var(--card-orange) 78%, #fff);
+}
+/* 0 — diagonal sweep */
+.projects--card-bg-orange .project-media[data-card-bg="gradient"][data-card-tone="0"] {
+  --card-gradient: linear-gradient(var(--ga), var(--o-light) var(--g0), var(--o-deep) var(--g1));
+}
+/* 1 — glow from the top-left corner */
+.projects--card-bg-orange .project-media[data-card-bg="gradient"][data-card-tone="1"] {
+  --card-gradient: radial-gradient(130% 150% at 0% 0%, var(--o-deep) 0%, var(--o-light) var(--g1));
+}
+/* 2 — light centre, deep edges */
+.projects--card-bg-orange .project-media[data-card-bg="gradient"][data-card-tone="2"] {
+  --card-gradient: radial-gradient(circle at 50% 45%, var(--o-light) var(--g0), var(--o-deep) calc(var(--g1) + 20%));
+}
+/* 3 — sweep turning around the bottom-left corner */
+.projects--card-bg-orange .project-media[data-card-bg="gradient"][data-card-tone="3"] {
+  --card-gradient: conic-gradient(from calc(var(--ga) - 120deg) at 0% 100%, var(--o-deep), var(--o-light) 25%, var(--o-deep) 50%);
+}
+/* 4 — two soft glows in opposite corners */
+.projects--card-bg-orange .project-media[data-card-bg="gradient"][data-card-tone="4"] {
+  --card-gradient:
+    radial-gradient(80% 100% at 100% 0%, var(--o-deep) 0%, transparent var(--g1)),
+    radial-gradient(80% 100% at 0% 100%, var(--o-deep) 0%, transparent var(--g1)),
+    linear-gradient(var(--o-light), var(--o-light));
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .project-media[data-media-mode="template"][data-card-bg="gradient"] {
-    animation: none;
-  }
+/* Section option "Card background: Badge colour" (content.projects.cardBgStyle
+   === 'solid') — every gradient-framed card swaps its gradient for the flat
+   badge fill, and the badge itself goes transparent so it doesn't repeat the
+   same colour as a second block. */
+.projects--card-bg-solid .project-media[data-media-mode="template"][data-card-bg="gradient"] {
+  background: var(--color-bg-secondary) !important;
+  /* same frame as the gradient option — only the fill changes */
+  padding: var(--frame-pad) !important;
+}
+
+/* Section toggle "Image shadow" off (content.projects.hideImageShadow) — drops
+   the shadow under the screenshot in every background option. The card's own
+   outer shadow is untouched. */
+.projects--no-image-shadow .project-media[data-media-mode="template"][data-card-bg="gradient"] .project-image.media-inner {
+  filter: none !important;
+}
+
+.projects--card-bg-solid .project-content-label,
+.projects--card-bg-solid .project-content-label--editing {
+  background: transparent !important;
+}
+
+/* With no fill and no border the badges read as a plain text line, so they
+   lose the pill padding and get a comma between them (view mode only — the
+   edit-mode chips keep their own layout). */
+.projects--card-bg-solid .project-content-label {
+  border: 0;
+}
+
+.projects--card-bg-solid .project-content-label:not(.project-content-label--editing) {
+  padding: 0;
+  font-size: var(--text-body-sm); /* one tier up from the pill's caption size */
+}
+
+.projects--card-bg-solid .project-content-label:not(.project-content-label--editing):not(:last-child)::after {
+  content: ',';
 }
 
 /* Wrapper is fully transparent — no card backing, no rectangular shadow */

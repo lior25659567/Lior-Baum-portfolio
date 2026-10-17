@@ -781,3 +781,23 @@ Notes:
 }
 ```
 
+---
+## `question` — renders type `question`
+**Purpose:** Sharpens the narrative — states the one question the whole project set out to answer. Reads like a chapter break and gives the deck a clear spine.
+**When to use:** Right after the problem/research beats, as the pivot into design. Also works as a section divider.
+**Required fields:** question
+**Optional fields:** label, support
+**Choose this when the content reads like:** how might we · the question · design question · research question · the challenge · core question
+**Content limits:**
+- question: rec One sharp question — ideally a "How might we…". Keep it to one or two lines.
+- support: rec One sentence of context. Optional — omit if the question stands alone.
+**Skeleton (copy for insert/retype; replace text with `[FILL IN: …]`):**
+```json
+{
+  "type": "question",
+  "label": "The Design Question",
+  "question": "How might we make intraoral scanning fast enough for a first-time user?",
+  "support": "The question that framed every decision that followed."
+}
+```
+

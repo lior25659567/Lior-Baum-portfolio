@@ -1,5 +1,5 @@
 {
-  "dataVersion": 39,
+  "dataVersion": 44,
   "title": "Patient Report\nRedesign",
   "subtitle": "From a blank page into a structured, shareable communication tool.",
   "category": "Clinical UX",
@@ -753,13 +753,14 @@
         "width": "full",
         "media": [
           {
-            "src": "/case-studies/patient-report/img-17swlw6adlo.webp",
+            "src": "/case-studies/patient-report/img-17swlw6adlo.png",
             "caption": "",
             "isVideo": false,
             "embedUrl": "",
             "size": "large",
             "isGif": false,
-            "shadow": false
+            "shadow": false,
+            "field": true
           }
         ]
       },
@@ -815,8 +816,8 @@
         "id": "art-ctx-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Context",
-        "text": "The only thing the patient takes home"
+        "eyebrow": "",
+        "text": "Context: the report is the only thing the patient takes home"
       },
       {
         "id": "art-ctx-p",
@@ -833,21 +834,31 @@
             "caption": "The report sits between the scan and the patient's decision",
             "isVideo": false,
             "embedUrl": "",
-            "size": "large"
+            "size": "large",
+            "radius": "0",
+            "border": false,
+            "borderColor": "white",
+            "status": "",
+            "mat": "",
+            "shadow": false
           }
         ]
       },
       {
         "id": "art-ctx-callout",
         "type": "callout",
-        "text": "If the patient can't read it, the clinical work doesn't land."
+        "text": "If the patient can't read it, the clinical work doesn't land.",
+        "border": false,
+        "radius": "md",
+        "mat": "blue",
+        "field": false
       },
       {
         "id": "art-prob-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "The Problem",
-        "text": "A blank page after every appointment"
+        "eyebrow": "",
+        "text": "The problem: every report started as a blank page"
       },
       {
         "id": "art-prob-p1",
@@ -860,12 +871,9 @@
         "title": "Where it failed",
         "ordered": false,
         "items": [
-          "**Every report started from nothing** — no structure, no starting point. Around ten minutes to assemble one, usually after the patient had already left the room.",
           "**Findings were described, not shown** — paragraphs of text sitting beside images that could have carried the same information instantly, with no way to mark a specific tooth or area.",
-          "**The canvas was locked to 25%** — doctor and patient details took a fixed sidebar, leaving a fraction of the screen for the content that actually matters.",
           "**No modular content** — no cost breakdown, no before/after, no treatment plan. What the report could say was capped by what the form allowed.",
-          "**Every doctor invented their own format** — nothing was consistent between two reports, let alone between two specialties.",
-          "**The PDF wasn't written for patients** — the artifact they took home was the one part nobody had designed for its actual reader."
+          "**Every doctor invented their own format** — nothing was consistent between two reports, let alone between two specialties."
         ]
       },
       {
@@ -880,7 +888,122 @@
             "embedUrl": "",
             "size": "large",
             "shadow": false,
-            "border": true
+            "border": true,
+            "borderColor": "ink",
+            "status": "accepted",
+            "radius": "",
+            "mat": "grey",
+            "annotations": [
+              {
+                "id": "auto-pr-pdf-note",
+                "kind": "text",
+                "style": "note",
+                "x": 0.02,
+                "y": 0.05,
+                "w": 0.2,
+                "text": "The PDF patients took home was never designed for them",
+                "color": "error"
+              },
+              {
+                "id": "auto-pr-pdf-arrow",
+                "kind": "arrow",
+                "x1": 0.22,
+                "y1": 0.1,
+                "x2": 0.37,
+                "y2": 0.14,
+                "color": "error",
+                "cx": 0.3,
+                "cy": 0.08
+              },
+              {
+                "id": "auto-pr-blank-note",
+                "kind": "text",
+                "style": "note",
+                "x": 0.02,
+                "y": 0.23,
+                "w": 0.2,
+                "text": "Every report started from a blank page — about 10 minutes each",
+                "color": "error"
+              },
+              {
+                "id": "auto-pr-blank-arrow",
+                "kind": "arrow",
+                "x1": 0.14,
+                "y1": 0.345,
+                "x2": 0.2,
+                "y2": 0.455,
+                "color": "error",
+                "cx": 0.2,
+                "cy": 0.37
+              },
+              {
+                "id": "auto-pr-blank-box",
+                "kind": "box",
+                "x": 0.165,
+                "y": 0.445,
+                "w": 0.39,
+                "h": 0.07,
+                "color": "error"
+              },
+              {
+                "id": "auto-pr-details-box",
+                "kind": "box",
+                "x": 0.895,
+                "y": 0.54,
+                "w": 0.1,
+                "h": 0.165,
+                "color": "error"
+              },
+              {
+                "id": "auto-pr-details-note",
+                "kind": "text",
+                "style": "note",
+                "x": 0.62,
+                "y": 0.52,
+                "w": 0.22,
+                "text": "A fixed details panel took 25% of the screen",
+                "color": "error"
+              },
+              {
+                "id": "auto-pr-details-arrow",
+                "kind": "arrow",
+                "x1": 0.84,
+                "y1": 0.56,
+                "x2": 0.89,
+                "y2": 0.6,
+                "color": "error",
+                "cx": 0.87,
+                "cy": 0.55
+              },
+              {
+                "id": "auto-pr-share-box",
+                "kind": "box",
+                "x": 0.895,
+                "y": 0.9,
+                "w": 0.1,
+                "h": 0.095,
+                "color": "error"
+              },
+              {
+                "id": "auto-pr-share-note",
+                "kind": "text",
+                "style": "note",
+                "x": 0.6,
+                "y": 0.885,
+                "w": 0.22,
+                "text": "Sharing split into three separate buttons",
+                "color": "error"
+              },
+              {
+                "id": "auto-pr-share-arrow",
+                "kind": "arrow",
+                "x1": 0.82,
+                "y1": 0.93,
+                "x2": 0.89,
+                "y2": 0.945,
+                "color": "error"
+              }
+            ]
           }
         ]
       },
@@ -904,14 +1027,18 @@
         ],
         "variant": "card",
         "columns": 2,
-        "shadow": false
+        "shadow": false,
+        "tint": "blue",
+        "radius": "lg",
+        "border": false,
+        "field": false
       },
       {
         "id": "art-goals-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Design Goals",
-        "text": "What I set out to fix"
+        "eyebrow": "",
+        "text": "Design goals: what the redesign had to fix"
       },
       {
         "id": "art-goals-p",
@@ -958,8 +1085,8 @@
         "id": "art-flow-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Journey Map",
-        "text": "Where each piece meets the appointment"
+        "eyebrow": "",
+        "text": "Journey map: where the report fits into the appointment"
       },
       {
         "id": "art-flow-p",
@@ -972,7 +1099,7 @@
         "width": "prose",
         "media": [
           {
-            "src": "/case-studies/patient-report/img-mzhtm588c.webp",
+            "src": "/case-studies/patient-report/img-mzhtm588c.png",
             "caption": "Report workflow map — scan → template → edit → share → patient view",
             "isVideo": false,
             "embedUrl": "",
@@ -980,7 +1107,9 @@
             "border": false,
             "borderColor": "cream",
             "isGif": false,
-            "shadow": false
+            "shadow": false,
+            "mat": "",
+            "radius": "lg"
           }
         ]
       },
@@ -988,8 +1117,8 @@
         "id": "art-d1-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Decision 01",
-        "text": "Two editing models for one report"
+        "eyebrow": "",
+        "text": "Decision 1: edit in a side panel, or on the report itself"
       },
       {
         "id": "art-d1-p1",
@@ -1004,20 +1133,13 @@
         "text": "Editing from the sidebar"
       },
       {
-        "id": "art-d1-a-p",
-        "type": "paragraph",
-        "text": "All controls — text, tooth tagging, notes — live in the side panel. The canvas only shows what the sidebar changes."
-      },
-      {
         "id": "art-d1-a-b",
         "type": "bullets",
         "title": "",
         "ordered": false,
         "items": [
           "**Familiar and cheap to build** — it's how the existing tool already worked, so nothing had to be relearned or rebuilt from zero.",
-          "**The canvas stays clean** — a true preview of the PDF, with no editing chrome sitting on top of a document that also has to print.",
-          "**But you change one place and check another.** Every edit is a round trip between panel and canvas, and the cost compounds across a report with eight blocks.",
-          "**And it doesn't scale to annotation.** Marking a specific tooth on a specific image from a side panel means selecting the target first, then the tool — two steps for what should be one."
+          "**The canvas stays clean** — a true preview of the PDF, with no editing chrome sitting on top of a document that also has to print."
         ]
       },
       {
@@ -1031,7 +1153,82 @@
             "src": "/case-studies/patient-report/img-onhducg7s.webp",
             "caption": "Wireframe — sidebar edits, canvas previews",
             "isVideo": false,
-            "embedUrl": ""
+            "embedUrl": "",
+            "shadow": true,
+            "annotations": [
+              {
+                "id": "auto-ws-panel-box",
+                "kind": "box",
+                "x": 0.012,
+                "y": 0.395,
+                "w": 0.31,
+                "h": 0.455,
+                "color": "error"
+              },
+              {
+                "id": "auto-ws-edit-note",
+                "kind": "text",
+                "style": "note",
+                "x": 0.45,
+                "y": 0.56,
+                "w": 0.3,
+                "text": "1. Edit text, tooth tags and notes in the side panel…",
+                "color": "error"
+              },
+              {
+                "id": "auto-ws-edit-arrow",
+                "kind": "arrow",
+                "x1": 0.45,
+                "y1": 0.595,
+                "x2": 0.33,
+                "y2": 0.6,
+                "color": "error",
+                "cx": 0.39,
+                "cy": 0.62
+              },
+              {
+                "id": "auto-ws-check-note",
+                "kind": "text",
+                "style": "note",
+                "x": 0.55,
+                "y": 0.69,
+                "w": 0.32,
+                "text": "2. …then check the canvas to see what changed",
+                "color": "error"
+              },
+              {
+                "id": "auto-ws-check-arrow",
+                "kind": "arrow",
+                "x1": 0.7,
+                "y1": 0.685,
+                "x2": 0.67,
+                "y2": 0.47,
+                "color": "error",
+                "cx": 0.74,
+                "cy": 0.58
+              },
+              {
+                "id": "auto-ws-teeth-note",
+                "kind": "text",
+                "style": "note",
+                "x": 0.42,
+                "y": 0.83,
+                "w": 0.36,
+                "text": "Tagging a tooth: pick the target first, then the tool",
+                "color": "error"
+              },
+              {
+                "id": "auto-ws-teeth-arrow",
+                "kind": "arrow",
+                "x1": 0.42,
+                "y1": 0.86,
+                "x2": 0.1,
+                "y2": 0.63,
+                "color": "error",
+                "cx": 0.2,
+                "cy": 0.84
+              }
+            ]
           }
         ]
       },
@@ -1043,17 +1240,11 @@
         "text": "Editing on the content"
       },
       {
-        "id": "art-d1-b-p",
-        "type": "paragraph",
-        "text": "Every control sits on the block it changes. The sidebar becomes a block library — a place to add new content, not to edit existing content."
-      },
-      {
         "id": "art-d1-b-b",
         "type": "bullets",
         "title": "",
         "ordered": false,
         "items": [
-          "**No context switching** — annotate, tag teeth, title and note each image right where it sits.",
           "**One surface serves both jobs** — the same canvas is the editor and the preview, so what the doctor builds is what the patient receives.",
           "**But controls on the canvas risk clutter** — a document that has to render cleanly to PDF can't carry visible editing chrome.",
           "**And more of the interface becomes discoverable rather than listed** — nothing announces what's editable until you interact with it."
@@ -1070,7 +1261,49 @@
             "src": "/case-studies/patient-report/img-6rtq9b9u0.webp",
             "caption": "Wireframe — canvas edits, sidebar becomes a block library",
             "isVideo": false,
-            "embedUrl": ""
+            "embedUrl": "",
+            "annotations": [
+              {
+                "id": "auto-wc-inline-note",
+                "kind": "text",
+                "style": "note",
+                "x": 0.46,
+                "y": 0.485,
+                "w": 0.3,
+                "text": "Edit right on the block you're changing",
+                "color": "success"
+              },
+              {
+                "id": "auto-wc-inline-arrow",
+                "kind": "arrow",
+                "x1": 0.46,
+                "y1": 0.52,
+                "x2": 0.405,
+                "y2": 0.53,
+                "color": "success",
+                "cx": 0.43,
+                "cy": 0.56
+              },
+              {
+                "id": "auto-wc-library-note",
+                "kind": "text",
+                "style": "note",
+                "x": 0.012,
+                "y": 0.3,
+                "w": 0.19,
+                "text": "The sidebar becomes a block library — for adding new content",
+                "color": "success"
+              },
+              {
+                "id": "auto-wc-library-arrow",
+                "kind": "arrow",
+                "x1": 0.1,
+                "y1": 0.295,
+                "x2": 0.1,
+                "y2": 0.24,
+                "color": "success"
+              }
+            ]
           }
         ]
       },
@@ -1083,8 +1316,8 @@
         "id": "art-d2-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Decision 02",
-        "text": "Five templates, eight blocks — structure without a lowest common denominator"
+        "eyebrow": "",
+        "text": "Decision 2: five templates built from eight blocks"
       },
       {
         "id": "art-d2-p1",
@@ -1114,11 +1347,60 @@
         ]
       },
       {
+        "id": "art-d3-h",
+        "type": "heading",
+        "level": 2,
+        "eyebrow": "",
+        "text": "Decision 3: mark findings on the image instead of describing them"
+      },
+      {
+        "id": "art-d3-p0",
+        "type": "paragraph",
+        "text": "Templates decided what a report contains. The editing model decided how a doctor changes it. Neither touched the findings themselves, which were still paragraphs standing in for images that could show the same thing faster."
+      },
+      {
+        "id": "art-d3-p1",
+        "type": "paragraph",
+        "text": "I looked at how other tools handle image markup, and the pattern was already settled: a small fixed toolset on the canvas, artifact interactive underneath, marks saved with the file. **Annotation is a solved pattern — the work was adapting it, not reinventing it.**"
+      },
+      {
+        "id": "art-d3-refs",
+        "type": "figure",
+        "width": "prose",
+        "display": "carousel",
+        "interval": 3500,
+        "media": [
+          {
+            "src": "/case-studies/patient-report/img-1bbxmaemxc.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": ""
+          },
+          {
+            "src": "/case-studies/patient-report/img-84h1dybaw.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": ""
+          },
+          {
+            "src": "/case-studies/patient-report/img-1jz259ft1o.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": ""
+          }
+        ]
+      },
+      {
+        "id": "art-d3-p2",
+        "type": "paragraph",
+        "text": "Doctors got pen, text and colour at full image size, plus an FDI tooth chart — click a tooth to tag it, and the patient sees exactly which teeth are affected. This is also where Decision 01 pays off: because controls live on the content, marking a tooth is one action instead of a trip to a panel. With no ML in v1, every mark is deliberate and doctor-authored — the right default for clinical output anyway."
+      },
+      {
         "id": "bmsbxolku7dvl7",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Final Design",
-        "text": "Five moments in a real report"
+        "eyebrow": "",
+        "text": "Final design: four moments in a real report"
       },
       {
         "id": "art-final-p",
@@ -1126,61 +1408,113 @@
         "text": "Each clip follows one part of the flow, in the order a doctor meets it — from the shape a report starts with to the moment it reaches the patient."
       },
       {
+        "id": "art-walk-1-h",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "Templates & structure"
+      },
+      {
+        "id": "art-walk-1-b",
+        "type": "bullets",
+        "title": "",
+        "ordered": false,
+        "items": [
+          {
+            "title": "Purpose",
+            "text": "See how a report gets its shape, and that the shape stays editable afterwards."
+          },
+          {
+            "title": "What happens",
+            "text": "Applies each of the four templates in turn and scrolls through the result, then inserts new blocks between existing ones."
+          }
+        ]
+      },
+      {
         "id": "art-walk-1-vid",
         "type": "figure",
-        "width": "wide",
+        "width": "prose",
         "media": [
           {
-            "src": "/case-studies/patient-report/vid-35glvjaa3ss.mp4",
-            "caption": "**Templates & structure** — how a report gets its shape, and how it stays editable afterwards. Each of the four templates is applied in turn and scrolled through, then new blocks are inserted between existing ones.",
-            "isVideo": true,
-            "embedUrl": "",
+            "src": "/case-studies/patient-report/img-zliyqeem00.webp",
+            "caption": "",
+            "isVideo": false,
+            "embedUrl": "https://res.cloudinary.com/dl064p341/video/upload/v1785705755/1_edit_dmcwjf.mp4",
             "size": "large",
-            "border": false,
-            "isGif": false
+            "border": false
+          }
+        ]
+      },
+      {
+        "id": "art-walk-2-h",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "Adding content blocks"
+      },
+      {
+        "id": "art-walk-2-b",
+        "type": "bullets",
+        "title": "",
+        "ordered": false,
+        "items": [
+          {
+            "title": "Purpose",
+            "text": "See how clinical detail is added part-way through a report, not just appended at the end."
+          },
+          {
+            "title": "What happens",
+            "text": "Inserts Notes, a Summary and a Prescription between existing blocks, and fills each one in — including a second medication."
           }
         ]
       },
       {
         "id": "art-walk-2-vid",
         "type": "figure",
-        "width": "wide",
+        "width": "prose",
         "media": [
           {
-            "src": "/case-studies/patient-report/vid-1qswx7avwa0.mp4",
-            "caption": "**Adding content blocks** — how clinical detail gets added part-way through a report, not just appended at the end. Notes, a Summary and a Prescription are inserted between existing blocks and filled in, including a second medication.",
+            "src": "[[MEDIA]]",
+            "caption": "",
             "isVideo": true,
-            "embedUrl": "",
+            "embedUrl": "https://res.cloudinary.com/dl064p341/video/upload/v1785705841/2_edit_adzfcn.mp4",
             "size": "large",
             "border": false,
-            "shadow": true,
-            "isGif": false
+            "shadow": true
+          }
+        ]
+      },
+      {
+        "id": "art-walk-3-h",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "Images & before / after"
+      },
+      {
+        "id": "art-walk-3-b",
+        "type": "bullets",
+        "title": "",
+        "ordered": false,
+        "items": [
+          {
+            "title": "Purpose",
+            "text": "See how clinical photography gets into a report, and how change over time is shown."
+          },
+          {
+            "title": "What happens",
+            "text": "Fills one image block from the photo gallery — title, tooth selection and notes — then adds a Before / After comparison and captions it."
           }
         ]
       },
       {
         "id": "art-walk-3-vid",
         "type": "figure",
-        "width": "wide",
-        "media": [
-          {
-            "src": "/case-studies/patient-report/vid-5ks5dy8fta8.mp4",
-            "caption": "**Images & before / after** — how clinical photography gets into a report, and how change over time is shown. An image block is filled from the photo gallery with title, tooth selection and notes, then a Before / After comparison is added and captioned.",
-            "isVideo": true,
-            "embedUrl": "",
-            "size": "large",
-            "isGif": false
-          }
-        ]
-      },
-      {
-        "id": "art-walk-4a-vid",
-        "type": "figure",
-        "width": "wide",
+        "width": "prose",
         "media": [
           {
             "src": "/case-studies/patient-report/vid-5cgrbfz8jk0.mp4",
-            "caption": "**Annotation & tooth chart** — how a finding gets marked on the scan itself instead of described next to it. An image opens at full size for pen, text and colour, then the affected teeth are tagged on the FDI chart and the marks carry back into the report.",
+            "caption": "",
             "isVideo": true,
             "embedUrl": "",
             "size": "large"
@@ -1188,17 +1522,76 @@
         ]
       },
       {
-        "id": "art-walk-4-vid",
+        "id": "art-walk-4a-h",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "Annotation & tooth chart"
+      },
+      {
+        "id": "art-walk-4a-b",
+        "type": "bullets",
+        "title": "",
+        "ordered": false,
+        "items": [
+          {
+            "title": "Purpose",
+            "text": "See how a finding gets marked on the scan itself, instead of described next to it."
+          },
+          {
+            "title": "What happens",
+            "text": "Opens an image at full size, draws on it with pen, text and colour, then tags the affected teeth on the FDI chart and returns to the report with the marks in place."
+          }
+        ]
+      },
+      {
+        "id": "art-walk-4a-vid",
         "type": "figure",
-        "width": "wide",
+        "width": "prose",
         "media": [
           {
-            "src": "/case-studies/patient-report/vid-ggxvkkeg2o.mp4",
-            "caption": "**Signing & sharing** — how a finished report is signed off and reaches the patient. The doctor's signature is drawn by hand on the pad, then Share opens and walks the PDF, WeChat and QR-code options.",
+            "src": "/case-studies/patient-report/vid-5cgrbfz8jk0.mp4",
+            "caption": "",
             "isVideo": true,
             "embedUrl": "",
-            "size": "large",
-            "isGif": false
+            "size": "large"
+          }
+        ]
+      },
+      {
+        "id": "art-walk-4-h",
+        "type": "heading",
+        "level": 3,
+        "eyebrow": "",
+        "text": "Signing & sharing"
+      },
+      {
+        "id": "art-walk-4-b",
+        "type": "bullets",
+        "title": "",
+        "ordered": false,
+        "items": [
+          {
+            "title": "Purpose",
+            "text": "See how a finished report is signed off and gets to the patient."
+          },
+          {
+            "title": "What happens",
+            "text": "Hand-draws the doctor's signature on the pad, then opens Share and walks the PDF, WeChat and QR-code options."
+          }
+        ]
+      },
+      {
+        "id": "art-walk-4-vid",
+        "type": "figure",
+        "width": "prose",
+        "media": [
+          {
+            "src": "/case-studies/patient-report/vid-7o41wt2e5k.mp4",
+            "caption": "",
+            "isVideo": true,
+            "embedUrl": "",
+            "size": "large"
           }
         ]
       },
@@ -1206,8 +1599,8 @@
         "id": "art-out-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Outcomes",
-        "text": "Early-access results"
+        "eyebrow": "",
+        "text": "Outcomes: early-access results"
       },
       {
         "id": "art-out-p",
@@ -1238,8 +1631,8 @@
         "id": "art-ref-h",
         "type": "heading",
         "level": 2,
-        "eyebrow": "Reflection",
-        "text": "What I'd do differently"
+        "eyebrow": "",
+        "text": "Reflection: what I'd do differently"
       },
       {
         "id": "art-ref-p",
@@ -1386,14 +1779,14 @@
     {
       "id": "ml-d5qcga",
       "addedAt": 1785682538131,
-      "src": "/case-studies/patient-report/img-17swlw6adlo.webp",
+      "src": "/case-studies/patient-report/img-17swlw6adlo.png",
       "isVideo": false,
       "caption": ""
     },
     {
       "id": "ml-2bchp2",
       "addedAt": 1785682966531,
-      "src": "/case-studies/patient-report/img-mzhtm588c.webp",
+      "src": "/case-studies/patient-report/img-mzhtm588c.png",
       "isVideo": false,
       "caption": "Report workflow map — scan → template → edit → share → patient view"
     },
@@ -1421,39 +1814,6 @@
       "id": "ml-1nmszsn",
       "addedAt": 1785706708406,
       "embedUrl": "https://res.cloudinary.com/dl064p341/video/upload/v1785705841/2_edit_adzfcn.mp4"
-    },
-    {
-      "id": "ml-e6h5al",
-      "addedAt": 1785785933009,
-      "src": "/case-studies/patient-report/vid-35glvjaa3ss.mp4",
-      "isVideo": true,
-      "caption": ""
-    },
-    {
-      "id": "ml-mt7iqn",
-      "addedAt": 1785785933009,
-      "src": "/case-studies/patient-report/vid-1qswx7avwa0.mp4",
-      "isVideo": true,
-      "caption": ""
-    },
-    {
-      "id": "ml-mng2jx",
-      "addedAt": 1785786088431,
-      "src": "/case-studies/patient-report/vid-5ks5dy8fta8.mp4",
-      "isVideo": true,
-      "caption": ""
-    },
-    {
-      "id": "ml-1n40br1",
-      "addedAt": 1785786316706,
-      "src": "/case-studies/patient-report/vid-ggxvkkeg2o.mp4",
-      "isVideo": true,
-      "caption": ""
-    },
-    {
-      "id": "ml-ba7ka",
-      "addedAt": 1785788541176,
-      "embedUrl": "https://res.cloudinary.com/dl064p341/video/upload/v1785788026/1_c7g6ii.mp4"
     }
   ]
 }

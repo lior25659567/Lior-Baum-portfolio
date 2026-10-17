@@ -7,19 +7,36 @@
 // No React here — unit-tested by annotations.test.mjs (node --test).
 // ─────────────────────────────────────────────────────────────────────────
 
-export const COLOR_TOKENS = ['accent', 'ink', 'success', 'error', 'info', 'warning', 'white'];
+// `success` / `error` are SEMANTIC (positive / negative) — the image's palette
+// can remap them to brand colors. `green` / `red` are FIXED and never remap.
+export const COLOR_TOKENS = ['accent', 'ink', 'success', 'error', 'green', 'red', 'info', 'warning', 'white'];
+// What the toolbar swatches offer (fixed colors); meaning is set with the
+// Positive / Negative buttons instead.
+export const SWATCH_COLORS = ['accent', 'ink', 'green', 'red', 'info', 'warning', 'white'];
 
 const COLOR_VALUES = {
   accent: 'var(--color-accent)',
   ink: '#22211f', // fixed — stays dark on screenshots in dark theme
   success: 'var(--color-success)',
   error: 'var(--color-error)',
+  green: 'var(--color-success)',
+  red: 'var(--color-error)',
   info: 'var(--color-info)',
   warning: 'var(--color-warning)',
   white: '#ffffff',
 };
 
-export const resolveColor = (name) => COLOR_VALUES[name] || COLOR_VALUES.accent;
+// Per-image palette: 'semantic' (default) keeps green/red; 'brand' shows them
+// in the brand chip colors — success → accent (like Accepted), error → ink
+// (like the neutral Rejected chip). Stored colors never change.
+export const PALETTES = ['semantic', 'brand'];
+const BRAND_MAP = { success: 'accent', error: 'ink' };
+export const paletteColor = (name, palette) => (palette === 'brand' ? BRAND_MAP[name] || name : name);
+
+export const resolveColor = (name, palette) => {
+  const token = paletteColor(name, palette);
+  return COLOR_VALUES[token] || COLOR_VALUES.accent;
+};
 
 export const ANNOTATION_KINDS = ['arrow', 'box', 'pen', 'text', 'marker'];
 export const TEXT_STYLES = ['pill', 'card', 'plain', 'note', 'positive', 'negative'];
@@ -37,8 +54,8 @@ const TONE_COLOR = { positive: 'success', negative: 'error' };
 export const BOX_BORDERS = ['color', 'gray', 'none'];
 export const BOX_FILLS = ['none', 'white', 'gray', 'accent', 'ink', 'success', 'error', 'info', 'warning', 'tint'];
 const TINT_OPACITY = 0.18;
-// Note look: background (white / tint of its color / none); shadow and
-// border are on unless turned off. Box text: a filled chip in the box
+// Note look: background (white / tint of its color / none); the border is
+// on unless turned off; the offset shadow is OFF unless turned on. Box text: a filled chip in the box
 // color, a note-style white box, or colored text only.
 export const NOTE_BGS = ['white', 'tint', 'none'];
 export const BOX_LABEL_STYLES = ['filled', 'note', 'plain'];
@@ -101,7 +118,7 @@ const normalizeOne = (a) => {
       return {
         id, kind: 'text', style, x: frac(a.x), y: frac(a.y), w, text, color,
         ...(TONE_STYLES.includes(style) && a.icon === false ? { icon: false } : {}),
-        ...(style === 'note' && a.shadow === false ? { shadow: false } : {}),
+        ...(style === 'note' && a.shadow === true ? { shadow: true } : {}),
         ...(style === 'note' && NOTE_BGS.includes(a.bg) && a.bg !== 'white' ? { bg: a.bg } : {}),
         ...(style === 'note' && a.border === false ? { border: false } : {}),
       };
@@ -340,12 +357,12 @@ export const draftPreview = (d) => {
 
 // Readable text on an image, top-to-bottom then left-to-right — shown as a
 // plain list under the image on small screens, where the overlay is hidden.
-export const annotationNotes = (list) => normalizeAnnotations(list)
+export const annotationNotes = (list, palette) => normalizeAnnotations(list)
   .filter((a) => (a.kind === 'text' && a.text.trim()) || (a.kind === 'box' && a.label))
   .sort((a, b) => a.y - b.y || a.x - b.x)
   .map((a) => ({
     id: a.id,
     text: a.kind === 'box' ? a.label : a.text,
     tone: a.kind === 'text' && TONE_STYLES.includes(a.style) ? a.style : '',
-    color: a.color,
+    color: paletteColor(a.color, palette),
   }));

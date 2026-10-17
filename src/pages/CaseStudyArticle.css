@@ -8,7 +8,8 @@
       rendered in edit mode for articles) goes sticky.
    2. `.cs-view-toggle` — the edit-mode Slides/Article segmented control.
    3. `.cs-article-*` — the article itself. Notion-style reference layout:
-      prose ≈ 720px, wide figures ≈ 1160px, full ≈ 1400px. Cards mirror the
+      a 920px column (headings, prose media, cards) with running text held
+      to an 800px measure, wide figures ≈ 1160px, full ≈ 1400px. Cards mirror the
       slide deck's card language (transparent bg, accent-tinted border,
       radius-lg, accent number chips, hover lift) at rem scale.
    4. Editor chrome — block outlines, control pills, insert handles,
@@ -83,7 +84,13 @@
 /* ── 3. The article ────────────────────────────────────────────────────── */
 
 .cs-article {
-  --cs-prose: 720px;
+  /* Column + measure follow the reference case study (shirvoldman.com),
+     a touch narrower: headings, prose-width media and cards span 920px;
+     running text stops at 800px, left-aligned under the headings; the
+     lede at 720px. */
+  --cs-prose: 920px;
+  --cs-measure: 800px;
+  --cs-lede: 720px;
   --cs-wide: 1160px;
   --cs-full: 1400px;
   --cs-pad: clamp(20px, 4vw, 40px);
@@ -172,6 +179,23 @@ body.cs-article-nav .cs-article-back {
 
 .cs-article-cards--stat {
   max-width: var(--cs-prose);
+}
+
+/* Running text keeps a readable measure and starts where the column starts,
+   so paragraphs sit flush-left under their headings instead of centering. */
+.cs-article .cs-article-p,
+.cs-article .cs-article-list,
+.cs-article .cs-article-callout,
+.cs-article .cs-article-labelrow:not(.cs-article-psi-row),
+.cs-article .cs-article-marklist {
+  max-width: var(--cs-measure);
+  margin-left: max(0px, calc((100% - var(--cs-prose)) / 2));
+  margin-right: auto;
+}
+.cs-article .cs-article-lede {
+  max-width: var(--cs-lede);
+  margin-left: max(0px, calc((100% - var(--cs-prose)) / 2));
+  margin-right: auto;
 }
 
 /* Four across stays inside the text column (aligned with the heading), so
@@ -474,6 +498,43 @@ body.cs-article-nav .cs-article-back {
   border-color: transparent;
 }
 .cs-article-chip-btn--accepted { color: var(--color-accent); }
+
+/* Optional green/red chip colors (per image, "green/red" in the figure tools)
+   — design-system success/error instead of the brand accent + neutral. */
+.cs-article-figure-chip--semantic.cs-article-figure-chip--accepted {
+  background: var(--color-success);
+  color: #fff;
+  border-color: transparent;
+}
+.cs-article-figure-chip--semantic.cs-article-figure-chip--rejected {
+  background: var(--color-error);
+  color: #fff;
+  border-color: transparent;
+  backdrop-filter: none;
+}
+.cs-article-chip-colors {
+  display: inline-flex;
+  gap: 3px;
+}
+.cs-article-chip-colors .cs-article-mini-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.cs-article-chip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.cs-article-chip-dot--ok { background: var(--color-success); }
+.cs-article-chip-dot--no { background: var(--color-error); }
+.cs-article-chip-dot--brand { background: var(--color-accent); }
+.cs-article-chip-dot--ink { background: #22211f; }
+/* Custom chip text field (figure tools) — short, it's a badge. */
+.cs-article-embed-input.cs-article-chip-text {
+  flex: 0 0 9rem;
+  width: 9rem;
+}
 
 .cs-article-media {
   display: block;
@@ -2099,4 +2160,56 @@ select.cs-article-block-typesel:hover {
   }
   .cs-view-toggle { margin-right: 0.5rem; }
   .cs-view-btn { padding: 0.24rem 0.55rem; font-size: 0.68rem; }
+}
+
+/* ── Mobile type step-up ─────────────────────────────────────────────────
+   The article sizes above are fixed px tuned for desktop reading; on a phone
+   they read small. Every reader-facing size steps up ~2px (≈12%) at ≤767px,
+   line-heights scaled to match. Editor-only controls are left alone. */
+@media (max-width: 767px) {
+  .cs-article-h1 { font-size: 42px; line-height: 50px; }
+  .cs-article-h2 { font-size: 27px; line-height: 35px; }
+  .cs-article-h3 { font-size: 18px; line-height: 27px; }
+  .cs-article-heading--xl { font-size: 34px; line-height: 42px; }
+  .cs-article-heading--lg { font-size: 27px; line-height: 35px; }
+  .cs-article-heading--md { font-size: 26px; line-height: 34px; }
+  .cs-article-heading--sm { font-size: 20px; line-height: 29px; }
+  .cs-article-heading--xs { font-size: 18px; line-height: 27px; }
+
+  .cs-article-p,
+  .cs-article-list,
+  .cs-article-callout .cs-article-p { font-size: 18px; line-height: 28px; }
+  .cs-article-lede { font-size: 25px; line-height: 35px; }
+  .cs-article-eyebrow { font-size: 16px; line-height: 23px; }
+  .cs-article-meta-label,
+  .cs-article-meta-value,
+  .cs-article-labelrow-label { font-size: 18px; line-height: 28px; }
+  .cs-article-marklist li { font-size: 18px; line-height: 27px; }
+
+  .cs-article-figure-cell-title,
+  .cs-article-figure-cell-desc,
+  .cs-article-figure figcaption { font-size: 16px; line-height: 23px; }
+  .cs-article-figure-chip { font-size: 15px; }
+
+  .cs-article-quote p { font-size: 20px; line-height: 31px; }
+  .cs-article-quote--large p { font-size: 22px; line-height: 38px; }
+  .cs-article-quote--card p { font-size: 18px; line-height: 27px; }
+  .cs-article-quote cite { font-size: 16px; line-height: 23px; }
+
+  .cs-article-card-num { font-size: 18px; }
+  .cs-article-card-value { font-size: 22px; }
+  .cs-article-card-title,
+  .cs-article-cards--cols-4 .cs-article-card-title { font-size: 20px; line-height: 27px; }
+  .cs-article-card-desc { font-size: 16px; line-height: 23px; }
+
+  .cs-article-chapter-number { font-size: 0.9rem; }
+  .cs-article-chapter-title { font-size: 1.75rem; }
+  .cs-article-chapter-subtitle { font-size: 1.1rem; }
+
+  .cs-article-back-label { font-size: 0.95rem; }
+  .cs-article-contact-btn { font-size: 16px; line-height: 23px; }
+  .cs-article-contact-link { font-size: 1rem; }
+  .cs-article-next-kicker { font-size: 16px; line-height: 21px; }
+  .cs-article-next-title { font-size: 18px; line-height: 23px; }
+  .cs-view-btn { font-size: 0.75rem; }
 }

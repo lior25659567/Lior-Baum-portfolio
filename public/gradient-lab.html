@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Card gradient lab</title>
+<style>
+  :root { --o: #FF8A3D; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px; background: #f7f9f4; color: #1a1a1a; font: 15px/1.5 system-ui, sans-serif; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  p.lead { margin: 0 0 20px; color: #555; max-width: 70ch; }
+  .controls { position: sticky; top: 0; z-index: 5; display: flex; gap: 20px; align-items: center; padding: 10px 0; background: #f7f9f4; }
+  .controls label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+  section { margin: 28px 0 0; }
+  h2 { font-size: 16px; margin: 0; }
+  h2 span { font-weight: 400; color: #666; }
+  .row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-top: 10px; }
+  @media (max-width: 1100px) { .row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  .card { position: relative; aspect-ratio: 16/10; border-radius: 14px; overflow: hidden; isolation: isolate; }
+  .card img { position: absolute; inset: 9%; width: 82%; height: 82%; object-fit: contain; z-index: 2;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,.14)) drop-shadow(0 18px 40px rgba(0,0,0,.22)); }
+  body.no-img .card img { display: none; }
+  /* grain: tiny inline SVG noise, blended over the gradient */
+  body.grain .card::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .22; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  .t0 { --m: #4A8CFF; } .t1 { --m: #8B5CF6; } .t2 { --m: #2FBF8F; } .t3 { --m: #FF5CA8; } .t4 { --m: #22B8CF; }
+  .card { --o1: color-mix(in srgb, var(--o) 70%, #fff); --m1: color-mix(in srgb, var(--m) 70%, #fff); }
+
+  /* A — current: linear, oklab, pale blended middle */
+  .A .card { background: linear-gradient(120deg in oklab, var(--o1) 0%,
+    color-mix(in oklab, color-mix(in oklab, var(--o) 40%, var(--m)) 42%, #fff) 35%, var(--m1) 100%); }
+
+  /* B — linear, oklch: travels round the colour wheel, stays saturated */
+  .B .card { background: linear-gradient(120deg in oklch, var(--o1) 0%, var(--m1) 100%); }
+
+  /* C — mesh: layered radial glows over a tint of the second colour */
+  .C .card { background:
+    radial-gradient(90% 110% at 0% 0% in oklch, var(--o1) 0%, transparent 70%),
+    radial-gradient(70% 90% at 100% 15% in oklch, color-mix(in srgb, var(--m) 45%, #fff) 0%, transparent 70%),
+    radial-gradient(90% 110% at 85% 100% in oklch, var(--m1) 0%, transparent 72%),
+    radial-gradient(60% 80% at 10% 100% in oklch, color-mix(in srgb, var(--o) 35%, #fff) 0%, transparent 70%),
+    color-mix(in srgb, var(--m) 22%, #fff); }
+
+  /* D — aurora: big blurred blobs (real blur, softest edges) */
+  .D .card { background: color-mix(in srgb, var(--m) 30%, #fff); }
+  .D .card::before { content: ""; position: absolute; inset: -30%; z-index: 0; filter: blur(48px);
+    background:
+      radial-gradient(circle at 22% 28%, var(--o) 0 22%, transparent 23%),
+      radial-gradient(circle at 78% 70%, var(--m) 0 26%, transparent 27%),
+      radial-gradient(circle at 70% 22%, color-mix(in oklch, var(--o), var(--m)) 0 14%, transparent 15%);
+    opacity: .75; }
+
+  /* E — spotlight: second colour fills the card, orange glows from one corner */
+  .E .card { background: radial-gradient(120% 140% at 0% 0% in oklch, var(--o1) 0%, var(--m1) 62%, color-mix(in srgb, var(--m) 55%, #fff) 100%); }
+
+  /* F — conic sweep from a corner */
+  .F .card { background: conic-gradient(from 200deg at 0% 100% in oklch, var(--m1) 0deg, var(--o1) 70deg, var(--m1) 150deg); }
+</style>
+</head>
+<body class="grain">
+  <h1>Card gradient lab</h1>
+  <p class="lead">Six ways to combine orange with each second colour, on the real card. Columns: blue, purple, green, pink, teal. Tell me the letter you like.</p>
+  <div class="controls">
+    <label><input type="checkbox" id="g" checked> Grain</label>
+    <label><input type="checkbox" id="i" checked> Show screenshot</label>
+  </div>
+  <div id="out"></div>
+<script>
+  const rows = [
+    ['A', 'Linear, pale middle', 'what is live now'],
+    ['B', 'Linear, OKLCH', 'goes round the colour wheel, no grey'],
+    ['C', 'Mesh', 'layered soft glows, colours overlap in several places'],
+    ['D', 'Aurora', 'blurred blobs, softest and most organic'],
+    ['E', 'Spotlight', 'second colour fills the card, orange glows from a corner'],
+    ['F', 'Conic sweep', 'colour turns around a corner'],
+  ];
+  document.getElementById('out').innerHTML = rows.map(([k, n, d]) =>
+    `<section class="${k}"><h2>${k} — ${n} <span>· ${d}</span></h2><div class="row">` +
+    [0,1,2,3,4].map(t => `<div class="card t${t}"><img src="/home/img-7cfa91115da7.webp" alt=""></div>`).join('') +
+    `</div></section>`).join('');
+  g.onchange = () => document.body.classList.toggle('grain', g.checked);
+  i.onchange = () => document.body.classList.toggle('no-img', !i.checked);
+</script>
+</body>
+</html>
