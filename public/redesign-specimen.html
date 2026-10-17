@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Redesign token options</title>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@1&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap" />
+<style>
+  /* Step 1 specimen — two token options, light + dark. Throwaway page; it is
+     not linked from the site and is deleted once an option is chosen. */
+  :root {
+    --ink: #22211f; --bg: #f7f9f4; --muted: #595959; --border: #e0e0e0;
+    --accent: #cc3520; --accent-fill: #ff584a;
+    --card-orange: #FF8A3D; --tone-blue: #4A8CFF; --tone-purple: #8B5CF6;
+    --lavender: #bfb0e8; --pink: #f5c5d7; --s-orange: #eb9760; --lime: #c4df54;
+    --ease-out: cubic-bezier(.165,.84,.44,1); --ease-back: cubic-bezier(.34,1.56,.64,1);
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: 'Satoshi', system-ui, sans-serif; background: #e9ebe6; color: var(--ink); padding: 32px 24px 64px; -webkit-font-smoothing: antialiased; }
+  h1.page { font-size: 15px; font-weight: 500; color: #595959; margin-bottom: 20px; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; max-width: 1400px; margin: 0 auto; }
+  @media (max-width: 1100px) { .grid { grid-template-columns: 1fr; } }
+
+  .panel { --ink: #22211f; --bg: #f7f9f4; --muted: #595959; --border: #e0e0e0; --accent: #cc3520; --nav-bg: rgba(247,249,244,.88);
+           background: var(--bg); color: var(--ink); border-radius: 24px; overflow: hidden; border: 1px solid rgba(0,0,0,.06); }
+  .panel.dark { --ink: #ffffff; --bg: #0a0a0a; --muted: #a0a0a0; --border: #2a2a2a; --accent: #ff584a; --nav-bg: rgba(10,10,10,.88); border-color: rgba(255,255,255,.08); }
+  .tag { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); padding: 14px 24px 0; }
+  .tag b { color: var(--ink); font-weight: 600; }
+  .tag.rec::after { content: 'recommended'; font-size: 11px; color: var(--accent); border: 1px solid currentColor; border-radius: 999px; padding: 2px 8px; }
+
+  /* nav strip */
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; margin: 10px 16px 0; border-radius: 14px; background: var(--nav-bg); backdrop-filter: blur(12px); border: 1px solid var(--border); font-size: 14px; }
+  .nav .logo { font-weight: 700; letter-spacing: -0.01em; }
+  .nav .logo i { font-style: italic; font-weight: 400; }
+  .b .nav .logo i { font-family: 'Crimson Text', serif; font-size: 17px; }
+  .nav nav { display: flex; gap: 22px; }
+  .nav nav a { color: var(--muted); text-decoration: none; position: relative; padding-bottom: 2px; }
+  .nav nav a.active { color: var(--ink); }
+  .nav nav a.active::after { content: ''; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px; background: var(--ink); }
+  .pill { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--ink); font-size: 14px; font-weight: 600; text-decoration: none; color: var(--ink); transition: background .3s var(--ease-back), color .3s var(--ease-back); }
+  .pill.primary { background: var(--ink); color: var(--bg); }
+  .pill:hover { background: var(--ink); color: var(--bg); }
+  .pill.primary:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* hero */
+  .hero { position: relative; padding: 56px 24px 40px; overflow: hidden; }
+  .blob { position: absolute; right: -8%; top: 8%; width: 360px; height: 360px; border-radius: 46% 54% 52% 48% / 55% 43% 57% 45%; filter: blur(1px);
+          background: radial-gradient(60% 60% at 35% 30%, #fff6 0%, transparent 60%), linear-gradient(135deg, var(--card-orange) 20%, var(--lavender) 100%); box-shadow: 0 30px 80px -20px rgba(255,138,61,.35); }
+  .b .blob { background: radial-gradient(60% 60% at 35% 30%, #fff6 0%, transparent 60%), linear-gradient(135deg, var(--pink) 0%, var(--card-orange) 45%, var(--lime) 100%); }
+  .dark .blob { box-shadow: 0 30px 80px -20px rgba(255,138,61,.5); }
+  .greet { font-size: 15px; color: var(--muted); margin-bottom: 14px; }
+  .display { position: relative; font-weight: 500; font-size: clamp(44px, 6.2vw, 84px); line-height: .95; letter-spacing: -0.035em; max-width: 11ch; }
+  .display em { font-style: normal; color: var(--accent); }
+  .b .display { font-family: 'Crimson Text', serif; font-weight: 600; font-size: clamp(48px, 6.6vw, 92px); line-height: 1; letter-spacing: -0.02em; }
+  .b .display em { font-style: italic; font-weight: 400; }
+  .role { margin-top: 14px; font-size: 22px; font-weight: 500; letter-spacing: -0.02em; }
+  .b .role { font-family: 'Crimson Text', serif; font-style: italic; font-weight: 400; font-size: 26px; }
+  .lead { margin-top: 18px; max-width: 46ch; font-size: 17px; line-height: 1.6; color: var(--muted); }
+  .cta { margin-top: 24px; display: flex; gap: 12px; }
+
+  /* work */
+  .work { padding: 24px 24px 8px; }
+  .h2 { font-weight: 500; font-size: 34px; letter-spacing: -0.02em; line-height: 1.05; margin-bottom: 18px; }
+  .b .h2 { font-family: 'Crimson Text', serif; font-weight: 600; font-size: 38px; }
+  .card { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--bg); max-width: 420px; transition: transform .6s var(--ease-out), box-shadow .6s var(--ease-out); }
+  .card:hover { box-shadow: 0 10px 44px 12px rgba(171,162,189,.26); }
+  .dark .card:hover { box-shadow: 0 10px 44px 12px rgba(0,0,0,.5); }
+  .media { padding: 4.5%; background: linear-gradient(120deg in oklab, color-mix(in srgb, var(--card-orange) 42%, #fff) 38%, color-mix(in srgb, var(--tone-blue) 58%, #fff) 92%); }
+  .b .media { background: linear-gradient(120deg in oklab, color-mix(in srgb, var(--card-orange) 42%, #fff) 38%, color-mix(in srgb, var(--tone-purple) 58%, #fff) 92%); }
+  .shot { aspect-ratio: 16/9; border-radius: 12px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.14), 0 18px 40px rgba(0,0,0,.22); display: grid; grid-template-columns: 90px 1fr; }
+  .shot i { background: #f1f1f1; border-right: 1px solid #e5e5e5; }
+  .shot b { margin: 16px; border-radius: 8px; background: #eaeaea; }
+  .meta { padding: 16px 18px 18px; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .chips span { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 6%, transparent); color: var(--ink); }
+  .title { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+  .b .title { font-family: 'Crimson Text', serif; font-size: 23px; }
+  .desc { margin-top: 6px; font-size: 14px; line-height: 1.5; color: var(--muted); }
+
+  /* footer cta + swatches */
+  .foot { padding: 26px 24px 24px; border-top: 1px solid var(--border); margin-top: 24px; display: flex; justify-content: space-between; gap: 24px; align-items: flex-end; flex-wrap: wrap; }
+  .foot .line { font-weight: 500; font-size: 30px; letter-spacing: -0.03em; line-height: 1; }
+  .foot .line em { font-style: normal; color: var(--accent); }
+  .b .foot .line { font-family: 'Crimson Text', serif; font-weight: 600; font-size: 34px; }
+  .b .foot .line em { font-style: italic; font-weight: 400; }
+  .sw { display: flex; gap: 6px; }
+  .sw i { width: 26px; height: 26px; border-radius: 50%; border: 1px solid rgba(0,0,0,.08); }
+</style>
+</head>
+<body>
+  <h1 class="page">Redesign — token options. Hover the pills and the card. Pick A or B.</h1>
+  <div class="grid">
+
+    <!-- ── Option A, light ── -->
+    <section class="panel a">
+      <div class="tag rec"><b>Option A · Coral Mono</b> Satoshi only · coral as the single accent · light</div>
+      <div class="nav"><div class="logo"><i>lior</i>Baum</div><nav><a class="active" href="#">Work</a><a href="#">Playground</a><a href="#">About</a></nav><a class="pill" href="#">View CV →</a></div>
+      <div class="hero"><div class="blob"></div>
+        <div class="greet">Hello! I'm</div>
+        <div class="display">Lior <em>Baum</em></div>
+        <div class="role">Product Designer</div>
+        <p class="lead">I love working on platforms and complex products with awesome people that are passionate about what they're building.</p>
+        <div class="cta"><a class="pill primary" href="#">View work</a><a class="pill" href="#">Get in touch</a></div>
+      </div>
+      <div class="work"><div class="h2">Selected Projects</div>
+        <div class="card"><div class="media"><div class="shot"><i></i><b></b></div></div>
+          <div class="meta"><div class="chips"><span>UI Design</span><span>Interaction Design</span></div><div class="title">Patient Report Redesign</div><div class="desc">Rebuilt the patient-report editor with procedure templates and image annotation.</div></div></div>
+      </div>
+      <div class="foot"><div class="line">How about we do a thing <em>or two,</em> together</div>
+        <div class="sw"><i style="background:#22211f"></i><i style="background:#f7f9f4"></i><i style="background:#cc3520"></i><i style="background:#ff584a"></i><i style="background:#FF8A3D"></i><i style="background:#bfb0e8"></i></div></div>
+    </section>
+
+    <!-- ── Option B, light ── -->
+    <section class="panel b">
+      <div class="tag"><b>Option B · Paper &amp; Serif</b> Crimson display + Satoshi body · pastel washes · light</div>
+      <div class="nav"><div class="logo"><i>lior</i>Baum</div><nav><a class="active" href="#">Work</a><a href="#">Playground</a><a href="#">About</a></nav><a class="pill" href="#">View CV →</a></div>
+      <div class="hero"><div class="blob"></div>
+        <div class="greet">Hello! I'm</div>
+        <div class="display">Lior <em>Baum</em></div>
+        <div class="role">Product Designer</div>
+        <p class="lead">I love working on platforms and complex products with awesome people that are passionate about what they're building.</p>
+        <div class="cta"><a class="pill primary" href="#">View work</a><a class="pill" href="#">Get in touch</a></div>
+      </div>
+      <div class="work"><div class="h2">Selected Projects</div>
+        <div class="card"><div class="media"><div class="shot"><i></i><b></b></div></div>
+          <div class="meta"><div class="chips"><span>UI Design</span><span>Interaction Design</span></div><div class="title">Patient Report Redesign</div><div class="desc">Rebuilt the patient-report editor with procedure templates and image annotation.</div></div></div>
+      </div>
+      <div class="foot"><div class="line">How about we do a thing <em>or two,</em> together</div>
+        <div class="sw"><i style="background:#22211f"></i><i style="background:#f7f9f4"></i><i style="background:#cc3520"></i><i style="background:#bfb0e8"></i><i style="background:#f5c5d7"></i><i style="background:#eb9760"></i><i style="background:#c4df54"></i></div></div>
+    </section>
+
+    <!-- ── Option A, dark ── -->
+    <section class="panel a dark">
+      <div class="tag"><b>Option A</b> dark</div>
+      <div class="nav"><div class="logo"><i>lior</i>Baum</div><nav><a class="active" href="#">Work</a><a href="#">Playground</a><a href="#">About</a></nav><a class="pill" href="#">View CV →</a></div>
+      <div class="hero"><div class="blob"></div>
+        <div class="greet">Hello! I'm</div>
+        <div class="display">Lior <em>Baum</em></div>
+        <div class="role">Product Designer</div>
+        <p class="lead">I think in systems, I'm savvy with code and AI, and I go just as deep on the details as I do on the big picture.</p>
+        <div class="cta"><a class="pill primary" href="#">View work</a><a class="pill" href="#">Get in touch</a></div>
+      </div>
+      <div class="work"><div class="h2">Selected Projects</div>
+        <div class="card"><div class="media"><div class="shot"><i></i><b></b></div></div>
+          <div class="meta"><div class="chips"><span>UI Design</span><span>Interaction Design</span></div><div class="title">Patient Report Redesign</div><div class="desc">Rebuilt the patient-report editor with procedure templates and image annotation.</div></div></div>
+      </div>
+      <div class="foot"><div class="line">How about we do a thing <em>or two,</em> together</div></div>
+    </section>
+
+    <!-- ── Option B, dark ── -->
+    <section class="panel b dark">
+      <div class="tag"><b>Option B</b> dark</div>
+      <div class="nav"><div class="logo"><i>lior</i>Baum</div><nav><a class="active" href="#">Work</a><a href="#">Playground</a><a href="#">About</a></nav><a class="pill" href="#">View CV →</a></div>
+      <div class="hero"><div class="blob"></div>
+        <div class="greet">Hello! I'm</div>
+        <div class="display">Lior <em>Baum</em></div>
+        <div class="role">Product Designer</div>
+        <p class="lead">I think in systems, I'm savvy with code and AI, and I go just as deep on the details as I do on the big picture.</p>
+        <div class="cta"><a class="pill primary" href="#">View work</a><a class="pill" href="#">Get in touch</a></div>
+      </div>
+      <div class="work"><div class="h2">Selected Projects</div>
+        <div class="card"><div class="media"><div class="shot"><i></i><b></b></div></div>
+          <div class="meta"><div class="chips"><span>UI Design</span><span>Interaction Design</span></div><div class="title">Patient Report Redesign</div><div class="desc">Rebuilt the patient-report editor with procedure templates and image annotation.</div></div></div>
+      </div>
+      <div class="foot"><div class="line">How about we do a thing <em>or two,</em> together</div></div>
+    </section>
+
+  </div>
+</body>
+</html>
