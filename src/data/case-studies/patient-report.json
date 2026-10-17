@@ -1,5 +1,5 @@
 {
-  "dataVersion": 44,
+  "dataVersion": 46,
   "title": "Patient Report\nRedesign",
   "subtitle": "From a blank page into a structured, shareable communication tool.",
   "category": "Clinical UX",
@@ -753,14 +753,16 @@
         "width": "full",
         "media": [
           {
-            "src": "/case-studies/patient-report/img-17swlw6adlo.png",
+            "src": "/case-studies/patient-report/article-hero.webp",
             "caption": "",
             "isVideo": false,
             "embedUrl": "",
             "size": "large",
             "isGif": false,
-            "shadow": false,
-            "field": true
+            "field": true,
+            "border": true,
+            "borderColor": "card",
+            "shadow": false
           }
         ]
       },
@@ -890,7 +892,7 @@
             "shadow": false,
             "border": true,
             "borderColor": "ink",
-            "status": "accepted",
+            "status": "",
             "radius": "",
             "mat": "grey",
             "annotations": [
@@ -1003,7 +1005,8 @@
                 "y2": 0.945,
                 "color": "error"
               }
-            ]
+            ],
+            "palette": "semantic"
           }
         ]
       },
@@ -1099,7 +1102,7 @@
         "width": "prose",
         "media": [
           {
-            "src": "/case-studies/patient-report/img-mzhtm588c.png",
+            "src": "/case-studies/patient-report/img-mzhtm588c.webp",
             "caption": "Report workflow map — scan → template → edit → share → patient view",
             "isVideo": false,
             "embedUrl": "",
@@ -1779,14 +1782,14 @@
     {
       "id": "ml-d5qcga",
       "addedAt": 1785682538131,
-      "src": "/case-studies/patient-report/img-17swlw6adlo.png",
+      "src": "/case-studies/patient-report/img-17swlw6adlo.webp",
       "isVideo": false,
       "caption": ""
     },
     {
       "id": "ml-2bchp2",
       "addedAt": 1785682966531,
-      "src": "/case-studies/patient-report/img-mzhtm588c.png",
+      "src": "/case-studies/patient-report/img-mzhtm588c.webp",
       "isVideo": false,
       "caption": "Report workflow map — scan → template → edit → share → patient view"
     },

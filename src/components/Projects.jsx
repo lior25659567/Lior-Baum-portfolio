@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEdit } from '../context/EditContext';
 import { IFRAME_FILES } from '../iframes';
+import { defaultProjects, mergeHomeProjects } from '../data/homeProjects';
 import './Projects.css';
 
 // Add scheme to bare URLs so `google.com` works as an external link.
@@ -45,45 +46,8 @@ const PROJECT_TAGS = [
   { id: 'personal', label: 'Personal' },
 ];
 
-// Default projects - used as fallback
-const defaultProjects = [
-  {
-    id: 'project-1780418394707',
-    title: 'ResponsiveView Extension',
-    category: 'Developer Tools · Education',
-    image: '',
-    year: '2026',
-    tag: 'work',
-    mediaMode: 'template',
-  },
-  {
-    id: 'align-technology',
-    title: 'iTero Toolbar',
-    category: 'UI Unification & Efficiency',
-    image: '/case-studies/align/slide-1.webp',
-    year: '2024',
-    tag: 'work',
-    mediaMode: 'template',
-  },
-  {
-    id: 'itero-scan-workflow',
-    title: 'iTero Scan Experience',
-    category: 'Clinical Workflow Redesign',
-    image: '',
-    year: '2024',
-    tag: 'work',
-    mediaMode: 'template',
-  },
-  {
-    id: 'wizecare',
-    title: 'WizeCare',
-    category: 'B2B Complex System',
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop',
-    year: '2023',
-    tag: 'work',
-    mediaMode: 'template',
-  },
-];
+// Default projects (fallback) + the saved-content merge live in
+// src/data/homeProjects.js so the article can read the same list.
 
 const ProjectCard = ({ project, index, total, editMode, canonicalImage, hideCardYear, solidCardBg, onImageChange, onRemove, onUpdate, onMoveUp, onMoveDown }) => {
   // When the section-level hideCardYear flag is on, collapse the year to an
@@ -1698,44 +1662,7 @@ const Projects = () => {
   }, [content.projects?.sectionTitle]);
 
   // Merge default projects with saved content, respecting saved order
-  const projects = (() => {
-    const savedItems = content.projects?.items || [];
-    const removedIds = content.projects?.removedIds || [];
-
-    let all;
-    if (savedItems.length > 0) {
-      // Saved items define the order — merge defaults into them
-      const savedIds = savedItems.map(p => p.id);
-      all = savedItems
-        .filter(p => !removedIds.includes(p.id))
-        .map(saved => {
-          const def = defaultProjects.find(d => d.id === saved.id);
-          return def ? { ...def, ...saved } : saved;
-        });
-      // Append any defaults not yet in saved items (newly added defaults)
-      defaultProjects.forEach(def => {
-        if (!savedIds.includes(def.id) && !removedIds.includes(def.id)) {
-          all.push(def);
-        }
-      });
-    } else {
-      // No saved items — use default order
-      all = defaultProjects.filter(p => !removedIds.includes(p.id));
-    }
-
-    // In edit mode, add the template demo project if not already present
-    if (editMode && !all.some(p => p.id === 'template-demo')) {
-      all.push({
-        id: 'template-demo',
-        title: 'Template Demo',
-        category: 'Template Reference',
-        image: '',
-        year: '2025',
-        mediaMode: 'template',
-      });
-    }
-    return all;
-  })();
+  const projects = mergeHomeProjects(content, editMode);
 
   const handleImageChange = useCallback((projectId, imageDataUrl) => {
     setContent(prev => {

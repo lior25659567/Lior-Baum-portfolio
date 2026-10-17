@@ -6,6 +6,8 @@ import { savedCaseStudies } from '../data/case-studies/index.js';
 import { contactDefaults } from '../data/caseStudyData';
 import { buildResponsiveWebp, LazyVideo, pickMediaFile } from './caseStudyMedia';
 import EditableField from '../components/EditableField';
+import { useEdit } from '../context/EditContext';
+import { getHomeCardTone } from '../data/homeProjects';
 import { AnnotationLayer, AnnotationEditor, AnnotationNotes } from '../components/ImageAnnotations';
 import { CARD_ICONS, CARD_ICON_KEYS, TONE_DEFAULT_ICON } from '../components/CardIcons';
 import { widont } from '../utils/typography';
@@ -21,6 +23,9 @@ const MediaLibraryContext = createContext(null);
 // Provides onImageClick(src) → opens the shared slide lightbox. Null in edit
 // mode (images carry replace controls then) so it only fires in the read view.
 const LightboxContext = createContext(null);
+// Tone (0–4) of this study's card on the home grid, so a media entry with the
+// "card" mat paints the same orange → partner-colour gradient as that card.
+const CardToneContext = createContext(null);
 
 // Readable labels for the block-type converter dropdown (block controls).
 const BLOCK_TYPE_LABELS = {
@@ -124,11 +129,39 @@ const MediaEntry = ({ entry, tier, annotating = false, onAnnotationsChange, onAn
     io.observe(el);
     return () => io.disconnect();
   }, [video, embed]);
+  // "Card" mat: the gradient behind this entry is the home card's, so keep it
+  // moving the same way — sway the angle and slide the stops (--ga/--g0/--g1,
+  // read by .cs-article-media-entry--matcard). Same ranges as ProjectCard.
+  const cardTone = useContext(CardToneContext);
+  const matCard = !!entry.border && entry.borderColor === 'card';
+  useEffect(() => {
+    if (!matCard) return;
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const el = ref.current;
+    if (!el) return;
+    const drift = (name, min, max, unit, i) => gsap.to(el, {
+      [name]: () => `${gsap.utils.random(min, max)}${unit}`,
+      duration: () => gsap.utils.random(4, 7),
+      repeat: -1,
+      yoyo: true,
+      repeatRefresh: true,
+      ease: 'sine.inOut',
+      delay: i * 0.4,
+    });
+    const ctx = gsap.context(() => {
+      drift('--ga', 80, 170, 'deg', 0); // direction
+      drift('--g0', 22, 52, '%', 1);   // where orange ends
+      drift('--g1', 80, 108, '%', 2);  // where the second colour is full
+    }, el);
+    return () => ctx.revert();
+  }, [matCard]);
   if (!src && !embed) return null;
   const resp = !video && src && !src.startsWith('data:') ? buildResponsiveWebp(src) : null;
   const annotPalette = mediaPalette(entry) === 'brand' ? 'brand' : undefined;
   return (
-    <div ref={ref} className={`cs-article-media-entry${entry.border ? ' cs-article-media-entry--bordered' : ''}${entry.border && entry.borderColor === 'cream' ? ' cs-article-media-entry--matcream' : ''}${entry.shadow === false ? ' cs-article-media-entry--noshadow' : ''}`}>
+    <div ref={ref}
+      className={`cs-article-media-entry${entry.border ? ' cs-article-media-entry--bordered' : ''}${entry.border && entry.borderColor === 'cream' ? ' cs-article-media-entry--matcream' : ''}${matCard ? ' cs-article-media-entry--matcard' : ''}${entry.shadow === false ? ' cs-article-media-entry--noshadow' : ''}`}
+      data-card-tone={matCard ? (cardTone ?? 0) : undefined}>
       {embed ? (
         <div className="cs-article-embed" onMouseLeave={() => setEmbedActive(false)}>
           <iframe
@@ -644,16 +677,23 @@ const CardsBlock = ({ block, editing, onPatch, onConvert }) => {
   );
 };
 
-const FigureBlock = ({ block, editing, onPatch }) => {
+const FigureBlock = ({ block, editing, onPatch, isHero = false }) => {
   const openLibrary = useContext(MediaLibraryContext);
+  const figureCardTone = useContext(CardToneContext); // paints the "card" mat swatch
   // Which media entry (index) is in annotation mode; -1 = none. One at a time.
   const [annotatingIdx, setAnnotatingIdx] = useState(-1);
   const media = listOf(block.media);
+  // The hero figure (first block) sits on the study's home-card gradient by
+  // default — every study, authored or derived from slides — so a plain
+  // screenshot dropped in matches its card with no setup. Only a default: an
+  // entry that says border:false / another mat keeps what it says, and the
+  // edit toggles write explicit values back (setEntry patches the raw media).
+  const withDefaults = (m) => (isHero ? { border: true, borderColor: 'card', ...m } : m);
   const width = ['prose', 'wide', 'full'].includes(block.width) ? block.width : 'wide';
   const gridCols = Math.min(Math.max(Number(block.gridCols) || 2, 1), 6);
   const setEntry = (i, patch) => onPatch({ media: media.map((m, j) => (j === i ? { ...m, ...patch } : m)) });
   const pickFromLibrary = (i) => openLibrary((item) => setEntry(i, { src: item.src || '', isVideo: !!item.isVideo, embedUrl: item.embedUrl || '' }));
-  const visible = editing ? media : media.filter((m) => hasText(m.src) || hasText(m.embedUrl));
+  const visible = (editing ? media : media.filter((m) => hasText(m.src) || hasText(m.embedUrl))).map(withDefaults);
   if (!visible.length && !editing) return null;
   // Carousel view: cycle entries like the deck does. While editing, entries
   // stay laid out as a grid so each one remains directly manageable.
@@ -748,12 +788,19 @@ const FigureBlock = ({ block, editing, onPatch }) => {
                   onClick={() => setEntry(i, { border: !entry.border })}>border</button>
                 {entry.border && (
                   <span className="cs-article-mat-swatches" title="Mat color">
-                    {[['white', '#ffffff'], ['cream', '#F1F0ED']].map(([key, col]) => (
+                    {[
+                      ['white', '#ffffff', 'White mat'],
+                      ['cream', '#F1F0ED', 'Cream mat (#F1F0ED)'],
+                      // 'card' has no flat colour — the swatch is painted by CSS
+                      // with the home card's gradient (tone from data-card-tone).
+                      ['card', null, "Card mat — the same orange gradient as this study's card on the home page; drop a plain screenshot on top"],
+                    ].map(([key, col, label]) => (
                       <button key={key} type="button"
-                        className={`cs-article-mat-swatch${(entry.borderColor === 'cream' ? 'cream' : 'white') === key ? ' is-active' : ''}`}
-                        style={{ background: col }}
-                        title={key === 'white' ? 'White mat' : 'Cream mat (#F1F0ED)'}
-                        aria-label={key === 'white' ? 'White mat' : 'Cream mat'}
+                        className={`cs-article-mat-swatch${key === 'card' ? ' cs-article-mat-swatch--card' : ''}${(['cream', 'card'].includes(entry.borderColor) ? entry.borderColor : 'white') === key ? ' is-active' : ''}`}
+                        style={col ? { background: col } : undefined}
+                        data-card-tone={key === 'card' ? (figureCardTone ?? 0) : undefined}
+                        title={label}
+                        aria-label={label}
                         onClick={() => setEntry(i, { borderColor: key })} />
                     ))}
                   </span>
@@ -1281,6 +1328,10 @@ const NextCaseCards = ({ projectId }) => {
 /* ── Main component ───────────────────────────────────────────────────── */
 
 const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMediaLibrary, onImageClick }) => {
+  // Which gradient tone this study's card has on the home grid (null = no
+  // card). Read from the same saved content the home grid renders from.
+  const { content: homeContent } = useEdit();
+  const cardTone = useMemo(() => getHomeCardTone(homeContent, projectId), [homeContent, projectId]);
   const authored = project?.article?.blocks?.length ? project.article : null;
   const derived = useMemo(
     () => (authored ? null : deriveArticleFromSlides(project)),
@@ -1539,6 +1590,7 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
         <Renderer
           block={blk}
           editing={editing}
+          isHero={heroFirst && realIndex === 0}
           onPatch={(patch) => ops && ops.updateArticleBlock(realIndex, patch)}
           onConvert={(toType) => ops && ops.convertArticleBlock(realIndex, toType)}
         />
@@ -1549,6 +1601,7 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
   return (
     <MediaLibraryContext.Provider value={openMediaLibrary}>
     <LightboxContext.Provider value={editMode ? null : onImageClick}>
+    <CardToneContext.Provider value={cardTone}>
     <article ref={articleRef} className={`cs-article${editing ? ' cs-article--editing' : ''}`}>
       {!editMode && <FloatingBack />}
 
@@ -1566,7 +1619,12 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
 
       {heroBlock && renderBlock(heroBlock, 0, 0)}
 
-      <header className="cs-article-header">
+      {/* data-hero = the hero figure's width tier (same fallback as FigureBlock),
+          so the title can take more air under a full-bleed hero (CSS). */}
+      <header
+        className="cs-article-header"
+        data-hero={heroBlock ? (['prose', 'wide', 'full'].includes(heroBlock.width) ? heroBlock.width : 'wide') : undefined}
+      >
         <h1 className="cs-article-h1">
           {editing
             ? <EditableField value={article?.title} onChange={(v) => ops.updateArticle({ title: v })} multiline placeholder="Article title" />
@@ -1680,6 +1738,7 @@ const CaseStudyArticle = ({ project, projectId, editMode = false, ops, openMedia
         />
       )}
     </article>
+    </CardToneContext.Provider>
     </LightboxContext.Provider>
     </MediaLibraryContext.Provider>
   );

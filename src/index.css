@@ -112,7 +112,19 @@
   --showcase-pink: var(--primitive-pink);
   --showcase-orange: var(--primitive-orange);
   --showcase-lime: var(--primitive-lime);
-  
+
+  /* Home project-card gradient — true orange + a per-card partner colour
+     (tone = the card's index in the grid % 5). One source of truth shared by
+     Projects.css (the home cards) and CaseStudyArticle.css (the article's
+     "card" mat), so a study's hero figure can sit on exactly the same
+     gradient as its card. Same values in dark mode. */
+  --card-orange: #FF8A3D; /* the coral accent reads red as a fill, so a true orange */
+  --card-tone-0: #4A8CFF; /* blue */
+  --card-tone-1: #8B5CF6; /* purple */
+  --card-tone-2: #2FBF8F; /* green */
+  --card-tone-3: #FF5CA8; /* pink */
+  --card-tone-4: #22B8CF; /* teal */
+
   --font-display: var(--primitive-font-serif);
   --font-body: var(--primitive-font-sans);
   

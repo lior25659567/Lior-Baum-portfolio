@@ -280,8 +280,9 @@
   /* Two-colour gradient: the primary orange runs into a second colour
      (--card-mix, set per data-card-tone below), so every case study pairs
      orange with a different partner — blue, purple, green, … */
-  --card-orange: #FF8A3D; /* true orange — the coral primary reads red when used as a fill */
-  --card-mix: #4A8CFF;
+  /* --card-orange and the --card-tone-N partner colours live in index.css so
+     the article's "card" mat can reuse the exact same recipe. */
+  --card-mix: var(--card-tone-0);
   /* Linear ramp, orange → second colour, blended directly (OKLAB) so only the
      two colours show — no third hue in between. Orange holds solid up to --g0 and the second colour is only
      fully reached at --g1, so orange owns most of the card. Angle and stop positions are driven
@@ -301,11 +302,11 @@
 }
 
 /* Per-card tones — orange + a different second colour */
-.project-media[data-card-bg="gradient"][data-card-tone="0"] { --card-mix: #4A8CFF; } /* blue */
-.project-media[data-card-bg="gradient"][data-card-tone="1"] { --card-mix: #8B5CF6; } /* purple */
-.project-media[data-card-bg="gradient"][data-card-tone="2"] { --card-mix: #2FBF8F; }  /* green */
-.project-media[data-card-bg="gradient"][data-card-tone="3"] { --card-mix: #FF5CA8; } /* pink */
-.project-media[data-card-bg="gradient"][data-card-tone="4"] { --card-mix: #22B8CF; } /* teal */
+.project-media[data-card-bg="gradient"][data-card-tone="0"] { --card-mix: var(--card-tone-0); } /* blue */
+.project-media[data-card-bg="gradient"][data-card-tone="1"] { --card-mix: var(--card-tone-1); } /* purple */
+.project-media[data-card-bg="gradient"][data-card-tone="2"] { --card-mix: var(--card-tone-2); } /* green */
+.project-media[data-card-bg="gradient"][data-card-tone="3"] { --card-mix: var(--card-tone-3); } /* pink */
+.project-media[data-card-bg="gradient"][data-card-tone="4"] { --card-mix: var(--card-tone-4); } /* teal */
 
 /* Section option "Card background: Orange only" (content.projects.cardBgStyle
    === 'orange') — one colour, two shades, a different gradient shape per

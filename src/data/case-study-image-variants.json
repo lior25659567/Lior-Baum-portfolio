@@ -108,6 +108,16 @@
     ],
     "full": 2048
   },
+  "/case-studies/design-system/article-hero.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2345
+    ],
+    "full": 2345
+  },
   "/case-studies/design-system/img-1upfr5gm8c.webp": {
     "widths": [
       480,
@@ -489,6 +499,16 @@
       2880
     ],
     "full": 2880
+  },
+  "/case-studies/itero-scan-workflow/article-hero.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2578
+    ],
+    "full": 2578
   },
   "/case-studies/itero-scan-workflow/img-108q6prepok.webp": {
     "widths": [
@@ -1526,6 +1546,16 @@
     ],
     "full": 2880
   },
+  "/case-studies/patient-report/article-hero.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2261
+    ],
+    "full": 2261
+  },
   "/case-studies/patient-report/img-1151oh706o0.webp": {
     "widths": [
       480,
@@ -2136,6 +2166,16 @@
     ],
     "full": 2876
   },
+  "/case-studies/privacy-center-builder/article-hero.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2322
+    ],
+    "full": 2322
+  },
   "/case-studies/privacy-center-builder/before-original-editor.webp": {
     "widths": [
       480,
@@ -2425,6 +2465,16 @@
       1779
     ],
     "full": 1779
+  },
+  "/case-studies/wizecare/article-hero.webp": {
+    "widths": [
+      480,
+      960,
+      1440,
+      1920,
+      2373
+    ],
+    "full": 2373
   },
   "/case-studies/wizecare/img-1nl1prxhoc.webp": {
     "widths": [

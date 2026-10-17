@@ -1,5 +1,5 @@
 {
-  "dataVersion": 8,
+  "dataVersion": 9,
   "title": "Privacy Center\nBuilder",
   "subtitle": "Turning a limiting editor into a scalable editing pattern used across BigID products.",
   "category": "Product Design · B2B SaaS",
@@ -446,7 +446,7 @@
         "display": "grid",
         "media": [
           {
-            "src": "/case-studies/privacy-center-builder/upgraded-editor-onboarding.webp",
+            "src": "/case-studies/privacy-center-builder/article-hero.webp",
             "caption": "",
             "isVideo": false,
             "embedUrl": ""

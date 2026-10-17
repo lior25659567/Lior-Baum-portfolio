@@ -351,6 +351,17 @@ body.cs-article-nav .cs-article-back {
 .cs-article-header {
   margin-top: 0.25rem;
 }
+/* Under a FULL-width hero figure the title gets more air. The hero→title gap is
+   otherwise the collapsed 2.2rem figure margin (wide / prose keep that); padding
+   doesn't collapse, so this adds on top of it for `full` only. */
+.cs-article-header[data-hero="full"] {
+  padding-top: clamp(1.25rem, 3vw, 2rem);
+}
+/* Padding stops the h1's own top margin from collapsing into the gap, so zero
+   it here — the gap is then exactly "wide gap + the padding above" (≈2× wide). */
+.cs-article-header[data-hero="full"] .cs-article-h1 {
+  margin-top: 0;
+}
 
 /* ── Meta grid (Role / Timeline / Team / …) ── */
 
@@ -576,7 +587,7 @@ body.cs-article-nav .cs-article-back {
 .cs-article-media-entry--matcream {
   background: #F1F0ED;
 }
-:root[data-theme='dark'] .cs-article-media-entry--bordered:not(.cs-article-media-entry--matcream) {
+:root[data-theme='dark'] .cs-article-media-entry--bordered:not(.cs-article-media-entry--matcream):not(.cs-article-media-entry--matcard) {
   background: var(--color-bg-secondary);
 }
 
@@ -608,6 +619,66 @@ body.cs-article-nav .cs-article-back {
 }
 .cs-article-media-entry--noshadow.cs-article-media-entry--bordered {
   box-shadow: none;
+}
+
+/* "Card" mat (border on + mat = card): the entry sits on the SAME orange →
+   partner-colour gradient as this study's card on the home grid — same recipe,
+   same frame padding, same floating-screenshot shadow (Projects.css
+   `.project-media[data-card-bg="gradient"]`). The point: drop a plain
+   screenshot on top instead of baking the gradient into the image. The tone
+   (partner colour) comes from data-card-tone = the card's grid index % 5, set
+   by MediaEntry. --ga/--g0/--g1 are the resting values; MediaEntry drifts them
+   with GSAP exactly like the home card (static under reduced motion). */
+.cs-article [data-card-tone="0"] { --card-mix: var(--card-tone-0); }
+.cs-article [data-card-tone="1"] { --card-mix: var(--card-tone-1); }
+.cs-article [data-card-tone="2"] { --card-mix: var(--card-tone-2); }
+.cs-article [data-card-tone="3"] { --card-mix: var(--card-tone-3); }
+.cs-article [data-card-tone="4"] { --card-mix: var(--card-tone-4); }
+.cs-article-media-entry--matcard {
+  --ga: 120deg;
+  --g0: 38%;
+  --g1: 92%;
+  padding: 4.5%;
+  border: 1px solid var(--color-border-soft);
+  border-radius: 18px; /* the home card's outer radius */
+  background: linear-gradient(
+    var(--ga) in oklab,
+    color-mix(in srgb, var(--card-orange) 42%, #fff) var(--g0),
+    color-mix(in srgb, var(--card-mix, var(--card-tone-0)) 58%, #fff) var(--g1)
+  );
+  box-shadow: 0 3px 16px 1px rgba(171, 162, 189, 0.1);
+}
+:root[data-theme='dark'] .cs-article-media-entry--matcard {
+  box-shadow: 0 3px 16px 1px rgba(0, 0, 0, 0.26);
+}
+/* The screenshot floats on the gradient: card radius + a drop-shadow that
+   follows its real shape (transparent PNGs cast no rectangular box). */
+.cs-article-media-entry--matcard .cs-article-media,
+.cs-article-media-entry--matcard .cs-article-embed {
+  border-radius: var(--radius-lg);
+  box-shadow: none;
+  filter:
+    drop-shadow(0 4px 12px rgba(0, 0, 0, 0.14))
+    drop-shadow(0 18px 40px rgba(0, 0, 0, 0.22));
+}
+:root[data-theme='dark'] .cs-article-media-entry--matcard .cs-article-media,
+:root[data-theme='dark'] .cs-article-media-entry--matcard .cs-article-embed {
+  filter:
+    drop-shadow(0 4px 12px rgba(0, 0, 0, 0.45))
+    drop-shadow(0 18px 40px rgba(0, 0, 0, 0.6));
+}
+/* "shadow" toggled off still wins over the card mat's float. */
+.cs-article-media-entry--matcard.cs-article-media-entry--noshadow .cs-article-media,
+.cs-article-media-entry--matcard.cs-article-media-entry--noshadow .cs-article-embed {
+  filter: none;
+}
+/* The mat-colour swatch for "card" previews the same gradient (resting values). */
+.cs-article-mat-swatch--card {
+  background: linear-gradient(
+    120deg in oklab,
+    color-mix(in srgb, var(--card-orange) 42%, #fff) 38%,
+    color-mix(in srgb, var(--card-mix, var(--card-tone-0)) 58%, #fff) 92%
+  );
 }
 .cs-article-media--zoom:focus-visible {
   outline: 2px solid var(--color-accent);

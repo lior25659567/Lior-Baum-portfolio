@@ -1,5 +1,5 @@
 {
-  "dataVersion": 19,
+  "dataVersion": 20,
   "title": "WizeCare",
   "slides": [
     {
@@ -542,21 +542,7 @@
         "interval": 1500,
         "media": [
           {
-            "src": "/case-studies/wizecare/img-3e9ywkzxfk.webp",
-            "caption": "",
-            "isVideo": false,
-            "embedUrl": "",
-            "size": "large"
-          },
-          {
-            "src": "/case-studies/wizecare/img-4oykmxaws0.webp",
-            "caption": "",
-            "isVideo": false,
-            "embedUrl": "",
-            "size": "large"
-          },
-          {
-            "src": "/case-studies/wizecare/img-ehylbk97xs.webp",
+            "src": "/case-studies/wizecare/article-hero.webp",
             "caption": "",
             "isVideo": false,
             "embedUrl": "",
