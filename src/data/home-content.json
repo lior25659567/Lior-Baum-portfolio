@@ -154,20 +154,20 @@
       "sectionTitle": "Selected Projects",
       "items": [
         {
-          "id": "patient-report",
-          "title": "Patient Report Redesign",
-          "category": "Product Design · Turning complex data into clarity.",
-          "image": "/home/img-c91ef4a2118d.webp",
-          "year": "2026",
+          "id": "itero-scan-workflow",
+          "title": "iTero Scan Workflow",
+          "category": "Product Design · Redesigning a complex clinical flow.",
+          "year": "2024",
+          "image": "/home/img-7cfa91115da7.webp",
           "mediaMode": "template",
+          "imageFit": "contain",
           "iframeSrc": "",
           "cardBg": "gradient",
-          "imageFit": "contain",
-          "description": "Rebuilt the patient-report editor with procedure templates, modular content blocks, and image annotation.",
+          "description": "Redesigned the clinical scan workflow to remove the blocking popups between clinicians and starting a scan.",
           "labels": [
-            "UX Research",
-            "Interaction Design",
-            "Information Architecture"
+            "Usability Testing",
+            "Workflow Design",
+            "AI Prototyping"
           ],
           "labelsVersion": 3
         },
@@ -190,20 +190,20 @@
           "labelsVersion": 3
         },
         {
-          "id": "itero-scan-workflow",
-          "title": "iTero Scan Workflow",
-          "category": "Product Design · Redesigning a complex clinical flow.",
-          "year": "2024",
-          "image": "/home/img-7cfa91115da7.webp",
+          "id": "patient-report",
+          "title": "Patient Report Redesign",
+          "category": "Product Design · Turning complex data into clarity.",
+          "image": "/home/img-c91ef4a2118d.webp",
+          "year": "2026",
           "mediaMode": "template",
-          "imageFit": "contain",
           "iframeSrc": "",
           "cardBg": "gradient",
-          "description": "Redesigned the clinical scan workflow to remove the blocking popups between clinicians and starting a scan.",
+          "imageFit": "contain",
+          "description": "Rebuilt the patient-report editor with procedure templates, modular content blocks, and image annotation.",
           "labels": [
-            "Usability Testing",
-            "Workflow Design",
-            "AI Prototyping"
+            "UX Research",
+            "Interaction Design",
+            "Information Architecture"
           ],
           "labelsVersion": 3
         },
