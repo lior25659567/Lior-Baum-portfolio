@@ -909,8 +909,11 @@ body.cs-article-nav .cs-article-back {
   margin: 1.4rem auto;
 }
 
-/* Odd icon-card count: last card spans the full row (reference behavior). */
-.cs-article-cards--icon .cs-article-card:nth-child(odd):last-child {
+/* Two-column icon grids with an odd count: the last card would sit alone, so
+   it spans the full row (reference behavior). Scoped to cols-2 — in 3- and
+   4-column grids an odd count is normal (3 cards = one full row) and this rule
+   used to kick the last card down onto its own row. */
+.cs-article-cards--icon.cs-article-cards--cols-2 .cs-article-card:nth-child(odd):last-child {
   grid-column: 1 / -1;
 }
 
@@ -2197,6 +2200,11 @@ select.cs-article-block-typesel:hover {
 @media (max-width: 899px) {
   .cs-article-cards[style] {
     grid-template-columns: repeat(min(var(--cs-cards-cols, 2), 2), minmax(0, 1fr));
+  }
+  /* Every grid is ≤2 columns here, so an odd count again leaves the last icon
+     card alone — let it span the row (same as the cols-2 rule above). */
+  .cs-article-cards--icon .cs-article-card:nth-child(odd):last-child {
+    grid-column: 1 / -1;
   }
 }
 
