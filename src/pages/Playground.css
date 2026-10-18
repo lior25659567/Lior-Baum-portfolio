@@ -33,6 +33,7 @@
 /* Hero — mirrors the About page hero: centered, tall, muted label,
    large two-tone (sans + serif accent) title. */
 .playground-header {
+  position: relative; /* hosts the full-bleed AsciiField canvas */
   margin-bottom: var(--spacing-xl);
   text-align: center;
   min-height: 45vh;
@@ -40,6 +41,11 @@
   flex-direction: column;
   justify-content: center;
   padding: var(--spacing-xl) 0;
+}
+/* Title + label stay above the ASCII canvas (z 0). */
+.playground-header > :not(.ascii-field) {
+  position: relative;
+  z-index: 1;
 }
 
 /* Label — same treatment as the About hero (muted, slightly faded). */

@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEdit } from '../context/EditContext';
 import AnimatedButton from '../components/AnimatedButton';
 import AboutRotator, { DEFAULT_SKILLS as DEFAULT_VALUE_WORDS } from '../components/AboutRotator';
+import AsciiField from '../components/AsciiField';
 import Footer from '../components/Footer';
 import './About.css';
 import './HomePublishBar.css';
@@ -405,6 +406,14 @@ const About = () => {
       <div className="about-container">
         {/* Hero Section */}
         <div className="about-hero" ref={heroRef}>
+          {/* Generative ASCII ribbons behind the title (full-bleed, pointer-aware) */}
+          <AsciiField
+            variant="ribbons"
+            hostSelector=".about-hero"
+            textSelectors={['.section-label', '.title-line']}
+            fadeBottom={72}
+            className="ascii-field--bleed"
+          />
           <div className="title-line-wrapper">
             <span className="section-label" ref={labelRef}>
               <Editable value={about.label || 'About Me'} onChange={(v) => updateAbout('label', v)} placeholder="Label" />

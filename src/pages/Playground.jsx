@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 import { useEdit } from '../context/EditContext';
 import AnimatedButton from '../components/AnimatedButton';
+import AsciiField from '../components/AsciiField';
 import Footer from '../components/Footer';
 import './Playground.css';
 
@@ -663,6 +664,14 @@ const Playground = () => {
     <div className="playground-page">
       <div className="playground-container">
         <header className="playground-header" ref={headerRef}>
+          {/* Generative ASCII "terminal booting" behind the title (full-bleed, pointer-aware) */}
+          <AsciiField
+            variant="terminal"
+            hostSelector=".playground-header"
+            textSelectors={['.section-label', '.title-line']}
+            fadeBottom={72}
+            className="ascii-field--bleed"
+          />
           <div className="title-line-wrapper">
             <span className="section-label" ref={labelRef}>
               <Editable

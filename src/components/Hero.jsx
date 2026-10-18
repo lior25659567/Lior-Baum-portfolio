@@ -3,8 +3,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEdit } from '../context/EditContext';
 // HeroSparkles (the coral pointer trail) is parked for now — re-import and
-// mount it after <HeroAscii /> to bring it back.
-import HeroAscii from './HeroAscii';
+// mount it after <AsciiField /> to bring it back.
+import AsciiField from './AsciiField';
 import './Hero.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -184,7 +184,14 @@ const Hero = () => {
         <div className="gradient-orb orb-4" />
         <div className="gradient-orb orb-5" />
         <div className="gradient-orb orb-6" />
-        <HeroAscii />
+        <AsciiField
+          variant="diamonds"
+          hostSelector=".hero"
+          textSelectors={['.hero-greeting', '.hero-name', '.hero-role-text', '.hero-desc']}
+          bottomFadeSelector=".hero-marquee"
+          fadeNav
+          className="hero-ascii"
+        />
       </div>
 
       {/* Centered single-column layout */}

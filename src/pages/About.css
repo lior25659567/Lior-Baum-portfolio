@@ -14,6 +14,7 @@
 
 /* Hero */
 .about-hero {
+  position: relative; /* hosts the full-bleed AsciiField canvas */
   margin-bottom: var(--spacing-xl);
   text-align: center;
   min-height: 45vh;
@@ -21,6 +22,11 @@
   flex-direction: column;
   justify-content: center;
   padding: var(--spacing-xl) 0;
+}
+/* Title + label stay above the ASCII canvas (z 0). */
+.about-hero > :not(.ascii-field) {
+  position: relative;
+  z-index: 1;
 }
 
 /* About hero label — matches Hero "Hello, I'm" styling exactly: base

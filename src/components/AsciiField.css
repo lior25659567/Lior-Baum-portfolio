@@ -1,0 +1,18 @@
+/* AsciiField — generative text-mode background canvas (see AsciiField.jsx).
+   Fills its positioned host; `--bleed` escapes a max-width container to the
+   full viewport width while keeping the host's height. */
+.ascii-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ascii-field--bleed {
+  left: 50%;
+  right: auto;
+  width: 100vw;
+  transform: translateX(-50%);
+}
