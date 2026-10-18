@@ -664,9 +664,9 @@ const Playground = () => {
     <div className="playground-page">
       <div className="playground-container">
         <header className="playground-header" ref={headerRef}>
-          {/* Generative ASCII "terminal booting" behind the title (full-bleed, pointer-aware) */}
+          {/* Generative ASCII digital rain behind the title (full-bleed, pointer-aware) */}
           <AsciiField
-            variant="terminal"
+            variant="matrix"
             hostSelector=".playground-header"
             textSelectors={['.section-label', '.title-line']}
             fadeBottom={72}

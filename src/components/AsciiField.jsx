@@ -55,6 +55,7 @@ const AsciiField = ({
     let ch = 15;
     let grid = new Uint8Array(0);
     let under = new Uint8Array(0);
+    let cellAlpha = new Float32Array(0);   // per-glyph brightness (variants may shape it)
     let sheet = null;
     let alpha = 0.26;
     let raf = 0;
@@ -109,6 +110,7 @@ const AsciiField = ({
       rows = Math.ceil(height / ch);
       grid = new Uint8Array(cols * rows);
       under = new Uint8Array(cols * rows);
+      cellAlpha = new Float32Array(cols * rows);
       buildSheet();
       if (reduce) draw(seed + 3);
     };
@@ -321,8 +323,68 @@ const AsciiField = ({
       ctx.globalAlpha = 1;
     };
 
-    const stamp = variant === 'ribbons' ? ribbons : variant === 'ripples' ? ripples : variant === 'terminal' ? terminal : diamonds;
+    // ── Variant: matrix (Playground) ──
+    // Digital rain: per-column drops fall with a bright head and a trail that
+    // fades behind it; glyphs mutate as they fall. Spawning comes in waves
+    // (breathes), the pointer's columns rain harder, and the intro ramps the
+    // rain in from a few drops.
+    const rain = { drops: [], glyphs: new Uint8Array(0), lastT: null, hashes: null };
+    const DENSE_FROM = RAMP.indexOf('9'); // heads pick from the dense end of the ramp
+    const matrix = (t) => {
+      if (rain.glyphs.length !== cols * rows) {
+        rain.glyphs = new Uint8Array(cols * rows);
+        for (let k = 0; k < rain.glyphs.length; k++) rain.glyphs[k] = 1 + Math.floor(Math.random() * (n - 1));
+        rain.drops = [];
+        rain.lastT = null;
+      }
+      const dt = rain.lastT === null ? 1 / FPS : Math.min(0.1, t - rain.lastT);
+      rain.lastT = t;
+      const breathe = 0.65 + 0.35 * Math.sin(t * 0.5);
+      // spawn: ~0.55 drops / s / column at full density, pulsing; pointer columns ×6
+      const perCol = 0.55 * breathe * (0.15 + 0.85 * reveal.v) * dt;
+      const pcol = cur.a > 0.01 ? Math.round(cur.x / cw) : -999;
+      for (let c = 0; c < cols; c++) {
+        let p = perCol;
+        if (Math.abs(c - pcol) <= 6) p *= 1 + 5 * cur.a * (1 - Math.abs(c - pcol) / 7);
+        if (Math.random() > p) continue;
+        // don't stack a new drop on a column whose last drop hasn't cleared its own tail
+        let busy = false;
+        for (const d of rain.drops) if (d.col === c && d.head < d.len + 2) { busy = true; break; }
+        if (busy) continue;
+        rain.drops.push({ col: c, head: -Math.random() * 6, speed: 6 + Math.random() * 10, len: 7 + Math.floor(Math.random() * 15) });
+      }
+      // advance + cull
+      const speedMul = 0.85 + 0.15 * Math.sin(t * 0.33);
+      for (let i = rain.drops.length - 1; i >= 0; i--) {
+        const d = rain.drops[i];
+        d.head += d.speed * speedMul * dt;
+        if (d.head - d.len > rows + 1) rain.drops.splice(i, 1);
+      }
+      // mutate ~2% of glyphs per frame
+      const flips = Math.max(1, Math.floor(rain.glyphs.length * 0.02));
+      for (let f = 0; f < flips; f++) {
+        const k = Math.floor(Math.random() * rain.glyphs.length);
+        rain.glyphs[k] = 1 + Math.floor(Math.random() * (n - 1));
+      }
+      // rasterise
+      for (const d of rain.drops) {
+        const headRow = Math.floor(d.head);
+        for (let k = 0; k <= d.len; k++) {
+          const r = headRow - k;
+          if (r < 0 || r >= rows) continue;
+          const idx = r * cols + d.col;
+          const a = k === 0 ? 1 : Math.pow(1 - k / (d.len + 1), 1.5);
+          if (a <= cellAlpha[idx] && grid[idx]) continue;
+          cellAlpha[idx] = a;
+          grid[idx] = k === 0 ? 1 + DENSE_FROM + (rain.glyphs[idx] % (n - DENSE_FROM)) : 1 + rain.glyphs[idx];
+        }
+      }
+    };
+
+    const stamp = variant === 'ribbons' ? ribbons : variant === 'ripples' ? ripples : variant === 'terminal' ? terminal : variant === 'matrix' ? matrix : diamonds;
     const post = variant === 'terminal' ? terminalPost : null;
+    // Rain reads through its bright heads, so it runs at a higher base alpha.
+    const alphaBoost = variant === 'matrix' ? 2.1 : 1;
 
     // Per-cell "under a word" mask from the text line boxes.
     const markUnder = () => {
@@ -362,12 +424,12 @@ const AsciiField = ({
 
     const draw = (t) => {
       grid.fill(0);
+      cellAlpha.fill(1);
       stamp(t);
       markUnder();
 
       ctx.clearRect(0, 0, width, height);
-      const full = alpha * (0.35 + 0.65 * reveal.v);
-      const quiet = full * 0.3;
+      const full = Math.min(0.9, alpha * alphaBoost) * (0.35 + 0.65 * reveal.v);
       ctx.globalAlpha = full;
       let curAlpha = full;
       const sw = Math.ceil(cw * dpr);
@@ -379,7 +441,7 @@ const AsciiField = ({
           const k = row + i;
           const v = grid[k];
           if (!v) continue;
-          const a = under[k] ? quiet : full;
+          const a = full * cellAlpha[k] * (under[k] ? 0.3 : 1);
           if (a !== curAlpha) { ctx.globalAlpha = a; curAlpha = a; }
           ctx.drawImage(sheet, (v - 1) * sw, 0, sw, sh, i * cw, y, cw, ch);
         }
