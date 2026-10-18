@@ -2,7 +2,9 @@ import { useEffect, useRef, useLayoutEffect, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEdit } from '../context/EditContext';
-import HeroSparkles from './HeroSparkles';
+// HeroSparkles (the coral pointer trail) is parked for now — re-import and
+// mount it after <HeroAscii /> to bring it back.
+import HeroAscii from './HeroAscii';
 import './Hero.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -170,7 +172,10 @@ const Hero = () => {
       id="home"
       ref={heroRef}
     >
-      {/* Background — clean dot-grid + minimal orbs + interactive sparkles */}
+      {/* Background — clean dot-grid + minimal orbs + generative ASCII field.
+          The text column above is untouched: the ASCII layer erases itself
+          under .hero-content, the nav band and the marquee. (The coral
+          sparkle trail is parked, see the import note.) */}
       <div className="hero-background">
         <div className="hero-grid" />
         <div className="gradient-orb orb-1" />
@@ -179,7 +184,7 @@ const Hero = () => {
         <div className="gradient-orb orb-4" />
         <div className="gradient-orb orb-5" />
         <div className="gradient-orb orb-6" />
-        <HeroSparkles />
+        <HeroAscii />
       </div>
 
       {/* Centered single-column layout */}
