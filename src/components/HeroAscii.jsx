@@ -106,22 +106,65 @@ const HeroAscii = () => {
 
     const narrow = () => width < 768;
 
-    // The two chains: x as a fraction of the width, their own drift / breath.
+    // The two chains: centred in the side thirds, free to reach the text.
     const chains = () => {
       const lx = narrow() ? 0.08 : 0.17;
+      const R = (narrow() ? 0.36 : 0.26) * Math.min(width, height);
       return [
-        { x: lx, phase: 0.0, drift: 0.22, breath: 0.45 },
-        { x: 1 - lx, phase: 1.9, drift: 0.19, breath: 0.38 },
+        { cx: lx * width, R, phase: 0.0, drift: 0.22, breath: 0.45 },
+        { cx: (1 - lx) * width, R, phase: 1.9, drift: 0.19, breath: 0.38 },
       ];
+    };
+
+    // Per-cell "under a word" mask: cells whose centre sits inside one of the
+    // text LINE boxes (greeting, name, role, each wrapped description line).
+    // Those glyphs are drawn at reduced opacity — decided per glyph, so there
+    // is no gradient shape, only the characters going quieter under the type.
+    let under = new Uint8Array(0);
+    const markUnder = () => {
+      if (under.length !== cols * rows) under = new Uint8Array(cols * rows);
+      under.fill(0);
+      const hr = hero.getBoundingClientRect();
+      const mark = (b) => {
+        if (!b || b.width < 2 || b.height < 2) return;
+        const x0 = b.left - hr.left - 4;
+        const x1 = b.right - hr.left + 4;
+        // pad vertically by ~¾ of a glyph row so the zones of consecutive
+        // wrapped lines merge (no full-strength stripe in the line gaps)
+        const y0 = b.top - hr.top - ch * 0.75;
+        const y1 = b.bottom - hr.top + ch * 0.75;
+        const i0 = Math.max(0, Math.floor((x0 - cw / 2) / cw));
+        const i1 = Math.min(cols - 1, Math.ceil((x1 - cw / 2) / cw));
+        const j0 = Math.max(0, Math.floor((y0 - ch / 2) / ch));
+        const j1 = Math.min(rows - 1, Math.ceil((y1 - ch / 2) / ch));
+        for (let j = j0; j <= j1; j++) {
+          const yc = j * ch + ch / 2;
+          if (yc < y0 || yc > y1) continue;
+          for (let i = i0; i <= i1; i++) {
+            const xc = i * cw + cw / 2;
+            if (xc >= x0 && xc <= x1) under[j * cols + i] = 1;
+          }
+        }
+      };
+      for (const sel of ['.hero-greeting', '.hero-name', '.hero-role-text']) {
+        const el = hero.querySelector(sel);
+        if (el) mark(el.getBoundingClientRect());
+      }
+      const desc = hero.querySelector('.hero-desc');
+      if (desc) {
+        const range = document.createRange();
+        range.selectNodeContents(desc);
+        for (const b of range.getClientRects()) mark(b);
+        range.detach?.();
+      }
     };
 
     // Rasterise one chain of diamonds into the grid.
     const stampChain = (c, t) => {
       const n = RAMP.length;
       const lambda = height / 2.1;                                   // ≈ two diamonds tall
-      const Rbase = (narrow() ? 0.36 : 0.26) * Math.min(width, height);
-      const R = Rbase * (0.7 + 0.3 * Math.sin(t * c.breath + c.phase)); // breathe in / out
-      const cx0 = c.x * width;
+      const R = c.R * (0.7 + 0.3 * Math.sin(t * c.breath + c.phase)); // breathe in / out
+      const cx0 = c.cx;
       for (let j = 0; j < rows; j++) {
         const y = j * ch + ch / 2;
         // pointer: bulge toward the cursor near its row, fade with distance
@@ -160,48 +203,32 @@ const HeroAscii = () => {
       grid.fill(0);
       for (const c of chains()) stampChain(c, t);
 
+      markUnder();
       ctx.clearRect(0, 0, width, height);
+      const quiet = alpha * 0.3; // glyphs under a word
       ctx.globalAlpha = alpha;
+      let curAlpha = alpha;
       const sw = Math.ceil(cw * dpr);
       const sh = Math.ceil(ch * dpr);
       for (let j = 0; j < rows; j++) {
         const row = j * cols;
         const y = j * ch;
         for (let i = 0; i < cols; i++) {
-          const v = grid[row + i];
+          const k = row + i;
+          const v = grid[k];
           if (!v) continue;
+          const a = under[k] ? quiet : alpha;
+          if (a !== curAlpha) { ctx.globalAlpha = a; curAlpha = a; }
           ctx.drawImage(sheet, (v - 1) * sw, 0, sw, sh, i * cw, y, cw, ch);
         }
       }
       ctx.globalAlpha = 1;
 
-      // The chains run straight under the text — no box, no per-line cut-outs
-      // (those merge into a visible rectangle the diamonds can't enter). A
-      // very wide, soft radial dimming over the text area halves the glyph
-      // alpha where the words sit, so the type stays legible while the field
-      // flows through continuously.
+      // No erase or dimming around the text: one uniform field strength, so
+      // nothing reads as a transparent box. On desktop the chains are confined
+      // to the gutters (see chains()); only the nav band and the marquee fade.
       ctx.globalCompositeOperation = 'destination-out';
       const hr = hero.getBoundingClientRect();
-      const content = hero.querySelector('.hero-content');
-      if (content) {
-        const crc = content.getBoundingClientRect();
-        const ex = crc.left - hr.left + crc.width / 2;
-        const ey = crc.top - hr.top + crc.height / 2;
-        const rx = crc.width * 0.72 + 160;
-        const ry = crc.height * 0.8 + 120;
-        ctx.save();
-        ctx.translate(ex, ey);
-        ctx.scale(rx, ry);
-        const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
-        g.addColorStop(0, 'rgba(0,0,0,0.55)');
-        g.addColorStop(0.45, 'rgba(0,0,0,0.45)');
-        g.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(0, 0, 1, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
       const marquee = hero.querySelector('.hero-marquee');
       if (marquee) {
         const mr = marquee.getBoundingClientRect();
