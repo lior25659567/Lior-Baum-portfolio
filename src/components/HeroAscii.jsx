@@ -202,16 +202,27 @@ const HeroAscii = () => {
       }
       ctx.globalAlpha = 1;
 
-      // Keep the type crisp: erase the field under the hero text column, the
-      // fixed nav band and the marquee. The chains stay at the sides.
+      // Keep the type crisp without blocking the field: the chains run behind
+      // the content; only a slim soft halo around each actual text LINE is
+      // erased (not the whole content box), so the words read and the diamonds
+      // show between and around them.
       ctx.globalCompositeOperation = 'destination-out';
       const hr = hero.getBoundingClientRect();
-      const content = hero.querySelector('.hero-content');
-      if (content) {
-        const crc = content.getBoundingClientRect();
-        const padX = narrow() ? 40 : 56;
-        const padY = 40;
-        eraseSoftRect(crc.left - hr.left - padX, crc.top - hr.top - padY, crc.width + padX * 2, crc.height + padY * 2, 64);
+      const halo = (r) => {
+        if (!r || r.width < 2 || r.height < 2) return;
+        eraseSoftRect(r.left - hr.left - 10, r.top - hr.top - 4, r.width + 20, r.height + 8, 26);
+      };
+      for (const sel of ['.hero-greeting', '.hero-name', '.hero-role-text']) {
+        const el = hero.querySelector(sel);
+        if (el) halo(el.getBoundingClientRect());
+      }
+      const desc = hero.querySelector('.hero-desc');
+      if (desc) {
+        // one rect per wrapped line of the paragraph
+        const range = document.createRange();
+        range.selectNodeContents(desc);
+        for (const r of range.getClientRects()) halo(r);
+        range.detach?.();
       }
       const marquee = hero.querySelector('.hero-marquee');
       if (marquee) {
