@@ -328,8 +328,7 @@ const AsciiField = ({
     // fades behind it; glyphs mutate as they fall. Spawning comes in waves
     // (breathes), the pointer's columns rain harder, and the intro ramps the
     // rain in from a few drops.
-    const rain = { drops: [], glyphs: new Uint8Array(0), lastT: null, hashes: null };
-    const DENSE_FROM = RAMP.indexOf('9'); // heads pick from the dense end of the ramp
+    const rain = { drops: [], glyphs: new Uint8Array(0), lastT: null };
     const matrix = (t) => {
       if (rain.glyphs.length !== cols * rows) {
         rain.glyphs = new Uint8Array(cols * rows);
@@ -351,7 +350,8 @@ const AsciiField = ({
         let busy = false;
         for (const d of rain.drops) if (d.col === c && d.head < d.len + 2) { busy = true; break; }
         if (busy) continue;
-        rain.drops.push({ col: c, head: -Math.random() * 6, speed: 6 + Math.random() * 10, len: 7 + Math.floor(Math.random() * 15) });
+        // slow fall (≈ the About ribbons' pace): 1.6–3.4 rows per second
+        rain.drops.push({ col: c, head: -Math.random() * 6, speed: 1.6 + Math.random() * 1.8, len: 7 + Math.floor(Math.random() * 15) });
       }
       // advance + cull
       const speedMul = 0.85 + 0.15 * Math.sin(t * 0.33);
@@ -360,31 +360,31 @@ const AsciiField = ({
         d.head += d.speed * speedMul * dt;
         if (d.head - d.len > rows + 1) rain.drops.splice(i, 1);
       }
-      // mutate ~2% of glyphs per frame
-      const flips = Math.max(1, Math.floor(rain.glyphs.length * 0.02));
+      // mutate ~0.6% of glyphs per frame
+      const flips = Math.max(1, Math.floor(rain.glyphs.length * 0.006));
       for (let f = 0; f < flips; f++) {
         const k = Math.floor(Math.random() * rain.glyphs.length);
         rain.glyphs[k] = 1 + Math.floor(Math.random() * (n - 1));
       }
-      // rasterise
+      // rasterise — same weight as the other fields: no bright head, the trail
+      // simply fades from the field alpha to nothing
       for (const d of rain.drops) {
         const headRow = Math.floor(d.head);
         for (let k = 0; k <= d.len; k++) {
           const r = headRow - k;
           if (r < 0 || r >= rows) continue;
           const idx = r * cols + d.col;
-          const a = k === 0 ? 1 : Math.pow(1 - k / (d.len + 1), 1.5);
+          const a = Math.pow(1 - k / (d.len + 1), 1.2);
           if (a <= cellAlpha[idx] && grid[idx]) continue;
           cellAlpha[idx] = a;
-          grid[idx] = k === 0 ? 1 + DENSE_FROM + (rain.glyphs[idx] % (n - DENSE_FROM)) : 1 + rain.glyphs[idx];
+          grid[idx] = 1 + rain.glyphs[idx];
         }
       }
     };
 
     const stamp = variant === 'ribbons' ? ribbons : variant === 'ripples' ? ripples : variant === 'terminal' ? terminal : variant === 'matrix' ? matrix : diamonds;
     const post = variant === 'terminal' ? terminalPost : null;
-    // Rain reads through its bright heads, so it runs at a higher base alpha.
-    const alphaBoost = variant === 'matrix' ? 2.1 : 1;
+    const alphaBoost = 1; // every variant runs at the same field alpha
 
     // Per-cell "under a word" mask from the text line boxes.
     const markUnder = () => {
