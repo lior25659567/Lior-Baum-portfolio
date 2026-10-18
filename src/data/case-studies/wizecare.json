@@ -1,5 +1,5 @@
 {
-  "dataVersion": 21,
+  "dataVersion": 22,
   "title": "WizeCare",
   "slides": [
     {
@@ -1023,21 +1023,34 @@
       },
       {
         "id": "bmsc4ynd1pwd0h7",
-        "type": "bullets",
-        "title": "",
-        "ordered": false,
+        "type": "cards",
+        "variant": "icon",
+        "badge": "bare",
+        "columns": 3,
         "items": [
           {
+            "number": "1",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
             "title": "Saved per session",
-            "text": "Navigation and task time per session dropped against the usability-test baseline — roughly 10–15 minutes back per patient."
+            "description": "Navigation and task time per session dropped against the usability-test baseline — roughly 10–15 minutes back per patient."
           },
           {
+            "number": "2",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
             "title": "Reduction in misclicks",
-            "text": "Clearer layouts and inline editing cut prescription misclicks by ~75% in post-launch validation."
+            "description": "Clearer layouts and inline editing cut prescription misclicks by ~75% in post-launch validation."
           },
           {
+            "number": "3",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
             "title": "Former non-users now opening it every day",
-            "text": "Clinicians who had avoided the platform now use it daily, per stakeholder report in the first month."
+            "description": "Clinicians who had avoided the platform now use it daily, per stakeholder report in the first month."
           }
         ]
       },

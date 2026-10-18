@@ -1,5 +1,5 @@
 {
-  "dataVersion": 10,
+  "dataVersion": 11,
   "title": "Design System\nin Claude Code",
   "subtitle": "An AI-first design system — shared by designers, developers, and AI.",
   "category": "Design Systems / AI Tooling",
@@ -596,16 +596,59 @@
       },
       {
         "id": "ds-out-b",
-        "type": "bullets",
-        "title": "",
-        "ordered": false,
+        "type": "cards",
+        "variant": "icon",
+        "badge": "bare",
+        "columns": 3,
         "items": [
-          "**Designers prototype with the real thing** — exploration happens in live components, so what's tested is how the product actually behaves.",
-          "**The deliverable changed** — a designer hands over a working component, not a picture of one.",
-          "**The handoff queue disappeared for library work** — components stopped waiting behind product priorities.",
-          "**Engineering reviews instead of rebuilds** — the same work, minus the duplication.",
-          "**Drift is caught at build time** — a value outside the system fails rather than reaching production.",
-          "**Reviews stopped being subjective** — design, engineering and AI judge work against the same rendered states."
+          {
+            "number": "1",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
+            "title": "Designers prototype with the real thing",
+            "description": "Exploration happens in live components, so what's tested is how the product actually behaves."
+          },
+          {
+            "number": "2",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
+            "title": "The deliverable changed",
+            "description": "A designer hands over a working component, not a picture of one."
+          },
+          {
+            "number": "3",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
+            "title": "The handoff queue disappeared for library work",
+            "description": "Components stopped waiting behind product priorities."
+          },
+          {
+            "number": "4",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
+            "title": "Engineering reviews instead of rebuilds",
+            "description": "The same work, minus the duplication."
+          },
+          {
+            "number": "5",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
+            "title": "Drift is caught at build time",
+            "description": "A value outside the system fails rather than reaching production."
+          },
+          {
+            "number": "6",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
+            "title": "Reviews stopped being subjective",
+            "description": "Design, engineering and AI judge work against the same rendered states."
+          }
         ]
       },
       {

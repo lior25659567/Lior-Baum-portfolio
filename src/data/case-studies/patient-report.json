@@ -1,5 +1,5 @@
 {
-  "dataVersion": 47,
+  "dataVersion": 48,
   "title": "Patient Report\nRedesign",
   "subtitle": "From a blank page into a structured, shareable communication tool.",
   "category": "Clinical UX",
@@ -1612,21 +1612,34 @@
       },
       {
         "id": "art-out-cards",
-        "type": "bullets",
-        "title": "",
-        "ordered": false,
+        "type": "cards",
+        "variant": "icon",
+        "badge": "bare",
+        "columns": 3,
         "items": [
           {
+            "number": "1",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
             "title": "Faster report creation",
-            "text": "Templates removed the blank-page barrier — doctors started from structure, not nothing."
+            "description": "Templates removed the blank-page barrier — doctors started from structure, not nothing."
           },
           {
+            "number": "2",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
             "title": "Clearer communication",
-            "text": "Findings marked on the image — clearer for patients, faster for the doctor."
+            "description": "Findings marked on the image — clearer for patients, faster for the doctor."
           },
           {
+            "number": "3",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
             "title": "More complete reports",
-            "text": "Reports came back fuller — and more detailed than the old tool allowed."
+            "description": "Reports came back fuller — and more detailed than the old tool allowed."
           }
         ]
       },

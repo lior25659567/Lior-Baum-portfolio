@@ -1,5 +1,5 @@
 {
-  "dataVersion": 76,
+  "dataVersion": 77,
   "title": "Clinical Scanning\nWorkflow",
   "subtitle": "Redesigning the clinical scanning workflow for speed, clarity, and decision-making in real treatment conditions.",
   "category": "Clinical Workflow Redesign",
@@ -2320,14 +2320,43 @@
       },
       {
         "id": "it-out-b",
-        "type": "bullets",
-        "title": "",
-        "ordered": false,
+        "type": "cards",
+        "variant": "icon",
+        "badge": "bare",
+        "columns": 4,
         "items": [
-          "**Configuration in one step** — select a range of teeth, apply procedure and material in a single interaction.",
-          "**Setup stopped gating the scan** — blocking popups removed from the path, procedure and patient swappable in seconds.",
-          "**Scanning stays in rhythm** — the toolbar is fixed in one corner, reachable without leaving the capture.",
-          "**One visual language** — a unified icon set replaced the accumulated styles, so each tool reads at a glance."
+          {
+            "number": "1",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
+            "title": "Configuration in one step",
+            "description": "Select a range of teeth, apply procedure and material in a single interaction."
+          },
+          {
+            "number": "2",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
+            "title": "Setup stopped gating the scan",
+            "description": "Blocking popups removed from the path, procedure and patient swappable in seconds."
+          },
+          {
+            "number": "3",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
+            "title": "Scanning stays in rhythm",
+            "description": "The toolbar is fixed in one corner, reachable without leaving the capture."
+          },
+          {
+            "number": "4",
+            "tone": "positive",
+            "icon": "check",
+            "color": "success",
+            "title": "One visual language",
+            "description": "A unified icon set replaced the accumulated styles, so each tool reads at a glance."
+          }
         ]
       },
       {
