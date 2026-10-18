@@ -339,19 +339,28 @@ const AsciiField = ({
       const dt = rain.lastT === null ? 1 / FPS : Math.min(0.1, t - rain.lastT);
       rain.lastT = t;
       const breathe = 0.65 + 0.35 * Math.sin(t * 0.5);
-      // spawn: ~0.55 drops / s / column at full density, pulsing; pointer columns ×6
-      const perCol = 0.55 * breathe * (0.15 + 0.85 * reveal.v) * dt;
+      // "wind": a density band that sweeps across the columns, so the rain
+      // thickens in a moving front rather than evenly everywhere
+      const wind = (c) => 0.5 + 0.5 * Math.sin((c / cols) * Math.PI * 3 - t * 0.9);
+      // spawn: up to ~0.8 drops / s / column, pulsing × wind; pointer columns ×6
+      const perColBase = 0.8 * breathe * (0.15 + 0.85 * reveal.v) * dt;
       const pcol = cur.a > 0.01 ? Math.round(cur.x / cw) : -999;
       for (let c = 0; c < cols; c++) {
-        let p = perCol;
+        let p = perColBase * (0.25 + 0.75 * wind(c));
         if (Math.abs(c - pcol) <= 6) p *= 1 + 5 * cur.a * (1 - Math.abs(c - pcol) / 7);
         if (Math.random() > p) continue;
         // don't stack a new drop on a column whose last drop hasn't cleared its own tail
         let busy = false;
         for (const d of rain.drops) if (d.col === c && d.head < d.len + 2) { busy = true; break; }
         if (busy) continue;
-        // slow fall (≈ the About ribbons' pace): 1.6–3.4 rows per second
-        rain.drops.push({ col: c, head: -Math.random() * 6, speed: 1.6 + Math.random() * 1.8, len: 7 + Math.floor(Math.random() * 15) });
+        // mostly steady drops (≈3–5 rows/s) with the odd fast, short streak
+        const streak = Math.random() < 0.28;
+        rain.drops.push({
+          col: c,
+          head: -Math.random() * 6,
+          speed: streak ? 7 + Math.random() * 4 : 2.8 + Math.random() * 2.2,
+          len: streak ? 4 + Math.floor(Math.random() * 6) : 8 + Math.floor(Math.random() * 16),
+        });
       }
       // advance + cull
       const speedMul = 0.85 + 0.15 * Math.sin(t * 0.33);
@@ -360,11 +369,19 @@ const AsciiField = ({
         d.head += d.speed * speedMul * dt;
         if (d.head - d.len > rows + 1) rain.drops.splice(i, 1);
       }
-      // mutate ~0.6% of glyphs per frame
-      const flips = Math.max(1, Math.floor(rain.glyphs.length * 0.006));
+      // mutate: a slow churn everywhere, plus the few cells just behind each
+      // head keep flickering as the glyphs "settle"
+      const flips = Math.max(1, Math.floor(rain.glyphs.length * 0.01));
       for (let f = 0; f < flips; f++) {
         const k = Math.floor(Math.random() * rain.glyphs.length);
         rain.glyphs[k] = 1 + Math.floor(Math.random() * (n - 1));
+      }
+      for (const d of rain.drops) {
+        const headRow = Math.floor(d.head);
+        for (let k = 0; k < 3; k++) {
+          const r = headRow - k;
+          if (r >= 0 && r < rows && Math.random() < 0.45) rain.glyphs[r * cols + d.col] = 1 + Math.floor(Math.random() * (n - 1));
+        }
       }
       // rasterise — same weight as the other fields: no bright head, the trail
       // simply fades from the field alpha to nothing
