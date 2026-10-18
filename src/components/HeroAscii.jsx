@@ -156,33 +156,6 @@ const HeroAscii = () => {
       }
     };
 
-    // destination-out eraser: a rectangle with feathered edges + corners.
-    const eraseSoftRect = (x, y, w, h, f) => {
-      ctx.fillStyle = 'rgba(0,0,0,1)';
-      ctx.fillRect(x, y, w, h);
-      const strip = (gx0, gy0, gx1, gy1, rx, ry, rw, rh) => {
-        const g = ctx.createLinearGradient(gx0, gy0, gx1, gy1);
-        g.addColorStop(0, 'rgba(0,0,0,1)');
-        g.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = g;
-        ctx.fillRect(rx, ry, rw, rh);
-      };
-      strip(x, 0, x - f, 0, x - f, y, f, h);                 // left
-      strip(x + w, 0, x + w + f, 0, x + w, y, f, h);         // right
-      strip(0, y, 0, y - f, x, y - f, w, f);                 // top
-      strip(0, y + h, 0, y + h + f, x, y + h, w, f);         // bottom
-      for (const [cx, cy] of [[x, y], [x + w, y], [x, y + h], [x + w, y + h]]) {
-        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, f);
-        g.addColorStop(0, 'rgba(0,0,0,1)');
-        g.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = g;
-        ctx.fillRect(cx - f, cy - f, f, f);
-        ctx.fillRect(cx, cy - f, f, f);
-        ctx.fillRect(cx - f, cy, f, f);
-        ctx.fillRect(cx, cy, f, f);
-      }
-    };
-
     const draw = (t) => {
       grid.fill(0);
       for (const c of chains()) stampChain(c, t);
@@ -202,27 +175,32 @@ const HeroAscii = () => {
       }
       ctx.globalAlpha = 1;
 
-      // Keep the type crisp without blocking the field: the chains run behind
-      // the content; only a slim soft halo around each actual text LINE is
-      // erased (not the whole content box), so the words read and the diamonds
-      // show between and around them.
+      // The chains run straight under the text — no box, no per-line cut-outs
+      // (those merge into a visible rectangle the diamonds can't enter). A
+      // very wide, soft radial dimming over the text area halves the glyph
+      // alpha where the words sit, so the type stays legible while the field
+      // flows through continuously.
       ctx.globalCompositeOperation = 'destination-out';
       const hr = hero.getBoundingClientRect();
-      const halo = (r) => {
-        if (!r || r.width < 2 || r.height < 2) return;
-        eraseSoftRect(r.left - hr.left - 10, r.top - hr.top - 4, r.width + 20, r.height + 8, 26);
-      };
-      for (const sel of ['.hero-greeting', '.hero-name', '.hero-role-text']) {
-        const el = hero.querySelector(sel);
-        if (el) halo(el.getBoundingClientRect());
-      }
-      const desc = hero.querySelector('.hero-desc');
-      if (desc) {
-        // one rect per wrapped line of the paragraph
-        const range = document.createRange();
-        range.selectNodeContents(desc);
-        for (const r of range.getClientRects()) halo(r);
-        range.detach?.();
+      const content = hero.querySelector('.hero-content');
+      if (content) {
+        const crc = content.getBoundingClientRect();
+        const ex = crc.left - hr.left + crc.width / 2;
+        const ey = crc.top - hr.top + crc.height / 2;
+        const rx = crc.width * 0.72 + 160;
+        const ry = crc.height * 0.8 + 120;
+        ctx.save();
+        ctx.translate(ex, ey);
+        ctx.scale(rx, ry);
+        const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+        g.addColorStop(0, 'rgba(0,0,0,0.55)');
+        g.addColorStop(0.45, 'rgba(0,0,0,0.45)');
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(0, 0, 1, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
       }
       const marquee = hero.querySelector('.hero-marquee');
       if (marquee) {
