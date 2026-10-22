@@ -7,6 +7,7 @@ import './HomePublishBar.css';
 const Home = () => {
   const { editMode, saveHomeToCode, gitPush } = useEdit();
   const [status, setStatus] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleSaveToCode = async () => {
     setStatus('saving');
@@ -16,8 +17,9 @@ const Home = () => {
       setTimeout(() => setStatus(''), 2500);
     } catch (err) {
       console.error(err);
+      setErrorMsg(err.message || 'Unknown error');
       setStatus('error');
-      setTimeout(() => setStatus(''), 3000);
+      setTimeout(() => setStatus(''), 8000);
     }
   };
 
@@ -30,8 +32,9 @@ const Home = () => {
       setTimeout(() => setStatus(''), 3000);
     } catch (err) {
       console.error(err);
+      setErrorMsg(err.message || 'Unknown error');
       setStatus('error');
-      setTimeout(() => setStatus(''), 3000);
+      setTimeout(() => setStatus(''), 8000);
     }
   };
 
@@ -55,7 +58,7 @@ const Home = () => {
           >
             {status === 'pushing' ? 'Pushing...' : status === 'pushed' ? '✓ Pushed & Deployed' : '↑ Push to Git'}
           </button>
-          {status === 'error' && <span className="home-publish-error">Failed — check console</span>}
+          {status === 'error' && <span className="home-publish-error">Failed — {errorMsg}</span>}
         </div>
       )}
     </>

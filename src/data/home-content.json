@@ -254,7 +254,8 @@
       "hideContentYear": true,
       "hideCardYear": false,
       "cardBgStyle": "gradient",
-      "hideImageShadow": true
+      "hideImageShadow": true,
+      "orderVersion": 1
     },
     "playground": {
       "sectionLabel": "Playground",

@@ -312,6 +312,26 @@ const effectiveDefaultStyles = savedHomeData?.styles
   ? { ...defaultStyles, ...migrateStyles(savedHomeData.styles) }
   : defaultStyles;
 
+// A browser-cached copy of the project grid would otherwise pin its old order
+// forever. When the committed home-content.json carries a higher
+// projects.orderVersion than the cached copy, the file's order wins (per-card
+// edits in the cache are kept). Bump orderVersion in the file to push a new order.
+function mergeProjects(savedProjects) {
+  const base = effectiveDefaultContent.projects;
+  const merged = { ...base, ...savedProjects };
+  const fileVersion = base?.orderVersion || 0;
+  const savedVersion = savedProjects?.orderVersion || 0;
+  if (fileVersion > savedVersion && Array.isArray(savedProjects?.items) && Array.isArray(base?.items)) {
+    const rank = (id) => {
+      const i = base.items.findIndex(p => p.id === id);
+      return i < 0 ? Infinity : i;
+    };
+    merged.items = [...savedProjects.items].sort((a, b) => rank(a.id) - rank(b.id));
+    merged.orderVersion = fileVersion;
+  }
+  return merged;
+}
+
 function mergeContent(saved) {
   if (!saved) return effectiveDefaultContent;
   const mergedAbout = { ...effectiveDefaultContent.about, ...saved.about };
@@ -324,7 +344,7 @@ function mergeContent(saved) {
     hero: { ...effectiveDefaultContent.hero, ...saved.hero },
     footer: { ...effectiveDefaultContent.footer, ...saved.footer },
     about: mergedAbout,
-    projects: { ...effectiveDefaultContent.projects, ...saved.projects },
+    projects: mergeProjects(saved.projects),
     playground: { ...effectiveDefaultContent.playground, ...saved.playground },
   };
 }
